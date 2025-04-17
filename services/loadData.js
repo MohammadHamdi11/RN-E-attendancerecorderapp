@@ -128,24 +128,8 @@ export const loadStudentsData = async (forceReload = false) => {
         const parsedData = JSON.parse(cachedData);
         console.log(`Using cached students data (${parsedData.length} records)`);
         
-        // If we're online, check for updates in the background
-        try {
-          const isOnline = await checkOnlineStatus();
-          if (isOnline) {
-            console.log('Device is online, checking for data updates in background');
-            checkAndUpdateStudentsData()
-              .then(result => {
-                if (result.updated) {
-                  console.log('Background update completed - data was updated');
-                } else {
-                  console.log('Background update completed - no updates needed');
-                }
-              })
-              .catch(err => console.error('Background update failed:', err));
-          }
-        } catch (onlineCheckError) {
-          console.log('Error checking online status:', onlineCheckError);
-        }
+        // Important: Also update the cachedStudentsData key for consistency
+        await AsyncStorage.setItem('cachedStudentsData', cachedData);
         
         return parsedData;
       }
@@ -161,6 +145,11 @@ export const loadStudentsData = async (forceReload = false) => {
       try {
         console.log('Device is online, fetching latest data from GitHub');
         const data = await fetchStudentsDataFromGitHub();
+        
+        // Important: Update both cache keys
+        await AsyncStorage.setItem(STUDENTS_DATA_KEY, JSON.stringify(data));
+        await AsyncStorage.setItem('cachedStudentsData', JSON.stringify(data));
+        
         return data;
       } catch (fetchError) {
         console.error('Failed to fetch from GitHub, falling back to local data:', fetchError);
@@ -171,7 +160,9 @@ export const loadStudentsData = async (forceReload = false) => {
     
     // As a last resort, use bundled data
     console.log('Using bundled local students data as fallback');
-    await AsyncStorage.setItem(STUDENTS_DATA_KEY, JSON.stringify(LOCAL_STUDENTS_DATA));
+    const bundledData = JSON.stringify(LOCAL_STUDENTS_DATA);
+    await AsyncStorage.setItem(STUDENTS_DATA_KEY, bundledData);
+    await AsyncStorage.setItem('cachedStudentsData', bundledData);
     await AsyncStorage.setItem(STUDENTS_DATA_TIMESTAMP_KEY, new Date().toISOString());
     
     return LOCAL_STUDENTS_DATA;

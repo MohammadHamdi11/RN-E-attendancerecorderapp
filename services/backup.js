@@ -143,91 +143,182 @@ return 'Error';
 };
 // Process pending backups when app comes back online
 export const processPendingBackups = async () => {
-try {
-const isConnected = await checkConnectionStatus();
-if (!isConnected) {
-console.log('Cannot process pending backups: Still offline');
-return { success: false, message: 'Still offline' };
-}
-const pendingBackups = await AsyncStorage.getItem('pendingBackups');
-if (!pendingBackups) {
-console.log('No pending backups to process');
-return { success: true, message: 'No pending backups' };
-}
-const backupsArray = JSON.parse(pendingBackups);
-if (backupsArray.length === 0) {
-console.log('No pending backups to process');
-return { success: true, message: 'No pending backups' };
-}
-console.log(`Processing ${backupsArray.length} pending backups...`);
-let successCount = 0;
-let failCount = 0;
-let remainingBackups = [];
-// Process each pending backup
-for (const backupItem of backupsArray) {
-try {
-// Skip if already attempted too many times
-if (backupItem.retryCount >= 3) {
-console.log(`Skipping backup for session ${backupItem.session.id}: Too many retries`);
-failCount++;
-continue;
-}
-// Try to backup this session
-await backupToGitHub(
-[backupItem.session], // Pass as array since backupToGitHub expects sessions array
-false, // Not auto backup
-`qr_scanner_backup_${backupItem.session.id}_${formatDateTimeForFile(new Date())}.xlsx`
-);
-// If we get here, backup was successful
-successCount++;
-} catch (error) {
-console.error(`Error backing up session ${backupItem.session.id}:`, error);
-// Increment retry count and keep in the queue
-backupItem.retryCount = (backupItem.retryCount || 0) + 1;
-remainingBackups.push(backupItem);
-failCount++;
-}
-}
-// Update the pending backups list
-await AsyncStorage.setItem('pendingBackups', JSON.stringify(remainingBackups));
-// [NEW CODE PASTED HERE]
-if (successCount > 0) {
-const now = new Date().toISOString();
-await AsyncStorage.setItem(LAST_BACKUP_TIME_KEY, now);
-console.log("Last backup time updated");
-}
-return {
-success: true,
-message: `Processed ${backupsArray.length} pending backups: ${successCount} succeeded, ${failCount} failed or skipped. ${remainingBackups.length} remaining.`
+  try {
+    console.log('Checking connection before processing backups...');
+    const netInfo = await NetInfo.fetch();
+    const isConnected = netInfo.isConnected && netInfo.isInternetReachable;
+    
+    if (!isConnected) {
+      console.log('Cannot process pending backups: Still offline');
+      return { success: false, message: 'Still offline' };
+    }
+
+    console.log('Connection available, checking for pending backups...');
+    const pendingBackups = await AsyncStorage.getItem('pendingBackups');
+    if (!pendingBackups) {
+      console.log('No pending backups storage found');
+      return { success: true, message: 'No pending backups' };
+    }
+
+    const backupsArray = JSON.parse(pendingBackups);
+    if (backupsArray.length === 0) {
+      console.log('Pending backups array is empty');
+      return { success: true, message: 'No pending backups' };
+    }
+
+    console.log(`Processing ${backupsArray.length} pending backups...`);
+    let successCount = 0;
+    let failCount = 0;
+    let remainingBackups = [];
+
+    // First verify GitHub token is valid
+    const token = await getGitHubToken();
+    const isTokenValid = await validateGitHubToken(token);
+    if (!isTokenValid) {
+      console.log('GitHub token is invalid, cannot process backups');
+      return { success: false, message: 'Invalid GitHub token' };
+    }
+
+    // Process each pending backup
+    for (const backupItem of backupsArray) {
+      try {
+        console.log(`Attempting to backup session ${backupItem.session.id}`);
+        
+        // Skip if attempted too many times
+        if (backupItem.retryCount >= 3) {
+          console.log(`Skipping backup for session ${backupItem.session.id}: Too many retries`);
+          failCount++;
+          continue;
+        }
+        
+        // Try to backup this session
+        const result = await backupToGitHub(
+          [backupItem.session], // Pass as array since backupToGitHub expects sessions array
+          false, // Not auto backup
+          backupItem.fileName || `qr_scanner_backup_${backupItem.session.id}_${formatDateTimeForFile(new Date())}.xlsx`
+        );
+        
+        if (result && result.success) {
+          console.log(`Successfully backed up session: ${backupItem.session.id}`);
+          successCount++;
+          
+          // Update session as backed up in storage
+          await updateSessionBackupStatus(backupItem.session.id, true);
+          
+          // If this backup has an onSuccess callback function reference, try to execute it
+          if (backupItem.onSuccess && typeof backupItem.onSuccess === 'function') {
+            try {
+              await backupItem.onSuccess();
+            } catch (callbackError) {
+              console.warn('Error executing onSuccess callback:', callbackError);
+            }
+          }
+        } else {
+          console.log(`Failed to back up session: ${backupItem.session.id}`);
+          // Increment retry count and keep in the queue
+          backupItem.retryCount = (backupItem.retryCount || 0) + 1;
+          remainingBackups.push(backupItem);
+          failCount++;
+        }
+      } catch (error) {
+        console.error(`Error backing up session ${backupItem.session.id}:`, error);
+        // Increment retry count and keep in the queue
+        backupItem.retryCount = (backupItem.retryCount || 0) + 1;
+        remainingBackups.push(backupItem);
+        failCount++;
+      }
+    }
+
+    // Update the pending backups list
+    await AsyncStorage.setItem('pendingBackups', JSON.stringify(remainingBackups));
+    
+    // Update last backup time if any succeeded
+    if (successCount > 0) {
+      const now = new Date().toISOString();
+      await AsyncStorage.setItem(LAST_BACKUP_TIME_KEY, now);
+      console.log("Last backup time updated");
+    }
+
+    return {
+      success: true,
+      message: `Processed ${backupsArray.length} pending backups: ${successCount} succeeded, ${failCount} failed or skipped. ${remainingBackups.length} remaining.`
+    };
+  } catch (error) {
+    console.error('Error processing pending backups:', error);
+    return { success: false, message: `Error: ${error.message}` };
+  }
 };
-} catch (error) {
-console.error('Error processing pending backups:', error);
-return { success: false, message: `Error: ${error.message}` };
-}
+// Update session backup status in storage
+export const updateSessionBackupStatus = async (sessionId, backedUp) => {
+  try {
+    console.log(`Updating backup status for session ${sessionId} to ${backedUp}`);
+    const savedSessions = await AsyncStorage.getItem('sessions');
+    if (savedSessions) {
+      const parsedSessions = JSON.parse(savedSessions);
+      const sessionIndex = parsedSessions.findIndex(s => s.id === sessionId);
+      if (sessionIndex !== -1) {
+        parsedSessions[sessionIndex].backedUp = backedUp;
+        await AsyncStorage.setItem('sessions', JSON.stringify(parsedSessions));
+        console.log(`Updated backup status successfully for session ${sessionId}`);
+        return true;
+      }
+    }
+    return false;
+  } catch (error) {
+    console.error('Error updating session backup status:', error);
+    return false;
+  }
 };
 // Create a network status listener that can be used in App.js
 export const setupNetworkListener = (onlineCallback, offlineCallback) => {
-// Subscribe to network state changes
-const unsubscribe = NetInfo.addEventListener(state => {
-if (state.isConnected) {
-console.log('App is now online');
-// Process any pending backups when we come back online
-processPendingBackups().then(result => {
-console.log('Pending backups processed:', result);
-});
-// Call the callback if provided
-if (onlineCallback && typeof onlineCallback === 'function') {
-onlineCallback();
-}
-} else {
-console.log('App is now offline');
-// Call the callback if provided
-if (offlineCallback && typeof offlineCallback === 'function') {
-offlineCallback();
-}
-}
-});
-return unsubscribe;
+  console.log('Setting up network listener...');
+  
+  // Check immediately on startup
+  NetInfo.fetch().then(state => {
+    if (state.isConnected && state.isInternetReachable) {
+      console.log('App started online, checking for pending backups...');
+      processPendingBackups().then(result => {
+        console.log('Pending backups check on startup:', result);
+        
+        // Call the callback if provided
+        if (onlineCallback && typeof onlineCallback === 'function') {
+          onlineCallback(result);
+        }
+      }).catch(error => {
+        console.error('Error processing pending backups on startup:', error);
+      });
+    }
+  });
+  
+  // Subscribe to network state changes
+  const unsubscribe = NetInfo.addEventListener(state => {
+    console.log('Network state changed:', state);
+    
+    if (state.isConnected && state.isInternetReachable) {
+      console.log('App is now online');
+      
+      // Process any pending backups when we come back online
+      processPendingBackups().then(result => {
+        console.log('Pending backups processed:', result);
+        
+        // Call the callback if provided
+        if (onlineCallback && typeof onlineCallback === 'function') {
+          onlineCallback(result);
+        }
+      }).catch(error => {
+        console.error('Error processing pending backups:', error);
+      });
+    } else {
+      console.log('App is now offline');
+      
+      // Call the callback if provided
+      if (offlineCallback && typeof offlineCallback === 'function') {
+        offlineCallback();
+      }
+    }
+  });
+  
+  return unsubscribe;
 };
 // Check if there are any pending backups
 export const hasPendingBackups = async () => {

@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import * as XLSX from 'xlsx';
-import { backupToGitHub, tryAutoBackup } from '../services/backup'; // Import backup functions
+import { backupToGitHub, tryAutoBackup, processPendingBackups } from '../services/backup';
 // Match the key used in backup.js
 const LAST_BACKUP_TIME_KEY = 'qrScannerLastBackupTime';
 // Storage keys for recovery
@@ -109,85 +109,67 @@ console.log("Initialized empty pendingBackups array");
 }; 
 // Check and process pending backups when coming online
 const checkAndProcessPendingBackups = async () => {
-if (!isOnline) return;
-try {
-console.log("Checking for pending backups...");
-const pendingBackups = await AsyncStorage.getItem('pendingBackups');
-if (!pendingBackups) {
-console.log("No pending backups found");
-return;
-}
-const backupsArray = JSON.parse(pendingBackups);
-if (backupsArray.length === 0) {
-console.log("Pending backups array is empty");
-return;
-}
-console.log(`Found ${backupsArray.length} pending backups to process`);
-setScanStatus(`Processing ${backupsArray.length} pending backups...`);
-// Process each backup
-let successCount = 0;
-let failCount = 0;
-let remainingBackups = [];
-
-for (let i = 0; i < backupsArray.length; i++) {
-  const backup = backupsArray[i];
-  console.log(`Processing backup from ${backup.timestamp} for session: ${backup.session.id}`);
+  if (!isOnline) {
+    console.log("Cannot process backups while offline");
+    return;
+  }
   
   try {
-    // Try to backup this session using the actual backup function
-    const result = await backupToGitHub([backup.session], false);
+    console.log("Checking for pending backups...");
+    // setScanStatus('Checking for pending backups...');  // Removed UI update
     
-    if (result && result.success) {
-      console.log(`Successfully backed up session: ${backup.session.id}`);
-      successCount++;
-    } else {
-      console.log(`Failed to back up session: ${backup.session.id}`);
-      failCount++;
-      // Keep in queue for retry if it failed
-      backup.retryCount = (backup.retryCount || 0) + 1;
-      if (backup.retryCount < 3) { // Limit retry attempts
-        remainingBackups.push(backup);
+    const result = await processPendingBackups();
+    console.log("Process pending backups result:", result);
+    
+    if (result.success) {
+      if (result.message.includes('processed')) {
+        // setScanStatus(result.message);  // Removed UI update
+        
+        // Refresh sessions to update backup status
+        const savedSessions = await AsyncStorage.getItem('sessions');
+        if (savedSessions) {
+          // setSessions(JSON.parse(savedSessions));  // Removed UI update
+        }
       }
     }
   } catch (error) {
-    console.error(`Error backing up session ${backup.session.id}:`, error);
-    failCount++;
-    // Keep in queue for retry
-    backup.retryCount = (backup.retryCount || 0) + 1;
-    if (backup.retryCount < 3) { // Limit retry attempts
-      remainingBackups.push(backup);
-    }
+    console.error('Error processing pending backups:', error);
+    // setScanStatus('Error processing backups');  // Removed UI update
   }
-}
+};
 
-// Clear pending backups after processing
-await AsyncStorage.setItem('pendingBackups', JSON.stringify(remainingBackups));
-setScanStatus(`Processed ${backupsArray.length} backups: ${successCount} succeeded, ${failCount} failed.`);
-// Clear pending backups after successful processing
-await AsyncStorage.setItem('pendingBackups', JSON.stringify([]));
-setScanStatus('All pending backups processed');
-// Update sessions in storage to mark them as backed up
+// Add this function to ScannerScreen.js
+const markSessionAsCompleted = async (sessionId) => {
+try {
+// Update session in AsyncStorage
 const savedSessions = await AsyncStorage.getItem('sessions');
 if (savedSessions) {
 const parsedSessions = JSON.parse(savedSessions);
-let updated = false;
-backupsArray.forEach(backup => {
-const sessionIndex = parsedSessions.findIndex(s => s.id === backup.session.id);
+const sessionIndex = parsedSessions.findIndex(s => s.id === sessionId);
 if (sessionIndex !== -1) {
-parsedSessions[sessionIndex].backedUp = true;
-updated = true;
+// Update session status
+const updatedSessions = [...parsedSessions];
+updatedSessions[sessionIndex] = {
+...updatedSessions[sessionIndex],
+inProgress: false
+};
+// Save updated sessions
+await AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions));
+setSessions(updatedSessions);
+console.log(`Session ${sessionId} marked as completed`);
 }
+}
+// Also update SQLite database for backward compatibility
+db.transaction(tx => {
+tx.executeSql(
+'UPDATE sessions SET inProgress = 0 WHERE id = ?',
+[sessionId]
+);
 });
-if (updated) {
-await AsyncStorage.setItem('sessions', JSON.stringify(parsedSessions));
-setSessions(parsedSessions);
-}
-}
-Alert.alert('Backup Complete', `Successfully processed ${backupsArray.length} pending backups.`);
+// Clear recovery data
+await AsyncStorage.removeItem(TEMP_SCANNER_SESSION_INDEX_KEY);
 } catch (error) {
-console.error('Error processing pending backups:', error);
-setScanStatus('Error processing backups');
-Alert.alert('Backup Error', `Failed to process backups: ${error.message}`);
+console.error("Error marking session as completed:", error);
 }
 };
 // Check for recoverable scanner session
@@ -208,7 +190,11 @@ onPress: () => recoverScannerSession(parsedSession)
 },
 {
 text: "No",
-onPress: () => clearActiveScannerSession()
+onPress: () => {
+const sessionId = parsedSession.id;
+markSessionAsCompleted(sessionId);
+clearActiveScannerSession();
+}
 }
 ]
 );
@@ -236,10 +222,8 @@ onPress: () => recoverScannerSession(tempSession)
 {
 text: "No",
 onPress: () => {
-const updatedSessions = [...parsedSessions];
-updatedSessions[index].inProgress = false;
-setSessions(updatedSessions);
-AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions));
+const sessionId = tempSession.id;
+markSessionAsCompleted(sessionId);
 AsyncStorage.removeItem(TEMP_SCANNER_SESSION_INDEX_KEY);
 }
 }
@@ -527,34 +511,36 @@ setSessions(updatedSessions);
 AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions));
 // If offline, queue for backup
 if (!isOnline) {
-  console.log("App is offline, queueing session for backup");
-  queueSessionForBackup(sessionToExport);
+console.log("App is offline, queueing session for backup");
+queueSessionForBackup(sessionToExport);
 } else {
-  console.log("App is online, attempting immediate backup");
+console.log("App is online, attempting immediate backup");
 // Try to backup immediately
 try {
-  backupToGitHub([sessionToExport], false)
-    .then(result => {
-      console.log("Backup result:", result);
-      if (result && result.success) {
-        // Set last backup time to now
-        const now = new Date();
-        AsyncStorage.setItem(LAST_BACKUP_TIME_KEY, now.toISOString())
-          .then(() => console.log("Last backup time updated"));
-        
-        Alert.alert("Backup Success", "Session backed up to GitHub successfully!");
-      } else {
-        console.error("Backup failed:", result);
-        Alert.alert("Backup Failed", "Unable to backup to GitHub. The session is saved locally.");
-      }
-    })
-    .catch(error => {
-      console.error("Backup error:", error);
-      Alert.alert("Backup Error", `Error during backup: ${error.message}`);
-    });
+backupToGitHub([sessionToExport], false)
+.then(result => {
+console.log("Backup result:", result);
+if (result && result.success) {
+// Set last backup time to now
+const now = new Date();
+AsyncStorage.setItem(LAST_BACKUP_TIME_KEY, now.toISOString())
+.then(() => console.log("Last backup time updated"));
+Alert.alert("Backup Success", "Session backed up to GitHub successfully!");
+} else {
+console.error("Backup failed:", result);
+Alert.alert("Backup Failed", "Unable to backup to GitHub. The session is saved locally.");
+}
+})
+.catch(error => {
+console.error("Backup error:", error);
+Alert.alert("Backup Error", `Error during backup: ${error.message}`);
+});
 } catch (error) {
   console.error("Exception during backup:", error);
-  Alert.alert("Backup Error", `Exception during backup: ${error.message}`);
+  // Don't show alert for empty workbook errors
+  if (!error.message.includes('Workbook is empty')) {
+    Alert.alert("Backup Error", `Exception during backup: ${error.message}`);
+  }
 }
 }
 }
@@ -743,7 +729,6 @@ return date.toISOString().replace(/[:.]/g, '-').slice(0, 19);
 // Render different content based on permissions
 if (hasPermission === null) {
 return (
-
 <View style={styles.container}>
 <Text>Requesting camera permission...</Text>
 </View>
@@ -759,15 +744,16 @@ return (
 }
 return (
 <View style={styles.container}>
-{/* Connection status indicator */}
 {connectionMessage && (
 <View style={[styles.connectionStatus, { backgroundColor: isOnline ? '#e7f3e8' : '#fff3cd' }]}>
 <Text style={{ color: isOnline ? '#28a745' : '#856404' }}>{connectionMessage}</Text>
 </View>
 )}
+{/* Add ScrollView here to make entire content scrollable */}
+<ScrollView contentContainerStyle={styles.scrollContent}>
 <Surface style={styles.card}>
 <Title style={styles.title}>QR Code Scanner</Title>
-<View style={styles.buttonGroup}>
+<View style={styles.buttonContainer}>
 <Button 
 mode="contained" 
 style={styles.button}
@@ -780,14 +766,13 @@ onPress={() => activeSession ? endSession() : setShowSessionModal(true)}
 <Button 
 mode="outlined" 
 style={styles.manualButton}
-labelStyle={styles.manualButtonText}
+labelStyle={styles.syncButtonText}
 onPress={() => setShowManualEntryModal(true)}
 >
 Manual Entry
 </Button>
 )}
 </View>
-{/* Session Info */}
 {activeSession && (
 <View style={styles.sessionInfo}>
 <Text style={styles.locationText}>Location: {activeSession.location}</Text>
@@ -813,7 +798,8 @@ Click "Start New Session" to begin scanning QR codes.
 </View>
 <Title style={styles.subtitle}>Scanned QR Codes</Title>
 {scans.length > 0 ? (
-<ScrollView style={styles.tableContainer}>
+<View style={styles.tableContainer}>
+<ScrollView nestedScrollEnabled={true}>
 <DataTable>
 <DataTable.Header>
 <DataTable.Title numeric>ID</DataTable.Title>
@@ -832,11 +818,12 @@ Click "Start New Session" to begin scanning QR codes.
 ))}
 </DataTable>
 </ScrollView>
+</View>
 ) : (
 <Text style={styles.noDataText}>No QR codes scanned yet.</Text>
 )}
 </Surface>
-{/* Session Modal */}
+</ScrollView>
 <Portal>
 <Modal
 visible={showSessionModal}
@@ -854,7 +841,6 @@ title={option}
 onPress={() => {
 setLocation(option);
 setShowSessionModal(false);
-// After selecting location, create the session
 setTimeout(() => {
 if (option) {
 const now = new Date();
@@ -868,23 +854,17 @@ formattedDateTime: formattedDateTime,
 scans: [],
 inProgress: true
 };
-// Set active session
 setActiveSession(newSession);
 setScans([]);
 setScanStatus('Session started - Ready to scan');
-// Add session to sessions array
 AsyncStorage.getItem('sessions').then(savedSessions => {
 const parsedSessions = savedSessions ? JSON.parse(savedSessions) : [];
 const updatedSessions = [...parsedSessions, newSession];
 setSessions(updatedSessions);
 AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions));
-// Store temp index
-const index = updatedSessions.length - 1;
-AsyncStorage.setItem(TEMP_SCANNER_SESSION_INDEX_KEY, String(index));
+AsyncStorage.setItem(TEMP_SCANNER_SESSION_INDEX_KEY, String(updatedSessions.length - 1));
 });
-// Save active session
 saveActiveScannerSession(newSession);
-// Also save to SQLite for backward compatibility
 db.transaction(tx => {
 tx.executeSql(
 'INSERT INTO sessions (id, location, dateTime, inProgress) VALUES (?, ?, ?, ?)',
@@ -904,19 +884,18 @@ style={styles.locationOption}
 ))}
 </ScrollView>
 </View>
-<View style={styles.modalButtons}>
+<View style={styles.syncButton}>
 <Button 
 mode="text"
 onPress={() => setShowSessionModal(false)}
-style={styles.modalButton}
-labelStyle={styles.modalButtonText}
+style={styles.syncButton}
+labelStyle={styles.syncButtonText}
 >
 Cancel
 </Button>
 </View>
 </Modal>
 </Portal>
-{/* Manual Entry Modal */}
 <Portal>
 <Modal
 visible={showManualEntryModal}
@@ -932,13 +911,13 @@ style={styles.input}
 autoFocus
 onSubmitEditing={processManualEntry}
 />
-<View style={styles.modalButtons}>
+<View style={styles.syncButton}>
 <Button onPress={() => setShowManualEntryModal(false)}>Cancel</Button>
 <Button 
 mode="contained" 
+labelStyle={styles.syncButtonText}
 onPress={processManualEntry}
 disabled={!manualId.trim()}
-labelStyle={styles.modalButtonText}
 >
 Add
 </Button>
@@ -949,166 +928,173 @@ Add
 );
 };
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: '#f9f9f9', // Matches --light-bg
-  },
-  card: {
-    padding: 16,
-    borderRadius: 8,
-    elevation: 4,
-    backgroundColor: '#ffffff', // Matches --card-bg
-    flex: 1,
-  },
-  title: {
-    fontSize: 20,
-    marginBottom: 16,
-    color: '#24325f', // Matches --primary-color
-    fontWeight: 'bold',
-  },
-  subtitle: {
-    fontSize: 16,
-    marginTop: 16,
-    marginBottom: 8,
-    color: '#24325f', // Matches --primary-color
-    fontWeight: '500',
-  },
-  buttonGroup: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-  },
-  button: {
-    flex: 1,
-    marginHorizontal: 4,
-    backgroundColor: '#24325f', // Matches --primary-color
-    borderColor: '#24325f', // Matches --primary-color
-  },
-  buttonText: {
-    color: 'white',
-  },
-  manualButton: {
-    flex: 0.5,
-    marginHorizontal: 4,
-    backgroundColor: '#24325f', // Matches --primary-color
-    borderColor: '#24325f', // Matches --primary-color
-  },
-  manualButtonText: {
-    color: 'white',
-  },
-  sessionInfo: {
-    backgroundColor: '#f0f0f5', // Slightly adjusted to match PWA feel
-    padding: 8,
-    borderRadius: 4,
-    marginBottom: 8,
-    borderWidth: 1,
-    borderColor: '#24325f',
-  },
-  locationText: {
-    fontWeight: 'bold',
-    color: '#24325f', // Matches --primary-color
-  },
-  dateTimeText: {
-    color: '#24325f',
-  },
-  scannerContainer: {
-    height: 300,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: '#24325f',
-  },
-  connectionStatus: {
-    padding: 8,
-    borderRadius: 4,
-    marginBottom: 8,
-    alignItems: 'center',
-  },
-  placeholderText: {
-    textAlign: 'center',
-    color: '#24325f',
-  },
-  noDataText: {
-    textAlign: 'center',
-    color: '#24325f',
-    fontStyle: 'italic',
-    marginTop: 8,
-  },
-  tableContainer: {
-    maxHeight: 200,
-    borderWidth: 1,
-    borderColor: '#24325f',
-    borderRadius: 8,
-    overflow: 'hidden',
-  },
-  statusContainer: {
-    backgroundColor: 'rgba(0,0,0,0.7)',
-    padding: 8,
-    borderRadius: 20,
-    marginBottom: 16,
-    alignItems: 'center',
-  },
-  statusText: {
-    color: 'white',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    margin: 20,
-    borderRadius: 8,
-    elevation: 5,
-  },
-  input: {
-    marginVertical: 10,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 4,
-    padding: 8,
-  },
-  modalButtons: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginTop: 16,
-  },
-  modalButton: {
-    marginHorizontal: 8,
-    minWidth: 80,
-    backgroundColor: '#24325f', // Matches --primary-color
-    borderColor: '#24325f', // Matches --primary-color
-  },
-  modalButtonText: {
-    color: 'white',
-  },
-  errorText: {
-    color: '#951d1e', // Matches --secondary-color
-    fontSize: 14,
-    marginBottom: 10,
-  },
-  dropdownLabel: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    color: '#24325f', // Matches --primary-color
-  },
-  dropdownContainer: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 4,
-    marginBottom: 16,
-    backgroundColor: '#fff',
-  },
-  locationDropdown: {
-    maxHeight: 250,
-  },
-  locationOption: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-    padding: 10,
-  },
+container: {
+flex: 1,
+padding: 16,
+backgroundColor: '#f9f9f9',
+},
+card: {
+padding: 16,
+borderRadius: 8,
+elevation: 4,
+backgroundColor: '#ffffff',
+marginBottom: 20, // Add margin at the bottom of the card
+},
+title: {
+fontSize: 20,
+marginBottom: 16,
+color: '#24325f',
+fontWeight: 'bold',
+},
+subtitle: {
+fontSize: 16,
+marginTop: 16,
+marginBottom: 8,
+color: '#24325f',
+fontWeight: '500',
+},
+buttonContainer: {
+marginBottom: 16,
+},
+button: {
+backgroundColor: '#24325f',
+borderColor: '#24325f',
+marginBottom: 8,
+},
+buttonText: {
+color: 'white',
+},
+syncButton: {
+flex: 1,
+marginLeft: 4,
+borderColor: '#24325f',
+},
+syncButtonText: {
+color: '#24325f',
+},
+manualButton: {
+borderColor: '#24325f',
+backgroundColor: 'transparent',
+},
+manualButtonText: {
+color: '#24325f',
+},
+sessionInfo: {
+backgroundColor: '#f0f0f5',
+padding: 8,
+borderRadius: 4,
+marginBottom: 8,
+borderWidth: 1,
+borderColor: '#24325f',
+},
+locationText: {
+fontWeight: 'bold',
+color: '#24325f',
+},
+dateTimeText: {
+color: '#24325f',
+},
+scannerContainer: {
+height: 300,
+backgroundColor: '#f0f0f0',
+borderRadius: 8,
+justifyContent: 'center',
+alignItems: 'center',
+padding: 16,
+overflow: 'hidden',
+borderWidth: 1,
+borderColor: '#24325f',
+},
+connectionStatus: {
+padding: 8,
+borderRadius: 4,
+marginBottom: 8,
+alignItems: 'center',
+},
+placeholderText: {
+textAlign: 'center',
+color: '#24325f',
+},
+noDataText: {
+textAlign: 'center',
+color: '#24325f',
+fontStyle: 'italic',
+marginTop: 8,
+},
+tableContainer: {
+borderWidth: 1,
+borderColor: '#24325f',
+borderRadius: 8,
+overflow: 'hidden',
+marginBottom: 20, // Add margin to separate from bottom of screen
+},
+statusContainer: {
+backgroundColor: 'rgba(0,0,0,0.7)',
+padding: 8,
+borderRadius: 20,
+marginBottom: 16,
+alignItems: 'center',
+},
+statusText: {
+color: 'white',
+},
+modalContent: {
+backgroundColor: 'white',
+padding: 20,
+margin: 20,
+borderRadius: 8,
+elevation: 5,
+},
+input: {
+marginVertical: 10,
+borderWidth: 1,
+borderColor: '#ddd',
+borderRadius: 4,
+padding: 8,
+},
+modalButtons: {
+flexDirection: 'row',
+justifyContent: 'flex-end',
+marginTop: 16,
+},
+modalButton: {
+marginHorizontal: 8,
+minWidth: 80,
+backgroundColor: '#24325f',
+borderColor: '#24325f',
+},
+modalButtonText: {
+color: 'white',
+},
+errorText: {
+color: '#951d1e',
+fontSize: 14,
+marginBottom: 10,
+},
+dropdownLabel: {
+fontSize: 16,
+fontWeight: 'bold',
+marginBottom: 8,
+color: '#24325f',
+},
+dropdownContainer: {
+borderWidth: 1,
+borderColor: '#ddd',
+borderRadius: 4,
+marginBottom: 16,
+backgroundColor: '#fff',
+},
+locationDropdown: {
+maxHeight: 250,
+},
+locationOption: {
+borderBottomWidth: 1,
+borderBottomColor: '#eee',
+padding: 10,
+},
+scrollContent: {
+flexGrow: 1,
+paddingBottom: 20, // Add padding at bottom to ensure content doesn't get cut off
+},
 });
 export default ScannerScreen;

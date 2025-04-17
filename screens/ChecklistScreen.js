@@ -6,6 +6,7 @@ import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import * as XLSX from 'xlsx';
 import * as BackupService from '../services/backup';
+import { backupToGitHub, tryAutoBackup, processPendingBackups } from '../services/backup';
 import { loadStudentsData } from '../services/loadData';
 import NetInfo from '@react-native-community/netinfo';
 import { syncStudentsDataWithGitHub } from '../services/loadData';
@@ -163,49 +164,57 @@ setSessions(JSON.parse(savedSessions));
 const loadStudentsDataForChecklist = async () => {
 try {
 console.log("Loading students data...");
-// Check network status using NetInfo
-const netState = await NetInfo.fetch();
-const isConnected = netState.isConnected && netState.isInternetReachable;
-if (isConnected) {
-console.log("Device is connected to the internet");
-setScanStatus("Online - Checking for updated student data");
-try {
-// Try to get fresh data from GitHub
-const data = await loadStudentsData(false); // Use false to allow caching
-if (data && data.length > 0) {
-console.log(`Loaded student data with ${data.length} records`);
-setScanStatus(`Loaded ${data.length} student records`);
-// Transform the data to ensure consistent field names
-const transformedData = formatStudentData(data);
-setStudentsData(transformedData);
-return;
-}
-} catch (loadError) {
-console.error("Error loading fresh student data:", loadError);
-setScanStatus("Error loading data - Using cached data");
-}
-} else {
-console.log("Device is offline");
-setScanStatus("Offline - Using cached student data");
-}
-// If online loading failed or we're offline, try to use cached data
+// First, try to use cached data
 const cachedData = await AsyncStorage.getItem('cachedStudentsData');
 if (cachedData) {
 try {
 const parsedData = JSON.parse(cachedData);
 if (parsedData && parsedData.length > 0) {
 console.log(`Using cached student data with ${parsedData.length} records`);
-setScanStatus(`Using cached data (${parsedData.length} records)`);
-// Transform cached data too
+setScanStatus(`Loaded ${parsedData.length} student records from cache`);
+// Transform cached data
 const transformedData = formatStudentData(parsedData);
 setStudentsData(transformedData);
+// Optional: Check for updates in background if online
+if (isOnline) {
+checkForUpdatesInBackground();
+}
 return;
 }
 } catch (parseError) {
 console.error("Error parsing cached data:", parseError);
 }
 }
-// If all else fails, show error
+// If no valid cached data, then try to load from network
+const netState = await NetInfo.fetch();
+const isConnected = netState.isConnected && netState.isInternetReachable;
+if (isConnected) {
+console.log("Device is connected to the internet");
+setScanStatus("Online - Loading student data");
+try {
+// Get data from loadStudentsData function
+const data = await loadStudentsData(false); // Use false to allow caching
+if (data && data.length > 0) {
+console.log(`Loaded student data with ${data.length} records`);
+setScanStatus(`Loaded ${data.length} student records`);
+// Save to cache explicitly
+await AsyncStorage.setItem('cachedStudentsData', JSON.stringify(data));
+console.log("Saved data to cache for future use");
+// Transform the data
+const transformedData = formatStudentData(data);
+setStudentsData(transformedData);
+return;
+}
+} catch (loadError) {
+console.error("Error loading fresh student data:", loadError);
+setScanStatus("Error loading data - Trying cached data");
+}
+} else {
+console.log("Device is offline");
+setScanStatus("Offline - Cannot load new student data");
+}
+// If we get here, we couldn't get valid data from cache or network
+// As a last resort, use the built-in LOCAL_STUDENTS_DATA if available
 console.warn("No student data available - online or cached");
 setStudentsData([]);
 setScanStatus("No student data available");
@@ -219,6 +228,27 @@ Alert.alert(
 console.error("Critical error in loadStudentsDataForChecklist:", error);
 setStudentsData([]);
 setScanStatus("Error loading student data");
+}
+};
+// Helper function to check for updates in background
+const checkForUpdatesInBackground = async () => {
+try {
+console.log("Checking for student data updates in background...");
+setScanStatus("Checking for updates in background...");
+// Use the existing function but force a reload
+const data = await loadStudentsData(true);
+if (data && data.length > 0) {
+// Save to cache
+await AsyncStorage.setItem('cachedStudentsData', JSON.stringify(data));
+// Update UI if there's new data
+const transformedData = formatStudentData(data);
+setStudentsData(transformedData);
+setScanStatus(`Updated to ${data.length} student records`);
+console.log("Background update complete");
+}
+} catch (error) {
+console.error("Background update failed:", error);
+// Don't update status as this is a background operation
 }
 };
 // Add this helper function to format student data consistently
@@ -262,7 +292,25 @@ onPress: () => recoverChecklistSession(parsedSession)
 },
 {
 text: "No",
-onPress: () => clearActiveChecklistSession()
+onPress: () => {
+// Clear the active session
+clearActiveChecklistSession();
+// Also update the session in history to mark it as not in progress
+AsyncStorage.getItem('sessions').then(savedSessions => {
+if (savedSessions) {
+const parsedSessions = JSON.parse(savedSessions);
+const sessionIndex = parsedSessions.findIndex(s => s.id === parsedSession.id);
+if (sessionIndex !== -1) {
+const updatedSessions = [...parsedSessions];
+updatedSessions[sessionIndex].inProgress = false;
+setSessions(updatedSessions);
+AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions))
+.then(() => console.log("Session marked as not in progress after recovery declined"))
+.catch(error => console.error("Error updating session status:", error));
+}
+}
+}).catch(error => console.error("Error updating session in storage:", error));
+}
 }
 ]
 );
@@ -293,8 +341,14 @@ onPress: () => {
 const updatedSessions = [...parsedSessions];
 updatedSessions[index].inProgress = false;
 setSessions(updatedSessions);
-AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions));
+AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions))
+.then(() => {
 AsyncStorage.removeItem(TEMP_CHECKLIST_SESSION_INDEX_KEY);
+console.log("Session marked as not in progress after recovery declined");
+})
+.catch(error => {
+console.error("Error updating session status:", error);
+});
 }
 }
 ]
@@ -678,29 +732,32 @@ console.error("Error updating backup status:", error);
 };
 // Queue session for backup when offline
 const queueSessionForBackup = async (session) => {
-try {
-const pendingBackups = await AsyncStorage.getItem('pendingBackups') || '[]';
-const backupsArray = JSON.parse(pendingBackups);
-// Add this session to pending backups
-backupsArray.push({
-session: session,
-fileName: `Checklist_${session.location.replace(/[^a-z0-9]/gi, '_')}_${formatDateTimeForFile(new Date(session.dateTime))}.xlsx`,
-timestamp: new Date().toISOString(),
-type: 'checklist',
-retryCount: 0,
-onSuccess: async () => {
-// This will run when this pending backup succeeds
-await BackupService.getLastBackupTime();      }
-});
-await AsyncStorage.setItem('pendingBackups', JSON.stringify(backupsArray));
-console.log(`Session ${session.id} queued for backup when online`);
-Alert.alert(
-'Offline Mode',
-'Your session has been saved locally and will be backed up automatically when an internet connection is available.'
-);
-} catch (error) {
-console.error('Error queueing session for backup:', error);
-}
+  try {
+    const pendingBackups = await AsyncStorage.getItem('pendingBackups') || '[]';
+    const backupsArray = JSON.parse(pendingBackups);
+    
+    // Generate a proper file name
+    const fileName = `Checklist_${session.location.replace(/[^a-z0-9]/gi, '_')}_${formatDateTimeForFile(new Date(session.dateTime))}.xlsx`;
+    
+    // Add this session to pending backups
+    backupsArray.push({
+      session: session,
+      fileName: fileName,
+      timestamp: new Date().toISOString(),
+      type: 'checklist',
+      retryCount: 0
+    });
+    
+    await AsyncStorage.setItem('pendingBackups', JSON.stringify(backupsArray));
+    console.log(`Session ${session.id} queued for backup when online (${backupsArray.length} total pending)`);
+    
+    Alert.alert(
+      'Offline Mode',
+      'Your session has been saved locally and will be backed up automatically when an internet connection is available.'
+    );
+  } catch (error) {
+    console.error('Error queueing session for backup:', error);
+  }
 };
 // Export checklist session to Excel
 const exportChecklistSession = async (session) => {
@@ -835,8 +892,7 @@ setFilteredStudents(filteredStudentsMemo);
 }, [filteredStudentsMemo]);
 return (
 <Provider>
-<View style={styles.container}>
-{/* Connection status indicator */}
+<ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
 {connectionMessage && (
 <View style={[styles.connectionStatus, { backgroundColor: isOnline ? '#e7f3e8' : '#fff3cd' }]}>
 <Text style={{ color: isOnline ? '#28a745' : '#856404' }}>{connectionMessage}</Text>
@@ -844,11 +900,11 @@ return (
 )}
 <Surface style={styles.card}>
 <Title style={styles.title}>Student Selector</Title>
-{/* Button Group */}
-<View style={styles.buttonGroup}>
+<View style={styles.buttonContainer}>
+<View style={styles.primaryButtonGroup}>
 <Button 
 mode="contained" 
-style={styles.button}
+style={styles.mainButton}
 labelStyle={styles.buttonText}
 onPress={() => activeSession ? endChecklistSession() : startChecklistSession()}
 >
@@ -858,48 +914,44 @@ onPress={() => activeSession ? endChecklistSession() : startChecklistSession()}
 <Button 
 mode="outlined" 
 style={styles.syncButton}
-labelStyle={styles.syncButtonText}  // Updated to use specific label style
+labelStyle={styles.syncButtonText}
 onPress={handleSyncData}
 disabled={!isOnline}
 >
 Sync Data
 </Button>
 )}
+</View>
 {activeSession && (
 <Button 
 mode="outlined" 
 style={styles.manualButton}
-labelStyle={styles.buttonText}
+labelStyle={styles.syncButtonText}
 onPress={() => setShowManualEntryModal(true)}
 >
 Manual Entry
 </Button>
 )}
 </View>
-{/* Session Info */}
 {activeSession && (
 <View style={styles.sessionInfo}>
 <Text style={styles.locationText}>Location: {activeSession.location}</Text>
 <Text style={styles.dateTimeText}>Date/Time: {activeSession.formattedDateTime}</Text>
 </View>
 )}
-{/* Status Message */}
 {selectionStatus ? (
 <View style={styles.statusContainer}>
 <Text style={styles.statusText}>{selectionStatus}</Text>
 </View>
 ) : null}
-{/* Checklist Container */}
 {activeSession ? (
 <View style={styles.checklistContainer}>
-{/* Search Bar */}
 <Searchbar
 placeholder="Search students..."
 onChangeText={query => setSearchQuery(query)}
 value={searchQuery}
 style={styles.searchbar}
 />
-{/* Filters */}
 <View style={styles.filterContainer}>
 <View style={styles.filterItem}>
 <Text style={styles.filterLabel}>Year:</Text>
@@ -924,7 +976,6 @@ labelStyle={styles.filterButtonText}
 </Button>
 </View>
 </View>
-{/* Student Checklist */}
 <FlatList
 style={styles.studentList}
 data={filteredStudents}
@@ -937,7 +988,7 @@ onToggle={(id) => handleStudentSelection(id, !selectedStudents.has(id))}
 />
 )}
 getItemLayout={(data, index) => ({
-length: 48, // approximate height of each item
+length: 48,
 offset: 48 * index,
 index,
 })}
@@ -964,7 +1015,6 @@ Click "Start New Session" to begin selecting students.
 </Text>
 </View>
 )}
-{/* Selected Students Section */}
 <Title style={styles.subtitle}>Selected Students</Title>
 {activeSession && activeSession.scans.length > 0 ? (
 <View style={styles.tableContainer}>
@@ -975,7 +1025,7 @@ renderItem={({ item, index }) => <SelectedStudentItem item={item} index={index} 
 ItemSeparatorComponent={() => <Divider />}
 nestedScrollEnabled={true}
 getItemLayout={(data, index) => ({
-length: 40, // approximate height of each item plus separator
+length: 40,
 offset: 40 * index,
 index,
 })}
@@ -990,7 +1040,7 @@ initialNumToRender={10}
 <Text style={styles.noDataText}>No students selected yet.</Text>
 )}
 </Surface>
-{/* Session Modal */}
+</ScrollView>
 <Portal>
 <Modal
 visible={showSessionModal}
@@ -1008,7 +1058,6 @@ title={option}
 onPress={() => {
 setLocation(option);
 setShowSessionModal(false);
-// After selecting location, create the session
 setTimeout(() => {
 if (option) {
 const now = new Date();
@@ -1023,22 +1072,16 @@ scans: [],
 inProgress: true,
 isChecklist: true
 };
-// Set active session
 setActiveSession(newSession);
-// Clear selected students
 setSelectedStudents(new Set());
 setSelectionStatus('Session started - Ready to select students');
-// Add session to sessions array
 AsyncStorage.getItem('sessions').then(savedSessions => {
 const parsedSessions = savedSessions ? JSON.parse(savedSessions) : [];
 const updatedSessions = [...parsedSessions, newSession];
 setSessions(updatedSessions);
 AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions));
-// Store temp index
-const index = updatedSessions.length - 1;
-AsyncStorage.setItem(TEMP_CHECKLIST_SESSION_INDEX_KEY, String(index));
+AsyncStorage.setItem(TEMP_CHECKLIST_SESSION_INDEX_KEY, String(updatedSessions.length - 1));
 });
-// Save active session
 saveActiveChecklistSession(newSession);
 console.log("New checklist session created:", sessionId);
 }
@@ -1049,28 +1092,18 @@ style={styles.locationOption}
 ))}
 </ScrollView>
 </View>
-<View style={styles.modalButtons}>
+<View style={styles.syncButton}>
 <Button 
 mode="text"
-labelStyle={styles.modalButtonText}
+labelStyle={styles.syncButtonText}
 onPress={() => setShowSessionModal(false)}
-style={styles.modalButton}
+style={styles.syncButton}
 >
 Cancel
-</Button>
-<Button 
-mode="contained" 
-labelStyle={styles.modalButtonText}
-onPress={createNewChecklistSession}
-disabled={!location.trim()}
-style={styles.modalButton}
->
-Start
 </Button>
 </View>
 </Modal>
 </Portal>
-{/* Manual Entry Modal */}
 <Portal>
 <Modal
 visible={showManualEntryModal}
@@ -1086,20 +1119,19 @@ style={styles.input}
 autoFocus
 onSubmitEditing={processManualEntry}
 />
-<View style={styles.modalButtons}>
+<View style={styles.syncButton}>
 <Button onPress={() => setShowManualEntryModal(false)}>Cancel</Button>
 <Button 
 mode="contained" 
-labelStyle={styles.modalButtonText}
 onPress={processManualEntry}
 disabled={!manualId.trim()}
+labelStyle={styles.syncButtonText}
 >
 Add
 </Button>
 </View>
 </Modal>
 </Portal>
-{/* Year Filter Modal */}
 <Portal>
 <Modal
 visible={showYearFilterModal}
@@ -1115,7 +1147,6 @@ contentContainerStyle={styles.modalContent}
 </ScrollView>
 </Modal>
 </Portal>
-{/* Group Filter Modal */}
 <Portal>
 <Modal
 visible={showGroupFilterModal}
@@ -1131,261 +1162,246 @@ contentContainerStyle={styles.modalContent}
 </ScrollView>
 </Modal>
 </Portal>
-</View>
 </Provider>
 );
-};  
+};
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: '#f9f9f9', // Matches --light-bg
-  },
-  card: {
-    padding: 16,
-    borderRadius: 8,
-    elevation: 4,
-    backgroundColor: '#ffffff', // Matches --card-bg
-    flex: 1,
-  },
-  title: {
-    fontSize: 20,
-    marginBottom: 16,
-    color: '#24325f', // Matches --primary-color
-    fontWeight: 'bold',
-  },
-  subtitle: {
-    fontSize: 16,
-    marginTop: 16,
-    marginBottom: 8,
-    color: '#24325f', // Matches --primary-color
-    fontWeight: '500',
-  },
-  buttonGroup: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-  },
-  button: {
-    flex: 1,
-    marginHorizontal: 4,
-    backgroundColor: '#24325f', // Matches --primary-color
-    borderColor: '#24325f', // Matches --primary-color
-  },
-  buttonText: {
-    color: 'white',
-  },
+container: {
+flex: 1,
+padding: 16,
+backgroundColor: '#f9f9f9',
+},
+card: {
+padding: 16,
+borderRadius: 8,
+elevation: 4,
+backgroundColor: '#ffffff',
+marginBottom: 20, // Add margin at the bottom of the card
+},
+title: {
+fontSize: 20,
+marginBottom: 16,
+color: '#24325f',
+fontWeight: 'bold',
+},
+subtitle: {
+fontSize: 16,
+marginTop: 16,
+marginBottom: 8,
+color: '#24325f',
+fontWeight: '500',
+},
+buttonContainer: {
+marginBottom: 16,
+},
+primaryButtonGroup: {
+flexDirection: 'row',
+marginBottom: 8,
+},
+mainButton: {
+flex: 1,
+marginRight: 4,
+backgroundColor: '#24325f',
+borderColor: '#24325f',
+},
+buttonText: {
+color: 'white',
+},
 syncButton: {
-  flex: 1,
-  marginHorizontal: 4,
-  borderColor: '#24325f', // Matches --primary-color
+flex: 1,
+marginLeft: 4,
+borderColor: '#24325f',
 },
 syncButtonText: {
-  color: '#24325f', // Primary color for text
+color: '#24325f',
 },
-  manualButton: {
-    flex: 0.5,
-    marginHorizontal: 4,
-    borderColor: '#24325f', // Matches --primary-color
-  },
-  sessionInfo: {
-    backgroundColor: '#f0f0f5', // Slightly adjusted to match PWA feel
-    padding: 8,
-    borderRadius: 4,
-    marginBottom: 8,
-    borderWidth: 1,
-    borderColor: '#24325f',
-  },
-  locationText: {
-    fontWeight: 'bold',
-    color: '#24325f', // Matches --primary-color
-  },
-  dateTimeText: {
-    color: '#24325f',
-  },
-  checklistContainer: {
-    height: 300,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
-    justifyContent: 'center',
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#24325f',
-  },
-  connectionStatus: {
-    padding: 8,
-    borderRadius: 4,
-    marginBottom: 8,
-    alignItems: 'center',
-  },
-  placeholderText: {
-    textAlign: 'center',
-    color: '#24325f',
-  },
-  noDataText: {
-    textAlign: 'center',
-    color: '#24325f',
-    fontStyle: 'italic',
-    marginTop: 8,
-  },
-  tableContainer: {
-    maxHeight: 200,
-    borderWidth: 1,
-    borderColor: '#24325f',
-    borderRadius: 8,
-    overflow: 'hidden',
-  },
-  statusContainer: {
-    backgroundColor: 'rgba(0,0,0,0.7)',
-    padding: 8,
-    borderRadius: 20,
-    marginBottom: 16,
-    alignItems: 'center',
-  },
-  statusText: {
-    color: 'white',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    margin: 20,
-    borderRadius: 8,
-    elevation: 5,
-  },
-  input: {
-    marginVertical: 10,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 4,
-    padding: 8,
-  },
-  modalButtons: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginTop: 16,
-  },
-  errorText: {
-    color: '#951d1e', // Matches --secondary-color
-    fontSize: 14,
-    marginBottom: 10,
-  },
-  searchbar: {
-    marginBottom: 8,
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 4,
-  },
-  filterContainer: {
-    flexDirection: 'row',
-    marginBottom: 8,
-  },
-  filterItem: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 8,
-  },
-  filterLabel: {
-    marginRight: 8,
-    fontWeight: 'bold',
-    color: '#24325f', // Matches --primary-color
-  },
-  filterButton: {
-    flex: 1,
-    borderColor: '#24325f', // Matches --primary-color
-  },
-  filterButtonText: {
-    color: '#24325f',
-  },
-  studentList: {
-    flex: 1,
-    backgroundColor: 'white',
-    borderRadius: 4,
-    marginBottom: 8,
-    borderWidth: 1,
-    borderColor: '#24325f',
-  },
-  studentItem: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-    padding: 10,
-  },
-  emptyList: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  emptyText: {
-    textAlign: 'center',
-    color: '#24325f',
-    fontStyle: 'italic',
-  },
-  customEntryButton: {
-    marginTop: 8,
-    backgroundColor: '#24325f', // Matches --primary-color
-    borderColor: '#24325f', // Matches --primary-color
-  },
-  customEntryButtonText: {
-    color: 'white',
-  },
-  selectionList: {
-    maxHeight: 200,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 4,
-    backgroundColor: '#fff',
-  },
-  selectionItem: {
-    flexDirection: 'row',
-    padding: 8,
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  modalButton: {
-    marginHorizontal: 8,
-    minWidth: 80,
-    backgroundColor: '#24325f', // Matches --primary-color
-    borderColor: '#24325f', // Matches --primary-color
-  },
-  modalButtonText: {
-    color: 'white',
-  },
-  dropdownLabel: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    color: '#24325f', // Matches --primary-color
-  },
-  dropdownContainer: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 4,
-    marginBottom: 16,
-    backgroundColor: '#fff',
-  },
-  locationDropdown: {
-    maxHeight: 250,
-  },
-  locationOption: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-    padding: 10,
-  },
-  selectionNumber: {
-    width: 30,
-    fontWeight: 'bold',
-    color: '#24325f', // Matches --primary-color
-  },
-  selectionId: {
-    flex: 1,
-  },
-  selectionTime: {
-    width: 80,
-    textAlign: 'right',
-    color: '#24325f',
-  },
+manualButton: {
+borderColor: '#24325f',
+backgroundColor: 'transparent',
+},
+manualButtonText: {
+color: '#24325f',
+},
+sessionInfo: {
+backgroundColor: '#f0f0f5',
+padding: 8,
+borderRadius: 4,
+marginBottom: 8,
+borderWidth: 1,
+borderColor: '#24325f',
+},
+locationText: {
+fontWeight: 'bold',
+color: '#24325f',
+},
+dateTimeText: {
+color: '#24325f',
+},
+checklistContainer: {
+height: 300,
+backgroundColor: '#f0f0f0',
+borderRadius: 8,
+justifyContent: 'center',
+padding: 16,
+borderWidth: 1,
+borderColor: '#24325f',
+},
+connectionStatus: {
+padding: 8,
+borderRadius: 4,
+marginBottom: 8,
+alignItems: 'center',
+},
+placeholderText: {
+textAlign: 'center',
+color: '#24325f',
+},
+noDataText: {
+textAlign: 'center',
+color: '#24325f',
+fontStyle: 'italic',
+marginTop: 8,
+},
+tableContainer: {
+borderWidth: 1,
+borderColor: '#24325f',
+borderRadius: 8,
+overflow: 'hidden',
+marginBottom: 20, // Add margin to separate from bottom of screen
+},
+statusContainer: {
+backgroundColor: 'rgba(0,0,0,0.7)',
+padding: 8,
+borderRadius: 20,
+marginBottom: 16,
+alignItems: 'center',
+},
+statusText: {
+color: 'white',
+},
+modalContent: {
+backgroundColor: 'white',
+padding: 20,
+margin: 20,
+borderRadius: 8,
+elevation: 5,
+},
+input: {
+marginVertical: 10,
+borderWidth: 1,
+borderColor: '#ddd',
+borderRadius: 4,
+padding: 8,
+},
+modalButtons: {
+flexDirection: 'row',
+justifyContent: 'flex-end',
+marginTop: 16,
+},
+errorText: {
+color: '#951d1e',
+fontSize: 14,
+marginBottom: 10,
+},
+searchbar: {
+marginBottom: 8,
+backgroundColor: '#fff',
+borderWidth: 1,
+borderColor: '#ddd',
+borderRadius: 4,
+},
+filterContainer: {
+flexDirection: 'row',
+marginBottom: 8,
+},
+filterItem: {
+flex: 1,
+flexDirection: 'row',
+alignItems: 'center',
+marginRight: 8,
+},
+filterLabel: {
+marginRight: 8,
+fontWeight: 'bold',
+color: '#24325f',
+},
+filterButton: {
+flex: 1,
+borderColor: '#24325f',
+},
+filterButtonText: {
+color: '#24325f',
+},
+studentList: {
+flex: 1,
+backgroundColor: 'white',
+borderRadius: 4,
+marginBottom: 8,
+borderWidth: 1,
+borderColor: '#24325f',
+},
+studentItem: {
+borderBottomWidth: 1,
+borderBottomColor: '#eee',
+padding: 10,
+},
+emptyList: {
+flex: 1,
+justifyContent: 'center',
+alignItems: 'center',
+padding: 20,
+},
+emptyText: {
+textAlign: 'center',
+color: '#24325f',
+fontStyle: 'italic',
+},
+modalButton: {
+marginHorizontal: 8,
+minWidth: 80,
+backgroundColor: '#24325f',
+borderColor: '#24325f',
+},
+modalButtonText: {
+color: 'white',
+},
+dropdownLabel: {
+fontSize: 16,
+fontWeight: 'bold',
+marginBottom: 8,
+color: '#24325f',
+},
+dropdownContainer: {
+borderWidth: 1,
+borderColor: '#ddd',
+borderRadius: 4,
+marginBottom: 16,
+backgroundColor: '#fff',
+},
+locationDropdown: {
+maxHeight: 250,
+},
+locationOption: {
+borderBottomWidth: 1,
+borderBottomColor: '#eee',
+padding: 10,
+},
+selectionNumber: {
+width: 30,
+fontWeight: 'bold',
+color: '#24325f',
+},
+selectionId: {
+flex: 1,
+},
+selectionTime: {
+width: 80,
+textAlign: 'right',
+color: '#24325f',
+},
+scrollContent: {
+flexGrow: 1,
+paddingBottom: 20, // Add padding at bottom to ensure content doesn't get cut off
+},
 });
 export default ChecklistScreen;

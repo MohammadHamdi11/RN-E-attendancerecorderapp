@@ -16,6 +16,7 @@ import HistoryScreen from './screens/HistoryScreen';
 import BackupScreen from './screens/BackupScreen';
 import AboutScreen from './screens/AboutScreen';
 import ContactScreen from './screens/ContactScreen';
+import { setupNetworkListener } from './services/backup';
 
 // Create placeholder for screens that might not exist yet
 const PlaceholderScreen = ({ name }) => (
