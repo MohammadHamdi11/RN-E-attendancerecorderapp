@@ -9,11 +9,17 @@ STEPS TO RUN THE PROJECT: (((downgrade to expo 47)))
 
 3-to instal dependencies, write: "npx expo install"
 
-4-to start and test on virtual device/connected device (enable debugging), write: "npx expo start -c" OR "npx expo start --clear" (if there are problems with cache)
+4-to fix dependency and version issues: npx expo install --fix
 
-5-press 'a' to select the android device
+5- npm install -g sharp
 
-6-press 'r' to reload (if needed)
+5- npm update @react-native/gradle-plugin
+
+5-to start and test on virtual device/connected device (enable debugging), write: "npx expo start -c" OR "npx expo start --clear" (if there are problems with cache)
+
+6-press 'a' to select the android device
+
+7-press 'r' to reload (if needed)
 
 ==============================================================
 
@@ -91,7 +97,7 @@ android {
 
 4-run: cd android
 5-run: ./gradlew assembleRelease  --info
-
+6-npm update @react-native/gradle-plugin
 6-run: npx expo run:android
 
 

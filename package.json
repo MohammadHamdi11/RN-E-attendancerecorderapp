@@ -10,8 +10,9 @@
     "eject": "expo eject"
   },
   "dependencies": {
-    "@react-native-async-storage/async-storage": "^1.18.2",
-    "@react-native-community/netinfo": "^9.3.10",
+    "sharp-cli": "^2.1.0",
+    "@react-native-async-storage/async-storage": "1.18.2",
+    "@react-native-community/netinfo": "9.3.10",
     "@react-navigation/bottom-tabs": "^6.5.8",
     "@react-navigation/native": "^6.1.7",
     "@react-navigation/stack": "^6.3.17",
@@ -31,8 +32,8 @@
     "react-native-screens": "~3.22.0",
     "react-native-background-actions": "^3.0.0",
     "xlsx": "^0.18.5",
-    "expo-background-fetch": "~11.0.0",
-    "expo-task-manager": "~11.0.0",
+    "expo-background-fetch": "~11.3.0",
+    "expo-task-manager": "~11.3.0",
     "@expo/vector-icons": "^13.0.0",
     "expo-splash-screen": "~0.20.5"
   },
