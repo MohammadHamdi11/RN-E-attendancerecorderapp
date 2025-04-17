@@ -1,0 +1,119 @@
+import React from 'react';
+import { View, StyleSheet, ScrollView, Linking } from 'react-native';
+import { Text, Surface, Title, Button, Divider } from 'react-native-paper';
+
+const ContactScreen = () => {
+  const openUserGuide = () => {
+    // In a real app, this would download or open the PDF file
+    console.log("Opening user guide");
+    // Linking.openURL('https://example.com/user-guide.pdf');
+  };
+  
+  const openSupportForm = () => {
+    // Open the support form in external browser
+    Linking.openURL('https://docs.google.com/forms/d/e/1FAIpQLSfOt-UrLB_rBF6NdpPHG2iTaB8B5AcZIfkkQfOTslpsAULRBg/viewform?usp=header');
+  };
+  
+  return (
+    <View style={styles.container}>
+      <ScrollView>
+        <Surface style={styles.card}>
+          <Title style={styles.title}>Contact Support</Title>
+          
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>User Guide</Text>
+            <Text style={styles.paragraph}>
+              Before contacting support, please check our comprehensive user guide:
+            </Text>
+            <Button 
+              mode="contained" 
+              icon="file-pdf-box"
+              style={styles.button}
+              onPress={openUserGuide}
+            >
+              Download User Guide
+            </Button>
+            <Text style={styles.caption}>
+              The guide contains detailed instructions for all app features.
+            </Text>
+          </View>
+          
+          <Divider style={styles.divider} />
+          
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Need Help?</Text>
+            <Text style={styles.paragraph}>
+              If you're still having trouble with the application after reading the user guide, 
+              or need assistance, please contact support:
+            </Text>
+            <Button 
+              mode="contained" 
+              icon="help-circle"
+              style={styles.button}
+              onPress={openSupportForm}
+            >
+              Support Form
+            </Button>
+            <Text style={styles.caption}>
+              We typically respond within 24-48 hours.
+            </Text>
+          </View>
+        </Surface>
+      </ScrollView>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: '#f9f9f9',
+  },
+  card: {
+    padding: 16,
+    borderRadius: 8,
+    elevation: 4,
+  },
+  title: {
+    fontSize: 20,
+    marginBottom: 24,
+    color: '#24325f',
+  },
+  section: {
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#24325f',
+    marginBottom: 12,
+    alignSelf: 'flex-start',
+  },
+  paragraph: {
+    fontSize: 14,
+    lineHeight: 20,
+    color: '#333',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  button: {
+    marginVertical: 12,
+    backgroundColor: '#24325f',
+    width: '80%',
+  },
+  caption: {
+    fontSize: 12,
+    color: '#666',
+    fontStyle: 'italic',
+    textAlign: 'center',
+    marginTop: 4,
+  },
+  divider: {
+    marginVertical: 24,
+    width: '100%',
+  },
+});
+
+export default ContactScreen;

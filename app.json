@@ -1,0 +1,70 @@
+{
+  "name": "qr-scanner-app",
+  "expo": {
+    "name": "QR Scanner App",
+    "slug": "qr-scanner-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/apple-touch-icon.png",
+    "entryPoint": "./App.js",  
+    "splash": {
+      "image": "./assets/apple-touch-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yourcompany.qrscannerapp",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to access your camera for scanning QR codes.",
+        "NSPhotoLibraryUsageDescription": "Allow $(PRODUCT_NAME) to access photos for saving QR scan results.",
+        "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to access your microphone"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/web-app-manifest-192x192.png",
+        "backgroundColor": "#FFFFFF"
+      },
+      "package": "com.yourcompany.qrscannerapp",
+      "permissions": [
+        "CAMERA",
+        "VIBRATE",
+        "ACCESS_NETWORK_STATE",
+        "ACCESS_WIFI_STATE",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.INTERNET"
+      ],
+      "versionCode": 1
+    },
+    "web": {
+      "favicon": "./assets/favicon.ico"
+    },
+    "plugins": [
+      [
+        "expo-barcode-scanner",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera for scanning QR codes."
+        }
+      ],
+      "expo-file-system"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "36cc9f80-6e6f-419a-b970-583f5b4451d9"
+      }
+    },
+    "owner": "mohammadhamdi11"
+  }
+}
