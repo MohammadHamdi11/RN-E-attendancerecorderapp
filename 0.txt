@@ -1,111 +1,12 @@
-Android Bundling complete 21594ms
- LOG  App starting - authentication removed
- LOG  Network status changed: Online
- LOG  Network status changed: Online
- LOG  Network status changed: Online
- LOG  App initialization completed - authentication bypassed
- LOG  Initializing scanner module...
- LOG  Initializing checklist module...
- LOG  Loading students data...
- LOG  Device is offline, using cached data only
- WARN  No student data available - online or cached
- LOG  New checklist session created: checklist_1744778184637
- LOG  Active session saved: checklist_1744778184637
- LOG  Manual entry processed: 657
- ERROR  VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead.
-    at VirtualizedList (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:74265:36)
-    at FlatList (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:73574:36)
-    at RCTView
-    at View (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:62895:43)
-    at RCTScrollView
-    at ScrollView (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:65388:36)
-    at ScrollView
-    at RCTView
-    at View (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:62895:43)
-    at anonymous (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:70552:62)
-    at anonymous (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:155773:32)
-    at RCTView
-    at View (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:62895:43)
-    at ThemeProvider (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:142220:38)
-    at RCTView
-    at View (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:62895:43)
-    at Portal.Host (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:152002:36)
-    at RCTView
-    at View (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:62895:43)
-    at SafeAreaProviderCompat (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:144708:25)
-    at PaperProvider (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:144593:37)
-    at ChecklistScreen (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:223038:24)
-    at StaticContainer (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:135853:17)
-    at EnsureSingleNavigator (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:132652:24)
-    at SceneView (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:135758:22)
-    at RCTView
-    at View (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:62895:43)
-    at RCTView
-    at View (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:62895:43)
-    at Background (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:137897:21)
-    at Screen (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:139003:71)
-    at RNSScreen
-    at anonymous (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:70552:62)
-    at Suspender (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:140999:22)
-    at Suspense
-    at Freeze (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:141009:23)
-    at DelayedFreeze (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:140612:22)
-    at InnerScreen (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:140658:36)
-    at Screen (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:140928:36)
-    at MaybeScreen (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:140487:24)
-    at RNSScreenContainer
-    at ScreenContainer (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:140786:31)
-    at MaybeScreenContainer (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:140476:23)
-    at RCTView
-    at View (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:62895:43)
-    at SafeAreaProviderCompat (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:138892:24)
-    at BottomTabView (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:137595:30)
-    at PreventRemoveProvider (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:134751:25)
-    at NavigationContent (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:135541:22)
-    at anonymous (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:135556:27)
-    at BottomTabNavigator (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:137487:18)
-    at MainTabNavigator (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:129917:25)
-    at EnsureSingleNavigator (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:132652:24)
-    at BaseNavigationContainer (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:131217:28)
-    at ThemeProvider (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:136849:21)
-    at NavigationContainerInner (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:136738:26)
-    at ThemeProvider (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:142220:38)
-    at RCTView
-    at View (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:62895:43)
-    at Portal.Host (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:152002:36)
-    at RCTView
-    at View (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:62895:43)
-    at SafeAreaProviderCompat (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:144708:25)
-    at PaperProvider (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:144593:37)
-    at RNCSafeAreaProvider
-    at SafeAreaProvider (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:130426:24)
-    at App (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:130000:41)
-    at withDevTools(App) (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:129501:27)
-    at RCTView
-    at View (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:62895:43)
-    at RCTView
-    at View (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:62895:43)
-    at AppContainer (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:62735:36)
-    at main(RootComponent) (http://192.168.1.2:8081/node_modules%5Cexpo%5CAppEntry.bundle//&platform=android&dev=true&hot=false&lazy=true:109007:28)
- LOG  Active session saved: checklist_1744778184637
- LOG  Ending checklist session: checklist_1744778184637
- LOG  Checklist session ended successfully
- LOG  Active session cleared from storage
- LOG  Session checklist_1744778184637 queued for backup when online
- LOG  Checklist Excel file saved: Checklist_dfgh_2025-04-16T04-36-24.xlsx
- LOG  New scanner session created: session_1744778214669
- LOG  Active scanner session saved: session_1744778214669
- LOG  Processing manual entry: 7866
- LOG  Manual entry processed successfully: 7866
- LOG  Manual entry processed: 7866
- LOG  Active scanner session saved: session_1744778214669
- LOG  Scan saved to database with ID: 5
- LOG  Scanner session ended successfully
- LOG  Active scanner session cleared from storage
- LOG  Scanner Excel file saved: Scanner_7686_2025-04-16T04-36-54.xlsx
- ERROR  Export all error: [TypeError: 0, _export.exportAllSessionsToExcel is not a function (it is undefined)]
- ERROR  Export error: [TypeError: 0, _export.exportSessionToExcel is not a function (it is undefined)]
- LOG  Using hardcoded token
- ERROR  GitHub backup error: [ReferenceError: Property 'btoa' doesn't exist]
- LOG  Using hardcoded token
- LOG  Opening user guide
+ ERROR  Error fetching students data from GitHub: [Error: GitHub API returned 404: ]
+
+ ERROR  Error checking/updating students data: [Error: GitHub API returned 404: ]
+
+ ERROR  Background update failed: [Error: GitHub API returned 404: ]
+
+i get this error. the link to the file: https://github.com/MohammadHamdi11/RN-E-attendancerecorderapp/blob/main/assets/students_data.json
+
+i am not familiar with coding in general so i will need you to guide me through the process; i am not a coder; i will have to edit this app in iterations, so make it that i can just copy and paste simple parts of it.
+
+
+ATTACH THE CHECKLIST AND LOADDATA JS FILES.

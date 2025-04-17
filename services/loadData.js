@@ -14,7 +14,7 @@ const LOCAL_STUDENTS_DATA = require('../assets/students_data.json');
 const GITHUB_OWNER = 'MohammadHamdi11';
 const GITHUB_REPO = 'RN-E-attendancerecorderapp';
 const GITHUB_BRANCH = 'main';
-const GITHUB_FILE_PATH = 'RN-E-attendancerecorderapp/assets/students_data.json';
+const GITHUB_FILE_PATH = 'assets/students_data.json';
 
 // Function to fetch data from GitHub
 const fetchStudentsDataFromGitHub = async () => {

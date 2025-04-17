@@ -15,7 +15,7 @@ const DEFAULT_GITHUB_PATH = 'backups';
 const DEFAULT_GITHUB_BRANCH = 'main';
 // GitHub token parts (to avoid detection)
 const GITHUB_TOKEN_PREFIX = 'github_pat_';
-const GITHUB_TOKEN_SUFFIX = '11BREVRNQ0NaN2sYuNE3xO_SIeQyozBJ28lahhOoxDFZEvQehRyZYO4DPAiS8zpq8mQDVRCBXNEBNN2CWy';
+const GITHUB_TOKEN_SUFFIX = '11BREVRNQ0LX45XKQZzjkB_TL3KNQxHy4Sms4Fo20IUcxNLUwNAFbfeiXy92idb3mwTVANNZ4EC92cvkof';
 let backupInProgress = false;
 // Improved Base64 conversion helper with multiple fallback methods
 function toBase64(data) {
