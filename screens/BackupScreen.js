@@ -145,75 +145,77 @@ const refreshBackupData = async () => {
   };
   
   return (
-    <View style={styles.container}>
-      <Surface style={styles.card}>
-        <Title style={styles.title}>Backup Controls</Title>
-        
-        <View style={styles.statusContainer}>
-          <View style={styles.statusItem}>
-            <Text style={styles.statusLabel}>Connection Status:</Text>
-            <View style={styles.statusValue}>
-              {connectionStatus === 'checking' ? (
-                <ActivityIndicator size={16} color="#24325f" style={styles.statusIcon} />
-              ) : (
-                <MaterialCommunityIcons 
-                  name={connectionStatus === 'online' ? 'wifi' : 'wifi-off'} 
-                  size={20} 
-                  color={connectionStatus === 'online' ? '#4CAF50' : '#F44336'} 
-                  style={styles.statusIcon}
-                />
-              )}
-              <Text style={[
-                styles.statusText, 
-                connectionStatus === 'online' ? styles.statusOnline : 
-                connectionStatus === 'offline' ? styles.statusOffline : {}
-              ]}>
-                {connectionStatus === 'checking' ? 'Checking...' : 
-                 connectionStatus === 'online' ? 'Online' : 'Offline'}
-              </Text>
-            </View>
-          </View>
-          
-          <View style={styles.statusItem}>
-            <Text style={styles.statusLabel}>Last Backup:</Text>
-            <Text style={styles.statusText}>
-              {lastBackupTime}
-            </Text>
-          </View>
-          
-          <View style={styles.statusItem}>
-            <Text style={styles.statusLabel}>Auto Backup:</Text>
-            <Switch
-              value={autoBackupEnabled}
-              onValueChange={toggleAutoBackup}
-              color="#24325f"
+<View style={styles.container}>
+  <Surface style={styles.card}>
+    <Title style={styles.title}>Backup Controls</Title>
+    
+    <View style={styles.statusContainer}>
+      <View style={styles.statusItem}>
+        <Text style={styles.statusLabel}>Connection Status:</Text>
+        <View style={styles.statusValue}>
+          {connectionStatus === 'checking' ? (
+            <ActivityIndicator size={16} color="#24325f" style={styles.statusIcon} />
+          ) : (
+            <MaterialCommunityIcons 
+              name={connectionStatus === 'online' ? 'wifi' : 'wifi-off'} 
+              size={20} 
+              color={connectionStatus === 'online' ? '#4CAF50' : '#F44336'} 
+              style={styles.statusIcon}
             />
-          </View>
+          )}
+          <Text style={[
+            styles.statusText, 
+            connectionStatus === 'online' ? styles.statusOnline : 
+            connectionStatus === 'offline' ? styles.statusOffline : {}
+          ]}>
+            {connectionStatus === 'checking' ? 'Checking...' : 
+             connectionStatus === 'online' ? 'Online' : 'Offline'}
+          </Text>
         </View>
-        
-        <Divider style={styles.divider} />
-        
-        <View style={styles.backupControls}>
-          <Button 
-            mode="contained" 
-            icon="cloud-upload"
-            style={styles.backupButton}
-            onPress={handleBackupNow}
-            loading={isBackingUp}
-            disabled={isBackingUp || connectionStatus !== 'online'}
+      </View>
+      
+      <View style={styles.statusItem}>
+        <Text style={styles.statusLabel}>Last Backup:</Text>
+        <Text style={styles.statusText}>
+          {lastBackupTime}
+        </Text>
+      </View>
+      
+      <View style={styles.statusItem}>
+        <Text style={styles.statusLabel}>Auto Backup:</Text>
+        <Switch
+          value={autoBackupEnabled}
+          onValueChange={toggleAutoBackup}
+          color="#24325f"
+        />
+      </View>
+    </View>
+    
+    <Divider style={styles.divider} />
+    
+    <View style={styles.backupControls}>
+      <Button 
+        mode="contained" 
+        icon="cloud-upload"
+        style={styles.backupButton}
+        labelStyle={styles.backupButtonText}
+        onPress={handleBackupNow}
+        loading={isBackingUp}
+        disabled={isBackingUp || connectionStatus !== 'online'}
+      >
+        {isBackingUp ? 'Backing up...' : 'Backup Now'}
+      </Button>
+      
+      <Button 
+        mode="outlined" 
+        icon="connection"
+        style={styles.testButton}
+        labelStyle={styles.testButtonText}
+        onPress={testGitHubConnection}
+        loading={isTestingConnection}
+        disabled={isTestingConnection || connectionStatus !== 'online'}
           >
-            {isBackingUp ? 'Backing up...' : 'Backup Now'}
-          </Button>
-          
-          <Button 
-            mode="outlined" 
-            icon="connection"
-            style={styles.testButton}
-            onPress={testGitHubConnection}
-            loading={isTestingConnection}
-            disabled={isTestingConnection || connectionStatus !== 'online'}
-          >
-            Test GitHub Connection
+            Test Repository Connection
           </Button>
           
           <Text style={styles.noteText}>
@@ -231,25 +233,35 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#f9f9f9', // Matches --light-bg
   },
   card: {
     padding: 16,
     borderRadius: 8,
     elevation: 4,
+    backgroundColor: '#ffffff', // Matches --card-bg
   },
   title: {
     fontSize: 20,
     marginBottom: 24,
+    color: '#24325f', // Matches --primary-color
+    fontWeight: 'bold',
   },
   statusContainer: {
     marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#24325f',
+    borderRadius: 8,
+    padding: 12,
+    backgroundColor: 'white',
   },
   statusItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#24325f',
   },
   statusLabel: {
     fontWeight: 'bold',
@@ -272,11 +284,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   statusOffline: {
-    color: '#F44336',
+    color: '#951d1e', // Matches --secondary-color
     fontWeight: 'bold',
   },
   divider: {
     marginVertical: 16,
+    height: 1,
+    backgroundColor: '#24325f',
+    width: '100%',
   },
   backupControls: {
     alignItems: 'center',
@@ -284,18 +299,26 @@ const styles = StyleSheet.create({
   backupButton: {
     marginBottom: 16,
     paddingVertical: 6,
-    backgroundColor: '#24325f',
+    backgroundColor: '#24325f', // Matches --primary-color
+    borderColor: '#24325f', // Matches --primary-color
     width: '80%',
+  },
+  backupButtonText: {
+    color: 'white',
   },
   testButton: {
     marginBottom: 16,
     paddingVertical: 6,
-    borderColor: '#24325f',
+    backgroundColor: '#24325f', // Matches --primary-color
+    borderColor: '#24325f', // Matches --primary-color
     width: '80%',
+  },
+  testButtonText: {
+    color: 'white',
   },
   noteText: {
     fontSize: 14,
-    color: '#666',
+    color: '#24325f',
     textAlign: 'center',
     fontStyle: 'italic',
     paddingHorizontal: 16,

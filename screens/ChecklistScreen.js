@@ -163,7 +163,6 @@ setSessions(JSON.parse(savedSessions));
 const loadStudentsDataForChecklist = async () => {
 try {
 console.log("Loading students data...");
-setSelectionStatus('Loading student data...');
 // Check network status using NetInfo
 const netState = await NetInfo.fetch();
 const isConnected = netState.isConnected && netState.isInternetReachable;
@@ -850,6 +849,7 @@ return (
 <Button 
 mode="contained" 
 style={styles.button}
+labelStyle={styles.buttonText}
 onPress={() => activeSession ? endChecklistSession() : startChecklistSession()}
 >
 {activeSession ? 'End Session' : 'Start New Session'}
@@ -858,6 +858,7 @@ onPress={() => activeSession ? endChecklistSession() : startChecklistSession()}
 <Button 
 mode="outlined" 
 style={styles.syncButton}
+labelStyle={styles.syncButtonText}  // Updated to use specific label style
 onPress={handleSyncData}
 disabled={!isOnline}
 >
@@ -868,6 +869,7 @@ Sync Data
 <Button 
 mode="outlined" 
 style={styles.manualButton}
+labelStyle={styles.buttonText}
 onPress={() => setShowManualEntryModal(true)}
 >
 Manual Entry
@@ -905,6 +907,7 @@ style={styles.searchbar}
 mode="outlined" 
 onPress={() => setShowYearFilterModal(true)}
 style={styles.filterButton}
+labelStyle={styles.filterButtonText}
 >
 {yearFilter === 'all' ? 'All Years' : yearFilter}
 </Button>
@@ -915,6 +918,7 @@ style={styles.filterButton}
 mode="outlined" 
 onPress={() => setShowGroupFilterModal(true)}
 style={styles.filterButton}
+labelStyle={styles.filterButtonText}
 >
 {groupFilter === 'all' ? 'All Groups' : groupFilter}
 </Button>
@@ -1048,6 +1052,7 @@ style={styles.locationOption}
 <View style={styles.modalButtons}>
 <Button 
 mode="text"
+labelStyle={styles.modalButtonText}
 onPress={() => setShowSessionModal(false)}
 style={styles.modalButton}
 >
@@ -1055,6 +1060,7 @@ Cancel
 </Button>
 <Button 
 mode="contained" 
+labelStyle={styles.modalButtonText}
 onPress={createNewChecklistSession}
 disabled={!location.trim()}
 style={styles.modalButton}
@@ -1084,6 +1090,7 @@ onSubmitEditing={processManualEntry}
 <Button onPress={() => setShowManualEntryModal(false)}>Cancel</Button>
 <Button 
 mode="contained" 
+labelStyle={styles.modalButtonText}
 onPress={processManualEntry}
 disabled={!manualId.trim()}
 >
@@ -1129,198 +1136,256 @@ contentContainerStyle={styles.modalContent}
 );
 };  
 const styles = StyleSheet.create({
-container: {
-flex: 1,
-padding: 16,
-backgroundColor: '#f9f9f9',
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: '#f9f9f9', // Matches --light-bg
+  },
+  card: {
+    padding: 16,
+    borderRadius: 8,
+    elevation: 4,
+    backgroundColor: '#ffffff', // Matches --card-bg
+    flex: 1,
+  },
+  title: {
+    fontSize: 20,
+    marginBottom: 16,
+    color: '#24325f', // Matches --primary-color
+    fontWeight: 'bold',
+  },
+  subtitle: {
+    fontSize: 16,
+    marginTop: 16,
+    marginBottom: 8,
+    color: '#24325f', // Matches --primary-color
+    fontWeight: '500',
+  },
+  buttonGroup: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  button: {
+    flex: 1,
+    marginHorizontal: 4,
+    backgroundColor: '#24325f', // Matches --primary-color
+    borderColor: '#24325f', // Matches --primary-color
+  },
+  buttonText: {
+    color: 'white',
+  },
+syncButton: {
+  flex: 1,
+  marginHorizontal: 4,
+  borderColor: '#24325f', // Matches --primary-color
 },
-card: {
-padding: 16,
-borderRadius: 8,
-elevation: 4,
-flex: 1,
+syncButtonText: {
+  color: '#24325f', // Primary color for text
 },
-title: {
-fontSize: 20,
-marginBottom: 16,
-},
-subtitle: {
-fontSize: 16,
-marginTop: 16,
-marginBottom: 8,
-},
-buttonGroup: {
-flexDirection: 'row',
-justifyContent: 'space-between',
-marginBottom: 16,
-},
-button: {
-flex: 1,
-marginHorizontal: 4,
-backgroundColor: '#24325f',
-},
-manualButton: {
-flex: 0.5,
-marginHorizontal: 4,
-borderColor: '#24325f',
-},
-sessionInfo: {
-backgroundColor: '#eef',
-padding: 8,
-borderRadius: 4,
-marginBottom: 8,
-},
-locationText: {
-fontWeight: 'bold',
-},
-dateTimeText: {
-color: '#666',
-},
-// Changed from scannerContainer to checklistContainer as per the styles snippet
-checklistContainer: {
-height: 300,
-backgroundColor: '#f0f0f0',
-borderRadius: 8,
-justifyContent: 'center',
-padding: 16,
-},
-connectionStatus: {
-padding: 8,
-borderRadius: 4,
-marginBottom: 8,
-alignItems: 'center',
-},
-placeholderText: {
-textAlign: 'center',
-color: '#666',
-},
-noDataText: {
-textAlign: 'center',
-color: '#666',
-fontStyle: 'italic',
-marginTop: 8,
-},
-tableContainer: {
-maxHeight: 200,
-},
-statusContainer: {
-backgroundColor: 'rgba(0,0,0,0.7)',
-padding: 8,
-borderRadius: 20,
-marginBottom: 16,
-alignItems: 'center',
-},
-statusText: {
-color: 'white',
-},
-modalContent: {
-backgroundColor: 'white',
-padding: 20,
-margin: 20,
-borderRadius: 8,
-},
-input: {
-marginVertical: 10,
-},
-modalButtons: {
-flexDirection: 'row',
-justifyContent: 'flex-end',
-marginTop: 16,
-},
-errorText: {
-color: 'red',
-fontSize: 18,
-marginBottom: 10,
-},
-searchbar: {
-marginBottom: 8,
-},
-filterContainer: {
-flexDirection: 'row',
-marginBottom: 8,
-},
-filterItem: {
-flex: 1,
-flexDirection: 'row',
-alignItems: 'center',
-marginRight: 8,
-},
-filterLabel: {
-marginRight: 8,
-fontWeight: 'bold',
-},
-filterButton: {
-flex: 1,
-},
-studentList: {
-flex: 1,
-backgroundColor: 'white',
-borderRadius: 4,
-marginBottom: 8,
-},
-studentItem: {
-borderBottomWidth: 1,
-borderBottomColor: '#eee',
-},
-emptyList: {
-flex: 1,
-justifyContent: 'center',
-alignItems: 'center',
-padding: 20,
-},
-emptyText: {
-textAlign: 'center',
-color: '#666',
-},
-customEntryButton: {
-marginTop: 8,
-backgroundColor: '#24325f',
-},
-selectionList: {
-maxHeight: 200,
-borderWidth: 1,
-borderColor: '#ddd',
-borderRadius: 4,
-},
-selectionItem: {
-flexDirection: 'row',
-padding: 8,
-alignItems: 'center',
-},
-modalButton: {
-marginHorizontal: 8,
-minWidth: 80,
-},
-// Add these new styles to the styles object
-dropdownLabel: {
-fontSize: 16,
-fontWeight: 'bold',
-marginBottom: 8,
-},
-dropdownContainer: {
-borderWidth: 1,
-borderColor: '#ddd',
-borderRadius: 4,
-marginBottom: 16,
-},
-locationDropdown: {
-maxHeight: 250,
-},
-locationOption: {
-borderBottomWidth: 1,
-borderBottomColor: '#eee',
-},
-selectionNumber: {
-width: 30,
-fontWeight: 'bold',
-},
-selectionId: {
-flex: 1,
-},
-selectionTime: {
-width: 80,
-textAlign: 'right',
-color: '#666',
-},
+  manualButton: {
+    flex: 0.5,
+    marginHorizontal: 4,
+    borderColor: '#24325f', // Matches --primary-color
+  },
+  sessionInfo: {
+    backgroundColor: '#f0f0f5', // Slightly adjusted to match PWA feel
+    padding: 8,
+    borderRadius: 4,
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: '#24325f',
+  },
+  locationText: {
+    fontWeight: 'bold',
+    color: '#24325f', // Matches --primary-color
+  },
+  dateTimeText: {
+    color: '#24325f',
+  },
+  checklistContainer: {
+    height: 300,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 8,
+    justifyContent: 'center',
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#24325f',
+  },
+  connectionStatus: {
+    padding: 8,
+    borderRadius: 4,
+    marginBottom: 8,
+    alignItems: 'center',
+  },
+  placeholderText: {
+    textAlign: 'center',
+    color: '#24325f',
+  },
+  noDataText: {
+    textAlign: 'center',
+    color: '#24325f',
+    fontStyle: 'italic',
+    marginTop: 8,
+  },
+  tableContainer: {
+    maxHeight: 200,
+    borderWidth: 1,
+    borderColor: '#24325f',
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  statusContainer: {
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    padding: 8,
+    borderRadius: 20,
+    marginBottom: 16,
+    alignItems: 'center',
+  },
+  statusText: {
+    color: 'white',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    margin: 20,
+    borderRadius: 8,
+    elevation: 5,
+  },
+  input: {
+    marginVertical: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 4,
+    padding: 8,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 16,
+  },
+  errorText: {
+    color: '#951d1e', // Matches --secondary-color
+    fontSize: 14,
+    marginBottom: 10,
+  },
+  searchbar: {
+    marginBottom: 8,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 4,
+  },
+  filterContainer: {
+    flexDirection: 'row',
+    marginBottom: 8,
+  },
+  filterItem: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 8,
+  },
+  filterLabel: {
+    marginRight: 8,
+    fontWeight: 'bold',
+    color: '#24325f', // Matches --primary-color
+  },
+  filterButton: {
+    flex: 1,
+    borderColor: '#24325f', // Matches --primary-color
+  },
+  filterButtonText: {
+    color: '#24325f',
+  },
+  studentList: {
+    flex: 1,
+    backgroundColor: 'white',
+    borderRadius: 4,
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: '#24325f',
+  },
+  studentItem: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+    padding: 10,
+  },
+  emptyList: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  emptyText: {
+    textAlign: 'center',
+    color: '#24325f',
+    fontStyle: 'italic',
+  },
+  customEntryButton: {
+    marginTop: 8,
+    backgroundColor: '#24325f', // Matches --primary-color
+    borderColor: '#24325f', // Matches --primary-color
+  },
+  customEntryButtonText: {
+    color: 'white',
+  },
+  selectionList: {
+    maxHeight: 200,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 4,
+    backgroundColor: '#fff',
+  },
+  selectionItem: {
+    flexDirection: 'row',
+    padding: 8,
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  modalButton: {
+    marginHorizontal: 8,
+    minWidth: 80,
+    backgroundColor: '#24325f', // Matches --primary-color
+    borderColor: '#24325f', // Matches --primary-color
+  },
+  modalButtonText: {
+    color: 'white',
+  },
+  dropdownLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    color: '#24325f', // Matches --primary-color
+  },
+  dropdownContainer: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 4,
+    marginBottom: 16,
+    backgroundColor: '#fff',
+  },
+  locationDropdown: {
+    maxHeight: 250,
+  },
+  locationOption: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+    padding: 10,
+  },
+  selectionNumber: {
+    width: 30,
+    fontWeight: 'bold',
+    color: '#24325f', // Matches --primary-color
+  },
+  selectionId: {
+    flex: 1,
+  },
+  selectionTime: {
+    width: 80,
+    textAlign: 'right',
+    color: '#24325f',
+  },
 });
 export default ChecklistScreen;

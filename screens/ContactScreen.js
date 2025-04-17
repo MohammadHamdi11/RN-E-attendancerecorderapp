@@ -68,17 +68,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#f9f9f9', // Matches --light-bg
   },
   card: {
     padding: 16,
     borderRadius: 8,
     elevation: 4,
+    backgroundColor: '#ffffff', // Matches --card-bg
   },
   title: {
     fontSize: 20,
     marginBottom: 24,
-    color: '#24325f',
+    color: '#24325f', // Matches --primary-color
+    fontWeight: 'bold',
   },
   section: {
     alignItems: 'center',
@@ -87,7 +89,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#24325f',
+    color: '#24325f', // Matches --primary-color
     marginBottom: 12,
     alignSelf: 'flex-start',
   },
@@ -100,12 +102,12 @@ const styles = StyleSheet.create({
   },
   button: {
     marginVertical: 12,
-    backgroundColor: '#24325f',
+    backgroundColor: '#24325f', // Matches --primary-color
     width: '80%',
   },
   caption: {
     fontSize: 12,
-    color: '#666',
+    color: '#24325f',
     fontStyle: 'italic',
     textAlign: 'center',
     marginTop: 4,
@@ -113,6 +115,8 @@ const styles = StyleSheet.create({
   divider: {
     marginVertical: 24,
     width: '100%',
+    height: 1,
+    backgroundColor: '#24325f',
   },
 });
 

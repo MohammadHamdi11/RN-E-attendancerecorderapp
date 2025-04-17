@@ -192,6 +192,7 @@ const HistoryScreen = ({ navigation }) => {
                 mode="contained" 
                 icon="export"
                 style={styles.exportButton}
+                labelStyle={styles.exportButtonText}
                 onPress={handleExportAllHistory}
               >
                 Export All History
@@ -207,6 +208,7 @@ const HistoryScreen = ({ navigation }) => {
                       icon="sort" 
                       onPress={() => setSortMenuVisible(true)}
                       style={styles.sortButton}
+                      labelStyle={styles.sortButtonText}
                     >
                       Sort
                     </Button>
@@ -257,6 +259,7 @@ const HistoryScreen = ({ navigation }) => {
                 icon="close"
                 onPress={hideSessionDetails}
                 style={styles.closeButton}
+                labelStyle={styles.closeButtonText}
               >
                 Close
               </Button>
@@ -283,6 +286,7 @@ const HistoryScreen = ({ navigation }) => {
                   mode="contained" 
                   icon="play"
                   style={styles.resumeButton}
+                  labelStyle={styles.resumeButtonText}
                   onPress={() => resumeSession(selectedSession)}
                 >
                   Resume Session
@@ -293,6 +297,7 @@ const HistoryScreen = ({ navigation }) => {
                 mode="contained" 
                 icon="export"
                 style={styles.exportSessionButton}
+                labelStyle={styles.exportSessionButtonText}
                 onPress={() => handleExportSession(selectedSession)}
               >
                 Export Session
@@ -324,21 +329,26 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#f9f9f9', // Matches --light-bg
   },
   card: {
     padding: 16,
     borderRadius: 8,
     elevation: 4,
+    backgroundColor: '#ffffff', // Matches --card-bg
     flex: 1,
   },
   title: {
     fontSize: 20,
     marginBottom: 16,
+    color: '#24325f', // Matches --primary-color
+    fontWeight: 'bold',
   },
   subtitle: {
     fontSize: 18,
     marginBottom: 8,
+    color: '#24325f', // Matches --primary-color
+    fontWeight: '500',
   },
   headerControls: {
     flexDirection: 'row',
@@ -347,15 +357,29 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   exportButton: {
-    backgroundColor: '#24325f',
+    backgroundColor: '#24325f', // Matches --primary-color
+    borderColor: '#24325f', // Matches --primary-color
+  },
+  exportButtonText: {
+    color: 'white',
   },
   sortButton: {
-    borderColor: '#24325f',
-    borderWidth: 1,
+    backgroundColor: '#24325f', // Matches --primary-color
+    borderColor: '#24325f', // Matches --primary-color
+  },
+  sortButtonText: {
+    color: 'white',
   },
   filterControl: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  filterButton: {
+    backgroundColor: '#24325f', // Matches --primary-color
+    borderColor: '#24325f', // Matches --primary-color
+  },
+  filterButtonText: {
+    color: 'white',
   },
   historyListContainer: {
     flex: 1,
@@ -367,10 +391,15 @@ const styles = StyleSheet.create({
   historyItem: {
     marginBottom: 8,
     elevation: 2,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#24325f',
   },
   inProgressItem: {
     borderLeftWidth: 4,
-    borderLeftColor: '#FF3B58',
+    borderLeftColor: '#951d1e', // Matches --secondary-color
   },
   historyItemHeader: {
     flexDirection: 'row',
@@ -380,14 +409,14 @@ const styles = StyleSheet.create({
   locationText: {
     fontWeight: 'bold',
     fontSize: 16,
-    color: '#24325f',
+    color: '#24325f', // Matches --primary-color
   },
   inProgressText: {
-    color: '#FF3B58',
+    color: '#951d1e', // Matches --secondary-color
     fontWeight: 'bold',
   },
   dateText: {
-    color: '#666',
+    color: '#24325f',
   },
   countText: {
     color: '#444',
@@ -397,9 +426,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#f0f0f0',
     borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#24325f',
   },
   noResultsText: {
-    color: '#666',
+    color: '#24325f',
     fontStyle: 'italic',
     fontSize: 16,
   },
@@ -412,12 +443,19 @@ const styles = StyleSheet.create({
   closeButton: {
     margin: 0,
     padding: 0,
+    backgroundColor: '#24325f', // Matches --primary-color
+    borderColor: '#24325f', // Matches --primary-color
+  },
+  closeButtonText: {
+    color: 'white',
   },
   detailsInfo: {
     backgroundColor: '#f0f0f0',
     padding: 12,
     borderRadius: 8,
     marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#24325f',
   },
   detailText: {
     marginBottom: 6,
@@ -433,14 +471,22 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   resumeButton: {
-    backgroundColor: '#FF3B58',
+    backgroundColor: '#951d1e', // Matches --secondary-color
+    borderColor: '#951d1e', // Matches --secondary-color
     flex: 1,
     marginRight: 8,
   },
+  resumeButtonText: {
+    color: 'white',
+  },
   exportSessionButton: {
-    backgroundColor: '#24325f',
+    backgroundColor: '#24325f', // Matches --primary-color
+    borderColor: '#24325f', // Matches --primary-color
     flex: 1,
     marginLeft: 8,
+  },
+  exportSessionButtonText: {
+    color: 'white',
   },
   scansContainer: {
     flex: 1,
@@ -448,6 +494,7 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     borderRadius: 8,
     overflow: 'hidden',
+    backgroundColor: '#fff',
   },
   tableHeader: {
     flexDirection: 'row',
@@ -459,7 +506,7 @@ const styles = StyleSheet.create({
   },
   columnHeader: {
     fontWeight: 'bold',
-    color: '#24325f',
+    color: '#24325f', // Matches --primary-color
   },
   idColumn: {
     flex: 2,
@@ -489,7 +536,7 @@ const styles = StyleSheet.create({
   scanTime: {
     flex: 1,
     textAlign: 'right',
-    color: '#666',
+    color: '#24325f',
   },
   scansList: {
     backgroundColor: '#fff',

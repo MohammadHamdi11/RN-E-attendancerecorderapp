@@ -192,18 +192,20 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#f9f9f9', // Matches --light-bg
   },
   container: {
     padding: 24,
     borderRadius: 8,
     elevation: 4,
     alignItems: 'center',
+    backgroundColor: '#ffffff', // Matches --card-bg
   },
   title: {
     fontSize: 24,
     marginBottom: 24,
-    color: '#24325f',
+    color: '#24325f', // Matches --primary-color
+    fontWeight: 'bold',
   },
   formGroup: {
     width: '100%',
@@ -212,10 +214,15 @@ const styles = StyleSheet.create({
   label: {
     fontWeight: 'bold',
     marginBottom: 8,
+    color: '#24325f', // Matches --primary-color
   },
   input: {
     backgroundColor: '#ffffff',
     width: '100%',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 4,
+    padding: 10,
   },
   passwordContainer: {
     position: 'relative',
@@ -226,9 +233,13 @@ const styles = StyleSheet.create({
     right: 10,
     top: 12,
     zIndex: 1,
+    backgroundColor: 'transparent',
+  },
+  toggleButtonText: {
+    color: '#24325f',
   },
   errorText: {
-    color: '#951d1e',
+    color: '#951d1e', // Matches --secondary-color
     marginTop: 8,
     marginBottom: 8,
   },
@@ -236,17 +247,21 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: 16,
     paddingVertical: 8,
-    backgroundColor: '#24325f',
+    backgroundColor: '#24325f', // Matches --primary-color
+    borderColor: '#24325f', // Matches --primary-color
+  },
+  buttonText: {
+    color: 'white',
   },
   hint: {
     marginTop: 12,
     fontSize: 12,
-    color: '#666',
+    color: '#24325f',
     textAlign: 'center',
   },
   divider: {
     height: 1,
-    backgroundColor: '#e0e0e0',
+    backgroundColor: '#24325f',
     width: '100%',
     marginVertical: 16,
   },
@@ -260,12 +275,14 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#24325f',
+    color: '#24325f', // Matches --primary-color
   },
   collapsibleContent: {
     padding: 8,
     width: '100%',
     alignItems: 'center',
+    backgroundColor: '#f5f5f5', // Matches --hover-bg
+    borderRadius: 4,
   },
   contentText: {
     textAlign: 'center',
@@ -273,12 +290,16 @@ const styles = StyleSheet.create({
   },
   smallButton: {
     marginVertical: 10,
-    backgroundColor: '#24325f',
+    backgroundColor: '#24325f', // Matches --primary-color
+    borderColor: '#24325f', // Matches --primary-color
+  },
+  smallButtonText: {
+    color: 'white',
   },
   caption: {
     textAlign: 'center',
     fontStyle: 'italic',
-    color: '#666',
+    color: '#24325f',
   },
 });
 

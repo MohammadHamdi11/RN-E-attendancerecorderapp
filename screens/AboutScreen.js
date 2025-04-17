@@ -208,18 +208,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#f9f9f9', // Matches --light-bg
   },
   card: {
     padding: 16,
     borderRadius: 8,
     elevation: 4,
     marginBottom: 16,
+    backgroundColor: '#ffffff', // Matches --card-bg
   },
   title: {
     fontSize: 20,
     marginBottom: 16,
-    color: '#24325f',
+    color: '#24325f', // Matches --primary-color
+    fontWeight: 'bold',
   },
   section: {
     marginBottom: 8,
@@ -227,7 +229,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#24325f',
+    color: '#24325f', // Matches --primary-color
     marginBottom: 8,
   },
   paragraph: {
@@ -238,6 +240,9 @@ const styles = StyleSheet.create({
   },
   divider: {
     marginVertical: 16,
+    height: 1,
+    backgroundColor: '#24325f',
+    width: '100%',
   },
   listContainer: {
     marginLeft: -8,
@@ -249,6 +254,8 @@ const styles = StyleSheet.create({
   featureTitle: {
     fontSize: 15,
     marginTop: 4,
+    color: '#24325f', // Matches --primary-color
+    fontWeight: '500',
   },
   featureText: {
     fontSize: 14,
@@ -265,6 +272,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginTop: 4,
     marginBottom: 8,
+    color: '#24325f', // Matches --primary-color
+    fontWeight: '500',
   },
   orderedList: {
     marginLeft: 8,
@@ -284,7 +293,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   linkText: {
-    color: '#24325f',
+    color: '#24325f', // Matches --primary-color
     textDecorationLine: 'underline',
   },
 });
