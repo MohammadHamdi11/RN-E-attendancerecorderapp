@@ -7,7 +7,6 @@ import { Audio } from 'expo-av';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as MediaLibrary from 'expo-media-library';
 import * as FileSystem from 'expo-file-system';
-import { saveToDownloads } from '../services/export';
 import * as Sharing from 'expo-sharing';
 import * as XLSX from 'xlsx';
 import { backupToGitHub, tryAutoBackup, processPendingBackups } from '../services/backup';
@@ -631,6 +630,7 @@ if (!isOnline && activeSession.scans.length > 0) {
 // Export scanner session to Excel
 const exportScannerSession = async (session) => {
   try {
+    console.log("Starting scanner export for session:", session.id);
     const fileName = `Scanner_${session.location.replace(/[^a-z0-9]/gi, '_')}_${formatDateTimeForFile(new Date(session.dateTime))}.xlsx`;
     
     // Prepare data
@@ -651,16 +651,20 @@ const exportScannerSession = async (session) => {
       ]);
     });
     
+    console.log(`Prepared data with ${session.scans.length} entries`);
+    
     // Create workbook
     const ws = XLSX.utils.aoa_to_sheet(data);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Scanner");
     
     // Convert to binary
+    console.log("Converting workbook to base64");
     const wbout = XLSX.write(wb, { type: 'base64', bookType: 'xlsx' });
     
     // Define file path in app's cache directory (temporary location)
     const fileUri = `${FileSystem.cacheDirectory}${fileName}`;
+    console.log("Temporary file location:", fileUri);
     
     // Write the file
     await FileSystem.writeAsStringAsync(fileUri, wbout, {
@@ -670,31 +674,70 @@ const exportScannerSession = async (session) => {
     // Verify the file was created
     const fileInfo = await FileSystem.getInfoAsync(fileUri);
     if (!fileInfo.exists) {
+      console.error("File not created at:", fileUri);
       throw new Error("File not created");
     }
     
     console.log("Excel file saved temporarily to:", fileUri);
     
-    // Save to downloads
+    // Save to downloads using our fixed function
+    console.log("Saving to Downloads folder");
     const saveResult = await saveToDownloads(fileUri, fileName);
     
     if (!saveResult.success) {
+      console.error("Save to downloads failed:", saveResult.message);
       throw new Error(`Failed to save to Downloads: ${saveResult.message}`);
     }
     
     // Also share the file
+    console.log("Sharing file");
     await Sharing.shareAsync(fileUri, {
       mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       dialogTitle: 'Export Scanner Session Data',
       UTI: 'com.microsoft.excel.xlsx'
     });
     
-    // Show success message
-    Alert.alert("Export Successful",
-      `Scanner data saved to Downloads as ${fileName}. ${!isOnline ? "The file will be backed up when you're back online." : ""}`
-    );
+    // Handle backup if online
+    try {
+      const isOnline = await checkOnlineStatus();
+      if (isOnline) {
+        console.log("Online - attempting GitHub backup");
+        await backupToGitHub([session], false, fileName, wb);
+        console.log("Scanner session backed up successfully");
+        
+        // Update backup status in UI and storage
+        await updateBackupStatus(session.id, true);
+      } else {
+        console.log("Offline - queueing for backup later");
+        // Queue for backup when back online
+        const pendingBackups = await AsyncStorage.getItem('pendingBackups') || '[]';
+        const backupsArray = JSON.parse(pendingBackups);
+        backupsArray.push({
+          session: session,
+          fileName: fileName,
+          timestamp: new Date().toISOString(),
+          type: 'scanner',
+          retryCount: 0
+        });
+        await AsyncStorage.setItem('pendingBackups', JSON.stringify(backupsArray));
+      }
+    } catch (backupError) {
+      console.error("Backup error:", backupError);
+      // Queue for later if backup fails
+      const pendingBackups = await AsyncStorage.getItem('pendingBackups') || '[]';
+      const backupsArray = JSON.parse(pendingBackups);
+      backupsArray.push({
+        session: session,
+        fileName: fileName,
+        timestamp: new Date().toISOString(),
+        type: 'scanner',
+        retryCount: 0,
+        error: backupError.message
+      });
+      await AsyncStorage.setItem('pendingBackups', JSON.stringify(backupsArray));
+    }
     
-    console.log("Scanner Excel file saved:", fileName);
+    console.log("Scanner export completed successfully");
     return { success: true, message: 'Export successful!', filePath: saveResult.uri };
   } catch (error) {
     console.error("Error exporting scanner session:", error);
@@ -702,64 +745,122 @@ const exportScannerSession = async (session) => {
     return { success: false, message: `Error exporting file: ${error.message}` };
   }
 };
-// Save a file to the Downloads directory
+
+// Save a file to the Attendance Recorder directory
 const saveToDownloads = async (fileUri, fileName) => {
   try {
-    // Request permissions first
+    console.log(`Starting saveToDownloads: ${fileName}`);
+    
+    // Request permissions first (needed for Android)
     const { status } = await MediaLibrary.requestPermissionsAsync();
+    
     if (status !== 'granted') {
+      console.log('Media library permission denied');
       Alert.alert(
         "Permission Required",
-        "We need access to your media library to save files to Downloads.",
+        "We need access to your media library to save files.",
         [{ text: "OK" }]
       );
       return { success: false, message: "Permission not granted" };
     }
     
-    // Save the file to device
+    console.log('Permission granted, creating asset');
+    
+    // Create asset from file
     const asset = await MediaLibrary.createAssetAsync(fileUri);
     
-    // On Android, we can add it directly to the Downloads directory
-    if (Platform.OS === 'android') {
-      // Get the Downloads directory - using 'Download' (correct folder name on Android)
-      const album = await MediaLibrary.getAlbumAsync('Download');
-      
-      if (album) {
-        // If Downloads album exists, add asset to it
-        await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
-      } else {
-        // Create a new album if needed
-        await MediaLibrary.createAlbumAsync('Download', asset, false);
-      }
-      
-      Alert.alert(
-        "Export Successful",
-        `File saved to Downloads folder as "${fileName}"`,
-        [{ text: "OK" }]
-      );
-    } else {
-      // On iOS, still save to 'Download' album instead of camera roll
-      const album = await MediaLibrary.getAlbumAsync('Download');
-      
-      if (album) {
-        await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
-      } else {
-        await MediaLibrary.createAlbumAsync('Download', asset, false);
-      }
-      
-      Alert.alert(
-        "Export Successful",
-        `File saved to Downloads folder as "${fileName}"`,
-        [{ text: "OK" }]
-      );
+    if (!asset) {
+      console.log('Failed to create asset');
+      throw new Error("Could not create asset from file");
     }
     
-    return { success: true, uri: asset.uri };
+    console.log('Asset created successfully:', asset.uri);
+    
+    // App folder name - consistent across platforms
+    const appFolderName = "Attendance Recorder";
+    
+    try {
+      // First check if our custom album already exists
+      console.log(`Checking if "${appFolderName}" album exists`);
+      let album = await MediaLibrary.getAlbumAsync(appFolderName);
+      
+      if (album) {
+        console.log(`Album "${appFolderName}" exists, adding asset`);
+        // If app album exists, add asset to it
+        await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
+      } else {
+        console.log(`Album "${appFolderName}" doesn't exist, creating it`);
+        // Create our custom album and add the asset to it
+        album = await MediaLibrary.createAlbumAsync(appFolderName, asset, false);
+      }
+      
+      console.log(`File saved to "${appFolderName}" as "${fileName}"`);
+      
+      Alert.alert(
+        "Export Successful",
+        `File saved to "${appFolderName}" folder as "${fileName}"`,
+        [{ text: "OK" }]
+      );
+      
+      return { 
+        success: true, 
+        message: `File saved successfully to "${appFolderName}" as "${fileName}"`, 
+        uri: asset.uri 
+      };
+    } catch (albumError) {
+      console.error("Error with custom album:", albumError);
+      
+      // Fallback to device's default location
+      console.log("Falling back to device's default storage location");
+      
+      if (Platform.OS === 'android') {
+        try {
+          // Try using DCIM on Android as fallback
+          const dcimAlbum = await MediaLibrary.getAlbumAsync("DCIM");
+          if (dcimAlbum) {
+            await MediaLibrary.addAssetsToAlbumAsync([asset], dcimAlbum, false);
+            
+            Alert.alert(
+              "Export Successful",
+              `File saved to device storage as "${fileName}"`,
+              [{ text: "OK" }]
+            );
+            
+            return { 
+              success: true, 
+              message: `File saved to device storage as "${fileName}"`, 
+              uri: asset.uri 
+            };
+          }
+        } catch (fallbackError) {
+          console.error("Android fallback error:", fallbackError);
+        }
+      }
+      
+      // Generic fallback - just alert that the file was saved somewhere
+      Alert.alert(
+        "Export Successful",
+        `File saved to your device as "${fileName}"`,
+        [{ text: "OK" }]
+      );
+      
+      return { 
+        success: true, 
+        message: `File saved to device as "${fileName}"`, 
+        uri: asset.uri 
+      };
+    }
   } catch (error) {
-    console.error("Error saving to downloads:", error);
-    return { success: false, message: error.message };
+    console.error("Error saving file:", error);
+    Alert.alert(
+      "Export Failed",
+      `Could not save file: ${error.message}`,
+      [{ text: "OK" }]
+    );
+    return { success: false, message: `Error: ${error.message}` };
   }
 };
+
 // Handle barcode scanning
 const handleBarCodeScanned = ({ type, data }) => {
 if (!activeSession || scanned) return;
@@ -1043,14 +1144,14 @@ Cancel
 <Modal
 visible={showManualEntryModal}
 onDismiss={() => setShowManualEntryModal(false)}
-contentContainerStyle={styles.modalContent}
+contentContainerStyle={[styles.modalContent, { backgroundColor: '#ffffff' }]}
 >
-<Title>Manual Entry</Title>
+<Title style={{ color: '#24325f' }}>Manual Entry</Title>
 <TextInput
 label="Student ID"
 value={manualId}
 onChangeText={setManualId}
-style={styles.input}
+style={[styles.input, { backgroundColor: '#ffffff', color: '#24325f' }]}
 autoFocus
 onSubmitEditing={processManualEntry}
 />

@@ -1,8 +1,8 @@
 {
   "name": "Attendance Recorder",
   "expo": {
-    "name": "QR Scanner App",
-    "slug": "qr-scanner-app",
+    "name": "Attendance Recorder",
+    "slug": "attendance-recorder",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/apple-touch-icon.png",
@@ -10,14 +10,14 @@
     "splash": {
       "image": "./assets/apple-touch-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff",
+      "backgroundColor": "#ffffff"
     },
-  "notification": {
-    "icon": "./assets/notification_icon.png",
-    "color": "#24325f",
-    "androidMode": "default",
-    "androidCollapsedTitle": "Backup reminder"
-  },
+    "notification": {
+      "icon": "./assets/notification_icon.png",
+      "color": "#24325f",
+      "androidMode": "default",
+      "androidCollapsedTitle": "Backup reminder"
+    },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -26,17 +26,16 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.yourcompany.qrscannerapp",
+      "bundleIdentifier": "com.yourcompany.attendancerecorder",
       "infoPlist": {
         "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to access your camera for scanning QR codes.",
-        "NSPhotoLibraryUsageDescription": "Allow $(PRODUCT_NAME) to access photos for saving QR scan results.",
+        "NSPhotoLibraryUsageDescription": "Allow $(PRODUCT_NAME) to access photos for saving exported data files.",
+        "NSPhotoLibraryAddUsageDescription": "Allow $(PRODUCT_NAME) to save exported files to your photo library.",
         "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to access your microphone",
         "NSUserNotificationAlertStyle": "alert",
         "NSUserNotificationsUsageDescription": "Allow $(PRODUCT_NAME) to send you notifications about backup reminders.",
-        "NSPhotoLibraryAddUsageDescription": "Allow $(PRODUCT_NAME) to save exported files to your photo library or documents folder.",
-        "NSPhotoLibraryUsageDescription": "Allow $(PRODUCT_NAME) to save exported files to your photo library or documents folder.",
+        "NSDocumentsFolderUsageDescription": "Allow $(PRODUCT_NAME) to save exported files to the Documents folder.",
         "UIBackgroundModes": ["fetch", "remote-notification"]
-
       }
     },
     "android": {
@@ -44,7 +43,7 @@
         "foregroundImage": "./assets/web-app-manifest-192x192.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.yourcompany.qrscannerapp",
+      "package": "com.yourcompany.attendancerecorder",
       "permissions": [
         "CAMERA",
         "VIBRATE",
@@ -52,17 +51,17 @@
         "ACCESS_WIFI_STATE",
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE",
+        "READ_MEDIA_IMAGES",
+        "READ_MEDIA_VIDEO",
         "android.permission.CAMERA",
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.READ_MEDIA_IMAGES",
+        "android.permission.READ_MEDIA_VIDEO",
         "android.permission.INTERNET",
         "RECEIVE_BOOT_COMPLETED",
         "android.permission.RECEIVE_BOOT_COMPLETED",
         "android.permission.POST_NOTIFICATIONS",
-        "WRITE_EXTERNAL_STORAGE",
-        "READ_EXTERNAL_STORAGE",
-        "android.permission.WRITE_EXTERNAL_STORAGE",
-        "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WAKE_LOCK"
       ],
       "versionCode": 1
@@ -70,18 +69,25 @@
     "web": {
       "favicon": "./assets/favicon.ico"
     },
-"plugins": [
-  [
-    "expo-barcode-scanner",
-    {
-      "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera for scanning QR codes."
-    }
-  ],
-  "expo-file-system",
-  "expo-background-fetch",
-  "expo-task-manager",
-  "expo-media-library"
-],
+    "plugins": [
+      [
+        "expo-barcode-scanner",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera for scanning QR codes."
+        }
+      ],
+      "expo-file-system",
+      "expo-background-fetch",
+      "expo-task-manager",
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos to save exported data files.",
+          "savePhotosPermission": "Allow $(PRODUCT_NAME) to save exported files to your photo library.",
+          "isAccessMediaLocationEnabled": true
+        }
+      ]
+    ],
     "extra": {
       "eas": {
         "projectId": "36cc9f80-6e6f-419a-b970-583f5b4451d9"

@@ -65,55 +65,118 @@ const queueBackupForLater = async (session) => {
   }
 };
 
-// This is a new function to save a file to the Downloads directory
+// Save a file to the Attendance Recorder directory
 const saveToDownloads = async (fileUri, fileName) => {
   try {
-    // Request permissions first
+    console.log(`Starting saveToDownloads: ${fileName}`);
+    
+    // Request permissions first (needed for Android)
     const { status } = await MediaLibrary.requestPermissionsAsync();
     
     if (status !== 'granted') {
+      console.log('Media library permission denied');
       Alert.alert(
         "Permission Required",
-        "We need access to your media library to save files to Downloads.",
+        "We need access to your media library to save files.",
         [{ text: "OK" }]
       );
       return { success: false, message: "Permission not granted" };
     }
     
-    // Save the file to device
+    console.log('Permission granted, creating asset');
+    
+    // Create asset from file
     const asset = await MediaLibrary.createAssetAsync(fileUri);
     
-    // On Android, we can add it directly to the Downloads directory
-    if (Platform.OS === 'android') {
-      // Get the Downloads directory
-      const album = await MediaLibrary.getAlbumAsync('Download');
+    if (!asset) {
+      console.log('Failed to create asset');
+      throw new Error("Could not create asset from file");
+    }
+    
+    console.log('Asset created successfully:', asset.uri);
+    
+    // App folder name - consistent across platforms
+    const appFolderName = "Attendance Recorder";
+    
+    try {
+      // First check if our custom album already exists
+      console.log(`Checking if "${appFolderName}" album exists`);
+      let album = await MediaLibrary.getAlbumAsync(appFolderName);
       
       if (album) {
-        // If Downloads album exists, add asset to it
+        console.log(`Album "${appFolderName}" exists, adding asset`);
+        // If app album exists, add asset to it
         await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
       } else {
-        // Create a new album if needed (unlikely for Download folder)
-        await MediaLibrary.createAlbumAsync('Download', asset, false);
+        console.log(`Album "${appFolderName}" doesn't exist, creating it`);
+        // Create our custom album and add the asset to it
+        album = await MediaLibrary.createAlbumAsync(appFolderName, asset, false);
       }
+      
+      console.log(`File saved to "${appFolderName}" as "${fileName}"`);
       
       Alert.alert(
         "Export Successful",
-        `File saved to Downloads folder as "${fileName}"`,
+        `File saved to "${appFolderName}" folder as "${fileName}"`,
         [{ text: "OK" }]
       );
-    } else {
-      // On iOS, we don't have direct access to Downloads, so just save to camera roll
+      
+      return { 
+        success: true, 
+        message: `File saved successfully to "${appFolderName}" as "${fileName}"`, 
+        uri: asset.uri 
+      };
+    } catch (albumError) {
+      console.error("Error with custom album:", albumError);
+      
+      // Fallback to device's default location
+      console.log("Falling back to device's default storage location");
+      
+      if (Platform.OS === 'android') {
+        try {
+          // Try using DCIM on Android as fallback
+          const dcimAlbum = await MediaLibrary.getAlbumAsync("DCIM");
+          if (dcimAlbum) {
+            await MediaLibrary.addAssetsToAlbumAsync([asset], dcimAlbum, false);
+            
+            Alert.alert(
+              "Export Successful",
+              `File saved to device storage as "${fileName}"`,
+              [{ text: "OK" }]
+            );
+            
+            return { 
+              success: true, 
+              message: `File saved to device storage as "${fileName}"`, 
+              uri: asset.uri 
+            };
+          }
+        } catch (fallbackError) {
+          console.error("Android fallback error:", fallbackError);
+        }
+      }
+      
+      // Generic fallback - just alert that the file was saved somewhere
       Alert.alert(
         "Export Successful",
         `File saved to your device as "${fileName}"`,
         [{ text: "OK" }]
       );
+      
+      return { 
+        success: true, 
+        message: `File saved to device as "${fileName}"`, 
+        uri: asset.uri 
+      };
     }
-    
-    return { success: true, uri: asset.uri };
   } catch (error) {
-    console.error("Error saving to downloads:", error);
-    return { success: false, message: error.message };
+    console.error("Error saving file:", error);
+    Alert.alert(
+      "Export Failed",
+      `Could not save file: ${error.message}`,
+      [{ text: "OK" }]
+    );
+    return { success: false, message: `Error: ${error.message}` };
   }
 };
 
@@ -164,11 +227,11 @@ export const exportSession = async (session) => {
     console.log("Excel file saved temporarily to:", fileUri);
 
     // Save to downloads
-    const saveResult = await saveToDownloads(fileUri, fileName);
-    
-    if (!saveResult.success) {
-      throw new Error(`Failed to save to Downloads: ${saveResult.message}`);
-    }
+const saveResult = await saveToDownloads(fileUri, fileName);
+
+if (!saveResult.success) {
+  throw new Error(`Failed to save to Downloads: ${saveResult.message}`);
+}
 
     // Also share the file
     await Sharing.shareAsync(fileUri, {
@@ -322,11 +385,11 @@ export const exportAllSessions = async (sessions) => {
     console.log("All sessions exported temporarily to:", fileUri);
     
     // Save to downloads
-    const saveResult = await saveToDownloads(fileUri, fileName);
-    
-    if (!saveResult.success) {
-      throw new Error(`Failed to save to Downloads: ${saveResult.message}`);
-    }
+const saveResult = await saveToDownloads(fileUri, fileName);
+
+if (!saveResult.success) {
+  throw new Error(`Failed to save to Downloads: ${saveResult.message}`);
+}
 
     // Also share the file
     await Sharing.shareAsync(fileUri, {

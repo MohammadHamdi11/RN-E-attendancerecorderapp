@@ -781,19 +781,7 @@ if (!isOnline && activeSession.scans.length > 0) {
   }, 1500);
 }
   console.log("Checklist session ended successfully");
-  
-  // Export session to Excel only if there are scans
-  if (sessionToExport && sessionToExport.scans && sessionToExport.scans.length > 0) {
-    setTimeout(() => {
-      if (!isOnline) {
-        // If offline, queue for backup instead of immediate export
-        queueSessionForBackup(sessionToExport);
-      } else {
-        exportChecklistSession(sessionToExport);
-      }
-    }, 500);
-  }
-};
+
 // Update backup status in UI and storage
 const updateBackupStatus = async (sessionId, isBackedUp) => {
 try {
@@ -859,10 +847,22 @@ const queueSessionForBackup = async (session) => {
     Alert.alert("Backup Error", "Failed to queue checklist session for later backup.");
   }
 };
-
+  // Export session to Excel only if there are scans
+  if (sessionToExport && sessionToExport.scans && sessionToExport.scans.length > 0) {
+    setTimeout(() => {
+      if (!isOnline) {
+        // If offline, queue for backup instead of immediate export
+        queueSessionForBackup(sessionToExport);
+      } else {
+        exportChecklistSession(sessionToExport);
+      }
+    }, 500);
+  }
+};
 // Export checklist session to Excel
 const exportChecklistSession = async (session) => {
   try {
+    console.log("Starting checklist export for session:", session.id);
     const fileName = `Checklist_${session.location.replace(/[^a-z0-9]/gi, '_')}_${formatDateTimeForFile(new Date(session.dateTime))}.xlsx`;
     
     // Prepare data
@@ -883,16 +883,20 @@ const exportChecklistSession = async (session) => {
       ]);
     });
     
+    console.log(`Prepared data with ${session.scans.length} entries`);
+    
     // Create workbook
     const ws = XLSX.utils.aoa_to_sheet(data);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Checklist");
     
     // Convert to binary
+    console.log("Converting workbook to base64");
     const wbout = XLSX.write(wb, { type: 'base64', bookType: 'xlsx' });
     
     // Define file path in app's cache directory (temporary location)
     const fileUri = `${FileSystem.cacheDirectory}${fileName}`;
+    console.log("Temporary file location:", fileUri);
     
     // Write the file
     await FileSystem.writeAsStringAsync(fileUri, wbout, {
@@ -902,48 +906,42 @@ const exportChecklistSession = async (session) => {
     // Verify the file was created
     const fileInfo = await FileSystem.getInfoAsync(fileUri);
     if (!fileInfo.exists) {
+      console.error("File not created at:", fileUri);
       throw new Error("File not created");
     }
     
     console.log("Excel file saved temporarily to:", fileUri);
     
-    // Save to downloads
+    // Save to downloads using our fixed function
+    console.log("Saving to Downloads folder");
     const saveResult = await saveToDownloads(fileUri, fileName);
     
     if (!saveResult.success) {
+      console.error("Save to downloads failed:", saveResult.message);
       throw new Error(`Failed to save to Downloads: ${saveResult.message}`);
     }
     
     // Also share the file
+    console.log("Sharing file");
     await Sharing.shareAsync(fileUri, {
       mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       dialogTitle: 'Export Checklist Session Data',
       UTI: 'com.microsoft.excel.xlsx'
     });
     
-    // Add backup logic for when online
-    if (isOnline) {
-      // Try to backup immediately if online
-      try {
+    // Handle backup if online
+    try {
+      const isOnline = await checkOnlineStatus();
+      if (isOnline) {
+        console.log("Online - attempting GitHub backup");
         await backupToGitHub([session], false, fileName);
         console.log("Checklist backed up successfully");
         
         // Update backup status in UI and storage
         await updateBackupStatus(session.id, true);
-        
-        // Add this code to update the last backup time
-        await BackupService.getLastBackupTime();
-        
-        // Show success message for online backup
-        Alert.alert(
-          "Backup Successful",
-          "Checklist session has been successfully backed up to GitHub.",
-          [{ text: "OK" }]
-        );
-      } catch (backupError) {
-        console.error("Error backing up checklist:", backupError);
-        
-        // Queue for later retry
+      } else {
+        console.log("Offline - queueing for backup later");
+        // Queue for backup when back online
         const pendingBackups = await AsyncStorage.getItem('pendingBackups') || '[]';
         const backupsArray = JSON.parse(pendingBackups);
         backupsArray.push({
@@ -951,19 +949,27 @@ const exportChecklistSession = async (session) => {
           fileName: fileName,
           timestamp: new Date().toISOString(),
           type: 'checklist',
-          retryCount: 1,
-          error: backupError.message
+          retryCount: 0
         });
         await AsyncStorage.setItem('pendingBackups', JSON.stringify(backupsArray));
       }
+    } catch (backupError) {
+      console.error("Backup error:", backupError);
+      // Queue for later if backup fails
+      const pendingBackups = await AsyncStorage.getItem('pendingBackups') || '[]';
+      const backupsArray = JSON.parse(pendingBackups);
+      backupsArray.push({
+        session: session,
+        fileName: fileName,
+        timestamp: new Date().toISOString(),
+        type: 'checklist',
+        retryCount: 0,
+        error: backupError.message
+      });
+      await AsyncStorage.setItem('pendingBackups', JSON.stringify(backupsArray));
     }
     
-    // Show success message
-    Alert.alert("Export Successful",
-      `Checklist data saved to Downloads as ${fileName}. ${!isOnline ? "The file will be backed up when you're back online." : ""}`
-    );
-    
-    console.log("Checklist Excel file saved:", fileName);
+    console.log("Checklist export completed successfully");
     return { success: true, message: 'Export successful!', filePath: saveResult.uri };
   } catch (error) {
     console.error("Error exporting checklist session:", error);
@@ -971,61 +977,113 @@ const exportChecklistSession = async (session) => {
     return { success: false, message: `Error exporting file: ${error.message}` };
   }
 };
-// Function to save a file to the Downloads folder
-const saveToDownloads = async (sourceUri, fileName) => {
+
+// Save a file to the Attendance Recorder directory
+const saveToDownloads = async (fileUri, fileName) => {
   try {
+    console.log(`Starting saveToDownloads: ${fileName}`);
+    
     // Request permissions first (needed for Android)
     const { status } = await MediaLibrary.requestPermissionsAsync();
     
     if (status !== 'granted') {
+      console.log('Media library permission denied');
       Alert.alert(
         "Permission Required",
-        "We need access to your media library to save files to Downloads.",
+        "We need access to your media library to save files.",
         [{ text: "OK" }]
       );
       return { success: false, message: "Permission not granted" };
     }
     
-    // Create asset from file
-    const asset = await MediaLibrary.createAssetAsync(sourceUri);
+    console.log('Permission granted, creating asset');
     
-    // Handle platform differences
-    if (Platform.OS === 'android') {
-      // On Android, use 'Download' folder
-      const album = await MediaLibrary.getAlbumAsync('Download');
-      
-      if (album) {
-        // If Downloads album exists, add asset to it
-        await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
-      } else {
-        // Create a new album if needed
-        await MediaLibrary.createAlbumAsync('Download', asset, false);
-      }
-    } else {
-      // On iOS, use 'Download' album 
-      const album = await MediaLibrary.getAlbumAsync('Download');
-      
-      if (album) {
-        await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
-      } else {
-        await MediaLibrary.createAlbumAsync('Download', asset, false);
-      }
+    // Create asset from file
+    const asset = await MediaLibrary.createAssetAsync(fileUri);
+    
+    if (!asset) {
+      console.log('Failed to create asset');
+      throw new Error("Could not create asset from file");
     }
     
-    // Show success message to user
-    Alert.alert(
-      "Export Successful",
-      `File saved to Downloads folder as "${fileName}"`,
-      [{ text: "OK" }]
-    );
+    console.log('Asset created successfully:', asset.uri);
     
-    return { 
-      success: true, 
-      message: `File saved successfully to Downloads as "${fileName}"`, 
-      uri: asset.uri 
-    };
+    // App folder name - consistent across platforms
+    const appFolderName = "Attendance Recorder";
+    
+    try {
+      // First check if our custom album already exists
+      console.log(`Checking if "${appFolderName}" album exists`);
+      let album = await MediaLibrary.getAlbumAsync(appFolderName);
+      
+      if (album) {
+        console.log(`Album "${appFolderName}" exists, adding asset`);
+        // If app album exists, add asset to it
+        await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
+      } else {
+        console.log(`Album "${appFolderName}" doesn't exist, creating it`);
+        // Create our custom album and add the asset to it
+        album = await MediaLibrary.createAlbumAsync(appFolderName, asset, false);
+      }
+      
+      console.log(`File saved to "${appFolderName}" as "${fileName}"`);
+      
+      Alert.alert(
+        "Export Successful",
+        `File saved to "${appFolderName}" folder as "${fileName}"`,
+        [{ text: "OK" }]
+      );
+      
+      return { 
+        success: true, 
+        message: `File saved successfully to "${appFolderName}" as "${fileName}"`, 
+        uri: asset.uri 
+      };
+    } catch (albumError) {
+      console.error("Error with custom album:", albumError);
+      
+      // Fallback to device's default location
+      console.log("Falling back to device's default storage location");
+      
+      if (Platform.OS === 'android') {
+        try {
+          // Try using DCIM on Android as fallback
+          const dcimAlbum = await MediaLibrary.getAlbumAsync("DCIM");
+          if (dcimAlbum) {
+            await MediaLibrary.addAssetsToAlbumAsync([asset], dcimAlbum, false);
+            
+            Alert.alert(
+              "Export Successful",
+              `File saved to device storage as "${fileName}"`,
+              [{ text: "OK" }]
+            );
+            
+            return { 
+              success: true, 
+              message: `File saved to device storage as "${fileName}"`, 
+              uri: asset.uri 
+            };
+          }
+        } catch (fallbackError) {
+          console.error("Android fallback error:", fallbackError);
+        }
+      }
+      
+      // Generic fallback - just alert that the file was saved somewhere
+      Alert.alert(
+        "Export Successful",
+        `File saved to your device as "${fileName}"`,
+        [{ text: "OK" }]
+      );
+      
+      return { 
+        success: true, 
+        message: `File saved to device as "${fileName}"`, 
+        uri: asset.uri 
+      };
+    }
   } catch (error) {
-    console.error("Error saving to downloads:", error);
+    console.error("Error saving file:", error);
     Alert.alert(
       "Export Failed",
       `Could not save file: ${error.message}`,
@@ -1034,6 +1092,7 @@ const saveToDownloads = async (sourceUri, fileName) => {
     return { success: false, message: `Error: ${error.message}` };
   }
 };
+
 // Helper functions for date/time formatting
 const formatDateTime = (date) => {
 return `${formatDate(date)} ${formatTime(date)}`;
@@ -1316,14 +1375,14 @@ Cancel
 <Modal
 visible={showManualEntryModal}
 onDismiss={() => setShowManualEntryModal(false)}
-contentContainerStyle={styles.modalContent}
+contentContainerStyle={[styles.modalContent, { backgroundColor: '#ffffff' }]}
 >
-<Title>Manual Entry</Title>
+<Title style={{ color: '#24325f' }}>Manual Entry</Title>
 <TextInput
 label="Student ID"
 value={manualId}
 onChangeText={setManualId}
-style={styles.input}
+style={[styles.input, { backgroundColor: '#ffffff', color: '#24325f' }]}
 autoFocus
 onSubmitEditing={processManualEntry}
 />
