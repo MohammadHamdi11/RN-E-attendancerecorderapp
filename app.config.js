@@ -5,7 +5,8 @@ export default {
     slug: "qr-scanner-app",
     version: "1.0.0",
     orientation: "portrait",
-    icon: "./assets/apple-touch-icon.png",
+    icon: "./assets/app-icon.png",
+    userInterfaceStyle: "light", 
     entryPoint: "./App.js",
     splash: {
       image: "./assets/apple-touch-icon.png",
@@ -20,6 +21,7 @@ export default {
     ],
     ios: {
       supportsTablet: true,
+      userInterfaceStyle: "light", 
       bundleIdentifier: "com.yourcompany.attendancerecorder",
       infoPlist: {
         NSCameraUsageDescription: "Allow $(PRODUCT_NAME) to access your camera for scanning QR codes.",
@@ -34,9 +36,10 @@ export default {
     },
     android: {
       adaptiveIcon: {
-        foregroundImage: "./assets/web-app-manifest-192x192.png",
+        foregroundImage: "./assets/adaptive-icon.png",
         backgroundColor: "#FFFFFF"
       },
+      userInterfaceStyle: "light",
       package: "com.yourcompany.attendancerecorder",
       permissions: [
         "CAMERA",

@@ -1,8 +1,8 @@
-// Modified App.js without authentication
+// Modified App.js with forced light mode
 import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme as NavigationDefaultTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Provider as PaperProvider, DefaultTheme } from 'react-native-paper';
 import { View, Text, StyleSheet } from 'react-native';
@@ -24,7 +24,6 @@ import { registerBackgroundSync } from './services/background';
 
 const BACKGROUND_NOTIFICATION_TASK = 'background-notification-task';
 
-
 // Create placeholder for screens that might not exist yet
 const PlaceholderScreen = ({ name }) => (
   <View style={styles.container}>
@@ -35,8 +34,20 @@ const PlaceholderScreen = ({ name }) => (
 // Create navigators
 const Tab = createBottomTabNavigator();
 
-// Theme configuration
-const theme = {
+// Define navigation theme with forced light mode
+const navigationTheme = {
+  ...NavigationDefaultTheme,
+  colors: {
+    ...NavigationDefaultTheme.colors,
+    background: '#ffffff',
+    card: '#ffffff',
+    text: '#000000',
+    border: '#e0e0e0',
+  },
+};
+
+// Theme configuration for Paper
+const paperTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
@@ -48,6 +59,7 @@ const theme = {
     disabled: '#cccccc',
     placeholder: '#3d3d3d',
   },
+  dark: false, // Force light mode
 };
 
 // Function to create bottom tab navigator
@@ -74,10 +86,10 @@ function MainTabNavigator({ isOnline }) {
 
           return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: theme.colors.primary,
+        tabBarActiveTintColor: paperTheme.colors.primary,
         tabBarInactiveTintColor: 'gray',
         headerStyle: {
-          backgroundColor: theme.colors.primary,
+          backgroundColor: paperTheme.colors.primary,
         },
         headerTintColor: '#fff',
         headerTitleStyle: {
@@ -85,13 +97,13 @@ function MainTabNavigator({ isOnline }) {
         },
       })}
     >
-<Tab.Screen name="Scanner" options={{title: "QR Scanner"}}>
-{props => <ScannerScreen {...props} isOnline={isOnline} />}
-</Tab.Screen>
+      <Tab.Screen name="Scanner" options={{title: "QR Scanner"}}>
+        {props => <ScannerScreen {...props} isOnline={isOnline} />}
+      </Tab.Screen>
 
-<Tab.Screen name="Checklist" options={{title: "Selector"}}>
-{props => <ChecklistScreen {...props} isOnline={isOnline} />}
-</Tab.Screen>
+      <Tab.Screen name="Checklist" options={{title: "Selector"}}>
+        {props => <ChecklistScreen {...props} isOnline={isOnline} />}
+      </Tab.Screen>
 
       <Tab.Screen name="History" component={HistoryScreen} />
       <Tab.Screen name="Backup" component={BackupScreen} />
@@ -106,65 +118,65 @@ export default function App() {
   const [isOnline, setIsOnline] = useState(true);
   const [error, setError] = useState(null);
 
-// Initialize app
-useEffect(() => {
-  // Simple initialization with no authentication
-  console.log('App starting - authentication removed');
-  
-  // Short timeout to simulate some initialization
-  setTimeout(() => {
-    setIsLoading(false);
-    console.log('App initialization completed - authentication bypassed');
-  }, 1000);
+  // Initialize app
+  useEffect(() => {
+    // Simple initialization with no authentication
+    console.log('App starting - authentication removed');
+    
+    // Short timeout to simulate some initialization
+    setTimeout(() => {
+      setIsLoading(false);
+      console.log('App initialization completed - authentication bypassed');
+    }, 1000);
 
-  // Initialize notifications
-  initNotifications().catch(e => console.log('Notification init error:', e));
-  
-  // Initialize background sync
-  registerBackgroundSync().catch(e => console.log('Background sync init error:', e));
+    // Initialize notifications
+    initNotifications().catch(e => console.log('Notification init error:', e));
+    
+    // Initialize background sync
+    registerBackgroundSync().catch(e => console.log('Background sync init error:', e));
 
-  // Set up network connectivity monitoring
-  const unsubscribe = NetInfo.addEventListener(state => {
-    try {
-      const online = state.isConnected && state.isInternetReachable;
-      setIsOnline(online);
-      console.log('Network status changed:', online ? 'Online' : 'Offline');
-      
-      // If we just came online, try to process any pending backups
-      if (online) {
-        import('./services/background').then(module => {
-          module.forceSyncNow().catch(e => console.log('Force sync error:', e));
-        });
+    // Set up network connectivity monitoring
+    const unsubscribe = NetInfo.addEventListener(state => {
+      try {
+        const online = state.isConnected && state.isInternetReachable;
+        setIsOnline(online);
+        console.log('Network status changed:', online ? 'Online' : 'Offline');
+        
+        // If we just came online, try to process any pending backups
+        if (online) {
+          import('./services/background').then(module => {
+            module.forceSyncNow().catch(e => console.log('Force sync error:', e));
+          });
+        }
+      } catch (e) {
+        console.error('Network monitoring error:', e);
       }
-    } catch (e) {
-      console.error('Network monitoring error:', e);
-    }
-  });
+    });
 
-  // Clean up the subscription
-  return () => {
-    try {
-      unsubscribe();
-    } catch (e) {
-      console.error('Error unsubscribing from NetInfo:', e);
-    }
-  };
-}, []);
+    // Clean up the subscription
+    return () => {
+      try {
+        unsubscribe();
+      } catch (e) {
+        console.error('Error unsubscribing from NetInfo:', e);
+      }
+    };
+  }, []);
 
   if (isLoading) {
     return (
       <View style={styles.container}>
         <Text style={styles.loadingText}>Loading application...</Text>
         {error && <Text style={styles.errorText}>Error: {error}</Text>}
-        <StatusBar style="auto" />
+        <StatusBar style="dark" backgroundColor="#ffffff" />
       </View>
     );
   }
 
   return (
     <SafeAreaProvider>
-      <PaperProvider theme={theme}>
-        <NavigationContainer>
+      <PaperProvider theme={paperTheme}>
+        <NavigationContainer theme={navigationTheme}>
           <MainTabNavigator isOnline={isOnline} />
         </NavigationContainer>
         <StatusBar style="light" />
