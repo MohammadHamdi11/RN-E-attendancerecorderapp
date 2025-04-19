@@ -8,6 +8,8 @@ import { Provider as PaperProvider, DefaultTheme } from 'react-native-paper';
 import { View, Text, StyleSheet } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import NetInfo from '@react-native-community/netinfo';
+import * as BackgroundFetch from 'expo-background-fetch';
+import * as TaskManager from 'expo-task-manager';
 
 // Import all screens directly
 import ScannerScreen from './screens/ScannerScreen';
@@ -17,6 +19,11 @@ import BackupScreen from './screens/BackupScreen';
 import AboutScreen from './screens/AboutScreen';
 import ContactScreen from './screens/ContactScreen';
 import { setupNetworkListener } from './services/backup';
+import { initNotifications, sendBackupReminder } from './services/notifications';
+import { registerBackgroundSync } from './services/background';
+
+const BACKGROUND_NOTIFICATION_TASK = 'background-notification-task';
+
 
 // Create placeholder for screens that might not exist yet
 const PlaceholderScreen = ({ name }) => (
@@ -78,22 +85,14 @@ function MainTabNavigator({ isOnline }) {
         },
       })}
     >
-      <Tab.Screen 
-        name="Scanner" 
-        options={{
-          title: "QR Scanner",
-          headerRight: () => (
-            <View style={{padding: 10}}>
-              <Text style={{color: 'white'}}>{isOnline ? '🟢 Online' : '🔴 Offline'}</Text>
-            </View>
-          ),
-        }}
-      >
-        {props => <ScannerScreen {...props} isOnline={isOnline} />}
-      </Tab.Screen>
-      <Tab.Screen name="Checklist">
-  {props => <ChecklistScreen {...props} isOnline={isOnline} />}
+<Tab.Screen name="Scanner" options={{title: "QR Scanner"}}>
+{props => <ScannerScreen {...props} isOnline={isOnline} />}
 </Tab.Screen>
+
+<Tab.Screen name="Checklist" options={{title: "Selector"}}>
+{props => <ChecklistScreen {...props} isOnline={isOnline} />}
+</Tab.Screen>
+
       <Tab.Screen name="History" component={HistoryScreen} />
       <Tab.Screen name="Backup" component={BackupScreen} />
       <Tab.Screen name="About" component={AboutScreen} />
@@ -107,37 +106,50 @@ export default function App() {
   const [isOnline, setIsOnline] = useState(true);
   const [error, setError] = useState(null);
 
-  // Initialize app
-  useEffect(() => {
-    // Simple initialization with no authentication
-    console.log('App starting - authentication removed');
-    
-    // Short timeout to simulate some initialization
-    setTimeout(() => {
-      setIsLoading(false);
-      console.log('App initialization completed - authentication bypassed');
-    }, 1000);
+// Initialize app
+useEffect(() => {
+  // Simple initialization with no authentication
+  console.log('App starting - authentication removed');
+  
+  // Short timeout to simulate some initialization
+  setTimeout(() => {
+    setIsLoading(false);
+    console.log('App initialization completed - authentication bypassed');
+  }, 1000);
 
-    // Set up network connectivity monitoring
-    const unsubscribe = NetInfo.addEventListener(state => {
-      try {
-        const online = state.isConnected && state.isInternetReachable;
-        setIsOnline(online);
-        console.log('Network status changed:', online ? 'Online' : 'Offline');
-      } catch (e) {
-        console.error('Network monitoring error:', e);
-      }
-    });
+  // Initialize notifications
+  initNotifications().catch(e => console.log('Notification init error:', e));
+  
+  // Initialize background sync
+  registerBackgroundSync().catch(e => console.log('Background sync init error:', e));
 
-    // Clean up the subscription
-    return () => {
-      try {
-        unsubscribe();
-      } catch (e) {
-        console.error('Error unsubscribing from NetInfo:', e);
+  // Set up network connectivity monitoring
+  const unsubscribe = NetInfo.addEventListener(state => {
+    try {
+      const online = state.isConnected && state.isInternetReachable;
+      setIsOnline(online);
+      console.log('Network status changed:', online ? 'Online' : 'Offline');
+      
+      // If we just came online, try to process any pending backups
+      if (online) {
+        import('./services/background').then(module => {
+          module.forceSyncNow().catch(e => console.log('Force sync error:', e));
+        });
       }
-    };
-  }, []);
+    } catch (e) {
+      console.error('Network monitoring error:', e);
+    }
+  });
+
+  // Clean up the subscription
+  return () => {
+    try {
+      unsubscribe();
+    } catch (e) {
+      console.error('Error unsubscribing from NetInfo:', e);
+    }
+  };
+}, []);
 
   if (isLoading) {
     return (

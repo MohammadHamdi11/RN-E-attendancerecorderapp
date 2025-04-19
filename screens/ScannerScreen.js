@@ -54,18 +54,39 @@ const db = SQLite.openDatabase('qrscanner.db');
 const [connectionMessage, setConnectionMessage] = useState('');
 // Update connection message when online status changes
 useEffect(() => {
-if (isOnline) {
-setConnectionMessage('Online - All features available');
-// If we're back online and there's a session that needs to be backed up remotely
-if (activeSession && !activeSession.backedUp) {
-setScanStatus('Back online - Session will be backed up automatically');
-}
-// Check for pending backups when coming online
-checkAndProcessPendingBackups();
-} else {
-setConnectionMessage('Offline - Working in local mode');
-}
+  if (isOnline) {
+    setConnectionMessage('Online - All features available');
+    // If we're back online and there's a session that needs to be backed up remotely
+    if (activeSession && !activeSession.backedUp) {
+      setScanStatus('Back online - Session will be backed up automatically');
+      
+      // Process any pending backups when coming online
+      processPendingBackups()
+        .then(result => {
+          if (result && result.processed > 0) {
+            setScanStatus(`Processed ${result.processed} pending backups`);
+            // Clear message after a timeout
+            setTimeout(() => {
+              setScanStatus('');
+            }, 5000);
+          } else {
+            // Clear any "will be backed up when online" messages
+            setScanStatus('');
+          }
+        })
+        .catch(error => console.error("Error processing pending backups:", error));
+    } else {
+      // Clear any "will be backed up when online" messages
+      setScanStatus('');
+    }
+    
+    // Check for pending backups when coming online
+    checkAndProcessPendingBackups();
+  } else {
+    setConnectionMessage('Offline - Working in local mode');
+  }
 }, [isOnline, activeSession]);
+
 // Request camera permission when component mounts
 useEffect(() => {
 (async () => {
@@ -109,35 +130,30 @@ console.log("Initialized empty pendingBackups array");
 }; 
 // Check and process pending backups when coming online
 const checkAndProcessPendingBackups = async () => {
-  if (!isOnline) {
-    console.log("Cannot process backups while offline");
-    return;
-  }
-  
-  try {
-    console.log("Checking for pending backups...");
-    // setScanStatus('Checking for pending backups...');  // Removed UI update
-    
-    const result = await processPendingBackups();
-    console.log("Process pending backups result:", result);
-    
-    if (result.success) {
-      if (result.message.includes('processed')) {
-        // setScanStatus(result.message);  // Removed UI update
-        
-        // Refresh sessions to update backup status
-        const savedSessions = await AsyncStorage.getItem('sessions');
-        if (savedSessions) {
-          // setSessions(JSON.parse(savedSessions));  // Removed UI update
-        }
-      }
-    }
-  } catch (error) {
-    console.error('Error processing pending backups:', error);
-    // setScanStatus('Error processing backups');  // Removed UI update
-  }
+if (!isOnline) {
+console.log("Cannot process backups while offline");
+return;
+}
+try {
+console.log("Checking for pending backups...");
+// setScanStatus('Checking for pending backups...');  // Removed UI update
+const result = await processPendingBackups();
+console.log("Process pending backups result:", result);
+if (result.success) {
+if (result.message.includes('processed')) {
+// setScanStatus(result.message);  // Removed UI update
+// Refresh sessions to update backup status
+const savedSessions = await AsyncStorage.getItem('sessions');
+if (savedSessions) {
+// setSessions(JSON.parse(savedSessions));  // Removed UI update
+}
+}
+}
+} catch (error) {
+console.error('Error processing pending backups:', error);
+// setScanStatus('Error processing backups');  // Removed UI update
+}
 };
-
 // Add this function to ScannerScreen.js
 const markSessionAsCompleted = async (sessionId) => {
 try {
@@ -471,140 +487,190 @@ finalizeSession();
 };
 // Queue session for backup when offline
 const queueSessionForBackup = async (session) => {
-try {
-console.log("Queueing session for backup:", session.id);
-// Get existing pending backups
-const pendingBackups = await AsyncStorage.getItem('pendingBackups');
-const backupsArray = pendingBackups ? JSON.parse(pendingBackups) : [];
-// Add this session to pending backups
-backupsArray.push({
-timestamp: new Date().toISOString(),
-session: session
-});
-// Save updated pending backups
-await AsyncStorage.setItem('pendingBackups', JSON.stringify(backupsArray));
-console.log(`Session queued for backup. Total pending: ${backupsArray.length}`);
-setScanStatus(`Session saved offline. Will be backed up when online.`);
-} catch (error) {
-console.error("Error queueing session for backup:", error);
-Alert.alert("Backup Error", "Failed to queue session for later backup.");
-}
+  try {
+    console.log("Queueing session for backup:", session.id);
+    // Get existing pending backups
+    const pendingBackups = await AsyncStorage.getItem('pendingBackups');
+    const backupsArray = pendingBackups ? JSON.parse(pendingBackups) : [];
+    
+    // Generate a proper file name
+const fileName = `Scanner_${session.location.replace(/[^a-z0-9]/gi, '_')}_${formatDateTimeForFile(new Date(session.dateTime))}.xlsx`;    
+    // Add this session to pending backups
+    backupsArray.push({
+      timestamp: new Date().toISOString(),
+      session: session,
+      fileName: fileName,
+      type: 'scanner'
+    });
+    
+    // Save updated pending backups
+    await AsyncStorage.setItem('pendingBackups', JSON.stringify(backupsArray));
+    console.log(`Session queued for backup. Total pending: ${backupsArray.length}`);
+    
+    // Display status message about offline backup
+    setScanStatus(`Session saved offline. Will be backed up when online.`);
+    
+    // Show alert with offline backup information
+    Alert.alert(
+      "Session Saved Offline",
+      "This session has been saved offline and will be backed up automatically when you're back online.",
+      [{ text: "OK" }]
+    );
+  } catch (error) {
+    console.error("Error queueing session for backup:", error);
+    Alert.alert("Backup Error", "Failed to queue session for later backup.");
+  }
 };
 // Finalize session
 const finalizeSession = () => {
-if (!activeSession) return;
-// Save session for export
-const sessionToExport = { ...activeSession };
-// Mark session as completed in history
-AsyncStorage.getItem('sessions').then(savedSessions => {
-if (savedSessions) {
-const parsedSessions = JSON.parse(savedSessions);
-const sessionIndex = parsedSessions.findIndex(s => s.id === activeSession.id);
-if (sessionIndex !== -1) {
-const updatedSessions = [...parsedSessions];
-updatedSessions[sessionIndex] = {
-...updatedSessions[sessionIndex],
-inProgress: false,
-backedUp: isOnline // Mark if backed up based on connection status
-};
-setSessions(updatedSessions);
-AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions));
-// If offline, queue for backup
-if (!isOnline) {
-console.log("App is offline, queueing session for backup");
-queueSessionForBackup(sessionToExport);
-} else {
-console.log("App is online, attempting immediate backup");
-// Try to backup immediately
-try {
-backupToGitHub([sessionToExport], false)
-.then(result => {
-console.log("Backup result:", result);
-if (result && result.success) {
-// Set last backup time to now
-const now = new Date();
-AsyncStorage.setItem(LAST_BACKUP_TIME_KEY, now.toISOString())
-.then(() => console.log("Last backup time updated"));
-Alert.alert("Backup Success", "Session backed up to GitHub successfully!");
-} else {
-console.error("Backup failed:", result);
-Alert.alert("Backup Failed", "Unable to backup to GitHub. The session is saved locally.");
-}
-})
-.catch(error => {
-console.error("Backup error:", error);
-Alert.alert("Backup Error", `Error during backup: ${error.message}`);
-});
-} catch (error) {
-  console.error("Exception during backup:", error);
-  // Don't show alert for empty workbook errors
-  if (!error.message.includes('Workbook is empty')) {
-    Alert.alert("Backup Error", `Exception during backup: ${error.message}`);
+  if (!activeSession) return;
+  
+  // Save session for export
+  const sessionToExport = { ...activeSession };
+  
+  // Mark session as completed in history
+  AsyncStorage.getItem('sessions').then(savedSessions => {
+    if (savedSessions) {
+      const parsedSessions = JSON.parse(savedSessions);
+      const sessionIndex = parsedSessions.findIndex(s => s.id === activeSession.id);
+      if (sessionIndex !== -1) {
+        const updatedSessions = [...parsedSessions];
+        updatedSessions[sessionIndex] = {
+          ...updatedSessions[sessionIndex],
+          inProgress: false,
+          backedUp: isOnline // Mark if backed up based on connection status
+        };
+        setSessions(updatedSessions);
+        AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions));
+        
+        // If offline, queue for backup
+        if (!isOnline) {
+          console.log("App is offline, queueing session for backup");
+          queueSessionForBackup(sessionToExport);
+        } else {
+          console.log("App is online, attempting immediate backup");
+          // Try to backup immediately
+          try {
+            backupToGitHub([sessionToExport], false)
+              .then(result => {
+                console.log("Backup result:", result);
+                if (result && result.success) {
+                  // Set last backup time to now
+                  const now = new Date();
+                  AsyncStorage.setItem(LAST_BACKUP_TIME_KEY, now.toISOString())
+                    .then(() => console.log("Last backup time updated"));
+                  
+                  // Show success message for online backup
+                  Alert.alert("Backup Success", "Session backed up to GitHub successfully!");
+                } else {
+                  console.error("Backup failed:", result);
+                  // Only show alert if it's not an empty workbook error
+                  if (!result.message || !result.message.includes('empty')) {
+                    Alert.alert("Backup Failed", "Unable to backup to GitHub. The session is saved locally.");
+                  } else {
+                    console.log("Empty workbook - skipping backup silently");
+                  }
+                }
+              })
+              .catch(error => {
+                console.error("Backup error:", error);
+                // Only show alert if it's not an empty workbook error
+                if (!error.message.includes('Workbook is empty')) {
+                  Alert.alert("Backup Error", `Error during backup: ${error.message}`);
+                } else {
+                  console.log("Empty workbook - skipping backup silently");
+                }
+              });
+          } catch (error) {
+            console.error("Exception during backup:", error);
+            // Don't show alert for empty workbook errors
+            if (!error.message.includes('Workbook is empty')) {
+              Alert.alert("Backup Error", `Exception during backup: ${error.message}`);
+            }
+          }
+        }
+      }
+    }
+  });
+  
+  // Also update SQLite for backward compatibility
+  db.transaction(tx => {
+    tx.executeSql(
+      'UPDATE sessions SET inProgress = 0 WHERE id = ?',
+      [activeSession.id]
+    );
+  });
+  
+  // Clear active session
+  setActiveSession(null);
+  setScans([]);
+  setScanStatus('');
+  clearActiveScannerSession();
+  
+  // Export session to Excel
+  if (sessionToExport && sessionToExport.scans && sessionToExport.scans.length > 0) {
+    setTimeout(() => {
+      exportScannerSession(sessionToExport);
+    }, 500);
   }
+  
+  Alert.alert('Success', 'Session ended successfully');
+if (!isOnline && activeSession.scans.length > 0) {
+  setTimeout(() => {
+    Alert.alert(
+      "Session Saved Offline",
+      "This session has been saved offline and will be backed up automatically when you're back online.",
+      [{ text: "OK" }]
+    );
+  }, 1500); 
 }
-}
-}
-}
-});
-// Also update SQLite for backward compatibility
-db.transaction(tx => {
-tx.executeSql(
-'UPDATE sessions SET inProgress = 0 WHERE id = ?',
-[activeSession.id]
-);
-});
-// Clear active session
-setActiveSession(null);
-setScans([]);
-setScanStatus('');
-clearActiveScannerSession();
-// Export session to Excel
-if (sessionToExport && sessionToExport.scans && sessionToExport.scans.length > 0) {
-setTimeout(() => {
-exportScannerSession(sessionToExport);
-}, 500);
-}
-Alert.alert('Success', 'Session ended successfully');
-console.log("Scanner session ended successfully");
+  console.log("Scanner session ended successfully");
 };
 // Export scanner session to Excel
 const exportScannerSession = async (session) => {
-try {
+  try {
 const fileName = `Scanner_${session.location.replace(/[^a-z0-9]/gi, '_')}_${formatDateTimeForFile(new Date(session.dateTime))}.xlsx`;
-// Prepare data
-const data = [
-['Number', 'Content', 'Location', 'Log Date', 'Log Time', 'Type']
-];
-// Add scans with row numbers
-session.scans.forEach((scan, index) => {
-const scanDate = new Date(scan.timestamp);
-data.push([
-index + 1,                   // Row number
-scan.content,                // Scanned content
-session.location,            // Location
-formatDate(scanDate),        // Log Date
-formatTime(scanDate),        // Log Time
-scan.isManual ? 'Manual' : 'Scan'  // Type
-]);
-});
-// Create workbook
-const ws = XLSX.utils.aoa_to_sheet(data);
-const wb = XLSX.utils.book_new();
-XLSX.utils.book_append_sheet(wb, ws, "Scanner");
-// Convert to binary
-const wbout = XLSX.write(wb, { type: 'base64', bookType: 'xlsx' });
-// Save file
-const filePath = `${FileSystem.documentDirectory}${fileName}`;
-await FileSystem.writeAsStringAsync(filePath, wbout, {
-encoding: FileSystem.EncodingType.Base64
-});
-// Show success message
-Alert.alert("Export Successful", `Scanner data saved as ${fileName}.`);
-console.log("Scanner Excel file saved:", fileName);
-} catch (error) {
-console.error("Error exporting scanner session:", error);
-Alert.alert("Export Error", "Failed to export scanner data: " + error.message);
-}
+    // Prepare data
+    const data = [
+      ['Number', 'Content', 'Location', 'Log Date', 'Log Time', 'Type']
+    ];
+    
+    // Add scans with row numbers
+    session.scans.forEach((scan, index) => {
+      const scanDate = new Date(scan.timestamp);
+      data.push([
+        index + 1,                   // Row number
+        scan.content,                // Scanned content
+        session.location,            // Location
+        formatDate(scanDate),        // Log Date
+        formatTime(scanDate),        // Log Time
+        scan.isManual ? 'Manual' : 'Scan'  // Type
+      ]);
+    });
+    
+    // Create workbook
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Scanner");
+    
+    // Convert to binary
+    const wbout = XLSX.write(wb, { type: 'base64', bookType: 'xlsx' });
+    
+    // Save file
+    const filePath = `${FileSystem.documentDirectory}${fileName}`;
+    await FileSystem.writeAsStringAsync(filePath, wbout, {
+      encoding: FileSystem.EncodingType.Base64
+    });
+    
+    // Show success message
+    Alert.alert("Export Successful",
+      `Scanner data saved as ${fileName}. ${!isOnline ? "The file will be backed up when you're back online." : ""}`
+    );
+    console.log("Scanner Excel file saved:", fileName);
+  } catch (error) {
+    console.error("Error exporting scanner session:", error);
+    Alert.alert("Export Error", "Failed to export scanner data: " + error.message);
+  }
 };
 // Handle barcode scanning
 const handleBarCodeScanned = ({ type, data }) => {
@@ -743,21 +809,20 @@ return (
 );
 }
 return (
-<View style={styles.container}>
+<Provider>
+<ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
 {connectionMessage && (
 <View style={[styles.connectionStatus, { backgroundColor: isOnline ? '#e7f3e8' : '#fff3cd' }]}>
 <Text style={{ color: isOnline ? '#28a745' : '#856404' }}>{connectionMessage}</Text>
 </View>
 )}
-{/* Add ScrollView here to make entire content scrollable */}
-<ScrollView contentContainerStyle={styles.scrollContent}>
 <Surface style={styles.card}>
 <Title style={styles.title}>QR Code Scanner</Title>
 <View style={styles.buttonContainer}>
 <Button 
 mode="contained" 
-style={styles.button}
-labelStyle={styles.buttonText}
+style={[styles.primaryButton, styles.fullWidthButton]}
+labelStyle={styles.primaryButtonText}
 onPress={() => activeSession ? endSession() : setShowSessionModal(true)}
 >
 {activeSession ? 'End Session' : 'Start New Session'}
@@ -765,8 +830,8 @@ onPress={() => activeSession ? endSession() : setShowSessionModal(true)}
 {activeSession && (
 <Button 
 mode="outlined" 
-style={styles.manualButton}
-labelStyle={styles.syncButtonText}
+style={[styles.secondaryButton, styles.fullWidthButton]}
+labelStyle={styles.secondaryButtonText}
 onPress={() => setShowManualEntryModal(true)}
 >
 Manual Entry
@@ -797,33 +862,32 @@ Click "Start New Session" to begin scanning QR codes.
 )}
 </View>
 <Title style={styles.subtitle}>Scanned QR Codes</Title>
-{scans.length > 0 ? (
+{activeSession && activeSession.scans && activeSession.scans.length > 0 ? (
 <View style={styles.tableContainer}>
-<ScrollView nestedScrollEnabled={true}>
 <DataTable>
-<DataTable.Header>
-<DataTable.Title numeric>ID</DataTable.Title>
-<DataTable.Title>Content</DataTable.Title>
-<DataTable.Title>Time</DataTable.Title>
+<DataTable.Header style={{ backgroundColor: '#f5f5f5' }}>
+<DataTable.Title numeric style={{ flex: 0.2 }}>ID</DataTable.Title>
+<DataTable.Title style={{ flex: 0.6 }}>Content</DataTable.Title>
+<DataTable.Title style={{ flex: 0.4 }}>Time</DataTable.Title>
 </DataTable.Header>
-{scans.map((scan, index) => (
+<ScrollView style={{ maxHeight: 200 }} nestedScrollEnabled={true}>
+{activeSession.scans.map((scan, index) => (
 <DataTable.Row key={scan.id || index}>
-<DataTable.Cell numeric>{index + 1}</DataTable.Cell>
-<DataTable.Cell>
-{scan.content.length > 20 ? scan.content.substring(0, 20) + '...' : scan.content}
+<DataTable.Cell numeric style={{ flex: 0.2 }}>{index + 1}</DataTable.Cell>
+<DataTable.Cell style={{ flex: 0.6 }}>
+{scan.content && scan.content.length > 20 ? scan.content.substring(0, 20) + '...' : scan.content || scan.id}
 {scan.isManual ? ' (Manual)' : ''}
 </DataTable.Cell>
-<DataTable.Cell>{scan.formattedTime || formatTime(new Date(scan.timestamp || scan.time))}</DataTable.Cell>
+<DataTable.Cell style={{ flex: 0.4 }}>{scan.formattedTime || formatTime(new Date(scan.timestamp || scan.time))}</DataTable.Cell>
 </DataTable.Row>
 ))}
-</DataTable>
 </ScrollView>
+</DataTable>
 </View>
 ) : (
 <Text style={styles.noDataText}>No QR codes scanned yet.</Text>
 )}
 </Surface>
-</ScrollView>
 <Portal>
 <Modal
 visible={showSessionModal}
@@ -865,16 +929,6 @@ AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions));
 AsyncStorage.setItem(TEMP_SCANNER_SESSION_INDEX_KEY, String(updatedSessions.length - 1));
 });
 saveActiveScannerSession(newSession);
-db.transaction(tx => {
-tx.executeSql(
-'INSERT INTO sessions (id, location, dateTime, inProgress) VALUES (?, ?, ?, ?)',
-[sessionId, option, now.toISOString(), 1],
-null,
-(_, error) => {
-console.error('Error starting session in database:', error);
-}
-);
-});
 console.log("New scanner session created:", sessionId);
 }
 }, 100);
@@ -884,12 +938,12 @@ style={styles.locationOption}
 ))}
 </ScrollView>
 </View>
-<View style={styles.syncButton}>
+<View style={styles.modalButtons}>
 <Button 
 mode="text"
 onPress={() => setShowSessionModal(false)}
-style={styles.syncButton}
-labelStyle={styles.syncButtonText}
+style={styles.secondaryButton}
+labelStyle={styles.secondaryButtonText}
 >
 Cancel
 </Button>
@@ -911,20 +965,29 @@ style={styles.input}
 autoFocus
 onSubmitEditing={processManualEntry}
 />
-<View style={styles.syncButton}>
-<Button onPress={() => setShowManualEntryModal(false)}>Cancel</Button>
+<View style={styles.modalButtons}>
+<Button 
+mode="text" 
+onPress={() => setShowManualEntryModal(false)}
+style={styles.secondaryButton}
+labelStyle={styles.secondaryButtonText}
+>
+Cancel
+</Button>
 <Button 
 mode="contained" 
-labelStyle={styles.syncButtonText}
 onPress={processManualEntry}
 disabled={!manualId.trim()}
+style={styles.primaryButton}
+labelStyle={styles.primaryButtonText}
 >
 Add
 </Button>
 </View>
 </Modal>
 </Portal>
-</View>
+</ScrollView>
+</Provider>
 );
 };
 const styles = StyleSheet.create({
@@ -933,12 +996,16 @@ flex: 1,
 padding: 16,
 backgroundColor: '#f9f9f9',
 },
+scrollContent: {
+flexGrow: 1,
+paddingBottom: 20, // Add padding at bottom
+},
 card: {
 padding: 16,
 borderRadius: 8,
 elevation: 4,
 backgroundColor: '#ffffff',
-marginBottom: 20, // Add margin at the bottom of the card
+marginBottom: 20,
 },
 title: {
 fontSize: 20,
@@ -956,29 +1023,32 @@ fontWeight: '500',
 buttonContainer: {
 marginBottom: 16,
 },
-button: {
+primaryButtonGroup: {
+flexDirection: 'row',
+marginBottom: 8,
+},
+// Solid primary buttons (blue with white text)
+primaryButton: {
 backgroundColor: '#24325f',
 borderColor: '#24325f',
 marginBottom: 8,
+marginRight: 8,
 },
-buttonText: {
+primaryButtonText: {
 color: 'white',
 },
-syncButton: {
-flex: 1,
-marginLeft: 4,
+// Inverted secondary buttons (white with blue border and text)
+secondaryButton: {
+backgroundColor: 'white',
 borderColor: '#24325f',
+borderWidth: 1,
+marginBottom: 8,
+marginRight: 8,
 },
-syncButtonText: {
+secondaryButtonText: {
 color: '#24325f',
 },
-manualButton: {
-borderColor: '#24325f',
-backgroundColor: 'transparent',
-},
-manualButtonText: {
-color: '#24325f',
-},
+// Session info styling
 sessionInfo: {
 backgroundColor: '#f0f0f5',
 padding: 8,
@@ -994,6 +1064,18 @@ color: '#24325f',
 dateTimeText: {
 color: '#24325f',
 },
+// Status container
+statusContainer: {
+backgroundColor: 'rgba(0,0,0,0.7)',
+padding: 8,
+borderRadius: 20,
+marginBottom: 16,
+alignItems: 'center',
+},
+statusText: {
+color: 'white',
+},
+// Scanner and checklist containers (maintain unique functionality)
 scannerContainer: {
 height: 300,
 backgroundColor: '#f0f0f0',
@@ -1005,39 +1087,36 @@ overflow: 'hidden',
 borderWidth: 1,
 borderColor: '#24325f',
 },
+checklistContainer: {
+height: 300,
+backgroundColor: '#f0f0f0',
+borderRadius: 8,
+justifyContent: 'center',
+padding: 16,
+borderWidth: 1,
+borderColor: '#24325f',
+},
+// Table container
+tableContainer: {
+borderWidth: 1,
+borderColor: '#24325f',
+borderRadius: 8,
+overflow: 'hidden',
+marginBottom: 20,
+backgroundColor: '#fff',
+},
+// Connection status
 connectionStatus: {
 padding: 8,
 borderRadius: 4,
 marginBottom: 8,
 alignItems: 'center',
 },
-placeholderText: {
-textAlign: 'center',
+connectionText: {
 color: '#24325f',
+fontWeight: '500',
 },
-noDataText: {
-textAlign: 'center',
-color: '#24325f',
-fontStyle: 'italic',
-marginTop: 8,
-},
-tableContainer: {
-borderWidth: 1,
-borderColor: '#24325f',
-borderRadius: 8,
-overflow: 'hidden',
-marginBottom: 20, // Add margin to separate from bottom of screen
-},
-statusContainer: {
-backgroundColor: 'rgba(0,0,0,0.7)',
-padding: 8,
-borderRadius: 20,
-marginBottom: 16,
-alignItems: 'center',
-},
-statusText: {
-color: 'white',
-},
+// Modal styles
 modalContent: {
 backgroundColor: 'white',
 padding: 20,
@@ -1045,31 +1124,10 @@ margin: 20,
 borderRadius: 8,
 elevation: 5,
 },
-input: {
-marginVertical: 10,
-borderWidth: 1,
-borderColor: '#ddd',
-borderRadius: 4,
-padding: 8,
-},
 modalButtons: {
 flexDirection: 'row',
 justifyContent: 'flex-end',
 marginTop: 16,
-},
-modalButton: {
-marginHorizontal: 8,
-minWidth: 80,
-backgroundColor: '#24325f',
-borderColor: '#24325f',
-},
-modalButtonText: {
-color: 'white',
-},
-errorText: {
-color: '#951d1e',
-fontSize: 14,
-marginBottom: 10,
 },
 dropdownLabel: {
 fontSize: 16,
@@ -1092,9 +1150,85 @@ borderBottomWidth: 1,
 borderBottomColor: '#eee',
 padding: 10,
 },
-scrollContent: {
-flexGrow: 1,
-paddingBottom: 20, // Add padding at bottom to ensure content doesn't get cut off
+// Text inputs
+input: {
+marginVertical: 10,
+borderWidth: 1,
+borderColor: '#ddd',
+borderRadius: 4,
+padding: 8,
+},
+// Info and error text
+placeholderText: {
+textAlign: 'center',
+color: '#24325f',
+},
+noDataText: {
+textAlign: 'center',
+color: '#24325f',
+fontStyle: 'italic',
+marginTop: 8,
+},
+errorText: {
+color: '#951d1e',
+fontSize: 14,
+marginBottom: 10,
+},
+// Checklist-specific styles
+searchbar: {
+marginBottom: 8,
+backgroundColor: '#fff',
+borderWidth: 1,
+borderColor: '#ddd',
+borderRadius: 4,
+},
+filterContainer: {
+flexDirection: 'row',
+marginBottom: 8,
+},
+filterItem: {
+flex: 1,
+flexDirection: 'row',
+alignItems: 'center',
+marginRight: 8,
+},
+filterLabel: {
+marginRight: 8,
+fontWeight: 'bold',
+color: '#24325f',
+},
+studentList: {
+flex: 1,
+backgroundColor: 'white',
+borderRadius: 4,
+marginBottom: 8,
+borderWidth: 1,
+borderColor: '#24325f',
+},
+studentItem: {
+borderBottomWidth: 1,
+borderBottomColor: '#eee',
+padding: 10,
+backgroundColor: '#fff',
+},
+selectionItem: {
+flexDirection: 'row',
+alignItems: 'center',
+padding: 12,
+backgroundColor: '#fff',
+borderBottomWidth: 1,
+borderBottomColor: '#eee',
+},
+emptyList: {
+flex: 1,
+justifyContent: 'center',
+alignItems: 'center',
+padding: 20,
+},
+emptyText: {
+textAlign: 'center',
+color: '#24325f',
+fontStyle: 'italic',
 },
 });
 export default ScannerScreen;

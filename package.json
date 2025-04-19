@@ -22,6 +22,7 @@
     "expo-barcode-scanner": "~12.5.3",
     "expo-file-system": "~15.4.3",
     "expo-sharing": "~11.5.0",
+    "expo-web-browser": "~12.3.2",
     "expo-sqlite": "~11.3.2",
     "expo-status-bar": "~1.6.0",
     "react": "18.2.0",
@@ -35,7 +36,9 @@
     "expo-background-fetch": "~11.3.0",
     "expo-task-manager": "~11.3.0",
     "@expo/vector-icons": "^13.0.0",
-    "expo-splash-screen": "~0.20.5"
+    "expo-splash-screen": "~0.20.5",
+    "expo-notifications": "~0.20.1",
+    "expo-constants": "~14.4.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

@@ -6,7 +6,7 @@ const ContactScreen = () => {
   const openUserGuide = () => {
     // In a real app, this would download or open the PDF file
     console.log("Opening user guide");
-    // Linking.openURL('https://example.com/user-guide.pdf');
+    // Linking.openURL('https://www.hostize.com/v/5DX6NGfApj');
   };
   
   const openSupportForm = () => {

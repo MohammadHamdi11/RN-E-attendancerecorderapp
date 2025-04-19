@@ -1,5 +1,5 @@
 {
-  "name": "qr-scanner-app",
+  "name": "Attendance Recorder",
   "expo": {
     "name": "QR Scanner App",
     "slug": "qr-scanner-app",
@@ -10,8 +10,14 @@
     "splash": {
       "image": "./assets/apple-touch-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#ffffff",
     },
+  "notification": {
+    "icon": "./assets/notification_icon.png",
+    "color": "#24325f",
+    "androidMode": "default",
+    "androidCollapsedTitle": "Backup reminder"
+  },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -25,7 +31,10 @@
         "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to access your camera for scanning QR codes.",
         "NSPhotoLibraryUsageDescription": "Allow $(PRODUCT_NAME) to access photos for saving QR scan results.",
         "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to access your microphone",
-        "UIBackgroundModes": ["fetch"]
+        "NSUserNotificationAlertStyle": "alert",
+        "NSUserNotificationsUsageDescription": "Allow $(PRODUCT_NAME) to send you notifications about backup reminders.",
+        "UIBackgroundModes": ["fetch", "remote-notification"]
+
       }
     },
     "android": {
@@ -47,6 +56,7 @@
         "android.permission.INTERNET",
         "RECEIVE_BOOT_COMPLETED",
         "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.POST_NOTIFICATIONS",
         "android.permission.WAKE_LOCK"
       ],
       "versionCode": 1

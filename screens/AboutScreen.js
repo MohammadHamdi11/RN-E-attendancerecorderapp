@@ -7,7 +7,7 @@ const AboutScreen = () => {
     // In a real app, this would open the PDF file
     console.log("Opening user guide");
     // You could use Linking API to open a URL or Expo DocumentPicker to open a file
-    // Linking.openURL('https://example.com/user-guide.pdf');
+    // Linking.openURL('https://www.hostize.com/v/5DX6NGfApj');
   };
 
   return (

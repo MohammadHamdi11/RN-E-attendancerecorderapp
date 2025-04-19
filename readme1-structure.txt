@@ -29,6 +29,8 @@ QRScannerApp/
 │   ├── loaddata.js        # load the students data from excel file for the checklist screen
 │   ├── database.js        # SQLite operations
 │   ├── backup.js          # Backup functionality
-│   └── export.js          # Excel export functionality
+│   ├── notifications.js   # push notifications
+│   ├── export.js          # Excel export functionality
+│   └── background.js      # backgroundsync
 └── utils/                 # Helper functions
     └── dateUtils.js       # format date for other functions

@@ -38,11 +38,11 @@ onPress={() => onToggle(studentId)}
 );
 });
 const SelectedStudentItem = React.memo(({ item, index }) => (
-<View style={styles.selectionItem}>
-<Text style={styles.selectionNumber}>{index + 1}</Text>
-<Text style={styles.selectionId}>{item.id}</Text>
-<Text style={styles.selectionTime}>{item.formattedTime}</Text>
-</View>
+  <View style={styles.selectionItem}>
+    <Text style={styles.selectionNumber}>{index + 1}</Text>
+    <Text style={styles.selectionId}>{item.id}</Text>
+    <Text style={styles.selectionTime}>{item.formattedTime}</Text>
+  </View>
 ));
 // Storage keys
 const CHECKLIST_ACTIVE_SESSION_STORAGE_KEY = 'activeChecklistSession';
@@ -63,7 +63,7 @@ const [sessions, setSessions] = useState([]);
 const [filteredStudents, setFilteredStudents] = useState([]);
 const [connectionMessage, setConnectionMessage] = useState('');
 const [selectionStatus, setSelectionStatus] = useState('');
-const [scanStatus, setScanStatus] = useState('');
+const [checkliststatus, setcheckliststatus] = useState('');
 // Debug connection status
 useEffect(() => {
 console.log("isOnline prop value:", isOnline);
@@ -82,7 +82,19 @@ console.log("Fetch test failed:", error.message);
 };
 testConnection();
 }, [isOnline]);
-// Add this useEffect under the other useEffect for filtering
+// Add this effect to check for pending backups when coming online
+useEffect(() => {
+if (isOnline) {
+// Process any pending backups when we come back online
+processPendingBackups()
+.then(result => {
+if (result && result.processed > 0) {
+setcheckliststatus(`Processed ${result.processed} pending backups`);
+}
+})
+.catch(error => console.error("Error processing pending backups:", error));
+}
+}, [isOnline]); // This will run whenever isOnline changes
 useEffect(() => {
 // Debounce search for better performance
 const timeoutId = setTimeout(() => {
@@ -127,17 +139,72 @@ const handleGroupFilter = (group) => {
 setGroupFilter(group);
 setShowGroupFilterModal(false);
 };
+// Make sure the pendingBackups array exists
+AsyncStorage.getItem('pendingBackups').then(pendingBackups => {
+if (!pendingBackups) {
+AsyncStorage.setItem('pendingBackups', JSON.stringify([]));
+console.log("Initialized empty pendingBackups array");
+}
+});
+// Check and process pending backups when coming online
+const checkAndProcessPendingBackups = async () => {
+if (!isOnline) {
+console.log("Cannot process backups while offline");
+return;
+}
+try {
+console.log("Checking for pending backups...");
+// setcheckliststatus('Checking for pending backups...');  // Removed UI update
+const result = await processPendingBackups();
+console.log("Process pending backups result:", result);
+if (result.success) {
+if (result.message.includes('processed')) {
+// setcheckliststatus(result.message);  // Removed UI update
+// Refresh sessions to update backup status
+const savedSessions = await AsyncStorage.getItem('sessions');
+if (savedSessions) {
+// setSessions(JSON.parse(savedSessions));  // Removed UI update
+}
+}
+}
+} catch (error) {
+console.error('Error processing pending backups:', error);
+// setcheckliststatus('Error processing backups');  // Removed UI update
+}
+};
 // Update connection message when online status changes
 useEffect(() => {
-if (isOnline) {
-setConnectionMessage('Online - All features available');
-// If we're back online and there's a session that needs to be saved remotely
-if (activeSession && !activeSession.backedUp) {
-setScanStatus('Back online - Session will be backed up automatically');
-}
-} else {
-setConnectionMessage('Offline - Working in local mode');
-}
+  if (isOnline) {
+    setConnectionMessage('Online - All features available');
+    // If we're back online and there's a session that needs to be backed up remotely
+    if (activeSession && !activeSession.backedUp) {
+      setSelectionStatus('Back online - Session will be backed up automatically');
+      
+      // Process any pending backups when we come back online
+      processPendingBackups()
+        .then(result => {
+          if (result && result.processed > 0) {
+            setSelectionStatus(`Processed ${result.processed} pending backups`);
+            // Clear message after a timeout
+            setTimeout(() => {
+              setSelectionStatus('');
+            }, 5000);
+          } else {
+            // Clear any "will be backed up when online" messages
+            setSelectionStatus('');
+          }
+        })
+        .catch(error => console.error("Error processing pending backups:", error));
+    } else {
+      // Clear any "will be backed up when online" messages
+      setSelectionStatus('');
+    }
+    
+    // Check for pending backups when coming online
+    checkAndProcessPendingBackups();
+  } else {
+    setConnectionMessage('Offline - Working in local mode');
+  }
 }, [isOnline, activeSession]);
 // Load initial data on component mount
 useEffect(() => {
@@ -171,7 +238,7 @@ try {
 const parsedData = JSON.parse(cachedData);
 if (parsedData && parsedData.length > 0) {
 console.log(`Using cached student data with ${parsedData.length} records`);
-setScanStatus(`Loaded ${parsedData.length} student records from cache`);
+setcheckliststatus(`Loaded ${parsedData.length} student records from cache`);
 // Transform cached data
 const transformedData = formatStudentData(parsedData);
 setStudentsData(transformedData);
@@ -190,13 +257,13 @@ const netState = await NetInfo.fetch();
 const isConnected = netState.isConnected && netState.isInternetReachable;
 if (isConnected) {
 console.log("Device is connected to the internet");
-setScanStatus("Online - Loading student data");
+setcheckliststatus("Online - Loading student data");
 try {
 // Get data from loadStudentsData function
 const data = await loadStudentsData(false); // Use false to allow caching
 if (data && data.length > 0) {
 console.log(`Loaded student data with ${data.length} records`);
-setScanStatus(`Loaded ${data.length} student records`);
+setcheckliststatus(`Loaded ${data.length} student records`);
 // Save to cache explicitly
 await AsyncStorage.setItem('cachedStudentsData', JSON.stringify(data));
 console.log("Saved data to cache for future use");
@@ -207,17 +274,17 @@ return;
 }
 } catch (loadError) {
 console.error("Error loading fresh student data:", loadError);
-setScanStatus("Error loading data - Trying cached data");
+setcheckliststatus("Error loading data - Trying cached data");
 }
 } else {
 console.log("Device is offline");
-setScanStatus("Offline - Cannot load new student data");
+setcheckliststatus("Offline - Cannot load new student data");
 }
 // If we get here, we couldn't get valid data from cache or network
 // As a last resort, use the built-in LOCAL_STUDENTS_DATA if available
 console.warn("No student data available - online or cached");
 setStudentsData([]);
-setScanStatus("No student data available");
+setcheckliststatus("No student data available");
 // Show alert to user about missing data
 Alert.alert(
 "No Student Data",
@@ -227,14 +294,14 @@ Alert.alert(
 } catch (error) {
 console.error("Critical error in loadStudentsDataForChecklist:", error);
 setStudentsData([]);
-setScanStatus("Error loading student data");
+setcheckliststatus("Error loading student data");
 }
 };
 // Helper function to check for updates in background
 const checkForUpdatesInBackground = async () => {
 try {
 console.log("Checking for student data updates in background...");
-setScanStatus("Checking for updates in background...");
+setcheckliststatus("Checking for updates in background...");
 // Use the existing function but force a reload
 const data = await loadStudentsData(true);
 if (data && data.length > 0) {
@@ -243,7 +310,7 @@ await AsyncStorage.setItem('cachedStudentsData', JSON.stringify(data));
 // Update UI if there's new data
 const transformedData = formatStudentData(data);
 setStudentsData(transformedData);
-setScanStatus(`Updated to ${data.length} student records`);
+setcheckliststatus(`Updated to ${data.length} student records`);
 console.log("Background update complete");
 }
 } catch (error) {
@@ -508,18 +575,18 @@ removeStudentFromSelectionTable(studentId);
 setSelectedStudents(updatedSelection);
 };
 const handleSyncData = async () => {
-setScanStatus('Syncing student data with server...');
+setcheckliststatus('Syncing student data with server...');
 try {
 const result = await syncStudentsDataWithGitHub();
 if (result.success) {
-setScanStatus(`Sync successful! Loaded ${result.count} students.`);
+setcheckliststatus(`Sync successful! Loaded ${result.count} students.`);
 await loadStudentsDataForChecklist();
 Alert.alert(
 "Sync Complete",
 `Successfully synchronized ${result.count} student records from the server.`
 );
 } else {
-setScanStatus('Sync failed. Please try again later.');
+setcheckliststatus('Sync failed. Please try again later.');
 Alert.alert(
 "Sync Failed",
 `Unable to sync with server: ${result.error}`
@@ -527,7 +594,7 @@ Alert.alert(
 }
 } catch (error) {
 console.error('Error during manual sync:', error);
-setScanStatus('Sync error. Please check your connection.');
+setcheckliststatus('Sync error. Please check your connection.');
 Alert.alert(
 "Sync Error",
 "An unexpected error occurred during synchronization. Please check your internet connection and try again."
@@ -535,32 +602,39 @@ Alert.alert(
 }
 };
 // Add student to selection table
-const addStudentToSelectionTable = (studentId) => {
-if (!activeSession) return;
-// Create timestamp
-const now = new Date();
-const timestamp = now.toISOString();
-const formattedTime = formatTime(now);
-// Create new scan
-const newScan = {
-id: studentId,
-content: studentId,
-timestamp: timestamp,
-formattedTime: formattedTime,
-time: now
+const addStudentToSelectionTable = (studentId, isManual = false) => {
+  if (!activeSession) return;
+  
+  // Create timestamp
+  const now = new Date();
+  const timestamp = now.toISOString();
+  const formattedTime = formatTime(now);
+  
+  // Create new scan
+  const newScan = {
+    id: studentId,
+    content: studentId,
+    timestamp: timestamp,
+    formattedTime: formattedTime,
+    time: now,
+    isManual: isManual // Track if this was manually entered
+  };
+  
+  // Update active session
+  const updatedSession = {
+    ...activeSession,
+    scans: [...activeSession.scans, newScan]
+  };
+  setActiveSession(updatedSession);
+  
+  // Save updated session
+  saveActiveChecklistSession(updatedSession);
+  updateSessionInHistory(updatedSession);
+  
+  // Update status
+  setSelectionStatus(`✓ ${isManual ? 'Manually added' : 'Selected'}: ${studentId}`);
 };
-// Update active session
-const updatedSession = {
-...activeSession,
-scans: [...activeSession.scans, newScan]
-};
-setActiveSession(updatedSession);
-// Save updated session
-saveActiveChecklistSession(updatedSession);
-updateSessionInHistory(updatedSession);
-// Update status
-setSelectionStatus(`✓ Selected: ${studentId}`);
-};
+
 // Remove student from selection table
 const removeStudentFromSelectionTable = (studentId) => {
 if (!activeSession) return;
@@ -595,27 +669,35 @@ AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions));
 };
 // Process manual entry
 const processManualEntry = () => {
-const studentId = manualId.trim();
-if (!studentId) {
-Alert.alert('Error', 'Please enter a Student ID');
-return;
-}
-// Check if already selected
-if (selectedStudents.has(studentId)) {
-Alert.alert('Already Selected', `Student ${studentId} is already in your selection.`);
-setShowManualEntryModal(false);
-setManualId('');
-return;
-}
-// Add to selected students
-handleStudentSelection(studentId, true);
-// Close modal and reset input
-setShowManualEntryModal(false);
-setManualId('');
-// Update status
-setSelectionStatus(`✓ Manually added: ${studentId}`);
-console.log(`Manual entry processed: ${studentId}`);
+  const studentId = manualId.trim();
+  if (!studentId) {
+    Alert.alert('Error', 'Please enter a Student ID');
+    return;
+  }
+  
+  // Check if already selected
+  if (selectedStudents.has(studentId)) {
+    Alert.alert('Already Selected', `Student ${studentId} is already in your selection.`);
+    setShowManualEntryModal(false);
+    setManualId('');
+    return;
+  }
+  
+  // Add to selected students
+  handleStudentSelection(studentId, true);
+  
+  // Add to selection table with isManual flag
+  addStudentToSelectionTable(studentId, true);
+  
+  // Close modal and reset input
+  setShowManualEntryModal(false);
+  setManualId('');
+  
+  // Update status
+  setSelectionStatus(`✓ Manually added: ${studentId}`);
+  console.log(`Manual entry processed: ${studentId}`);
 };
+
 // End checklist session
 const endChecklistSession = () => {
 if (!activeSession) {
@@ -655,53 +737,60 @@ onPress: () => finalizeChecklistSession()
 };
 // Finalize the checklist session
 const finalizeChecklistSession = () => {
-// Create a copy of the session for export
-const sessionToExport = { ...activeSession };
-// Mark session as completed in history
-AsyncStorage.getItem('sessions').then(savedSessions => {
-if (savedSessions) {
-const parsedSessions = JSON.parse(savedSessions);
-const sessionIndex = parsedSessions.findIndex(s => s.id === activeSession.id);
-if (sessionIndex !== -1) {
-const updatedSessions = [...parsedSessions];
-updatedSessions[sessionIndex] = {
-...updatedSessions[sessionIndex],
-inProgress: false,
-backedUp: isOnline // Mark if backed up based on connection status
-};
-setSessions(updatedSessions);
-AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions));
+  // Create a copy of the session for export
+  const sessionToExport = { ...activeSession };
+  
+  // Mark session as completed in history
+  AsyncStorage.getItem('sessions').then(savedSessions => {
+    if (savedSessions) {
+      const parsedSessions = JSON.parse(savedSessions);
+      const sessionIndex = parsedSessions.findIndex(s => s.id === activeSession.id);
+      if (sessionIndex !== -1) {
+        const updatedSessions = [...parsedSessions];
+        updatedSessions[sessionIndex] = {
+          ...updatedSessions[sessionIndex],
+          inProgress: false,
+          backedUp: isOnline // Mark if backed up based on connection status
+        };
+        setSessions(updatedSessions);
+        AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions));
+      }
+    }
+  }).catch(error => {
+    console.error("Error updating session in storage:", error);
+  });
+  
+  // Clear active session
+  setActiveSession(null);
+  setSelectedStudents(new Set());
+  setSelectionStatus('');
+  clearActiveChecklistSession();
+  
+  // Show alert
+  Alert.alert('Success', 'Session ended successfully');
+// Show alert about offline backup
+if (!isOnline && activeSession.scans.length > 0) {
+  setTimeout(() => {
+    Alert.alert(
+      "Session Saved Offline",
+      "This session has been saved offline and will be backed up automatically when you're back online.",
+      [{ text: "OK" }]
+    );
+  }, 1500);
 }
-}
-}).catch(error => {
-console.error("Error updating session in storage:", error);
-});
-// Clear active session
-setActiveSession(null);
-setSelectedStudents(new Set());
-setSelectionStatus('');
-clearActiveChecklistSession();
-// Show alert
-Alert.alert('Success', 'Session ended successfully');
-console.log("Checklist session ended successfully");
-// Export session to Excel only if there are scans
-if (sessionToExport && sessionToExport.scans && sessionToExport.scans.length > 0) {
-setTimeout(() => {
-exportChecklistSession(sessionToExport)
-.then(success => {
-if (!success && !isOnline) {
-// If export failed and offline, queue for backup
-queueSessionForBackup(sessionToExport);
-}
-})
-.catch(error => {
-console.error("Error during export:", error);
-if (!isOnline) {
-queueSessionForBackup(sessionToExport);
-}
-});
-}, 500);
-}
+  console.log("Checklist session ended successfully");
+  
+  // Export session to Excel only if there are scans
+  if (sessionToExport && sessionToExport.scans && sessionToExport.scans.length > 0) {
+    setTimeout(() => {
+      if (!isOnline) {
+        // If offline, queue for backup instead of immediate export
+        queueSessionForBackup(sessionToExport);
+      } else {
+        exportChecklistSession(sessionToExport);
+      }
+    }, 500);
+  }
 };
 // Update backup status in UI and storage
 const updateBackupStatus = async (sessionId, isBackedUp) => {
@@ -733,102 +822,129 @@ console.error("Error updating backup status:", error);
 // Queue session for backup when offline
 const queueSessionForBackup = async (session) => {
   try {
-    const pendingBackups = await AsyncStorage.getItem('pendingBackups') || '[]';
-    const backupsArray = JSON.parse(pendingBackups);
+    console.log("Queueing checklist session for backup:", session.id);
+    // Get existing pending backups
+    const pendingBackups = await AsyncStorage.getItem('pendingBackups');
+    const backupsArray = pendingBackups ? JSON.parse(pendingBackups) : [];
     
-    // Generate a proper file name
+    // Generate a proper file name for this checklist session
     const fileName = `Checklist_${session.location.replace(/[^a-z0-9]/gi, '_')}_${formatDateTimeForFile(new Date(session.dateTime))}.xlsx`;
     
-    // Add this session to pending backups
+    // Add this session to pending backups with checklist-specific metadata
     backupsArray.push({
+      timestamp: new Date().toISOString(),
       session: session,
       fileName: fileName,
-      timestamp: new Date().toISOString(),
-      type: 'checklist',
+      type: 'checklist', // Mark this as a checklist session explicitly
       retryCount: 0
     });
     
+    // Save updated pending backups
     await AsyncStorage.setItem('pendingBackups', JSON.stringify(backupsArray));
-    console.log(`Session ${session.id} queued for backup when online (${backupsArray.length} total pending)`);
+    console.log(`Checklist session queued for backup. Total pending: ${backupsArray.length}`);
     
+    // Display status message about offline backup
+    setSelectionStatus(`Session saved offline. Will be backed up when online.`);
+    
+    // Show alert with offline backup information
     Alert.alert(
-      'Offline Mode',
-      'Your session has been saved locally and will be backed up automatically when an internet connection is available.'
+      "Session Saved Offline",
+      "This session has been saved offline and will be backed up automatically when you're back online.",
+      [{ text: "OK" }]
     );
   } catch (error) {
-    console.error('Error queueing session for backup:', error);
+    console.error("Error queueing checklist session for backup:", error);
+    Alert.alert("Backup Error", "Failed to queue checklist session for later backup.");
   }
 };
+
 // Export checklist session to Excel
 const exportChecklistSession = async (session) => {
-try {
-const fileName = `Checklist_${session.location.replace(/[^a-z0-9]/gi, '_')}_${formatDateTimeForFile(new Date(session.dateTime))}.xlsx`;
-// Prepare data
-const data = [
-['Number', 'Student ID', 'Location', 'Log Date', 'Log Time']
-];
-// Add scans with row numbers
-session.scans.forEach((scan, index) => {
-const scanDate = new Date(scan.time || scan.timestamp);
-data.push([
-index + 1,            // Row number
-scan.content,         // Student ID
-session.location,     // Location
-formatDate(scanDate), // Log Date
-formatTime(scanDate)  // Log Time
-]);
-});
-// Create workbook
-const ws = XLSX.utils.aoa_to_sheet(data);
-const wb = XLSX.utils.book_new();
-XLSX.utils.book_append_sheet(wb, ws, "Checklist");
-// Convert to binary
-const wbout = XLSX.write(wb, { type: 'base64', bookType: 'xlsx' });
-// Save file locally (works offline)
-const filePath = `${FileSystem.documentDirectory}${fileName}`;
-await FileSystem.writeAsStringAsync(filePath, wbout, {
-encoding: FileSystem.EncodingType.Base64
-});
-// Show success message
-Alert.alert(
-"Export Successful",
-`Checklist data saved as ${fileName}. ${!isOnline ? "The file will be backed up when you're back online." : ""}`
-);
-console.log("Checklist Excel file saved:", fileName);
-// Add backup logic for when online
-if (isOnline) {
-// Try to backup immediately if online
-try {
-// Import backupToGitHub from services/backup
-const { backupToGitHub } = require('../services/backup');
-await backupToGitHub([session], false, fileName);
-console.log("Checklist backed up successfully");
-// Update backup status in UI and storage
-await updateBackupStatus(session.id, true);
-// Add this code to update the last backup time
-await BackupService.getLastBackupTime();  } catch (backupError) {
-console.error("Error backing up checklist:", backupError);
-// Queue for later retry
-const pendingBackups = await AsyncStorage.getItem('pendingBackups') || '[]';
-const backupsArray = JSON.parse(pendingBackups);
-backupsArray.push({
-session: session,
-fileName: fileName,
-timestamp: new Date().toISOString(),
-type: 'checklist',
-retryCount: 1,
-error: backupError.message
-});
-await AsyncStorage.setItem('pendingBackups', JSON.stringify(backupsArray));
-}
-}
-return true;
-} catch (error) {
-console.error("Error exporting checklist session:", error);
-Alert.alert("Export Error", "Failed to export checklist: " + error.message);
-return false;
-}
+  try {
+    const fileName = `Checklist_${session.location.replace(/[^a-z0-9]/gi, '_')}_${formatDateTimeForFile(new Date(session.dateTime))}.xlsx`;
+    // Prepare data
+    const data = [
+      ['Number', 'Student ID', 'Location', 'Log Date', 'Log Time', 'Type'] // Added Type column
+    ];
+    
+    // Add scans with row numbers
+    session.scans.forEach((scan, index) => {
+      const scanDate = new Date(scan.time || scan.timestamp);
+      data.push([
+        index + 1,            // Row number
+        scan.content,         // Student ID
+        session.location,     // Location
+        formatDate(scanDate), // Log Date
+        formatTime(scanDate), // Log Time
+        scan.isManual ? 'Manual' : 'Scan'  // Add type column to indicate manual entries
+      ]);
+    });
+    
+    // Create workbook
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Checklist");
+    
+    // Convert to binary
+    const wbout = XLSX.write(wb, { type: 'base64', bookType: 'xlsx' });
+    
+    // Save file locally (works offline)
+    const filePath = `${FileSystem.documentDirectory}${fileName}`;
+    await FileSystem.writeAsStringAsync(filePath, wbout, {
+      encoding: FileSystem.EncodingType.Base64
+    });
+    console.log("Checklist Excel file saved:", fileName);
+    
+    // Add backup logic for when online
+    if (isOnline) {
+      // Try to backup immediately if online
+      try {
+        await backupToGitHub([session], false, fileName);
+        console.log("Checklist backed up successfully");
+        
+        // Update backup status in UI and storage
+        await updateBackupStatus(session.id, true);
+        
+        // Add this code to update the last backup time
+        await BackupService.getLastBackupTime();
+        
+        // Show success message for online backup
+        Alert.alert(
+          "Backup Successful",
+          "Checklist session has been successfully backed up to GitHub.",
+          [{ text: "OK" }]
+        );
+      } catch (backupError) {
+        console.error("Error backing up checklist:", backupError);
+        
+        // Queue for later retry
+        const pendingBackups = await AsyncStorage.getItem('pendingBackups') || '[]';
+        const backupsArray = JSON.parse(pendingBackups);
+        backupsArray.push({
+          session: session,
+          fileName: fileName,
+          timestamp: new Date().toISOString(),
+          type: 'checklist',
+          retryCount: 1,
+          error: backupError.message
+        });
+        await AsyncStorage.setItem('pendingBackups', JSON.stringify(backupsArray));
+      }
+    }
+    
+    // Show success message
+    Alert.alert(
+      "Export Successful",
+      `Checklist data saved as ${fileName}. ${!isOnline ? "The file will be backed up when you're back online." : ""}`
+    );
+    return true;
+  } catch (error) {
+    console.error("Error exporting checklist session:", error);
+    Alert.alert("Export Error", "Failed to export checklist: " + error.message);
+    return false;
+  }
 };
+
 // Helper functions for date/time formatting
 const formatDateTime = (date) => {
 return `${formatDate(date)} ${formatTime(date)}`;
@@ -901,11 +1017,10 @@ return (
 <Surface style={styles.card}>
 <Title style={styles.title}>Student Selector</Title>
 <View style={styles.buttonContainer}>
-<View style={styles.primaryButtonGroup}>
 <Button 
 mode="contained" 
-style={styles.mainButton}
-labelStyle={styles.buttonText}
+style={[styles.primaryButton, styles.fullWidthButton]}
+labelStyle={styles.primaryButtonText}
 onPress={() => activeSession ? endChecklistSession() : startChecklistSession()}
 >
 {activeSession ? 'End Session' : 'Start New Session'}
@@ -913,20 +1028,19 @@ onPress={() => activeSession ? endChecklistSession() : startChecklistSession()}
 {!activeSession && (
 <Button 
 mode="outlined" 
-style={styles.syncButton}
-labelStyle={styles.syncButtonText}
+style={[styles.secondaryButton, styles.fullWidthButton]}
+labelStyle={styles.secondaryButtonText}
 onPress={handleSyncData}
 disabled={!isOnline}
 >
 Sync Data
 </Button>
 )}
-</View>
 {activeSession && (
 <Button 
 mode="outlined" 
-style={styles.manualButton}
-labelStyle={styles.syncButtonText}
+style={[styles.secondaryButton, styles.fullWidthButton]}
+labelStyle={styles.secondaryButtonText}
 onPress={() => setShowManualEntryModal(true)}
 >
 Manual Entry
@@ -958,8 +1072,8 @@ style={styles.searchbar}
 <Button 
 mode="outlined" 
 onPress={() => setShowYearFilterModal(true)}
-style={styles.filterButton}
-labelStyle={styles.filterButtonText}
+style={styles.secondaryButton}
+labelStyle={styles.secondaryButtonText}
 >
 {yearFilter === 'all' ? 'All Years' : yearFilter}
 </Button>
@@ -969,15 +1083,15 @@ labelStyle={styles.filterButtonText}
 <Button 
 mode="outlined" 
 onPress={() => setShowGroupFilterModal(true)}
-style={styles.filterButton}
-labelStyle={styles.filterButtonText}
+style={styles.secondaryButton}
+labelStyle={styles.secondaryButtonText}
 >
 {groupFilter === 'all' ? 'All Groups' : groupFilter}
 </Button>
 </View>
 </View>
 <FlatList
-style={styles.studentList}
+style={[styles.studentList, { height: 250 }]}
 data={filteredStudents}
 keyExtractor={(student) => `student-${student["Student ID"] || student.id || ""}`}
 renderItem={({ item: student }) => (
@@ -992,6 +1106,7 @@ length: 48,
 offset: 48 * index,
 index,
 })}
+nestedScrollEnabled={true}
 windowSize={10}
 maxToRenderPerBatch={10}
 updateCellsBatchingPeriod={50}
@@ -1016,31 +1131,32 @@ Click "Start New Session" to begin selecting students.
 </View>
 )}
 <Title style={styles.subtitle}>Selected Students</Title>
-{activeSession && activeSession.scans.length > 0 ? (
+{activeSession && activeSession.scans && activeSession.scans.length > 0 ? (
 <View style={styles.tableContainer}>
-<FlatList
-data={activeSession.scans}
-keyExtractor={(item, index) => `scan-${index}`}
-renderItem={({ item, index }) => <SelectedStudentItem item={item} index={index} />}
-ItemSeparatorComponent={() => <Divider />}
-nestedScrollEnabled={true}
-getItemLayout={(data, index) => ({
-length: 40,
-offset: 40 * index,
-index,
-})}
-windowSize={5}
-maxToRenderPerBatch={10}
-updateCellsBatchingPeriod={50}
-removeClippedSubviews={true}
-initialNumToRender={10}
-/>
+  <DataTable>
+    <DataTable.Header style={{ backgroundColor: '#f5f5f5' }}>
+      <DataTable.Title numeric style={{ flex: 0.2 }}>ID</DataTable.Title>
+      <DataTable.Title style={{ flex: 0.6 }}>Content</DataTable.Title>
+      <DataTable.Title style={{ flex: 0.4 }}>Time</DataTable.Title>
+    </DataTable.Header>
+    <ScrollView style={{ maxHeight: 200 }} nestedScrollEnabled={true}>
+      {activeSession.scans.map((scan, index) => (
+        <DataTable.Row key={scan.id || index}>
+          <DataTable.Cell numeric style={{ flex: 0.2 }}>{index + 1}</DataTable.Cell>
+          <DataTable.Cell style={{ flex: 0.6 }}>
+            {scan.id}
+            {scan.isManual ? ' (Manual)' : ''}
+          </DataTable.Cell>
+          <DataTable.Cell style={{ flex: 0.4 }}>{scan.formattedTime}</DataTable.Cell>
+        </DataTable.Row>
+      ))}
+    </ScrollView>
+  </DataTable>
 </View>
 ) : (
-<Text style={styles.noDataText}>No students selected yet.</Text>
+  <Text style={styles.noDataText}>No students selected yet.</Text>
 )}
 </Surface>
-</ScrollView>
 <Portal>
 <Modal
 visible={showSessionModal}
@@ -1092,12 +1208,12 @@ style={styles.locationOption}
 ))}
 </ScrollView>
 </View>
-<View style={styles.syncButton}>
+<View style={styles.modalButtons}>
 <Button 
 mode="text"
-labelStyle={styles.syncButtonText}
+labelStyle={styles.secondaryButtonText}
 onPress={() => setShowSessionModal(false)}
-style={styles.syncButton}
+style={styles.secondaryButton}
 >
 Cancel
 </Button>
@@ -1119,13 +1235,21 @@ style={styles.input}
 autoFocus
 onSubmitEditing={processManualEntry}
 />
-<View style={styles.syncButton}>
-<Button onPress={() => setShowManualEntryModal(false)}>Cancel</Button>
+<View style={styles.modalButtons}>
+<Button 
+mode="text" 
+onPress={() => setShowManualEntryModal(false)}
+style={styles.secondaryButton}
+labelStyle={styles.secondaryButtonText}
+>
+Cancel
+</Button>
 <Button 
 mode="contained" 
 onPress={processManualEntry}
 disabled={!manualId.trim()}
-labelStyle={styles.syncButtonText}
+style={styles.primaryButton}
+labelStyle={styles.primaryButtonText}
 >
 Add
 </Button>
@@ -1139,10 +1263,23 @@ onDismiss={() => setShowYearFilterModal(false)}
 contentContainerStyle={styles.modalContent}
 >
 <Title>Select Year</Title>
-<Button onPress={() => handleYearFilter('all')}>All Years</Button>
+<Button 
+onPress={() => handleYearFilter('all')}
+style={styles.secondaryButton}
+labelStyle={styles.secondaryButtonText}
+>
+All Years
+</Button>
 <ScrollView style={{ maxHeight: 300 }}>
 {getUniqueYears.map(year => (
-<Button key={year} onPress={() => handleYearFilter(year)}>{year}</Button>
+<Button 
+key={year} 
+onPress={() => handleYearFilter(year)}
+style={styles.secondaryButton}
+labelStyle={styles.secondaryButtonText}
+>
+{year}
+</Button>
 ))}
 </ScrollView>
 </Modal>
@@ -1154,14 +1291,28 @@ onDismiss={() => setShowGroupFilterModal(false)}
 contentContainerStyle={styles.modalContent}
 >
 <Title>Select Group</Title>
-<Button onPress={() => handleGroupFilter('all')}>All Groups</Button>
+<Button 
+onPress={() => handleGroupFilter('all')}
+style={styles.secondaryButton}
+labelStyle={styles.secondaryButtonText}
+>
+All Groups
+</Button>
 <ScrollView style={{ maxHeight: 300 }}>
 {getUniqueGroups.map(group => (
-<Button key={group} onPress={() => handleGroupFilter(group)}>{group}</Button>
+<Button 
+key={group} 
+onPress={() => handleGroupFilter(group)}
+style={styles.secondaryButton}
+labelStyle={styles.secondaryButtonText}
+>
+{group}
+</Button>
 ))}
 </ScrollView>
 </Modal>
 </Portal>
+</ScrollView>
 </Provider>
 );
 };
@@ -1171,12 +1322,16 @@ flex: 1,
 padding: 16,
 backgroundColor: '#f9f9f9',
 },
+scrollContent: {
+flexGrow: 1,
+paddingBottom: 20, // Add padding at bottom
+},
 card: {
 padding: 16,
 borderRadius: 8,
 elevation: 4,
 backgroundColor: '#ffffff',
-marginBottom: 20, // Add margin at the bottom of the card
+marginBottom: 20,
 },
 title: {
 fontSize: 20,
@@ -1198,30 +1353,28 @@ primaryButtonGroup: {
 flexDirection: 'row',
 marginBottom: 8,
 },
-mainButton: {
-flex: 1,
-marginRight: 4,
+// Solid primary buttons (blue with white text)
+primaryButton: {
 backgroundColor: '#24325f',
 borderColor: '#24325f',
+marginBottom: 8,
+marginRight: 8,
 },
-buttonText: {
+primaryButtonText: {
 color: 'white',
 },
-syncButton: {
-flex: 1,
-marginLeft: 4,
+// Inverted secondary buttons (white with blue border and text)
+secondaryButton: {
+backgroundColor: 'white',
 borderColor: '#24325f',
+borderWidth: 1,
+marginBottom: 8,
+marginRight: 8,
 },
-syncButtonText: {
+secondaryButtonText: {
 color: '#24325f',
 },
-manualButton: {
-borderColor: '#24325f',
-backgroundColor: 'transparent',
-},
-manualButtonText: {
-color: '#24325f',
-},
+// Session info styling
 sessionInfo: {
 backgroundColor: '#f0f0f5',
 padding: 8,
@@ -1237,38 +1390,7 @@ color: '#24325f',
 dateTimeText: {
 color: '#24325f',
 },
-checklistContainer: {
-height: 300,
-backgroundColor: '#f0f0f0',
-borderRadius: 8,
-justifyContent: 'center',
-padding: 16,
-borderWidth: 1,
-borderColor: '#24325f',
-},
-connectionStatus: {
-padding: 8,
-borderRadius: 4,
-marginBottom: 8,
-alignItems: 'center',
-},
-placeholderText: {
-textAlign: 'center',
-color: '#24325f',
-},
-noDataText: {
-textAlign: 'center',
-color: '#24325f',
-fontStyle: 'italic',
-marginTop: 8,
-},
-tableContainer: {
-borderWidth: 1,
-borderColor: '#24325f',
-borderRadius: 8,
-overflow: 'hidden',
-marginBottom: 20, // Add margin to separate from bottom of screen
-},
+// Status container
 statusContainer: {
 backgroundColor: 'rgba(0,0,0,0.7)',
 padding: 8,
@@ -1279,6 +1401,48 @@ alignItems: 'center',
 statusText: {
 color: 'white',
 },
+// Scanner and checklist containers (maintain unique functionality)
+scannerContainer: {
+height: 300,
+backgroundColor: '#f0f0f0',
+borderRadius: 8,
+justifyContent: 'center',
+alignItems: 'center',
+padding: 16,
+overflow: 'hidden',
+borderWidth: 1,
+borderColor: '#24325f',
+},
+checklistContainer: {
+height: 300,
+backgroundColor: '#f0f0f0',
+borderRadius: 8,
+justifyContent: 'center',
+padding: 16,
+borderWidth: 1,
+borderColor: '#24325f',
+},
+// Table container
+tableContainer: {
+borderWidth: 1,
+borderColor: '#24325f',
+borderRadius: 8,
+overflow: 'hidden',
+marginBottom: 20,
+backgroundColor: '#fff',
+},
+// Connection status
+connectionStatus: {
+padding: 8,
+borderRadius: 4,
+marginBottom: 8,
+alignItems: 'center',
+},
+connectionText: {
+color: '#24325f',
+fontWeight: '500',
+},
+// Modal styles
 modalContent: {
 backgroundColor: 'white',
 padding: 20,
@@ -1286,84 +1450,10 @@ margin: 20,
 borderRadius: 8,
 elevation: 5,
 },
-input: {
-marginVertical: 10,
-borderWidth: 1,
-borderColor: '#ddd',
-borderRadius: 4,
-padding: 8,
-},
 modalButtons: {
 flexDirection: 'row',
 justifyContent: 'flex-end',
 marginTop: 16,
-},
-errorText: {
-color: '#951d1e',
-fontSize: 14,
-marginBottom: 10,
-},
-searchbar: {
-marginBottom: 8,
-backgroundColor: '#fff',
-borderWidth: 1,
-borderColor: '#ddd',
-borderRadius: 4,
-},
-filterContainer: {
-flexDirection: 'row',
-marginBottom: 8,
-},
-filterItem: {
-flex: 1,
-flexDirection: 'row',
-alignItems: 'center',
-marginRight: 8,
-},
-filterLabel: {
-marginRight: 8,
-fontWeight: 'bold',
-color: '#24325f',
-},
-filterButton: {
-flex: 1,
-borderColor: '#24325f',
-},
-filterButtonText: {
-color: '#24325f',
-},
-studentList: {
-flex: 1,
-backgroundColor: 'white',
-borderRadius: 4,
-marginBottom: 8,
-borderWidth: 1,
-borderColor: '#24325f',
-},
-studentItem: {
-borderBottomWidth: 1,
-borderBottomColor: '#eee',
-padding: 10,
-},
-emptyList: {
-flex: 1,
-justifyContent: 'center',
-alignItems: 'center',
-padding: 20,
-},
-emptyText: {
-textAlign: 'center',
-color: '#24325f',
-fontStyle: 'italic',
-},
-modalButton: {
-marginHorizontal: 8,
-minWidth: 80,
-backgroundColor: '#24325f',
-borderColor: '#24325f',
-},
-modalButtonText: {
-color: 'white',
 },
 dropdownLabel: {
 fontSize: 16,
@@ -1386,22 +1476,85 @@ borderBottomWidth: 1,
 borderBottomColor: '#eee',
 padding: 10,
 },
-selectionNumber: {
-width: 30,
+// Text inputs
+input: {
+marginVertical: 10,
+borderWidth: 1,
+borderColor: '#ddd',
+borderRadius: 4,
+padding: 8,
+},
+// Info and error text
+placeholderText: {
+textAlign: 'center',
+color: '#24325f',
+},
+noDataText: {
+textAlign: 'center',
+color: '#24325f',
+fontStyle: 'italic',
+marginTop: 8,
+},
+errorText: {
+color: '#951d1e',
+fontSize: 14,
+marginBottom: 10,
+},
+// Checklist-specific styles
+searchbar: {
+marginBottom: 8,
+backgroundColor: '#fff',
+borderWidth: 1,
+borderColor: '#ddd',
+borderRadius: 4,
+},
+filterContainer: {
+flexDirection: 'row',
+marginBottom: 8,
+},
+filterItem: {
+flex: 1,
+flexDirection: 'row',
+alignItems: 'center',
+marginRight: 8,
+},
+filterLabel: {
+marginRight: 8,
 fontWeight: 'bold',
 color: '#24325f',
 },
-selectionId: {
+studentList: {
 flex: 1,
+backgroundColor: 'white',
+borderRadius: 4,
+marginBottom: 8,
+borderWidth: 1,
+borderColor: '#24325f',
 },
-selectionTime: {
-width: 80,
-textAlign: 'right',
+studentItem: {
+borderBottomWidth: 1,
+borderBottomColor: '#eee',
+padding: 10,
+backgroundColor: '#fff',
+},
+selectionItem: {
+flexDirection: 'row',
+alignItems: 'center',
+padding: 12,
+backgroundColor: '#fff',
+borderBottomWidth: 1,
+borderBottomColor: '#eee',
+},
+emptyList: {
+flex: 1,
+justifyContent: 'center',
+alignItems: 'center',
+padding: 20,
+},
+emptyText: {
+textAlign: 'center',
 color: '#24325f',
-},
-scrollContent: {
-flexGrow: 1,
-paddingBottom: 20, // Add padding at bottom to ensure content doesn't get cut off
+fontStyle: 'italic',
 },
 });
 export default ChecklistScreen;

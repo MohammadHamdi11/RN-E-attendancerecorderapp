@@ -50,15 +50,17 @@ export default {
     web: {
       favicon: "./assets/favicon.ico"
     },
-    plugins: [
-      [
-        "expo-barcode-scanner",
-        {
-          cameraPermission: "Allow $(PRODUCT_NAME) to access your camera for scanning QR codes."
-        }
-      ],
-      "expo-file-system"
-    ],
+plugins: [
+  [
+    "expo-barcode-scanner",
+    {
+      cameraPermission: "Allow $(PRODUCT_NAME) to access your camera for scanning QR codes."
+    }
+  ],
+  "expo-file-system",
+  "expo-background-fetch",
+  "expo-task-manager"
+],
     extra: {
       eas: {
         projectId: "36cc9f80-6e6f-419a-b970-583f5b4451d9"
