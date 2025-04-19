@@ -1,8 +1,8 @@
 export default {
-  name: "attendance-recorder",
+  name: "qr-scanner-app",
   expo: {
     name: "Attendance Recorder",
-    slug: "attendance-recorder",
+    slug: "qr-scanner-app",
     version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/apple-touch-icon.png",
