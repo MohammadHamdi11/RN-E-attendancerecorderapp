@@ -33,6 +33,8 @@
         "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to access your microphone",
         "NSUserNotificationAlertStyle": "alert",
         "NSUserNotificationsUsageDescription": "Allow $(PRODUCT_NAME) to send you notifications about backup reminders.",
+        "NSPhotoLibraryAddUsageDescription": "Allow $(PRODUCT_NAME) to save exported files to your photo library or documents folder.",
+        "NSPhotoLibraryUsageDescription": "Allow $(PRODUCT_NAME) to save exported files to your photo library or documents folder.",
         "UIBackgroundModes": ["fetch", "remote-notification"]
 
       }
@@ -57,6 +59,10 @@
         "RECEIVE_BOOT_COMPLETED",
         "android.permission.RECEIVE_BOOT_COMPLETED",
         "android.permission.POST_NOTIFICATIONS",
+        "WRITE_EXTERNAL_STORAGE",
+        "READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WAKE_LOCK"
       ],
       "versionCode": 1
@@ -64,17 +70,18 @@
     "web": {
       "favicon": "./assets/favicon.ico"
     },
-    "plugins": [
-      [
-        "expo-barcode-scanner",
-        {
-          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera for scanning QR codes."
-        }
-      ],
-      "expo-file-system",
-      "expo-background-fetch",
-      "expo-task-manager"
-    ],
+"plugins": [
+  [
+    "expo-barcode-scanner",
+    {
+      "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera for scanning QR codes."
+    }
+  ],
+  "expo-file-system",
+  "expo-background-fetch",
+  "expo-task-manager",
+  "expo-media-library"
+],
     "extra": {
       "eas": {
         "projectId": "36cc9f80-6e6f-419a-b970-583f5b4451d9"

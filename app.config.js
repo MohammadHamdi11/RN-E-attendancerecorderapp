@@ -24,6 +24,8 @@ export default {
       infoPlist: {
         NSCameraUsageDescription: "Allow $(PRODUCT_NAME) to access your camera for scanning QR codes.",
         NSPhotoLibraryUsageDescription: "Allow $(PRODUCT_NAME) to access photos for saving QR scan results.",
+        NSPhotoLibraryAddUsageDescription: "Allow $(PRODUCT_NAME) to save exported files to your photo library or documents folder.",
+        NSPhotoLibraryUsageDescription: "Allow $(PRODUCT_NAME) to save exported files to your photo library or documents folder.",
         NSMicrophoneUsageDescription: "Allow $(PRODUCT_NAME) to access your microphone"
       }
     },
@@ -59,7 +61,8 @@ plugins: [
   ],
   "expo-file-system",
   "expo-background-fetch",
-  "expo-task-manager"
+  "expo-task-manager",
+  "expo-media-library"
 ],
     extra: {
       eas: {

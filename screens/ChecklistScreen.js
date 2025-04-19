@@ -4,6 +4,8 @@ import { Text, Button, Surface, Title, Checkbox, Modal, Portal, Provider, Search
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
+import * as MediaLibrary from 'expo-media-library';
+import { saveToDownloads } from '../services/export';
 import * as XLSX from 'xlsx';
 import * as BackupService from '../services/backup';
 import { backupToGitHub, tryAutoBackup, processPendingBackups } from '../services/backup';
@@ -862,9 +864,10 @@ const queueSessionForBackup = async (session) => {
 const exportChecklistSession = async (session) => {
   try {
     const fileName = `Checklist_${session.location.replace(/[^a-z0-9]/gi, '_')}_${formatDateTimeForFile(new Date(session.dateTime))}.xlsx`;
+    
     // Prepare data
     const data = [
-      ['Number', 'Student ID', 'Location', 'Log Date', 'Log Time', 'Type'] // Added Type column
+      ['Number', 'Student ID', 'Location', 'Log Date', 'Log Time', 'Type']
     ];
     
     // Add scans with row numbers
@@ -876,7 +879,7 @@ const exportChecklistSession = async (session) => {
         session.location,     // Location
         formatDate(scanDate), // Log Date
         formatTime(scanDate), // Log Time
-        scan.isManual ? 'Manual' : 'Scan'  // Add type column to indicate manual entries
+        scan.isManual ? 'Manual' : 'Scan'  // Type
       ]);
     });
     
@@ -888,12 +891,35 @@ const exportChecklistSession = async (session) => {
     // Convert to binary
     const wbout = XLSX.write(wb, { type: 'base64', bookType: 'xlsx' });
     
-    // Save file locally (works offline)
-    const filePath = `${FileSystem.documentDirectory}${fileName}`;
-    await FileSystem.writeAsStringAsync(filePath, wbout, {
+    // Define file path in app's cache directory (temporary location)
+    const fileUri = `${FileSystem.cacheDirectory}${fileName}`;
+    
+    // Write the file
+    await FileSystem.writeAsStringAsync(fileUri, wbout, {
       encoding: FileSystem.EncodingType.Base64
     });
-    console.log("Checklist Excel file saved:", fileName);
+    
+    // Verify the file was created
+    const fileInfo = await FileSystem.getInfoAsync(fileUri);
+    if (!fileInfo.exists) {
+      throw new Error("File not created");
+    }
+    
+    console.log("Excel file saved temporarily to:", fileUri);
+    
+    // Save to downloads
+    const saveResult = await saveToDownloads(fileUri, fileName);
+    
+    if (!saveResult.success) {
+      throw new Error(`Failed to save to Downloads: ${saveResult.message}`);
+    }
+    
+    // Also share the file
+    await Sharing.shareAsync(fileUri, {
+      mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      dialogTitle: 'Export Checklist Session Data',
+      UTI: 'com.microsoft.excel.xlsx'
+    });
     
     // Add backup logic for when online
     if (isOnline) {
@@ -933,18 +959,81 @@ const exportChecklistSession = async (session) => {
     }
     
     // Show success message
-    Alert.alert(
-      "Export Successful",
-      `Checklist data saved as ${fileName}. ${!isOnline ? "The file will be backed up when you're back online." : ""}`
+    Alert.alert("Export Successful",
+      `Checklist data saved to Downloads as ${fileName}. ${!isOnline ? "The file will be backed up when you're back online." : ""}`
     );
-    return true;
+    
+    console.log("Checklist Excel file saved:", fileName);
+    return { success: true, message: 'Export successful!', filePath: saveResult.uri };
   } catch (error) {
     console.error("Error exporting checklist session:", error);
     Alert.alert("Export Error", "Failed to export checklist: " + error.message);
-    return false;
+    return { success: false, message: `Error exporting file: ${error.message}` };
   }
 };
-
+// Function to save a file to the Downloads folder
+const saveToDownloads = async (sourceUri, fileName) => {
+  try {
+    // Request permissions first (needed for Android)
+    const { status } = await MediaLibrary.requestPermissionsAsync();
+    
+    if (status !== 'granted') {
+      Alert.alert(
+        "Permission Required",
+        "We need access to your media library to save files to Downloads.",
+        [{ text: "OK" }]
+      );
+      return { success: false, message: "Permission not granted" };
+    }
+    
+    // Create asset from file
+    const asset = await MediaLibrary.createAssetAsync(sourceUri);
+    
+    // Handle platform differences
+    if (Platform.OS === 'android') {
+      // On Android, use 'Download' folder
+      const album = await MediaLibrary.getAlbumAsync('Download');
+      
+      if (album) {
+        // If Downloads album exists, add asset to it
+        await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
+      } else {
+        // Create a new album if needed
+        await MediaLibrary.createAlbumAsync('Download', asset, false);
+      }
+    } else {
+      // On iOS, use 'Download' album 
+      const album = await MediaLibrary.getAlbumAsync('Download');
+      
+      if (album) {
+        await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
+      } else {
+        await MediaLibrary.createAlbumAsync('Download', asset, false);
+      }
+    }
+    
+    // Show success message to user
+    Alert.alert(
+      "Export Successful",
+      `File saved to Downloads folder as "${fileName}"`,
+      [{ text: "OK" }]
+    );
+    
+    return { 
+      success: true, 
+      message: `File saved successfully to Downloads as "${fileName}"`, 
+      uri: asset.uri 
+    };
+  } catch (error) {
+    console.error("Error saving to downloads:", error);
+    Alert.alert(
+      "Export Failed",
+      `Could not save file: ${error.message}`,
+      [{ text: "OK" }]
+    );
+    return { success: false, message: `Error: ${error.message}` };
+  }
+};
 // Helper functions for date/time formatting
 const formatDateTime = (date) => {
 return `${formatDate(date)} ${formatTime(date)}`;
@@ -1091,15 +1180,17 @@ labelStyle={styles.secondaryButtonText}
 </View>
 </View>
 <FlatList
-style={[styles.studentList, { height: 250 }]}
-data={filteredStudents}
-keyExtractor={(student) => `student-${student["Student ID"] || student.id || ""}`}
-renderItem={({ item: student }) => (
-<StudentItem 
-student={student}
-isSelected={selectedStudents.has(student["Student ID"] || student.id || "")}
-onToggle={(id) => handleStudentSelection(id, !selectedStudents.has(id))}
-/>
+  style={[styles.studentList, { height: 250, backgroundColor: '#ffffff' }]}
+  data={filteredStudents}
+  keyExtractor={(student) => `student-${student["Student ID"] || student.id || ""}`}
+  renderItem={({ item: student }) => (
+    <StudentItem 
+      student={student}
+      isSelected={selectedStudents.has(student["Student ID"] || student.id || "")}
+      onToggle={(id) => handleStudentSelection(id, !selectedStudents.has(id))}
+      textStyle={{ color: '#24325f' }}
+      backgroundColor="#ffffff"
+    />
 )}
 getItemLayout={(data, index) => ({
 length: 48,
@@ -1134,21 +1225,21 @@ Click "Start New Session" to begin selecting students.
 {activeSession && activeSession.scans && activeSession.scans.length > 0 ? (
 <View style={styles.tableContainer}>
   <DataTable>
-    <DataTable.Header style={{ backgroundColor: '#f5f5f5' }}>
-      <DataTable.Title numeric style={{ flex: 0.2 }}>ID</DataTable.Title>
-      <DataTable.Title style={{ flex: 0.6 }}>Content</DataTable.Title>
-      <DataTable.Title style={{ flex: 0.4 }}>Time</DataTable.Title>
-    </DataTable.Header>
+<DataTable.Header style={{ backgroundColor: '#ffffff' }}>
+  <DataTable.Title numeric style={{ flex: 0.2 }}><Text style={{ color: '#24325f' }}>ID</Text></DataTable.Title>
+  <DataTable.Title style={{ flex: 0.6 }}><Text style={{ color: '#24325f' }}>Content</Text></DataTable.Title>
+  <DataTable.Title style={{ flex: 0.4 }}><Text style={{ color: '#24325f' }}>Time</Text></DataTable.Title>
+</DataTable.Header>
     <ScrollView style={{ maxHeight: 200 }} nestedScrollEnabled={true}>
       {activeSession.scans.map((scan, index) => (
-        <DataTable.Row key={scan.id || index}>
-          <DataTable.Cell numeric style={{ flex: 0.2 }}>{index + 1}</DataTable.Cell>
-          <DataTable.Cell style={{ flex: 0.6 }}>
-            {scan.id}
-            {scan.isManual ? ' (Manual)' : ''}
-          </DataTable.Cell>
-          <DataTable.Cell style={{ flex: 0.4 }}>{scan.formattedTime}</DataTable.Cell>
-        </DataTable.Row>
+<DataTable.Row key={scan.id || index} style={{ backgroundColor: '#ffffff' }}>
+  <DataTable.Cell numeric style={{ flex: 0.2 }}><Text style={{ color: '#24325f' }}>{index + 1}</Text></DataTable.Cell>
+  <DataTable.Cell style={{ flex: 0.6 }}><Text style={{ color: '#24325f' }}>
+    {scan.content || scan.id}
+    {scan.isManual ? ' (Manual)' : ''}
+  </Text></DataTable.Cell>
+  <DataTable.Cell style={{ flex: 0.4 }}><Text style={{ color: '#24325f' }}>{scan.formattedTime}</Text></DataTable.Cell>
+</DataTable.Row>
       ))}
     </ScrollView>
   </DataTable>
@@ -1159,19 +1250,20 @@ Click "Start New Session" to begin selecting students.
 </Surface>
 <Portal>
 <Modal
-visible={showSessionModal}
-onDismiss={() => setShowSessionModal(false)}
-contentContainerStyle={styles.modalContent}
+  visible={showSessionModal}
+  onDismiss={() => setShowSessionModal(false)}
+  contentContainerStyle={[styles.modalContent, { backgroundColor: '#ffffff' }]}
 >
-<Title>Start New Session</Title>
-<Text style={styles.dropdownLabel}>Location:</Text>
-<View style={styles.dropdownContainer}>
-<ScrollView style={styles.locationDropdown} nestedScrollEnabled={true}>
-{locationOptions.map(option => (
-<List.Item
-key={option}
-title={option}
-onPress={() => {
+  <Title style={{ color: '#24325f' }}>Start New Session</Title>
+  <Text style={[styles.dropdownLabel, { color: '#24325f' }]}>Location:</Text>
+  <View style={[styles.dropdownContainer, { backgroundColor: '#ffffff' }]}>
+    <ScrollView style={styles.locationDropdown} nestedScrollEnabled={true}>
+      {locationOptions.map(option => (
+        <List.Item
+          key={option}
+          title={option}
+          titleStyle={{ color: '#24325f' }}
+          onPress={() => {
 setLocation(option);
 setShowSessionModal(false);
 setTimeout(() => {
@@ -1202,12 +1294,12 @@ saveActiveChecklistSession(newSession);
 console.log("New checklist session created:", sessionId);
 }
 }, 100);
-}}
-style={styles.locationOption}
-/>
-))}
-</ScrollView>
-</View>
+          }}
+          style={[styles.locationOption, { backgroundColor: '#ffffff' }]}
+        />
+      ))}
+    </ScrollView>
+  </View>
 <View style={styles.modalButtons}>
 <Button 
 mode="text"
@@ -1317,244 +1409,273 @@ labelStyle={styles.secondaryButtonText}
 );
 };
 const styles = StyleSheet.create({
-container: {
-flex: 1,
-padding: 16,
-backgroundColor: '#f9f9f9',
-},
-scrollContent: {
-flexGrow: 1,
-paddingBottom: 20, // Add padding at bottom
-},
-card: {
-padding: 16,
-borderRadius: 8,
-elevation: 4,
-backgroundColor: '#ffffff',
-marginBottom: 20,
-},
-title: {
-fontSize: 20,
-marginBottom: 16,
-color: '#24325f',
-fontWeight: 'bold',
-},
-subtitle: {
-fontSize: 16,
-marginTop: 16,
-marginBottom: 8,
-color: '#24325f',
-fontWeight: '500',
-},
-buttonContainer: {
-marginBottom: 16,
-},
-primaryButtonGroup: {
-flexDirection: 'row',
-marginBottom: 8,
-},
-// Solid primary buttons (blue with white text)
-primaryButton: {
-backgroundColor: '#24325f',
-borderColor: '#24325f',
-marginBottom: 8,
-marginRight: 8,
-},
-primaryButtonText: {
-color: 'white',
-},
-// Inverted secondary buttons (white with blue border and text)
-secondaryButton: {
-backgroundColor: 'white',
-borderColor: '#24325f',
-borderWidth: 1,
-marginBottom: 8,
-marginRight: 8,
-},
-secondaryButtonText: {
-color: '#24325f',
-},
-// Session info styling
-sessionInfo: {
-backgroundColor: '#f0f0f5',
-padding: 8,
-borderRadius: 4,
-marginBottom: 8,
-borderWidth: 1,
-borderColor: '#24325f',
-},
-locationText: {
-fontWeight: 'bold',
-color: '#24325f',
-},
-dateTimeText: {
-color: '#24325f',
-},
-// Status container
-statusContainer: {
-backgroundColor: 'rgba(0,0,0,0.7)',
-padding: 8,
-borderRadius: 20,
-marginBottom: 16,
-alignItems: 'center',
-},
-statusText: {
-color: 'white',
-},
-// Scanner and checklist containers (maintain unique functionality)
-scannerContainer: {
-height: 300,
-backgroundColor: '#f0f0f0',
-borderRadius: 8,
-justifyContent: 'center',
-alignItems: 'center',
-padding: 16,
-overflow: 'hidden',
-borderWidth: 1,
-borderColor: '#24325f',
-},
-checklistContainer: {
-height: 300,
-backgroundColor: '#f0f0f0',
-borderRadius: 8,
-justifyContent: 'center',
-padding: 16,
-borderWidth: 1,
-borderColor: '#24325f',
-},
-// Table container
-tableContainer: {
-borderWidth: 1,
-borderColor: '#24325f',
-borderRadius: 8,
-overflow: 'hidden',
-marginBottom: 20,
-backgroundColor: '#fff',
-},
-// Connection status
-connectionStatus: {
-padding: 8,
-borderRadius: 4,
-marginBottom: 8,
-alignItems: 'center',
-},
-connectionText: {
-color: '#24325f',
-fontWeight: '500',
-},
-// Modal styles
-modalContent: {
-backgroundColor: 'white',
-padding: 20,
-margin: 20,
-borderRadius: 8,
-elevation: 5,
-},
-modalButtons: {
-flexDirection: 'row',
-justifyContent: 'flex-end',
-marginTop: 16,
-},
-dropdownLabel: {
-fontSize: 16,
-fontWeight: 'bold',
-marginBottom: 8,
-color: '#24325f',
-},
-dropdownContainer: {
-borderWidth: 1,
-borderColor: '#ddd',
-borderRadius: 4,
-marginBottom: 16,
-backgroundColor: '#fff',
-},
-locationDropdown: {
-maxHeight: 250,
-},
-locationOption: {
-borderBottomWidth: 1,
-borderBottomColor: '#eee',
-padding: 10,
-},
-// Text inputs
-input: {
-marginVertical: 10,
-borderWidth: 1,
-borderColor: '#ddd',
-borderRadius: 4,
-padding: 8,
-},
-// Info and error text
-placeholderText: {
-textAlign: 'center',
-color: '#24325f',
-},
-noDataText: {
-textAlign: 'center',
-color: '#24325f',
-fontStyle: 'italic',
-marginTop: 8,
-},
-errorText: {
-color: '#951d1e',
-fontSize: 14,
-marginBottom: 10,
-},
-// Checklist-specific styles
-searchbar: {
-marginBottom: 8,
-backgroundColor: '#fff',
-borderWidth: 1,
-borderColor: '#ddd',
-borderRadius: 4,
-},
-filterContainer: {
-flexDirection: 'row',
-marginBottom: 8,
-},
-filterItem: {
-flex: 1,
-flexDirection: 'row',
-alignItems: 'center',
-marginRight: 8,
-},
-filterLabel: {
-marginRight: 8,
-fontWeight: 'bold',
-color: '#24325f',
-},
-studentList: {
-flex: 1,
-backgroundColor: 'white',
-borderRadius: 4,
-marginBottom: 8,
-borderWidth: 1,
-borderColor: '#24325f',
-},
-studentItem: {
-borderBottomWidth: 1,
-borderBottomColor: '#eee',
-padding: 10,
-backgroundColor: '#fff',
-},
-selectionItem: {
-flexDirection: 'row',
-alignItems: 'center',
-padding: 12,
-backgroundColor: '#fff',
-borderBottomWidth: 1,
-borderBottomColor: '#eee',
-},
-emptyList: {
-flex: 1,
-justifyContent: 'center',
-alignItems: 'center',
-padding: 20,
-},
-emptyText: {
-textAlign: 'center',
-color: '#24325f',
-fontStyle: 'italic',
-},
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: '#f9f9f9',
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 20,
+    backgroundColor: '#f9f9f9',
+  },
+  card: {
+    padding: 16,
+    borderRadius: 8,
+    elevation: 4,
+    backgroundColor: '#ffffff',
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 20,
+    marginBottom: 16,
+    color: '#24325f',
+    fontWeight: 'bold',
+    backgroundColor: 'transparent',
+  },
+  subtitle: {
+    fontSize: 16,
+    marginTop: 16,
+    marginBottom: 8,
+    color: '#24325f',
+    fontWeight: '500',
+    backgroundColor: 'transparent',
+  },
+  buttonContainer: {
+    marginBottom: 16,
+    backgroundColor: 'transparent',
+  },
+  primaryButton: {
+    backgroundColor: '#24325f',
+    borderColor: '#24325f',
+    marginBottom: 8,
+    marginRight: 8,
+  },
+  primaryButtonText: {
+    color: 'white',
+  },
+  secondaryButton: {
+    backgroundColor: 'white',
+    borderColor: '#24325f',
+    borderWidth: 1,
+    marginBottom: 8,
+    marginRight: 8,
+  },
+  secondaryButtonText: {
+    color: '#24325f',
+  },
+  sessionInfo: {
+    backgroundColor: '#f0f0f5',
+    padding: 8,
+    borderRadius: 4,
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: '#24325f',
+  },
+  locationText: {
+    fontWeight: 'bold',
+    color: '#24325f',
+    backgroundColor: 'transparent',
+  },
+  dateTimeText: {
+    color: '#24325f',
+    backgroundColor: 'transparent',
+  },
+  statusContainer: {
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    padding: 8,
+    borderRadius: 20,
+    marginBottom: 16,
+    alignItems: 'center',
+  },
+  statusText: {
+    color: 'white',
+    backgroundColor: 'transparent',
+  },
+  scannerContainer: {
+    height: 300,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#24325f',
+  },
+  checklistContainer: {
+    height: 300,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 8,
+    justifyContent: 'center',
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#24325f',
+  },
+  tableContainer: {
+    borderWidth: 1,
+    borderColor: '#24325f',
+    borderRadius: 8,
+    overflow: 'hidden',
+    marginBottom: 20,
+    backgroundColor: '#fff',
+  },
+  tableHeader: {
+    backgroundColor: '#ffffff',
+  },
+  tableHeaderText: {
+    color: '#24325f',
+    fontWeight: 'bold',
+  },
+  tableRow: {
+    backgroundColor: '#ffffff',
+  },
+  tableCell: {
+    color: '#24325f',
+  },
+  connectionStatus: {
+    padding: 8,
+    borderRadius: 4,
+    marginBottom: 8,
+    alignItems: 'center',
+  },
+  connectionText: {
+    color: '#24325f',
+    fontWeight: '500',
+    backgroundColor: 'transparent',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    margin: 20,
+    borderRadius: 8,
+    elevation: 5,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 16,
+    backgroundColor: 'transparent',
+  },
+  dropdownLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    color: '#24325f',
+    backgroundColor: 'transparent',
+  },
+  dropdownContainer: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 4,
+    marginBottom: 16,
+    backgroundColor: '#fff',
+  },
+  locationDropdown: {
+    maxHeight: 250,
+    backgroundColor: '#ffffff',
+  },
+  locationOption: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+    padding: 10,
+    backgroundColor: '#ffffff',
+  },
+  locationOptionText: {
+    color: '#24325f',
+  },
+  input: {
+    marginVertical: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 4,
+    padding: 8,
+    backgroundColor: '#ffffff',
+    color: '#24325f',
+  },
+  placeholderText: {
+    textAlign: 'center',
+    color: '#24325f',
+    backgroundColor: 'transparent',
+  },
+  noDataText: {
+    textAlign: 'center',
+    color: '#24325f',
+    fontStyle: 'italic',
+    marginTop: 8,
+    backgroundColor: 'transparent',
+  },
+  errorText: {
+    color: '#951d1e',
+    fontSize: 14,
+    marginBottom: 10,
+    backgroundColor: 'transparent',
+  },
+  searchbar: {
+    marginBottom: 8,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 4,
+  },
+  filterContainer: {
+    flexDirection: 'row',
+    marginBottom: 8,
+    backgroundColor: 'transparent',
+  },
+  filterItem: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 8,
+    backgroundColor: 'transparent',
+  },
+  filterLabel: {
+    marginRight: 8,
+    fontWeight: 'bold',
+    color: '#24325f',
+    backgroundColor: 'transparent',
+  },
+  studentList: {
+    flex: 1,
+    backgroundColor: 'white',
+    borderRadius: 4,
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: '#24325f',
+  },
+  studentItem: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+    padding: 10,
+    backgroundColor: '#fff',
+  },
+  studentItemText: {
+    color: '#24325f',
+  },
+  selectionItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  selectionItemText: {
+    color: '#24325f',
+  },
+  emptyList: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: '#f0f0f0',
+  },
+  emptyText: {
+    textAlign: 'center',
+    color: '#24325f',
+    fontStyle: 'italic',
+    backgroundColor: 'transparent',
+  },
 });
 export default ChecklistScreen;
