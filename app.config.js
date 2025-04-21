@@ -31,7 +31,8 @@ export default {
         UIBackgroundModes: ["fetch", "remote-notification"],
         NSUserNotificationAlertStyle: "alert",
         NSUserNotificationsUsageDescription: "Allow $(PRODUCT_NAME) to send you notifications about backup reminders.",
-        NSDocumentsFolderUsageDescription: "Allow $(PRODUCT_NAME) to save exported files to the Documents folder."
+        NSDocumentsFolderUsageDescription: "Allow $(PRODUCT_NAME) to save exported files to the Documents folder.",
+        NSDocumentPickerUsageDescription: "Allow $(PRODUCT_NAME) to access documents for file exports."
       }
     },
     android: {
@@ -47,19 +48,29 @@ export default {
         "ACCESS_NETWORK_STATE",
         "ACCESS_WIFI_STATE",
         "READ_EXTERNAL_STORAGE",
+        "android.permission.ACTION_CREATE_DOCUMENT",
+        "android.permission.ACTION_OPEN_DOCUMENT",
         "WRITE_EXTERNAL_STORAGE",
-        "READ_MEDIA_IMAGES",
+        "READ_MEDIA_IMAGES", 
         "READ_MEDIA_VIDEO",
+        "READ_MEDIA_AUDIO",
         "android.permission.CAMERA",
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
         "android.permission.READ_MEDIA_IMAGES",
         "android.permission.READ_MEDIA_VIDEO",
+        "android.permission.READ_MEDIA_AUDIO",
+        "android.permission.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION",
+        "android.permission.DOWNLOAD_WITHOUT_NOTIFICATION",
         "android.permission.INTERNET",
         "RECEIVE_BOOT_COMPLETED",
         "android.permission.RECEIVE_BOOT_COMPLETED",
         "android.permission.POST_NOTIFICATIONS",
-        "android.permission.WAKE_LOCK"
+        "android.permission.WAKE_LOCK",
+        "android.permission.MANAGE_EXTERNAL_STORAGE",
+        "android.permission.CREATE_DOCUMENTS",
+        "android.permission.READ_DOCUMENTS",
+        "android.permission.ACCESS_MEDIA_LOCATION"
       ],
       versionCode: 1
     },
@@ -76,6 +87,12 @@ export default {
       "expo-file-system",
       "expo-background-fetch",
       "expo-task-manager",
+      [
+        "expo-document-picker",
+        {
+          iCloudContainerEnvironment: "Production"
+        }
+      ],
       [
         "expo-media-library",
         {

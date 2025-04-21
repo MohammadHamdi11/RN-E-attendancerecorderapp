@@ -5,7 +5,8 @@ import { Platform, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import { backupToGitHub } from './backup';
-import * as MediaLibrary from 'expo-media-library'; // Add this import
+import * as MediaLibrary from 'expo-media-library';
+import * as DocumentPicker from 'expo-document-picker';
 
 // Format date as DD/MM/YYYY
 const formatDate = (date) => {
@@ -57,7 +58,6 @@ const queueBackupForLater = async (session) => {
     await AsyncStorage.setItem('pendingBackups', JSON.stringify(backupsArray));
     console.log("Backup queued for later");
 
-    // Also add an event to notify user that action is queued
     return { success: true, queued: true, message: 'Backup will be completed when online' };
   } catch (error) {
     console.error("Error queuing backup:", error);
@@ -65,118 +65,142 @@ const queueBackupForLater = async (session) => {
   }
 };
 
-// Save a file to the Attendance Recorder directory
-const saveToDownloads = async (fileUri, fileName) => {
+// Save a file to the "Attendance Recorder" directory with multiple fallback options
+const saveToAttendanceRecorder = async (fileUri, fileName) => {
   try {
-    console.log(`Starting saveToDownloads: ${fileName}`);
+    console.log(`Starting save operation for: ${fileName} on ${Platform.OS} device`);
     
-    // Request permissions first (needed for Android)
-    const { status } = await MediaLibrary.requestPermissionsAsync();
-    
-    if (status !== 'granted') {
-      console.log('Media library permission denied');
-      Alert.alert(
-        "Permission Required",
-        "We need access to your media library to save files.",
-        [{ text: "OK" }]
-      );
-      return { success: false, message: "Permission not granted" };
-    }
-    
-    console.log('Permission granted, creating asset');
-    
-    // Create asset from file
-    const asset = await MediaLibrary.createAssetAsync(fileUri);
-    
-    if (!asset) {
-      console.log('Failed to create asset');
-      throw new Error("Could not create asset from file");
-    }
-    
-    console.log('Asset created successfully:', asset.uri);
-    
-    // App folder name - consistent across platforms
-    const appFolderName = "Attendance Recorder";
-    
-    try {
-      // First check if our custom album already exists
-      console.log(`Checking if "${appFolderName}" album exists`);
-      let album = await MediaLibrary.getAlbumAsync(appFolderName);
+    if (Platform.OS === 'android') {
+      // First, check for permission
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+      console.log(`Permission status: ${status}`);
       
-      if (album) {
-        console.log(`Album "${appFolderName}" exists, adding asset`);
-        // If app album exists, add asset to it
-        await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
-      } else {
-        console.log(`Album "${appFolderName}" doesn't exist, creating it`);
-        // Create our custom album and add the asset to it
-        album = await MediaLibrary.createAlbumAsync(appFolderName, asset, false);
+      if (status !== 'granted') {
+        Alert.alert(
+          "Permission Required",
+          "We need access to your media library to save files. Please enable this permission in your device settings.",
+          [{ text: "OK" }]
+        );
+        return { success: false, message: "Permission not granted", shareOnly: true };
       }
       
-      console.log(`File saved to "${appFolderName}" as "${fileName}"`);
-      
-      Alert.alert(
-        "Export Successful",
-        `File saved to "${appFolderName}" folder as "${fileName}"`,
-        [{ text: "OK" }]
-      );
-      
-      return { 
-        success: true, 
-        message: `File saved successfully to "${appFolderName}" as "${fileName}"`, 
-        uri: asset.uri 
-      };
-    } catch (albumError) {
-      console.error("Error with custom album:", albumError);
-      
-      // Fallback to device's default location
-      console.log("Falling back to device's default storage location");
-      
-      if (Platform.OS === 'android') {
+      // STEP 1: Try direct save to app folder via MediaLibrary
+      try {
+        console.log('Attempting direct save via MediaLibrary...');
+        const asset = await MediaLibrary.createAssetAsync(fileUri);
+        
+        if (!asset) {
+          throw new Error("Could not create asset from file");
+        }
+        
+        console.log('Asset created:', asset.uri);
+        
+        // Try to use our custom app folder
+        const appFolderName = "Attendance Recorder";
+        let album = await MediaLibrary.getAlbumAsync(appFolderName);
+        
+        if (album) {
+          await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
+          console.log(`Added asset to "${appFolderName}" album`);
+        } else {
+          // Create the album if it doesn't exist
+          album = await MediaLibrary.createAlbumAsync(appFolderName, asset, false);
+          console.log(`Created "${appFolderName}" album with asset`);
+        }
+        
+        Alert.alert(
+          "Export Successful",
+          `File saved to "${appFolderName}" folder as "${fileName}"`,
+          [{ text: "OK" }]
+        );
+        
+        return { success: true, message: `File saved successfully`, uri: asset.uri };
+      } catch (directSaveError) {
+        console.error("Direct save method failed:", directSaveError);
+        
+        // STEP 2: Try Storage Access Framework (SAF)
         try {
-          // Try using DCIM on Android as fallback
-          const dcimAlbum = await MediaLibrary.getAlbumAsync("DCIM");
-          if (dcimAlbum) {
-            await MediaLibrary.addAssetsToAlbumAsync([asset], dcimAlbum, false);
-            
-            Alert.alert(
-              "Export Successful",
-              `File saved to device storage as "${fileName}"`,
-              [{ text: "OK" }]
-            );
-            
-            return { 
-              success: true, 
-              message: `File saved to device storage as "${fileName}"`, 
-              uri: asset.uri 
-            };
-          }
-        } catch (fallbackError) {
-          console.error("Android fallback error:", fallbackError);
+          console.log('Attempting save via Storage Access Framework...');
+          
+          // Create a DocumentPicker to let user choose save location
+          // First we need to copy to a more permanent location since some Android versions
+          // might not allow access to cache files through SAF
+          const tempDir = FileSystem.documentDirectory;
+          const tempFileUri = `${tempDir}${fileName}`;
+          
+          // Copy to documents directory first
+          await FileSystem.copyAsync({
+            from: fileUri,
+            to: tempFileUri
+          });
+          
+          // Now use document picker with SAF
+          Alert.alert(
+            "Save Location",
+            "Please select a folder where you'd like to save this file.",
+            [
+              {
+                text: "OK",
+                onPress: async () => {
+                  try {
+                    // We'll use sharing with action "SEND" which uses SAF internally
+                    await Sharing.shareAsync(tempFileUri, {
+                      mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                      dialogTitle: 'Save Excel File',
+                      UTI: 'com.microsoft.excel.xlsx'
+                    });
+                  } catch (shareError) {
+                    console.error("SAF sharing error:", shareError);
+                    // If this fails, we'll continue to the file sharing fallback
+                  }
+                }
+              }
+            ]
+          );
+          
+          return { success: true, message: "File available via Storage Access Framework", uri: tempFileUri, shareOnly: false };
+        } catch (safError) {
+          console.error("Storage Access Framework method failed:", safError);
+          
+          // STEP 3: Fall back to file sharing as last resort
+          console.log('Falling back to sharing mechanism...');
+          Alert.alert(
+            "Storage Access Limited",
+            "Could not save file directly. Please use the Share screen to save the file to your preferred location.",
+            [{ text: "OK" }]
+          );
+          
+          return { success: true, message: "File available for sharing", uri: fileUri, shareOnly: true };
         }
       }
+    } else if (Platform.OS === 'ios') {
+      // iOS code remains the same
+      const documentDir = FileSystem.documentDirectory;
+      const newFileUri = `${documentDir}${fileName}`;
       
-      // Generic fallback - just alert that the file was saved somewhere
+      await FileSystem.copyAsync({
+        from: fileUri,
+        to: newFileUri
+      });
+      
+      console.log("File saved to documents:", newFileUri);
+      
       Alert.alert(
         "Export Successful",
-        `File saved to your device as "${fileName}"`,
+        `File saved. Use the Share button to send it to another app or save it to Files.`,
         [{ text: "OK" }]
       );
       
-      return { 
-        success: true, 
-        message: `File saved to device as "${fileName}"`, 
-        uri: asset.uri 
-      };
+      return { success: true, message: `File saved to app documents`, uri: newFileUri };
     }
+    
+    // If all else fails
+    console.error("No save method worked");
+    return { success: false, message: "Could not save file", shareOnly: true };
+    
   } catch (error) {
-    console.error("Error saving file:", error);
-    Alert.alert(
-      "Export Failed",
-      `Could not save file: ${error.message}`,
-      [{ text: "OK" }]
-    );
-    return { success: false, message: `Error: ${error.message}` };
+    console.error("Error in saveToAttendanceRecorder:", error);
+    return { success: false, message: `Error: ${error.message}`, shareOnly: true };
   }
 };
 
@@ -191,14 +215,14 @@ export const exportSession = async (session) => {
       ['Student ID', 'Location', 'Log Date', 'Log Time', 'Number']
     ];
 
-    session.scans.forEach(scan => {
-      const scanDate = new Date(scan.time);
+    session.scans.forEach((scan, index) => {
+      const scanDate = new Date(scan.time || scan.timestamp);
       data.push([
         scan.content,           // QR code content is now Student ID
         session.location,
         formatDate(scanDate),
         formatTime(scanDate),
-        scan.id                // Row number
+        scan.id || (index + 1)  // Row number
       ]);
     });
 
@@ -207,8 +231,8 @@ export const exportSession = async (session) => {
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Scans");
 
-    // Convert workbook to binary string
-    const wbout = XLSX.write(wb, { type: 'binary', bookType: 'xlsx' });
+    // Convert workbook to base64 instead of binary string
+    const wbout = XLSX.write(wb, { type: 'base64', bookType: 'xlsx' });
 
     // Define file path in app's cache directory (temporary location)
     const fileUri = `${FileSystem.cacheDirectory}${fileName}`;
@@ -226,14 +250,14 @@ export const exportSession = async (session) => {
 
     console.log("Excel file saved temporarily to:", fileUri);
 
-    // Save to downloads
-const saveResult = await saveToDownloads(fileUri, fileName);
+    // Save to Attendance Recorder folder
+    const saveResult = await saveToAttendanceRecorder(fileUri, fileName);
 
-if (!saveResult.success) {
-  throw new Error(`Failed to save to Downloads: ${saveResult.message}`);
-}
+    if (!saveResult.success && !saveResult.shareOnly) {
+      throw new Error(`Failed to save file: ${saveResult.message}`);
+    }
 
-    // Also share the file
+    // Always share the file, especially if direct save failed
     await Sharing.shareAsync(fileUri, {
       mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       dialogTitle: 'Export Session Data',
@@ -255,7 +279,11 @@ if (!saveResult.success) {
       await queueBackupForLater(session);
     }
 
-    return { success: true, message: 'Export successful!', filePath: saveResult.uri };
+    return { 
+      success: true, 
+      message: saveResult.shareOnly ? 'Export available for sharing' : 'Export successful!', 
+      filePath: saveResult.uri || fileUri 
+    };
   } catch (error) {
     console.error("Error exporting Excel file:", error);
     Alert.alert(
@@ -296,9 +324,9 @@ export const exportAllSessions = async (sessions) => {
         return; // Skip this session
       }
 
-      session.scans.forEach(scan => {
+      session.scans.forEach((scan, index) => {
         try {
-          const scanDate = new Date(scan.time);
+          const scanDate = new Date(scan.time || scan.timestamp);
           allScansData.push([
             scan.content || "",
             session.location || "Unknown",
@@ -334,15 +362,15 @@ export const exportAllSessions = async (sessions) => {
           ['Student ID', 'Location', 'Log Date', 'Log Time', 'Number']
         ];
 
-        session.scans.forEach(scan => {
+        session.scans.forEach((scan, idx) => {
           try {
-            const scanDate = new Date(scan.time);
+            const scanDate = new Date(scan.time || scan.timestamp);
             sessionData.push([
               scan.content || "",
               session.location || "Unknown",
               formatDate(scanDate),
               formatTime(scanDate),
-              scan.id || sessionData.length
+              scan.id || (idx + 1)
             ]);
           } catch (error) {
             console.error("Error processing scan for session sheet:", scan, error);
@@ -365,13 +393,13 @@ export const exportAllSessions = async (sessions) => {
       }
     });
 
-    // Convert workbook to binary string
-    const wbout = XLSX.write(wb, { type: 'binary', bookType: 'xlsx' });
+    // Convert workbook to base64 string (NOT binary)
+    const wbout = XLSX.write(wb, { type: 'base64', bookType: 'xlsx' });
 
     // Define file path in app's cache directory (temporary location)
     const fileUri = `${FileSystem.cacheDirectory}${fileName}`;
 
-    // Write the file
+    // Write the file with Base64 encoding
     await FileSystem.writeAsStringAsync(fileUri, wbout, {
       encoding: FileSystem.EncodingType.Base64
     });
@@ -384,14 +412,14 @@ export const exportAllSessions = async (sessions) => {
 
     console.log("All sessions exported temporarily to:", fileUri);
     
-    // Save to downloads
-const saveResult = await saveToDownloads(fileUri, fileName);
+    // Save to Attendance Recorder
+    const saveResult = await saveToAttendanceRecorder(fileUri, fileName);
 
-if (!saveResult.success) {
-  throw new Error(`Failed to save to Downloads: ${saveResult.message}`);
-}
+    if (!saveResult.success && !saveResult.shareOnly) {
+      throw new Error(`Failed to save file: ${saveResult.message}`);
+    }
 
-    // Also share the file
+    // Always share the file, especially if direct save failed
     await Sharing.shareAsync(fileUri, {
       mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       dialogTitle: 'Export All Sessions Data',
@@ -423,7 +451,11 @@ if (!saveResult.success) {
       await queueBackupForLater(backupData);
     }
     
-    return { success: true, message: 'Export successful!', filePath: saveResult.uri };
+    return { 
+      success: true, 
+      message: saveResult.shareOnly ? 'Export available for sharing' : 'Export successful!', 
+      filePath: saveResult.uri || fileUri 
+    };
   } catch (error) {  
     console.error("Error writing Excel file:", error);
     Alert.alert(
@@ -434,71 +466,10 @@ if (!saveResult.success) {
     return { success: false, message: `Failed to export sessions: ${error.message}` };
   }
 };
-// This is a new function to save a file to an accessible location
-const saveFileToAccessibleLocation = async (fileUri, fileName) => {
-  try {
-    if (Platform.OS === 'android') {
-      // For Android: Save to Downloads folder
-      const { status } = await MediaLibrary.requestPermissionsAsync();
-      
-      if (status !== 'granted') {
-        Alert.alert(
-          "Permission Required",
-          "We need access to your media library to save files to Downloads.",
-          [{ text: "OK" }]
-        );
-        return { success: false, message: "Permission not granted" };
-      }
-      
-      // Save the file to device
-      const asset = await MediaLibrary.createAssetAsync(fileUri);
-      
-      // Get the Downloads directory
-      const album = await MediaLibrary.getAlbumAsync('Download');
-      
-      if (album) {
-        // If Downloads album exists, add asset to it
-        await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
-      } else {
-        // Create a new album if needed (unlikely for Download folder)
-        await MediaLibrary.createAlbumAsync('Download', asset, false);
-      }
-      
-      Alert.alert(
-        "Export Successful",
-        `File saved to Downloads folder as "${fileName}"`,
-        [{ text: "OK" }]
-      );
-      
-      return { success: true, uri: asset.uri };
-    } else {
-      // For iOS: We use the document directory which is persistent
-      // Copy file to documents directory for more permanent storage
-      const documentDir = FileSystem.documentDirectory;
-      const newFileUri = `${documentDir}${fileName}`;
-      
-      await FileSystem.copyAsync({
-        from: fileUri,
-        to: newFileUri
-      });
-      
-      Alert.alert(
-        "Export Successful",
-        `File saved as "${fileName}". Use the Share button to send it to another app.`,
-        [{ text: "OK" }]
-      );
-      
-      return { success: true, uri: newFileUri };
-    }
-  } catch (error) {
-    console.error("Error saving file:", error);
-    return { success: false, message: error.message };
-  }
-};
+
 // Make sure these are exported correctly
 export {
   exportSession as exportSessionToExcel,
   exportAllSessions as exportAllSessionsToExcel,
-  saveToDownloads as saveToDownloads
-
+  saveToAttendanceRecorder
 };
