@@ -26,6 +26,90 @@ const AboutScreen = () => {
           
           <Divider style={styles.divider} />
           
+<View style={styles.section}>
+  <Subheading style={styles.sectionTitle}>Special Thanks</Subheading>
+  <Text style={styles.paragraph}>
+    This project would not have been possible without the support and contributions of:
+  </Text>
+  <View style={styles.listContainer}>
+    <List.Item
+      title={
+        <Text>
+          <Text style={{fontWeight: 'bold'}}>Dr. Ahmad Samir</Text> who encouraged me to start working on this project
+        </Text>
+      }
+      left={props => <List.Icon {...props} icon="heart" color="#24325f" />}
+      titleStyle={[styles.listItemTitle, {flexShrink: 1}]}
+      titleNumberOfLines={3}
+    />
+    <List.Item
+      title={
+        <Text>
+          <Text style={{fontWeight: 'bold'}}>Dr. Amani Helmi</Text> who sponsored this project till it was launched successfully
+        </Text>
+      }
+      left={props => <List.Icon {...props} icon="heart" color="#24325f" />}
+      titleStyle={[styles.listItemTitle, {flexShrink: 1}]}
+      titleNumberOfLines={3}
+    />
+    <List.Item
+      title={
+        <Text>
+          <Text style={{fontWeight: 'bold'}}>Dr. Gehan</Text> who supported me every step on the way
+        </Text>
+      }
+      left={props => <List.Icon {...props} icon="heart" color="#24325f" />}
+      titleStyle={[styles.listItemTitle, {flexShrink: 1}]}
+      titleNumberOfLines={3}
+    />
+    <List.Item
+      title={
+        <Text>
+          <Text style={{fontWeight: 'bold'}}>Dr. Doaa Mohammad Abu Bakr</Text> who was the catalyst to this project's success
+        </Text>
+      }
+      left={props => <List.Icon {...props} icon="heart" color="#24325f" />}
+      titleStyle={[styles.listItemTitle, {flexShrink: 1}]}
+      titleNumberOfLines={3}
+    />
+    <List.Item
+      title={
+        <Text>
+          <Text style={{fontWeight: 'bold'}}>Dr. Taqwa Mohammad Abd El-Salam</Text> who aided me with her efforts in implementing the project
+        </Text>
+      }
+      left={props => <List.Icon {...props} icon="heart" color="#24325f" />}
+      titleStyle={[styles.listItemTitle, {flexShrink: 1}]}
+      titleNumberOfLines={3}
+    />
+    <List.Item
+      title={
+        <Text>
+          <Text style={{fontWeight: 'bold'}}>Dr. Mazin Helmy</Text> my companion and friend who never got tired of me
+        </Text>
+      }
+      left={props => <List.Icon {...props} icon="heart" color="#24325f" />}
+      titleStyle={[styles.listItemTitle, {flexShrink: 1}]}
+      titleNumberOfLines={3}
+    />
+  </View>
+</View>          
+          <Divider style={styles.divider} />
+          
+          <View style={styles.section}>
+            <Subheading style={styles.sectionTitle}>Development Team</Subheading>
+            <Text style={styles.paragraph}>
+              This application was developed by a medical student at Faculty of Medicine, 
+              Ain Shams University as part of ongoing efforts to integrate technological
+              solutions into educational processes at the university.
+            </Text>
+            <Text style={styles.paragraph}>
+              Development was assisted by AI models: Claude (mainly) and DeepSeek.
+            </Text>
+          </View>
+          
+          <Divider style={styles.divider} />
+          
           <View style={styles.section}>
             <Subheading style={styles.sectionTitle}>Purpose</Subheading>
             <Text style={styles.paragraph}>The application was developed to:</Text>
@@ -185,17 +269,6 @@ const AboutScreen = () => {
               <Text style={styles.linkText} onPress={openUserGuide}>
                 {" access our comprehensive user guide here"}
               </Text>.
-            </Text>
-          </View>
-          
-          <Divider style={styles.divider} />
-          
-          <View style={styles.section}>
-            <Subheading style={styles.sectionTitle}>Development Team</Subheading>
-            <Text style={styles.paragraph}>
-              This application was developed by a medical student at Faculty of Medicine, 
-              Ain Shams University as part of ongoing efforts to integrate technological
-              solutions into educational processes at the university.
             </Text>
           </View>
         </Surface>

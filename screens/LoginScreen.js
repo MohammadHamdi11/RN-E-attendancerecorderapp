@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { TextInput, Button, Text, Surface, Title, Caption, ActivityIndicator } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { authenticateUser } from '../services/auth';
+import NetInfo from '@react-native-community/netinfo';
+import { authenticateUser, refreshCredentials } from '../services/auth';
 
-const LoginScreen = ({ onLogin }) => {
+const LoginScreen = ({ onLoginSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -12,43 +13,95 @@ const LoginScreen = ({ onLogin }) => {
   const [isUserGuideExpanded, setIsUserGuideExpanded] = useState(false);
   const [isNeedHelpExpanded, setIsNeedHelpExpanded] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isOnline, setIsOnline] = useState(true);
 
-  const handleLogin = async () => {
-    // Reset error
-    setError('');
+  // Check for network status on component mount
+useEffect(() => {
+  const checkNetworkStatus = async () => {
+    const networkState = await NetInfo.fetch();
+    const online = networkState.isConnected && networkState.isInternetReachable;
+    setIsOnline(online);
     
-    // Validate inputs
-    if (!email.trim()) {
-      setError('Please enter your email');
-      return;
-    }
-    
-    if (!password) {
-      setError('Please enter your password');
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const isAuthenticated = await authenticateUser(email, password);
-      
-      if (isAuthenticated) {
-        onLogin();
-      } else {
-        setError('Invalid email or password');
+    // Auto-sync credentials if online
+    if (online) {
+      try {
+        console.log('Auto-syncing credentials on LoginScreen...');
+        await refreshCredentials();
+      } catch (error) {
+        console.error('Error syncing credentials on login screen:', error);
       }
-    } catch (err) {
-      console.error('Login error:', err);
-      setError('Authentication failed. Please try again.');
-    } finally {
-      setLoading(false);
     }
   };
+  
+  checkNetworkStatus();
+  
+  // Set up a listener for network changes
+  const unsubscribe = NetInfo.addEventListener(state => {
+    const online = state.isConnected && state.isInternetReachable;
+    setIsOnline(online);
+    
+    // Sync when coming online
+    if (online) {
+      refreshCredentials()
+        .catch(e => console.error('Error syncing on network change:', e));
+    }
+  });
+  
+  // Clean up the listener on unmount
+  return () => {
+    unsubscribe();
+  };
+}, []);
+
+const handleLogin = async () => {
+  // Reset error
+  setError('');
+  
+  // Validate inputs
+  if (!email.trim()) {
+    setError('Please enter your email');
+    return;
+  }
+  
+  if (!password) {
+    setError('Please enter your password');
+    return;
+  }
+
+  try {
+    setLoading(true);
+    
+    // Add this line to show loading status
+    setError('Refreshing credentials and logging in...');
+    
+    const result = await authenticateUser(email, password);
+    
+    if (result.success) {
+      onLoginSuccess(result.userType); // This is the correct way to pass user type
+    } else {
+      setError('Invalid email or password');
+    }
+  } catch (err) {
+    console.error('Login error:', err);
+    setError('Authentication failed. Please try again.');
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <Surface style={styles.container}>
         <Title style={styles.title}>Sign In</Title>
+        
+        {!isOnline && (
+          <View style={styles.offlineNotice}>
+            <MaterialCommunityIcons name="wifi-off" size={20} color="#951d1e" />
+            <Text style={styles.offlineText}>
+              You are offline. Only stored credentials will work.
+            </Text>
+          </View>
+        )}
         
         <View style={styles.formGroup}>
           <Text style={styles.label}>Email:</Text>
@@ -105,13 +158,7 @@ const LoginScreen = ({ onLogin }) => {
           disabled={loading}
         >
           {loading ? 'Signing In...' : 'Sign In'}
-        </Button>
-        
-        {/* Default login info hint during development */}
-        <Text style={styles.hint}>
-          Default login: admin@example.com / password123
-        </Text>
-        
+        </Button>        
         <View style={styles.divider} />
         
         {/* User Guide Section */}
@@ -206,6 +253,20 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     color: '#24325f', // Matches --primary-color
     fontWeight: 'bold',
+  },
+  offlineNotice: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ffe8e8',
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 16,
+    width: '100%',
+  },
+  offlineText: {
+    color: '#951d1e',
+    marginLeft: 8,
+    fontSize: 14,
   },
   formGroup: {
     width: '100%',

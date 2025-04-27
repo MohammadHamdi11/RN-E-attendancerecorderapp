@@ -7,15 +7,19 @@ import { Audio } from 'expo-av';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as MediaLibrary from 'expo-media-library';
 import * as FileSystem from 'expo-file-system';
+import * as Haptics from 'expo-haptics';
 import * as Sharing from 'expo-sharing';
 import * as XLSX from 'xlsx';
+import { useNavigation } from '@react-navigation/native';
 import { backupToGitHub, tryAutoBackup, processPendingBackups } from '../services/backup';
+import { checkForRecoverableSession, clearRecoverableSession, recoverSession, cleanUpRecoveryTimers } from '../services/recover';
+
 // Match the key used in backup.js
 const LAST_BACKUP_TIME_KEY = 'qrScannerLastBackupTime';
 // Storage keys for recovery
 const SCANNER_ACTIVE_SESSION_STORAGE_KEY = 'activeScannerSession';
 const TEMP_SCANNER_SESSION_INDEX_KEY = 'tempScannerSessionIndex';
-const ScannerScreen = ({ isOnline }) => {
+const ScannerScreen = ({ isOnline, navigation }) => {
 // State variables
 const [hasPermission, setHasPermission] = useState(null);
 const [scanned, setScanned] = useState(false);
@@ -87,6 +91,67 @@ useEffect(() => {
     setConnectionMessage('Offline - Working in local mode');
   }
 }, [isOnline, activeSession]);
+
+useEffect(() => {
+  // Check for recoverable sessions when the screen is focused
+  const unsubscribe = navigation.addListener('focus', () => {
+    checkForRecoverableSession()
+      .then(result => {
+        if (result.hasRecoverableSession) {
+          setTimeout(() => {
+            Alert.alert(
+              "Resume Session",
+              `You have an unfinished scanning session at ${result.session.location}. Would you like to resume it?`,
+              [
+                {
+                  text: "No",
+                  style: "cancel",
+                  onPress: () => {
+                    clearRecoverableSession(result.session.id)
+                      .catch(err => console.error("Error clearing session:", err));
+                  }
+                },
+                {
+                  text: "Yes",
+                  onPress: () => {
+                    recoverSession(result.session)
+                      .then(recoveryResult => {
+                        if (recoveryResult.success) {
+                          // Set the scanner to use this session
+                          // You'll need to update this based on your app's structure
+                          setActiveSession(result.session);
+                          setLocation(result.session.location);
+                          // Any other state you need to set
+                        } else {
+                          throw new Error(recoveryResult.error || "Failed to recover session");
+                        }
+                      })
+                      .catch(err => {
+                        console.error("Error recovering session:", err);
+                        Alert.alert(
+                          "Error",
+                          "Could not resume the session. Please try again.",
+                          [{ text: "OK" }]
+                        );
+                      });
+                  }
+                }
+              ]
+            );
+          }, 500); // Small delay to ensure alert is shown after screen transition
+        }
+      })
+      .catch(err => {
+        console.error("Error checking for recoverable sessions:", err);
+      });
+  });
+
+  return () => {
+    unsubscribe();
+    // Clean up any active timers when component unmounts
+    cleanUpRecoveryTimers();
+  };
+}, [navigation]);
 
 // Request camera permission when component mounts
 useEffect(() => {
@@ -886,80 +951,114 @@ const saveToAttendanceRecorder = async (fileUri, fileName) => {
 };
 
 // Handle barcode scanning
-const handleBarCodeScanned = ({ type, data }) => {
-if (!activeSession || scanned) return;
-setScanned(true);
-processScannedCode(data, false);
-// Allow scanning again after a short delay
-setTimeout(() => {
-setScanned(false);
-}, 2000);
+const handleBarCodeScanned = async ({ type, data }) => {
+  if (!activeSession || scanned) return;
+  
+  setScanned(true);
+  
+  // Add immediate haptic feedback when something is detected
+  try {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+  } catch (e) {
+    console.log("Could not use haptic feedback:", e);
+  }
+  
+  processScannedCode(data, false);
+  
+  // Allow scanning again after a short delay
+  setTimeout(() => {
+    setScanned(false);
+  }, 2000);
 };
 // Process scanned or manually entered code
-const processScannedCode = (data, isManual = false) => {
-if (!data || !activeSession) {
-console.log("Cannot process scan: No data or no active session");
-return;
-}
-// Trim data to handle extra spaces
-const cleanData = data.trim();
-if (!cleanData) {
-console.log("Cannot process scan: Empty data after trimming");
-return;
-}
-console.log(`Processing ${isManual ? 'manual entry' : 'scan'}: ${cleanData}`);
-// Check if already scanned in this session
-const alreadyScanned = scans.some(scan => scan.content === cleanData);
-if (alreadyScanned) {
-setScanStatus(`Already scanned: ${cleanData.substring(0, 20)}${cleanData.length > 20 ? '...' : ''}`);
-return;
-}
-const now = new Date();
-const timestamp = now.toISOString();
-const formattedTime = formatTime(now);
-// Create new scan
-const newScan = {
-id: Date.now().toString(),
-content: cleanData,
-timestamp: timestamp,
-formattedTime: formattedTime,
-time: now,
-isManual: isManual
-};
-// Update scans state
-const updatedScans = [...scans, newScan];
-setScans(updatedScans);
-// Update active session
-const updatedSession = {
-...activeSession,
-scans: updatedScans
-};
-setActiveSession(updatedSession);
-// Save to AsyncStorage
-saveActiveScannerSession(updatedSession);
-updateSessionInHistory(updatedSession);
-// Also save to SQLite for backward compatibility
-db.transaction(tx => {
-tx.executeSql(
-'INSERT INTO scans (sessionId, content, time, isManual) VALUES (?, ?, ?, ?)',
-[activeSession.id, cleanData, timestamp, isManual ? 1 : 0],
-(_, result) => {
-console.log(`Scan saved to database with ID: ${result.insertId}`);
-},
-(_, error) => {
-console.error('Error saving scan to database:', error);
-}
-);
-});
-// Try to play success sound but continue if it fails
-try {
-playSuccessSound();
-} catch (e) {
-console.log("Could not play sound, continuing without sound");
-}
-// Update status
-setScanStatus(`✅ ${isManual ? 'Manual entry' : 'Scanned'}: ${cleanData.substring(0, 20)}${cleanData.length > 20 ? '...' : ''}`);
-console.log(`${isManual ? 'Manual entry' : 'Scan'} processed successfully: ${cleanData}`);
+const processScannedCode = async (data, isManual = false) => {
+  if (!data || !activeSession) {
+    console.log("Cannot process scan: No data or no active session");
+    return;
+  }
+  
+  // Trim data to handle extra spaces
+  const cleanData = data.trim();
+  if (!cleanData) {
+    console.log("Cannot process scan: Empty data after trimming");
+    return;
+  }
+  
+  console.log(`Processing ${isManual ? 'manual entry' : 'scan'}: ${cleanData}`);
+  
+  // Check if already scanned in this session
+  const alreadyScanned = scans.some(scan => scan.content === cleanData);
+  if (alreadyScanned) {
+    setScanStatus(`Already scanned: ${cleanData.substring(0, 20)}${cleanData.length > 20 ? '...' : ''}`);
+    // Add error haptic feedback for duplicates
+    try {
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+    } catch (e) {
+      console.log("Could not use haptic feedback:", e);
+    }
+    return;
+  }
+  
+  const now = new Date();
+  const timestamp = now.toISOString();
+  const formattedTime = formatTime(now);
+  
+  // Create new scan
+  const newScan = {
+    id: Date.now().toString(),
+    content: cleanData,
+    timestamp: timestamp,
+    formattedTime: formattedTime,
+    time: now,
+    isManual: isManual
+  };
+  
+  // Update scans state
+  const updatedScans = [...scans, newScan];
+  setScans(updatedScans);
+  
+  // Update active session
+  const updatedSession = {
+    ...activeSession,
+    scans: updatedScans
+  };
+  setActiveSession(updatedSession);
+  
+  // Save to AsyncStorage
+  saveActiveScannerSession(updatedSession);
+  updateSessionInHistory(updatedSession);
+  
+  // Also save to SQLite for backward compatibility
+  db.transaction(tx => {
+    tx.executeSql(
+      'INSERT INTO scans (sessionId, content, time, isManual) VALUES (?, ?, ?, ?)',
+      [activeSession.id, cleanData, timestamp, isManual ? 1 : 0],
+      (_, result) => {
+        console.log(`Scan saved to database with ID: ${result.insertId}`);
+      },
+      (_, error) => {
+        console.error('Error saving scan to database:', error);
+      }
+    );
+  });
+  
+  // Try to play success sound but continue if it fails
+  try {
+    playSuccessSound();
+  } catch (e) {
+    console.log("Could not play sound, continuing without sound");
+  }
+  
+  // Add success haptic feedback
+  try {
+    await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+  } catch (e) {
+    console.log("Could not use haptic feedback:", e);
+  }
+  
+  // Update status
+  setScanStatus(`✅ ${isManual ? 'Manual entry' : 'Scanned'}: ${cleanData.substring(0, 20)}${cleanData.length > 20 ? '...' : ''}`);
+  console.log(`${isManual ? 'Manual entry' : 'Scan'} processed successfully: ${cleanData}`);
 };
 // Update session in history
 const updateSessionInHistory = (updatedSession) => {

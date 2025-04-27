@@ -51,7 +51,7 @@ const HistoryScreen = ({ navigation }) => {
     setSessionDetails(false);
   };
   
-  // Resume an interrupted session
+  // Resume an interrupted session with improved error handling
   const resumeSession = (session) => {
     Alert.alert(
       "Resume Session",
@@ -63,10 +63,34 @@ const HistoryScreen = ({ navigation }) => {
         },
         {
           text: "Resume",
-          onPress: () => {
-            recoverSession(session);
-            navigation.navigate('Scanner');
-            hideSessionDetails();
+          onPress: async () => {
+            try {
+              // First make sure we're working with the most recent data
+              const loadedSessions = await loadSessionsFromStorage();
+              const sessionIndex = loadedSessions.findIndex(s => s.id === session.id);
+              
+              if (sessionIndex !== -1) {
+                // Use the most up-to-date session data
+                const currentSession = loadedSessions[sessionIndex];
+                const result = await recoverSession(currentSession);
+                
+                if (result.success) {
+                  navigation.navigate('Scanner');
+                  hideSessionDetails();
+                } else {
+                  throw new Error(result.error || "Unknown error resuming session");
+                }
+              } else {
+                throw new Error("Session no longer exists");
+              }
+            } catch (error) {
+              console.error("Resume session error:", error);
+              Alert.alert(
+                "Resume Failed",
+                `Could not resume the session: ${error.message}`,
+                [{ text: "OK" }]
+              );
+            }
           }
         }
       ]
@@ -104,7 +128,6 @@ const HistoryScreen = ({ navigation }) => {
     }
     
     try {
-      // We'll implement this in services/export.js
       await exportAllSessionsToExcel(sessions);
       Alert.alert(
         "Export Successful",

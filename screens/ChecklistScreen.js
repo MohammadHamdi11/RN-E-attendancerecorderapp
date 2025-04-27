@@ -65,6 +65,9 @@ const [filteredStudents, setFilteredStudents] = useState([]);
 const [connectionMessage, setConnectionMessage] = useState('');
 const [selectionStatus, setSelectionStatus] = useState('');
 const [checkliststatus, setcheckliststatus] = useState('');
+const [lastAddedId, setLastAddedId] = useState('');
+const [showStudentSelectorModal, setShowStudentSelectorModal] = useState(false);
+
 // Debug connection status
 useEffect(() => {
 console.log("isOnline prop value:", isOnline);
@@ -679,8 +682,7 @@ const processManualEntry = () => {
   // Check if already selected
   if (selectedStudents.has(studentId)) {
     Alert.alert('Already Selected', `Student ${studentId} is already in your selection.`);
-    setShowManualEntryModal(false);
-    setManualId('');
+    setManualId(''); // Just clear the input but keep modal open
     return;
   }
   
@@ -690,8 +692,15 @@ const processManualEntry = () => {
   // Add to selection table with isManual flag
   addStudentToSelectionTable(studentId, true);
   
-  // Close modal and reset input
-  setShowManualEntryModal(false);
+  // Set last added ID for feedback
+  setLastAddedId(studentId);
+  
+  // Clear the message after 3 seconds
+  setTimeout(() => {
+    setLastAddedId('');
+  }, 3000);
+  
+  // Reset input but keep modal open
   setManualId('');
   
   // Update status
@@ -1230,72 +1239,16 @@ Manual Entry
 </View>
 ) : null}
 {activeSession ? (
-<View style={styles.checklistContainer}>
-<Searchbar
-placeholder="Search students..."
-onChangeText={query => setSearchQuery(query)}
-value={searchQuery}
-style={styles.searchbar}
-/>
-<View style={styles.filterContainer}>
-<View style={styles.filterItem}>
-<Text style={styles.filterLabel}>Year:</Text>
-<Button 
-mode="outlined" 
-onPress={() => setShowYearFilterModal(true)}
-style={styles.secondaryButton}
-labelStyle={styles.secondaryButtonText}
->
-{yearFilter === 'all' ? 'All Years' : yearFilter}
-</Button>
-</View>
-<View style={styles.filterItem}>
-<Text style={styles.filterLabel}>Group:</Text>
-<Button 
-mode="outlined" 
-onPress={() => setShowGroupFilterModal(true)}
-style={styles.secondaryButton}
-labelStyle={styles.secondaryButtonText}
->
-{groupFilter === 'all' ? 'All Groups' : groupFilter}
-</Button>
-</View>
-</View>
-<FlatList
-  style={[styles.studentList, { height: 250, backgroundColor: '#ffffff' }]}
-  data={filteredStudents}
-  keyExtractor={(student) => `student-${student["Student ID"] || student.id || ""}`}
-  renderItem={({ item: student }) => (
-    <StudentItem 
-      student={student}
-      isSelected={selectedStudents.has(student["Student ID"] || student.id || "")}
-      onToggle={(id) => handleStudentSelection(id, !selectedStudents.has(id))}
-      textStyle={{ color: '#24325f' }}
-      backgroundColor="#ffffff"
-    />
-)}
-getItemLayout={(data, index) => ({
-length: 48,
-offset: 48 * index,
-index,
-})}
-nestedScrollEnabled={true}
-windowSize={10}
-maxToRenderPerBatch={10}
-updateCellsBatchingPeriod={50}
-removeClippedSubviews={true}
-initialNumToRender={10}
-ListEmptyComponent={() => (
-<View style={styles.emptyList}>
-<Text style={styles.emptyText}>
-{studentsData.length === 0 
-? "No student data available." 
-: "No students match the current filters."}
-</Text>
-</View>
-)}
-/>
-</View>
+  <View style={styles.checklistContainer}>
+    <Button 
+      mode="contained" 
+      style={[styles.primaryButton, styles.fullWidthButton]}
+      labelStyle={styles.primaryButtonText}
+      onPress={() => setShowStudentSelectorModal(true)}
+    >
+      Select Students
+    </Button>
+  </View>
 ) : (
 <View style={styles.checklistContainer}>
 <Text style={styles.placeholderText}>
@@ -1395,39 +1348,130 @@ Cancel
 </Modal>
 </Portal>
 <Portal>
+  <Modal
+    visible={showStudentSelectorModal}
+    onDismiss={() => setShowStudentSelectorModal(false)}
+    contentContainerStyle={[styles.selectorModalContent, { backgroundColor: '#ffffff' }]}
+  >
+    <Title style={{ color: '#24325f' }}>Select Students</Title>
+    
+    <Searchbar
+      placeholder="Search students..."
+      onChangeText={query => setSearchQuery(query)}
+      value={searchQuery}
+      style={styles.searchbar}
+    />
+    
+    <View style={styles.filterContainer}>
+      <View style={styles.filterItem}>
+        <Text style={styles.filterLabel}>Year:</Text>
+        <Button 
+          mode="outlined" 
+          onPress={() => setShowYearFilterModal(true)}
+          style={styles.secondaryButton}
+          labelStyle={styles.secondaryButtonText}
+        >
+          {yearFilter === 'all' ? 'All Years' : yearFilter}
+        </Button>
+      </View>
+      <View style={styles.filterItem}>
+        <Text style={styles.filterLabel}>Group:</Text>
+        <Button 
+          mode="outlined" 
+          onPress={() => setShowGroupFilterModal(true)}
+          style={styles.secondaryButton}
+          labelStyle={styles.secondaryButtonText}
+        >
+          {groupFilter === 'all' ? 'All Groups' : groupFilter}
+        </Button>
+      </View>
+    </View>
+    
+    <ScrollView style={styles.studentModalList}>
+      {filteredStudents.length > 0 ? (
+        filteredStudents.map(student => {
+          const studentId = student["Student ID"] || student.id || "";
+          const studentYear = student["Year"] || student.year || "";
+          const studentGroup = student["Group"] || student.group || "";
+          const isSelected = selectedStudents.has(studentId);
+          
+          return (
+            <View key={`student-${studentId}`} style={styles.studentItem}>
+              <Checkbox.Item
+                label={`${studentId} (${studentYear}, Group ${studentGroup})`}
+                status={isSelected ? 'checked' : 'unchecked'}
+                onPress={() => handleStudentSelection(studentId, !isSelected)}
+                style={{ backgroundColor: '#ffffff' }}
+                labelStyle={{ color: '#24325f' }}
+              />
+            </View>
+          );
+        })
+      ) : (
+        <View style={styles.emptyList}>
+          <Text style={styles.emptyText}>
+            {studentsData.length === 0 
+              ? "No student data available." 
+              : "No students match the current filters."}
+          </Text>
+        </View>
+      )}
+    </ScrollView>
+    
+    <View style={styles.modalButtons}>
+      <Button 
+        mode="text" 
+        onPress={() => setShowStudentSelectorModal(false)}
+        style={styles.secondaryButton}
+        labelStyle={styles.secondaryButtonText}
+      >
+        Done
+      </Button>
+    </View>
+  </Modal>
+</Portal>
+<Portal>
 <Modal
-visible={showManualEntryModal}
-onDismiss={() => setShowManualEntryModal(false)}
-contentContainerStyle={[styles.modalContent, { backgroundColor: '#ffffff' }]}
+  visible={showManualEntryModal}
+  onDismiss={() => setShowManualEntryModal(false)}
+  contentContainerStyle={[styles.modalContent, { backgroundColor: '#ffffff' }]}
 >
-<Title style={{ color: '#24325f' }}>Manual Entry</Title>
-<TextInput
-label="Student ID"
-value={manualId}
-onChangeText={setManualId}
-style={[styles.input, { backgroundColor: '#ffffff', color: '#24325f' }]}
-autoFocus
-onSubmitEditing={processManualEntry}
-/>
-<View style={styles.modalButtons}>
-<Button 
-mode="text" 
-onPress={() => setShowManualEntryModal(false)}
-style={styles.secondaryButton}
-labelStyle={styles.secondaryButtonText}
->
-Cancel
-</Button>
-<Button 
-mode="contained" 
-onPress={processManualEntry}
-disabled={!manualId.trim()}
-style={styles.primaryButton}
-labelStyle={styles.primaryButtonText}
->
-Add
-</Button>
-</View>
+  <Title style={{ color: '#24325f' }}>Manual Entry</Title>
+  <Text style={{ marginBottom: 10, color: '#24325f' }}>Enter student IDs one at a time and click "Add" after each. The modal will stay open so you can add multiple entries.</Text>
+  
+  {lastAddedId ? (
+    <View style={{ backgroundColor: '#e7f3e8', padding: 8, borderRadius: 4, marginBottom: 10 }}>
+      <Text style={{ color: '#28a745' }}>✓ Added: {lastAddedId}</Text>
+    </View>
+  ) : null}
+  
+  <TextInput
+    label="Student ID"
+    value={manualId}
+    onChangeText={setManualId}
+    style={[styles.input, { backgroundColor: '#ffffff', color: '#24325f' }]}
+    autoFocus
+    onSubmitEditing={processManualEntry}
+  />
+  <View style={styles.modalButtons}>
+    <Button 
+      mode="text" 
+      onPress={() => setShowManualEntryModal(false)}
+      style={styles.secondaryButton}
+      labelStyle={styles.secondaryButtonText}
+    >
+      Done
+    </Button>
+    <Button 
+      mode="contained" 
+      onPress={processManualEntry}
+      disabled={!manualId.trim()}
+      style={styles.primaryButton}
+      labelStyle={styles.primaryButtonText}
+    >
+      Add
+    </Button>
+  </View>
 </Modal>
 </Portal>
 <Portal>
@@ -1758,6 +1802,22 @@ const styles = StyleSheet.create({
     color: '#24325f',
     fontStyle: 'italic',
     backgroundColor: 'transparent',
+  },
+  selectorModalContent: {
+    margin: 20,
+    padding: 20,
+    borderRadius: 8,
+    maxHeight: '80%',
+    width: '90%',
+    alignSelf: 'center',
+  },
+  studentModalList: {
+    marginTop: 10,
+    maxHeight: 400,
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    borderRadius: 4,
   },
 });
 export default ChecklistScreen;
