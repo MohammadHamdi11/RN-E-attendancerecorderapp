@@ -172,17 +172,32 @@ const loadAdminsData = async () => {
     setAdminsLoading(false);
   }
 };
+
+const normalizeStudentData = (fetchedStudents) => {
+  return fetchedStudents.map(student => {
+    // Deal with API inconsistency - normalize keys
+    const normalizedStudent = {
+      year: student.Year || student.year,
+      group: student.Group || student.group,
+      id: student["Student ID"] || student.id
+    };
+    
+    // Store original values too
+    if (student.Year) normalizedStudent.Year = student.Year;
+    if (student.Group) normalizedStudent.Group = student.Group;
+    if (student["Student ID"]) normalizedStudent["Student ID"] = student["Student ID"];
+    
+    return normalizedStudent;
+  });
+};
+
 const loadStudentsData = async () => {
   setStudentsLoading(true);
   setStudentsError(null);
   try {
     const { students: fetchedStudents } = await fetchStudents();
-    // Deal with API inconsistency - normalize keys
-    const normalizedStudents = fetchedStudents.map(student => ({
-      year: student.Year || student.year,
-      group: student.Group || student.group,
-      id: student["Student ID"] || student.id
-    }));
+    // Use the normalization helper
+    const normalizedStudents = normalizeStudentData(fetchedStudents);
     setStudents(normalizedStudents);
     setFilteredStudents(normalizedStudents.slice(0, 100)); // Initially show only first 100
   } catch (err) {
@@ -192,6 +207,7 @@ const loadStudentsData = async () => {
     setStudentsLoading(false);
   }
 };
+
 const loadBackupsData = async () => {
   setBackupsLoading(true);
   setBackupsError(null);
@@ -213,20 +229,21 @@ const loadBackupsData = async () => {
     setBackupsLoading(false);
   }
 };
-  useEffect(() => {
-    if (students.length > 0 && studentSearchQuery) {
-      const query = studentSearchQuery.toLowerCase();
-      const filtered = students.filter(student => 
-        (student.year && student.year.toLowerCase().includes(query)) ||
-        (student.group && student.group.toLowerCase().includes(query)) ||
-        (student.id && student.id.toLowerCase().includes(query))
-      );
-      setFilteredStudents(filtered);
-    } else {
-      // If no search query, show only first 100 students
-      setFilteredStudents(students.slice(0, 100));
-    }
-  }, [students, studentSearchQuery]);
+useEffect(() => {
+  if (students.length > 0 && studentSearchQuery) {
+    const query = studentSearchQuery.toLowerCase();
+    const filtered = students.filter(student => 
+      (student.year && student.year.toLowerCase().includes(query)) ||
+      (student.group && student.group.toLowerCase().includes(query)) ||
+      (student.id && student.id.toLowerCase().includes(query))
+    );
+    setFilteredStudents(filtered);
+  } else {
+    // If no search query, show only first 100 students
+    setFilteredStudents(students.slice(0, 100));
+  }
+}, [students, studentSearchQuery]);
+
   // Handle refresh button press
 const handleRefresh = async () => {
   setRefreshing(true);
@@ -500,40 +517,49 @@ const handleRefresh = async () => {
       Alert.alert('Error', err.message || 'Failed to add student');
     }
   };
-  const handleRemoveStudents = async () => {
-    if (selectedStudents.length === 0) {
-      Alert.alert('Error', 'Please select at least one student to remove');
-      return;
-    }
-    setLoading(true);
-    try {
-      await removeStudents(selectedStudents);
-      hideDialogs();
-      // Add delay before refreshing
-      setTimeout(async () => {
-        const { students: refreshedStudents } = await fetchStudents();
-        setStudents(refreshedStudents);
-        setLoading(false);
-        Alert.alert('Success', 'Student(s) removed successfully');
-      }, 1500);
-    } catch (err) {
+const handleRemoveStudents = async () => {
+  if (selectedStudents.length === 0) {
+    Alert.alert('Error', 'Please select at least one student to remove');
+    return;
+  }
+  setLoading(true);
+  try {
+    await removeStudents(selectedStudents);
+    hideDialogs();
+    // Add delay before refreshing
+    setTimeout(async () => {
+      const { students: refreshedStudents } = await fetchStudents();
+      setStudents(refreshedStudents);
       setLoading(false);
-      Alert.alert('Error', err.message || 'Failed to remove student(s)');
-    }
-  };
-  // Student selection helpers
-  const toggleStudentSelection = (student) => {
-    const isSelected = selectedStudents.some(
-      s => s.year === student.year && s.group === student.group && s.id === student.id
-    );
-    if (isSelected) {
-      setSelectedStudents(selectedStudents.filter(
-        s => !(s.year === student.year && s.group === student.group && s.id === student.id)
-      ));
-    } else {
-      setSelectedStudents([...selectedStudents, { year: student.year, group: student.group, id: student.id }]);
-    }
-  };
+      Alert.alert('Success', 'Student(s) removed successfully');
+    }, 1500);
+  } catch (err) {
+    setLoading(false);
+    Alert.alert('Error', err.message || 'Failed to remove student(s)');
+  }
+};
+
+// Student selection helpers
+const toggleStudentSelection = (student) => {
+  const isSelected = selectedStudents.some(
+    s => s.year === student.year && 
+         s.group.toLowerCase() === student.group.toLowerCase() && 
+         s.id === student.id
+  );
+  if (isSelected) {
+    setSelectedStudents(selectedStudents.filter(
+      s => !(s.year === student.year && 
+             s.group.toLowerCase() === student.group.toLowerCase() && 
+             s.id === student.id)
+    ));
+  } else {
+    setSelectedStudents([...selectedStudents, { 
+      year: student.year, 
+      group: student.group, 
+      id: student.id 
+    }]);
+  }
+};
   const toggleSelectAllStudents = () => {
     if (selectedStudents.length === students.length) {
       setSelectedStudents([]);
@@ -645,12 +671,14 @@ const handleMergeData = async (processedData) => {
     Alert.alert('Error', `Error importing data: ${error.message}`);
   }
 };
-  // Check if a student is selected
-  const isStudentSelected = (student) => {
-    return selectedStudents.some(
-      s => s.year === student.year && s.group === student.group && s.id === student.id
-    );
-  };
+// Check if a student is selected
+const isStudentSelected = (student) => {
+  return selectedStudents.some(
+    s => s.year === student.year && 
+         s.group.toLowerCase() === student.group.toLowerCase() && 
+         s.id === student.id
+  );
+};
   // Render a section (Admins or Users)
 const renderSection = (title, items, onAdd, onRemove, onView, count, isLoading, error, onRetry) => (
   <Card style={styles.card}>

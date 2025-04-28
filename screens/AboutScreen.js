@@ -53,7 +53,7 @@ const AboutScreen = () => {
     <List.Item
       title={
         <Text>
-          <Text style={{fontWeight: 'bold'}}>Dr. Gehan</Text> who supported me every step on the way
+          <Text style={{fontWeight: 'bold'}}>Dr. Gehan Adel</Text> who supported me every step on the way
         </Text>
       }
       left={props => <List.Icon {...props} icon="heart" color="#24325f" />}
@@ -73,7 +73,7 @@ const AboutScreen = () => {
     <List.Item
       title={
         <Text>
-          <Text style={{fontWeight: 'bold'}}>Dr. Taqwa Mohammad Abd El-Salam</Text> who aided me with her efforts in implementing the project
+          <Text style={{fontWeight: 'bold'}}>Dr. Taqwa Mohammad Abd Al-Salam</Text> who aided me with her efforts in implementing the project
         </Text>
       }
       left={props => <List.Icon {...props} icon="heart" color="#24325f" />}

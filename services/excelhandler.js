@@ -130,10 +130,13 @@ export const processExcelData = (rows, headers, mappings) => {
         }
       }
       
+      // Convert group to uppercase
+      const uppercaseGroup = group.toUpperCase();
+      
       // Add to processed data
       processedData.push({
         "Year": processedYear,
-        "Group": group,
+        "Group": uppercaseGroup, // Store group in uppercase
         "Student ID": id
       });
     });
@@ -177,9 +180,13 @@ export const mergeStudentsData = async (excelData) => {
     excelData.forEach(newStudent => {
       const studentId = newStudent["Student ID"];
       
+      // Ensure group is uppercase
+      newStudent["Group"] = newStudent["Group"].toUpperCase();
+      
       if (existingStudentsMap[studentId]) {
         // Update existing student - overwrite with new data
         existingStudentsMap[studentId]["Year"] = newStudent["Year"];
+        // Store group in uppercase
         existingStudentsMap[studentId]["Group"] = newStudent["Group"];
         updated++;
       } else {

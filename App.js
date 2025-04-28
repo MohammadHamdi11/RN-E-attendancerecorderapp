@@ -223,11 +223,18 @@ const initApp = async () => {
       }
     }
     
-    // Initialize notifications
+    // Initialize notifications with enhanced functionality
     await initNotifications();
     
-    // Initialize background sync
-    await registerBackgroundSync();
+    // Record app usage
+    import('./services/notifications').then(module => {
+      module.recordAppUsage();
+    });
+    
+    // Check for pending backups and register background sync if needed
+    import('./services/background').then(module => {
+      module.updateBackgroundSyncIfNeeded();
+    });
     
     setIsLoading(false);
     console.log('App initialization completed');
@@ -262,8 +269,27 @@ const initApp = async () => {
 const handleAppStateChange = (nextAppState) => {
   if (nextAppState === 'active') {
     console.log('App came to foreground, checking for credential updates...');
+    
+    // Record app usage time when app becomes active
+    import('./services/notifications').then(module => {
+      module.recordAppUsage();
+    });
+    
+    // Update background sync if needed
+    import('./services/background').then(module => {
+      module.updateBackgroundSyncIfNeeded();
+    });
+    
+    // Refresh credentials
     import('./services/auth').then(module => {
       module.refreshCredentials().catch(e => console.log('Foreground credential sync error:', e));
+    });
+  } else if (nextAppState === 'background' || nextAppState === 'inactive') {
+    console.log('App went to background, scheduling inactivity reminder');
+    
+    // Schedule reminder for one hour after app is closed
+    import('./services/notifications').then(module => {
+      module.scheduleInactivityReminder();
     });
   }
 };

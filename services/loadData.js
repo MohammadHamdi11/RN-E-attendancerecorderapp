@@ -261,3 +261,47 @@ export const syncStudentsDataWithGitHub = async () => {
     };
   }
 };
+
+export const loadFilteredStudentsData = async (yearFilter = 'all', groupFilter = 'all') => {
+  try {
+    console.log(`Loading filtered students data (Year: ${yearFilter}, Group: ${groupFilter})...`);
+    
+    // First try to get data from cache
+    const cachedData = await AsyncStorage.getItem('cachedStudentsData');
+    
+    if (!cachedData) {
+      console.log("No cached data available");
+      return [];
+    }
+    
+    // Parse the cached data
+    const allStudents = JSON.parse(cachedData);
+    
+    // If no filters are applied, just return a small sample to prevent overloading
+    if (yearFilter === 'all' && groupFilter === 'all') {
+      console.log("No filters applied, returning limited sample");
+      return allStudents.slice(0, 200); // Limit to 200 students for performance
+    }
+    
+    console.log(`Applying filters: Year=${yearFilter}, Group=${groupFilter}`);
+    
+    // Apply filters
+    const filteredStudents = allStudents.filter(student => {
+      const studentYear = student["Year"] || student.year || "";
+      const studentGroup = (student["Group"] || student.group || "").toString().toUpperCase();
+      
+      const matchesYear = yearFilter === 'all' || studentYear === yearFilter;
+      // Convert group filter to uppercase for case-insensitive comparison
+      const matchesGroup = groupFilter === 'all' || studentGroup === groupFilter.toString().toUpperCase();
+      
+      return matchesYear && matchesGroup;
+    });
+    
+    console.log(`Filtered to ${filteredStudents.length} students`);
+    return filteredStudents;
+    
+  } catch (error) {
+    console.error("Error loading filtered student data:", error);
+    return [];
+  }
+};

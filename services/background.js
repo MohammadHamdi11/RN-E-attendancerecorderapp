@@ -12,9 +12,16 @@ TaskManager.defineTask(BACKGROUND_SYNC_TASK, async () => {
   console.log('[Background Sync] Background task executed');
   
   try {
+    // First check if there are pending backups - if not, skip the sync
+    const pendingBackups = JSON.parse(await AsyncStorage.getItem('pendingBackups') || '[]');
+    if (pendingBackups.length === 0) {
+      console.log('[Background Sync] No pending backups, skipping sync');
+      return BackgroundFetch.BackgroundFetchResult.NoData;
+    }
+    
     // Check network status
     const netInfo = await NetInfo.fetch();
-    const isConnected = netInfo.isConnected;
+    const isConnected = netInfo.isConnected && netInfo.isInternetReachable;
     
     console.log('[Background Sync] Network status:', isConnected ? 'Connected' : 'Disconnected');
     
@@ -41,26 +48,35 @@ TaskManager.defineTask(BACKGROUND_SYNC_TASK, async () => {
 // Register the background fetch task
 export const registerBackgroundSync = async () => {
   try {
+    // First check if there are any pending backups
+    const pendingBackups = JSON.parse(await AsyncStorage.getItem('pendingBackups') || '[]');
+    
     // Make sure the task is unregistered before registering again
     await unregisterBackgroundSync();
     
-    // Register with more aggressive settings
-    const status = await BackgroundFetch.registerTaskAsync(BACKGROUND_SYNC_TASK, {
-      minimumInterval: 15 * 60, // 15 minutes in seconds (minimum allowed by iOS)
-      stopOnTerminate: false,    // Keep running after app is closed
-      startOnBoot: true,         // Start after device reboot
-    });
-    
-    console.log('[Background Sync] Task registered with status:', status);
-    
-    // Force an immediate check
-    BackgroundFetch.setMinimumIntervalAsync(15 * 60); // 15 minutes (iOS minimum)
-    
-    // Test that the task is registered
-    const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_SYNC_TASK);
-    console.log('[Background Sync] Is task registered?', isRegistered);
-    
-    return true;
+    // Only register background task if there are pending backups
+    if (pendingBackups.length > 0) {
+      // Register with more aggressive settings - 5 minutes instead of 15
+      const status = await BackgroundFetch.registerTaskAsync(BACKGROUND_SYNC_TASK, {
+        minimumInterval: 5 * 60, // 5 minutes in seconds (may be throttled by OS)
+        stopOnTerminate: false,   // Keep running after app is closed
+        startOnBoot: true,        // Start after device reboot
+      });
+      
+      console.log('[Background Sync] Task registered with status:', status);
+      
+      // Force more frequent checks (might be limited by OS)
+      BackgroundFetch.setMinimumIntervalAsync(5 * 60); // 5 minutes
+      
+      // Test that the task is registered
+      const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_SYNC_TASK);
+      console.log('[Background Sync] Is task registered?', isRegistered);
+      
+      return true;
+    } else {
+      console.log('[Background Sync] No pending backups, not registering background task');
+      return false;
+    }
   } catch (error) {
     console.error('[Background Sync] Failed to register task:', error);
     return false;
@@ -111,19 +127,20 @@ export const forceSyncNow = async () => {
   try {
     console.log('[Background Sync] Forcing manual sync');
     
-    // First check if task is registered, if not try to register
-    const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_SYNC_TASK);
-    if (!isRegistered) {
-      console.log('[Background Sync] Task not registered, trying to register');
-      await registerBackgroundSync();
+    // Check for pending backups
+    const pendingBackups = JSON.parse(await AsyncStorage.getItem('pendingBackups') || '[]');
+    if (pendingBackups.length === 0) {
+      return { success: true, message: 'No pending backups to sync.' };
     }
     
     // Check network status
     const netInfo = await NetInfo.fetch();
-    const isConnected = netInfo.isConnected;
+    const isConnected = netInfo.isConnected && netInfo.isInternetReachable;
     
     if (!isConnected) {
-      return { success: false, message: 'Device is offline, please try again when online.' };
+      // Re-register the background task to ensure it will check when internet is restored
+      await registerBackgroundSync();
+      return { success: false, message: 'Device is offline, background sync scheduled.' };
     }
     
     const result = await processPendingBackups();
@@ -141,7 +158,27 @@ export const forceSyncNow = async () => {
   }
 };
 
-// Add this to background.js
+// Check for pending backups and register background sync if needed
+export const updateBackgroundSyncIfNeeded = async () => {
+  try {
+    const pendingBackups = JSON.parse(await AsyncStorage.getItem('pendingBackups') || '[]');
+    const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_SYNC_TASK);
+    
+    if (pendingBackups.length > 0 && !isRegistered) {
+      console.log('[Background Sync] Pending backups found, registering background sync');
+      return await registerBackgroundSync();
+    } else if (pendingBackups.length === 0 && isRegistered) {
+      console.log('[Background Sync] No pending backups, unregistering background sync');
+      await unregisterBackgroundSync();
+    }
+    return isRegistered;
+  } catch (error) {
+    console.error('[Background Sync] Error updating background sync:', error);
+    return false;
+  }
+};
+
+// Get background status
 export const getBackgroundStatus = async () => {
   try {
     const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_SYNC_TASK);

@@ -50,12 +50,16 @@ export const addStudent = async (year, group, id) => {
     // First, get current students and SHA
     const { students, sha } = await fetchStudents();
     
+    // Convert group to uppercase
+    const uppercaseGroup = group.toUpperCase();
+    
     // Check if student already exists - must check all three fields
-    // Handle both cases: camelCase and PascalCase
+    // Handle case insensitivity for group
     const studentExists = students.some(
       student => 
         (student.year === year || student.Year === year) && 
-        (student.group === group || student.Group === group) && 
+        ((student.group || '').toLowerCase() === uppercaseGroup.toLowerCase() || 
+         (student.Group || '').toLowerCase() === uppercaseGroup.toLowerCase()) && 
         (student.id === id || student["Student ID"] === id)
     );
     
@@ -66,7 +70,7 @@ export const addStudent = async (year, group, id) => {
     // Add new student using the format from the example
     students.push({
       "Year": year,
-      "Group": group,
+      "Group": uppercaseGroup, // Store group in uppercase
       "Student ID": id
     });
     
@@ -87,12 +91,13 @@ export const removeStudents = async (studentsToRemove) => {
     // First, get current students and SHA
     const { students, sha } = await fetchStudents();
     
-    // Filter out students to remove
+    // Filter out students to remove with case-insensitive group comparison
     const updatedStudents = students.filter(student => 
       !studentsToRemove.some(
         toRemove => 
           (toRemove.year === student.year || toRemove.year === student.Year) && 
-          (toRemove.group === student.group || toRemove.group === student.Group) && 
+          ((toRemove.group || '').toLowerCase() === (student.group || '').toLowerCase() || 
+           (toRemove.group || '').toLowerCase() === (student.Group || '').toLowerCase()) && 
           (toRemove.id === student.id || toRemove.id === student["Student ID"])
       )
     );
