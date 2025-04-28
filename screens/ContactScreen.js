@@ -4,9 +4,8 @@ import { Text, Surface, Title, Button, Divider } from 'react-native-paper';
 
 const ContactScreen = () => {
   const openUserGuide = () => {
-    // In a real app, this would download or open the PDF file
-    console.log("Opening user guide");
-    // Linking.openURL('https://www.hostize.com/v/5DX6NGfApj');
+    // Open the PDF guide from Google Drive
+    Linking.openURL('https://drive.google.com/file/d/1Ep3iBe9rEqWBzOGAN6bUEMYtKeOCYbyk/view?usp=drive_link');
   };
   
   const openSupportForm = () => {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ScrollView, Alert, Linking } from 'react-native';
 import { TextInput, Button, Text, Surface, Title, Caption, ActivityIndicator } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import NetInfo from '@react-native-community/netinfo';
@@ -16,78 +16,86 @@ const LoginScreen = ({ onLoginSuccess }) => {
   const [isOnline, setIsOnline] = useState(true);
 
   // Check for network status on component mount
-useEffect(() => {
-  const checkNetworkStatus = async () => {
-    const networkState = await NetInfo.fetch();
-    const online = networkState.isConnected && networkState.isInternetReachable;
-    setIsOnline(online);
-    
-    // Auto-sync credentials if online
-    if (online) {
-      try {
-        console.log('Auto-syncing credentials on LoginScreen...');
-        await refreshCredentials();
-      } catch (error) {
-        console.error('Error syncing credentials on login screen:', error);
+  useEffect(() => {
+    const checkNetworkStatus = async () => {
+      const networkState = await NetInfo.fetch();
+      const online = networkState.isConnected && networkState.isInternetReachable;
+      setIsOnline(online);
+      
+      // Auto-sync credentials if online
+      if (online) {
+        try {
+          console.log('Auto-syncing credentials on LoginScreen...');
+          await refreshCredentials();
+        } catch (error) {
+          console.error('Error syncing credentials on login screen:', error);
+        }
       }
+    };
+    
+    checkNetworkStatus();
+    
+    // Set up a listener for network changes
+    const unsubscribe = NetInfo.addEventListener(state => {
+      const online = state.isConnected && state.isInternetReachable;
+      setIsOnline(online);
+      
+      // Sync when coming online
+      if (online) {
+        refreshCredentials()
+          .catch(e => console.error('Error syncing on network change:', e));
+      }
+    });
+    
+    // Clean up the listener on unmount
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  const handleLogin = async () => {
+    // Reset error
+    setError('');
+    
+    // Validate inputs
+    if (!email.trim()) {
+      setError('Please enter your email');
+      return;
+    }
+    
+    if (!password) {
+      setError('Please enter your password');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      
+      // Add this line to show loading status
+      setError('Refreshing credentials and logging in...');
+      
+      const result = await authenticateUser(email, password);
+      
+      if (result.success) {
+        onLoginSuccess(result.userType); // This is the correct way to pass user type
+      } else {
+        setError('Invalid email or password');
+      }
+    } catch (err) {
+      console.error('Login error:', err);
+      setError('Authentication failed. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
-  
-  checkNetworkStatus();
-  
-  // Set up a listener for network changes
-  const unsubscribe = NetInfo.addEventListener(state => {
-    const online = state.isConnected && state.isInternetReachable;
-    setIsOnline(online);
-    
-    // Sync when coming online
-    if (online) {
-      refreshCredentials()
-        .catch(e => console.error('Error syncing on network change:', e));
-    }
-  });
-  
-  // Clean up the listener on unmount
-  return () => {
-    unsubscribe();
+
+  const openUserGuide = () => {
+    Linking.openURL('https://drive.google.com/file/d/1Ep3iBe9rEqWBzOGAN6bUEMYtKeOCYbyk/view?usp=drive_link');
   };
-}, []);
-
-const handleLogin = async () => {
-  // Reset error
-  setError('');
   
-  // Validate inputs
-  if (!email.trim()) {
-    setError('Please enter your email');
-    return;
-  }
-  
-  if (!password) {
-    setError('Please enter your password');
-    return;
-  }
-
-  try {
-    setLoading(true);
-    
-    // Add this line to show loading status
-    setError('Refreshing credentials and logging in...');
-    
-    const result = await authenticateUser(email, password);
-    
-    if (result.success) {
-      onLoginSuccess(result.userType); // This is the correct way to pass user type
-    } else {
-      setError('Invalid email or password');
-    }
-  } catch (err) {
-    console.error('Login error:', err);
-    setError('Authentication failed. Please try again.');
-  } finally {
-    setLoading(false);
-  }
-};
+  const openSupportForm = () => {
+    Linking.openURL('https://docs.google.com/forms/d/e/1FAIpQLSfOt-UrLB_rBF6NdpPHG2iTaB8B5AcZIfkkQfOTslpsAULRBg/viewform?usp=header');
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -183,7 +191,7 @@ const handleLogin = async () => {
             <Button 
               mode="contained" 
               style={styles.smallButton}
-              onPress={() => Alert.alert('Coming Soon', 'The user guide will be available in a future update.')}
+              onPress={openUserGuide}
               disabled={loading}
             >
               Download User Guide
@@ -219,7 +227,7 @@ const handleLogin = async () => {
             <Button 
               mode="contained" 
               style={styles.smallButton}
-              onPress={() => Alert.alert('Support', 'Please email support@example.com for assistance.')}
+              onPress={openSupportForm}
               disabled={loading}
             >
               Support Form

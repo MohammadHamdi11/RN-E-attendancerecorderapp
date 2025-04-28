@@ -889,249 +889,370 @@ if ((refreshing || allLoading) && !addUserDialogVisible && !addAdminDialogVisibl
       {/* Students Section - using the more feature-rich version */}
       {renderStudentSection()}
       {/* Add User Dialog */}
-      <Portal>
-        <Dialog visible={addUserDialogVisible} onDismiss={hideDialogs}>
-          <Dialog.Title>Add User</Dialog.Title>
-          <Dialog.Content>
-            <TextInput
-              label="Name"
-              value={name}
-              onChangeText={setName}
-              mode="outlined"
-              style={styles.input}
-            />
-            <TextInput
-              label="Email"
-              value={email}
-              onChangeText={setEmail}
-              mode="outlined"
-              keyboardType="email-address"
-              style={styles.input}
-            />
-            <TextInput
-              label="Password"
-              value={password}
-              onChangeText={setPassword}
-              mode="outlined"
-              secureTextEntry
-              style={styles.input}
-            />
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={hideDialogs}>Cancel</Button>
-            <Button onPress={handleAddUser} loading={loading}>Add</Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
+<Portal>
+  <Dialog 
+    visible={addUserDialogVisible} 
+    onDismiss={hideDialogs}
+    style={{ backgroundColor: '#ffffff' }}
+    contentContainerStyle={styles.modalContent}
+  >
+    <Dialog.Title style={{ color: '#24325f' }}>Add User</Dialog.Title>
+    <Dialog.Content>
+      <TextInput
+        label="Name"
+        value={name}
+        onChangeText={setName}
+        mode="outlined"
+        style={[styles.input, { backgroundColor: '#ffffff' }]}
+      />
+      <TextInput
+        label="Email"
+        value={email}
+        onChangeText={setEmail}
+        mode="outlined"
+        keyboardType="email-address"
+        style={[styles.input, { backgroundColor: '#ffffff' }]}
+      />
+      <TextInput
+        label="Password"
+        value={password}
+        onChangeText={setPassword}
+        mode="outlined"
+        secureTextEntry
+        style={[styles.input, { backgroundColor: '#ffffff' }]}
+      />
+    </Dialog.Content>
+    <Dialog.Actions style={styles.modalButtons}>
+      <Button 
+        onPress={hideDialogs}
+        style={styles.secondaryButton}
+        labelStyle={{ color: '#24325f' }}
+      >
+        Cancel
+      </Button>
+      <Button 
+        onPress={handleAddUser} 
+        loading={loading}
+        mode="contained"
+        style={styles.primaryButton}
+        labelStyle={{ color: 'white' }}
+      >
+        Add
+      </Button>
+    </Dialog.Actions>
+  </Dialog>
+</Portal>
       {/* Add Admin Dialog */}
-      <Portal>
-        <Dialog visible={addAdminDialogVisible} onDismiss={hideDialogs}>
-          <Dialog.Title>Add Admin</Dialog.Title>
-          <Dialog.Content>
-            <TextInput
-              label="Name"
-              value={name}
-              onChangeText={setName}
-              mode="outlined"
-              style={styles.input}
-            />
-            <TextInput
-              label="Email"
-              value={email}
-              onChangeText={setEmail}
-              mode="outlined"
-              keyboardType="email-address"
-              style={styles.input}
-            />
-            <TextInput
-              label="Password"
-              value={password}
-              onChangeText={setPassword}
-              mode="outlined"
-              secureTextEntry
-              style={styles.input}
-            />
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={hideDialogs}>Cancel</Button>
-            <Button onPress={handleAddAdmin} loading={loading}>Add</Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
+<Portal>
+  <Dialog 
+    visible={addAdminDialogVisible} 
+    onDismiss={hideDialogs}
+    style={{ backgroundColor: '#ffffff' }}
+    contentContainerStyle={styles.modalContent}
+  >
+    <Dialog.Title style={{ color: '#24325f' }}>Add Admin</Dialog.Title>
+    <Dialog.Content>
+      <TextInput
+        label="Name"
+        value={name}
+        onChangeText={setName}
+        mode="outlined"
+        style={[styles.input, { backgroundColor: '#ffffff' }]}
+      />
+      <TextInput
+        label="Email"
+        value={email}
+        onChangeText={setEmail}
+        mode="outlined"
+        keyboardType="email-address"
+        style={[styles.input, { backgroundColor: '#ffffff' }]}
+      />
+      <TextInput
+        label="Password"
+        value={password}
+        onChangeText={setPassword}
+        mode="outlined"
+        secureTextEntry
+        style={[styles.input, { backgroundColor: '#ffffff' }]}
+      />
+    </Dialog.Content>
+    <Dialog.Actions style={styles.modalButtons}>
+      <Button 
+        onPress={hideDialogs}
+        style={styles.secondaryButton}
+        labelStyle={{ color: '#24325f' }}
+      >
+        Cancel
+      </Button>
+      <Button 
+        onPress={handleAddAdmin} 
+        loading={loading}
+        mode="contained"
+        style={styles.primaryButton}
+        labelStyle={{ color: 'white' }}
+      >
+        Add
+      </Button>
+    </Dialog.Actions>
+  </Dialog>
+</Portal>
       {/* Remove Users Dialog */}
-      <Portal>
-        <Dialog visible={removeUserDialogVisible} onDismiss={hideDialogs} style={styles.selectionDialog}>
-          <Dialog.Title>Remove Users</Dialog.Title>
-          <Dialog.Content>
-            <View style={styles.selectionHeader}>
-              <Text>Select users to remove:</Text>
-              <Button 
-                onPress={toggleSelectAllUsers}
-                mode="text"
-              >
-                {selectedUsers.length === users.length ? 'Deselect All' : 'Select All'}
-              </Button>
-            </View>
-            <ScrollView style={styles.selectionList}>
-              {users.map((user, index) => (
-                <List.Item
-                  key={index}
-                  title={user.name}
-                  description={user.email}
-                  onPress={() => toggleUserSelection(user.email)}
-                  left={props => (
-                    <Checkbox
-                      status={selectedUsers.includes(user.email) ? 'checked' : 'unchecked'}
-                      onPress={() => toggleUserSelection(user.email)}
-                    />
-                  )}
-                />
-              ))}
-              {users.length === 0 && (
-                <Text style={styles.emptyText}>No users found</Text>
-              )}
-            </ScrollView>
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={hideDialogs}>Cancel</Button>
-            <Button 
-              onPress={handleRemoveUsers} 
-              loading={loading}
-              disabled={selectedUsers.length === 0}
-            >
-              Remove Selected
-            </Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
+<Portal>
+  <Dialog 
+    visible={removeUserDialogVisible} 
+    onDismiss={hideDialogs} 
+    style={{ backgroundColor: '#ffffff' }}
+    contentContainerStyle={[styles.modalContent, styles.selectionDialog]}
+  >
+    <Dialog.Title style={{ color: '#24325f' }}>Remove Users</Dialog.Title>
+    <Dialog.Content>
+      <View style={styles.selectionHeader}>
+        <Text style={{ color: '#24325f' }}>Select users to remove:</Text>
+        <Button 
+          onPress={toggleSelectAllUsers}
+          mode="text"
+          labelStyle={{ color: '#24325f' }}
+        >
+          {selectedUsers.length === users.length ? 'Deselect All' : 'Select All'}
+        </Button>
+      </View>
+      <ScrollView style={[styles.selectionList, { backgroundColor: '#ffffff' }]}>
+        {users.map((user, index) => (
+          <List.Item
+            key={index}
+            title={user.name}
+            description={user.email}
+            titleStyle={{ color: '#24325f' }}
+            descriptionStyle={{ color: '#666' }}
+            onPress={() => toggleUserSelection(user.email)}
+            left={props => (
+              <Checkbox
+                status={selectedUsers.includes(user.email) ? 'checked' : 'unchecked'}
+                onPress={() => toggleUserSelection(user.email)}
+                color="#24325f"
+              />
+            )}
+          />
+        ))}
+        {users.length === 0 && (
+          <Text style={[styles.emptyText, { backgroundColor: 'transparent' }]}>No users found</Text>
+        )}
+      </ScrollView>
+    </Dialog.Content>
+    <Dialog.Actions style={styles.modalButtons}>
+      <Button 
+        onPress={hideDialogs}
+        style={styles.secondaryButton}
+        labelStyle={{ color: '#24325f' }}
+      >
+        Cancel
+      </Button>
+      <Button 
+        onPress={handleRemoveUsers} 
+        loading={loading}
+        disabled={selectedUsers.length === 0}
+        mode="contained"
+        style={styles.primaryButton}
+        labelStyle={{ color: 'white' }}
+      >
+        Remove Selected
+      </Button>
+    </Dialog.Actions>
+  </Dialog>
+</Portal>
       {/* Remove Admins Dialog */}
-      <Portal>
-        <Dialog visible={removeAdminDialogVisible} onDismiss={hideDialogs} style={styles.selectionDialog}>
-          <Dialog.Title>Remove Admins</Dialog.Title>
-          <Dialog.Content>
-            <View style={styles.selectionHeader}>
-              <Text>Select admins to remove:</Text>
-              <Button 
-                onPress={toggleSelectAllAdmins}
-                mode="text"
-              >
-                {selectedAdmins.length === admins.length ? 'Deselect All' : 'Select All'}
-              </Button>
-            </View>
-            <ScrollView style={styles.selectionList}>
-              {admins.map((admin, index) => (
-                <List.Item
-                  key={index}
-                  title={admin.name}
-                  description={admin.email}
-                  onPress={() => toggleAdminSelection(admin.email)}
-                  left={props => (
-                    <Checkbox
-                      status={selectedAdmins.includes(admin.email) ? 'checked' : 'unchecked'}
-                      onPress={() => toggleAdminSelection(admin.email)}
-                    />
-                  )}
-                />
-              ))}
-              {admins.length === 0 && (
-                <Text style={styles.emptyText}>No admins found</Text>
-              )}
-            </ScrollView>
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={hideDialogs}>Cancel</Button>
-            <Button 
-              onPress={handleRemoveAdmins} 
-              loading={loading}
-              disabled={selectedAdmins.length === 0}
-            >
-              Remove Selected
-            </Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
+<Portal>
+  <Dialog 
+    visible={removeAdminDialogVisible} 
+    onDismiss={hideDialogs} 
+    style={{ backgroundColor: '#ffffff' }}
+    contentContainerStyle={[styles.modalContent, styles.selectionDialog]}
+  >
+    <Dialog.Title style={{ color: '#24325f' }}>Remove Admins</Dialog.Title>
+    <Dialog.Content>
+      <View style={styles.selectionHeader}>
+        <Text style={{ color: '#24325f' }}>Select admins to remove:</Text>
+        <Button 
+          onPress={toggleSelectAllAdmins}
+          mode="text"
+          labelStyle={{ color: '#24325f' }}
+        >
+          {selectedAdmins.length === admins.length ? 'Deselect All' : 'Select All'}
+        </Button>
+      </View>
+      <ScrollView style={[styles.selectionList, { backgroundColor: '#ffffff' }]}>
+        {admins.map((admin, index) => (
+          <List.Item
+            key={index}
+            title={admin.name}
+            description={admin.email}
+            titleStyle={{ color: '#24325f' }}
+            descriptionStyle={{ color: '#666' }}
+            onPress={() => toggleAdminSelection(admin.email)}
+            left={props => (
+              <Checkbox
+                status={selectedAdmins.includes(admin.email) ? 'checked' : 'unchecked'}
+                onPress={() => toggleAdminSelection(admin.email)}
+                color="#24325f"
+              />
+            )}
+          />
+        ))}
+        {admins.length === 0 && (
+          <Text style={[styles.emptyText, { backgroundColor: 'transparent' }]}>No admins found</Text>
+        )}
+      </ScrollView>
+    </Dialog.Content>
+    <Dialog.Actions style={styles.modalButtons}>
+      <Button 
+        onPress={hideDialogs}
+        style={styles.secondaryButton}
+        labelStyle={{ color: '#24325f' }}
+      >
+        Cancel
+      </Button>
+      <Button 
+        onPress={handleRemoveAdmins} 
+        loading={loading}
+        disabled={selectedAdmins.length === 0}
+        mode="contained"
+        style={styles.primaryButton}
+        labelStyle={{ color: 'white' }}
+      >
+        Remove Selected
+      </Button>
+    </Dialog.Actions>
+  </Dialog>
+</Portal>
       {/* View Users Dialog */}
-      <Portal>
-        <Dialog visible={viewUserDialogVisible} onDismiss={hideDialogs} style={styles.selectionDialog}>
-          <Dialog.Title>View Users</Dialog.Title>
-          <Dialog.Content>
-            <ScrollView style={styles.selectionList}>
-              {users.map((user, index) => (
-                <List.Item
-                  key={index}
-                  title={user.name}
-                  description={user.email}
-                  left={props => <List.Icon {...props} icon="account" />}
-                />
-              ))}
-              {users.length === 0 && (
-                <Text style={styles.emptyText}>No users found</Text>
-              )}
-            </ScrollView>
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={hideDialogs}>Close</Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
+<Portal>
+  <Dialog 
+    visible={viewUserDialogVisible} 
+    onDismiss={hideDialogs} 
+    style={{ backgroundColor: '#ffffff' }}
+    contentContainerStyle={[styles.modalContent, styles.selectionDialog]}
+  >
+    <Dialog.Title style={{ color: '#24325f' }}>View Users</Dialog.Title>
+    <Dialog.Content>
+      <ScrollView style={[styles.selectionList, { backgroundColor: '#ffffff' }]}>
+        {users.map((user, index) => (
+          <List.Item
+            key={index}
+            title={user.name}
+            description={user.email}
+            titleStyle={{ color: '#24325f' }}
+            descriptionStyle={{ color: '#666' }}
+            left={props => <List.Icon {...props} icon="account" color="#24325f" />}
+          />
+        ))}
+        {users.length === 0 && (
+          <Text style={[styles.emptyText, { backgroundColor: 'transparent' }]}>No users found</Text>
+        )}
+      </ScrollView>
+    </Dialog.Content>
+    <Dialog.Actions style={styles.modalButtons}>
+      <Button 
+        onPress={hideDialogs}
+        mode="contained"
+        style={styles.primaryButton}
+        labelStyle={{ color: 'white' }}
+      >
+        Close
+      </Button>
+    </Dialog.Actions>
+  </Dialog>
+</Portal>
       {/* View Admins Dialog */}
-      <Portal>
-        <Dialog visible={viewAdminDialogVisible} onDismiss={hideDialogs} style={styles.selectionDialog}>
-          <Dialog.Title>View Admins</Dialog.Title>
-          <Dialog.Content>
-            <ScrollView style={styles.selectionList}>
-              {admins.map((admin, index) => (
-                <List.Item
-                  key={index}
-                  title={admin.name}
-                  description={admin.email}
-                  left={props => <List.Icon {...props} icon="account-star" />}
-                />
-              ))}
-              {admins.length === 0 && (
-                <Text style={styles.emptyText}>No admins found</Text>
-              )}
-            </ScrollView>
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={hideDialogs}>Close</Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
+<Portal>
+  <Dialog 
+    visible={viewAdminDialogVisible} 
+    onDismiss={hideDialogs} 
+    style={{ backgroundColor: '#ffffff' }}
+    contentContainerStyle={[styles.modalContent, styles.selectionDialog]}
+  >
+    <Dialog.Title style={{ color: '#24325f' }}>View Admins</Dialog.Title>
+    <Dialog.Content>
+      <ScrollView style={[styles.selectionList, { backgroundColor: '#ffffff' }]}>
+        {admins.map((admin, index) => (
+          <List.Item
+            key={index}
+            title={admin.name}
+            description={admin.email}
+            titleStyle={{ color: '#24325f' }}
+            descriptionStyle={{ color: '#666' }}
+            left={props => <List.Icon {...props} icon="account-star" color="#24325f" />}
+          />
+        ))}
+        {admins.length === 0 && (
+          <Text style={[styles.emptyText, { backgroundColor: 'transparent' }]}>No admins found</Text>
+        )}
+      </ScrollView>
+    </Dialog.Content>
+    <Dialog.Actions style={styles.modalButtons}>
+      <Button 
+        onPress={hideDialogs}
+        mode="contained"
+        style={styles.primaryButton}
+        labelStyle={{ color: 'white' }}
+      >
+        Close
+      </Button>
+    </Dialog.Actions>
+  </Dialog>
+</Portal>
       {/* Add Student Dialog */}
-      <Portal>
-        <Dialog visible={addStudentDialogVisible} onDismiss={hideDialogs}>
-          <Dialog.Title>Add Student</Dialog.Title>
-          <Dialog.Content>
-            <TextInput
-              label="Year"
-              value={year}
-              onChangeText={setYear}
-              mode="outlined"
-              style={styles.input}
-              keyboardType="numeric"
-            />
-            <TextInput
-              label="Group"
-              value={group}
-              onChangeText={setGroup}
-              mode="outlined"
-              style={styles.input}
-            />
-            <TextInput
-              label="ID"
-              value={id}
-              onChangeText={setId}
-              mode="outlined"
-              style={styles.input}
-            />
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={hideDialogs}>Cancel</Button>
-            <Button onPress={handleAddStudent} loading={loading}>Add</Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
+<Portal>
+  <Dialog 
+    visible={addStudentDialogVisible} 
+    onDismiss={hideDialogs}
+    style={{ backgroundColor: '#ffffff' }}
+    contentContainerStyle={styles.modalContent}
+  >
+    <Dialog.Title style={{ color: '#24325f' }}>Add Student</Dialog.Title>
+    <Dialog.Content>
+      <TextInput
+        label="Year"
+        value={year}
+        onChangeText={setYear}
+        mode="outlined"
+        style={[styles.input, { backgroundColor: '#ffffff' }]}
+        keyboardType="numeric"
+      />
+      <TextInput
+        label="Group"
+        value={group}
+        onChangeText={setGroup}
+        mode="outlined"
+        style={[styles.input, { backgroundColor: '#ffffff' }]}
+      />
+      <TextInput
+        label="ID"
+        value={id}
+        onChangeText={setId}
+        mode="outlined"
+        style={[styles.input, { backgroundColor: '#ffffff' }]}
+      />
+    </Dialog.Content>
+    <Dialog.Actions style={styles.modalButtons}>
+      <Button 
+        onPress={hideDialogs}
+        style={styles.secondaryButton}
+        labelStyle={{ color: '#24325f' }}
+      >
+        Cancel
+      </Button>
+      <Button 
+        onPress={handleAddStudent} 
+        loading={loading}
+        mode="contained"
+        style={styles.primaryButton}
+        labelStyle={{ color: 'white' }}
+      >
+        Add
+      </Button>
+    </Dialog.Actions>
+  </Dialog>
+</Portal>
       {/* Remove Students Dialog */}
       <Portal>
         <Dialog visible={removeStudentDialogVisible} onDismiss={hideDialogs} style={styles.selectionDialog}>
@@ -1211,148 +1332,187 @@ if ((refreshing || allLoading) && !addUserDialogVisible && !addAdminDialogVisibl
         </Dialog>
       </Portal>
       {/* Excel Upload Dialog */}
-      <Portal>
-        <Dialog visible={excelUploadDialogVisible} onDismiss={hideDialogs}>
-          <Dialog.Title>Import Students from Excel</Dialog.Title>
-          <Dialog.Content>
-            <Text style={styles.dialogText}>
-              Upload an Excel file containing student data. The file should have columns for Year, Group, and Student ID.
-            </Text>
-            <Text style={styles.dialogText}>
-              You'll be able to map the columns in the next step.
-            </Text>
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={hideDialogs}>Cancel</Button>
-            <Button 
-              mode="contained"
-              onPress={handleExcelUpload} 
-              loading={uploadingExcel}
-              icon="file-upload"
-            >
-              Choose File
-            </Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
+<Portal>
+  <Dialog 
+    visible={excelUploadDialogVisible} 
+    onDismiss={hideDialogs}
+    style={{ backgroundColor: '#ffffff' }}
+    contentContainerStyle={styles.modalContent}
+  >
+    <Dialog.Title style={{ color: '#24325f' }}>Import Students from Excel</Dialog.Title>
+    <Dialog.Content>
+      <Text style={styles.dialogText}>
+        Upload an Excel file containing student data. The file should have columns for Year, Group, and Student ID.
+      </Text>
+      <Text style={styles.dialogText}>
+        You'll be able to map the columns in the next step.
+      </Text>
+    </Dialog.Content>
+    <Dialog.Actions style={styles.modalButtons}>
+      <Button 
+        onPress={hideDialogs}
+        style={styles.secondaryButton}
+        labelStyle={{ color: '#24325f' }}
+      >
+        Cancel
+      </Button>
+      <Button 
+        mode="contained"
+        onPress={handleExcelUpload} 
+        loading={uploadingExcel}
+        icon="file-upload"
+        style={styles.primaryButton}
+        labelStyle={{ color: 'white' }}
+      >
+        Choose File
+      </Button>
+    </Dialog.Actions>
+  </Dialog>
+</Portal>
       {/* Excel Column Mapping Dialog */}
-      <Portal>
-        <Dialog visible={excelMappingDialogVisible} onDismiss={hideDialogs} style={styles.mappingDialog}>
-          <Dialog.Title>Map Excel Columns</Dialog.Title>
-          <Dialog.Content>
-            <Text style={styles.dialogSubTitle}>File: {excelFileName}</Text>
-            <Text style={styles.dialogText}>
-              Please match each required field to the appropriate column from your Excel file:
-            </Text>
-            <View style={styles.mappingItem}>
-              <Text style={styles.mappingLabel}>Year:</Text>
-              <View style={styles.pickerContainer}>
-<Picker
-  selectedValue={columnMappings.year !== null ? columnMappings.year : ""}
-  onValueChange={(itemValue) => {
-    setColumnMappings(prev => ({...prev, year: itemValue === "" ? null : itemValue}));
-  }}
-  style={styles.picker}
-  mode="dropdown"
->
-  <Picker.Item label="Select column..." value="" />
-  {excelHeaders.map((header, index) => (
-    <Picker.Item key={index} label={header} value={index} />
-  ))}
-</Picker>
-              </View>
-            </View>
-            <View style={styles.mappingItem}>
-              <Text style={styles.mappingLabel}>Group:</Text>
-              <View style={styles.pickerContainer}>
-<Picker
-  selectedValue={columnMappings.group !== null ? columnMappings.group : ""}
-  onValueChange={(itemValue) => {
-    setColumnMappings(prev => ({...prev, group: itemValue === "" ? null : itemValue}));
-  }}
-  style={styles.picker}
-  mode="dropdown"
->
-  <Picker.Item label="Select column..." value="" />
-  {excelHeaders.map((header, index) => (
-    <Picker.Item key={index} label={header} value={index} />
-  ))}
-</Picker>
-              </View>
-            </View>
-            <View style={styles.mappingItem}>
-              <Text style={styles.mappingLabel}>Student ID:</Text>
-              <View style={styles.pickerContainer}>
-<Picker
-  selectedValue={columnMappings.id !== null ? columnMappings.id : ""}
-  onValueChange={(itemValue) => {
-    setColumnMappings(prev => ({...prev, id: itemValue === "" ? null : itemValue}));
-  }}
-  style={styles.picker}
-  mode="dropdown"
->
-  <Picker.Item label="Select column..." value="" />
-  {excelHeaders.map((header, index) => (
-    <Picker.Item key={index} label={header} value={index} />
-  ))}
-</Picker>
-              </View>
-            </View>
-            <Text style={styles.noteText}>
-              Note: If your Year column contains values like "Year 1", the system will extract just the number.
-            </Text>
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={hideDialogs}>Cancel</Button>
-<Button 
-  mode="contained"
-  onPress={handleMappingConfirm} 
-  disabled={columnMappings.year === null || columnMappings.year === undefined || 
-          columnMappings.group === null || columnMappings.group === undefined || 
-          columnMappings.id === null || columnMappings.id === undefined}
->
-  Next
-</Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
+<Portal>
+  <Dialog 
+    visible={excelMappingDialogVisible} 
+    onDismiss={hideDialogs} 
+    style={{ backgroundColor: '#ffffff' }}
+    contentContainerStyle={[styles.modalContent, styles.mappingDialog]}
+  >
+    <Dialog.Title style={{ color: '#24325f' }}>Map Excel Columns</Dialog.Title>
+    <Dialog.Content>
+      <Text style={styles.dialogSubTitle}>File: {excelFileName}</Text>
+      <Text style={styles.dialogText}>
+        Please match each required field to the appropriate column from your Excel file:
+      </Text>
+      <View style={styles.mappingItem}>
+        <Text style={[styles.mappingLabel, { color: '#24325f' }]}>Year:</Text>
+        <View style={[styles.pickerContainer, { backgroundColor: '#ffffff' }]}>
+          <Picker
+            selectedValue={columnMappings.year !== null ? columnMappings.year : ""}
+            onValueChange={(itemValue) => {
+              setColumnMappings(prev => ({...prev, year: itemValue === "" ? null : itemValue}));
+            }}
+            style={styles.picker}
+            mode="dropdown"
+          >
+            <Picker.Item label="Select column..." value="" />
+            {excelHeaders.map((header, index) => (
+              <Picker.Item key={index} label={header} value={index} />
+            ))}
+          </Picker>
+        </View>
+      </View>
+      <View style={styles.mappingItem}>
+        <Text style={[styles.mappingLabel, { color: '#24325f' }]}>Group:</Text>
+        <View style={[styles.pickerContainer, { backgroundColor: '#ffffff' }]}>
+          <Picker
+            selectedValue={columnMappings.group !== null ? columnMappings.group : ""}
+            onValueChange={(itemValue) => {
+              setColumnMappings(prev => ({...prev, group: itemValue === "" ? null : itemValue}));
+            }}
+            style={styles.picker}
+            mode="dropdown"
+          >
+            <Picker.Item label="Select column..." value="" />
+            {excelHeaders.map((header, index) => (
+              <Picker.Item key={index} label={header} value={index} />
+            ))}
+          </Picker>
+        </View>
+      </View>
+      <View style={styles.mappingItem}>
+        <Text style={[styles.mappingLabel, { color: '#24325f' }]}>Student ID:</Text>
+        <View style={[styles.pickerContainer, { backgroundColor: '#ffffff' }]}>
+          <Picker
+            selectedValue={columnMappings.id !== null ? columnMappings.id : ""}
+            onValueChange={(itemValue) => {
+              setColumnMappings(prev => ({...prev, id: itemValue === "" ? null : itemValue}));
+            }}
+            style={styles.picker}
+            mode="dropdown"
+          >
+            <Picker.Item label="Select column..." value="" />
+            {excelHeaders.map((header, index) => (
+              <Picker.Item key={index} label={header} value={index} />
+            ))}
+          </Picker>
+        </View>
+      </View>
+      <Text style={[styles.noteText, { color: '#666' }]}>
+        Note: If your Year column contains values like "Year 1", the system will extract just the number.
+      </Text>
+    </Dialog.Content>
+    <Dialog.Actions style={styles.modalButtons}>
+      <Button 
+        onPress={hideDialogs}
+        style={styles.secondaryButton}
+        labelStyle={{ color: '#24325f' }}
+      >
+        Cancel
+      </Button>
+      <Button 
+        mode="contained"
+        onPress={handleMappingConfirm} 
+        disabled={columnMappings.year === null || columnMappings.year === undefined || 
+                columnMappings.group === null || columnMappings.group === undefined || 
+                columnMappings.id === null || columnMappings.id === undefined}
+        style={styles.primaryButton}
+        labelStyle={{ color: 'white' }}
+      >
+        Next
+      </Button>
+    </Dialog.Actions>
+  </Dialog>
+</Portal>
       {/* Excel Data Preview Dialog */}
-      <Portal>
-        <Dialog visible={excelPreviewDialogVisible} onDismiss={() => setExcelPreviewDialogVisible(false)} style={styles.previewDialog}>
-          <Dialog.Title>Data Preview</Dialog.Title>
-          <Dialog.Content>
-            <Text style={styles.dialogSubTitle}>First 5 records from Excel:</Text>
-            <ScrollView style={styles.previewTable}>
-              <View style={styles.tableHeader}>
-                <Text style={[styles.tableCell, styles.headerCell]}>Year</Text>
-                <Text style={[styles.tableCell, styles.headerCell]}>Group</Text>
-                <Text style={[styles.tableCell, styles.headerCell]}>Student ID</Text>
-              </View>
-              {previewData.map((student, index) => (
-                <View key={index} style={styles.tableRow}>
-                  <Text style={styles.tableCell}>{student.Year}</Text>
-                  <Text style={styles.tableCell}>{student.Group}</Text>
-                  <Text style={styles.tableCell}>{student["Student ID"]}</Text>
-                </View>
-              ))}
-            </ScrollView>
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={() => setExcelPreviewDialogVisible(false)}>Close</Button>
-            <Button 
-              mode="contained"
-              onPress={() => {
-                setExcelPreviewDialogVisible(false);
-                // Process all data after preview
-                const processResult = processExcelData(excelRows, excelHeaders, columnMappings);
-                handleMergeData(processResult.data);
-              }}
-            >
-              Import All
-            </Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
+<Portal>
+  <Dialog 
+    visible={excelPreviewDialogVisible} 
+    onDismiss={() => setExcelPreviewDialogVisible(false)}
+    style={{ backgroundColor: '#ffffff' }}
+    contentContainerStyle={[styles.modalContent, styles.previewDialog]}
+  >
+    <Dialog.Title style={{ color: '#24325f' }}>Data Preview</Dialog.Title>
+    <Dialog.Content>
+      <Text style={styles.dialogSubTitle}>First 5 records from Excel:</Text>
+      <ScrollView style={[styles.previewTable, { backgroundColor: '#ffffff' }]}>
+        <View style={[styles.tableHeader, { backgroundColor: '#f0f0f0' }]}>
+          <Text style={[styles.tableCell, styles.headerCell, { color: '#24325f' }]}>Year</Text>
+          <Text style={[styles.tableCell, styles.headerCell, { color: '#24325f' }]}>Group</Text>
+          <Text style={[styles.tableCell, styles.headerCell, { color: '#24325f' }]}>Student ID</Text>
+        </View>
+        {previewData.map((student, index) => (
+          <View key={index} style={[styles.tableRow, { backgroundColor: '#ffffff' }]}>
+            <Text style={[styles.tableCell, { color: '#24325f' }]}>{student.Year}</Text>
+            <Text style={[styles.tableCell, { color: '#24325f' }]}>{student.Group}</Text>
+            <Text style={[styles.tableCell, { color: '#24325f' }]}>{student["Student ID"]}</Text>
+          </View>
+        ))}
+      </ScrollView>
+    </Dialog.Content>
+    <Dialog.Actions style={styles.modalButtons}>
+      <Button 
+        onPress={() => setExcelPreviewDialogVisible(false)}
+        style={styles.secondaryButton}
+        labelStyle={{ color: '#24325f' }}
+      >
+        Close
+      </Button>
+      <Button 
+        mode="contained"
+        onPress={() => {
+          setExcelPreviewDialogVisible(false);
+          // Process all data after preview
+          const processResult = processExcelData(excelRows, excelHeaders, columnMappings);
+          handleMergeData(processResult.data);
+        }}
+        style={styles.primaryButton}
+        labelStyle={{ color: 'white' }}
+      >
+        Import All
+      </Button>
+    </Dialog.Actions>
+  </Dialog>
+</Portal>
       {/* View Students Dialog */}
       <Portal>
         <Dialog visible={viewStudentDialogVisible} onDismiss={hideDialogs} style={styles.selectionDialog}>
@@ -1422,29 +1582,42 @@ if ((refreshing || allLoading) && !addUserDialogVisible && !addAdminDialogVisibl
         </Dialog>
       </Portal>
       {/* Clear Backups Confirmation Dialog */}
-      <Portal>
-        <Dialog visible={clearBackupsConfirmDialogVisible} onDismiss={hideDialogs}>
-          <Dialog.Title>Clear Backup Files</Dialog.Title>
-          <Dialog.Content>
-            <Text style={styles.warningText}>
-              Pressing Clear will move all backup files to a different location ("old_backups") and they will not be directly accessible through this app or the desktop management app anymore.
-            </Text>
-            <Text style={styles.warningText}>
-              Are you sure you want to remove the backup files for the past weeks?
-            </Text>
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={hideDialogs}>Cancel</Button>
-            <Button 
-              onPress={handleClearBackups} 
-              loading={clearingBackups}
-              color="#951d1e"
-            >
-              Clear Backups
-            </Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
+<Portal>
+  <Dialog 
+    visible={clearBackupsConfirmDialogVisible} 
+    onDismiss={hideDialogs}
+    style={{ backgroundColor: '#ffffff' }}
+    contentContainerStyle={styles.modalContent}
+  >
+    <Dialog.Title style={{ color: '#24325f' }}>Clear Backup Files</Dialog.Title>
+    <Dialog.Content>
+      <Text style={[styles.warningText, { color: '#951d1e' }]}>
+        Pressing Clear will move all backup files to a different location ("old_backups") and they will not be directly accessible through this app or the desktop management app anymore.
+      </Text>
+      <Text style={[styles.warningText, { color: '#951d1e' }]}>
+        Are you sure you want to remove the backup files for the past weeks?
+      </Text>
+    </Dialog.Content>
+    <Dialog.Actions style={styles.modalButtons}>
+      <Button 
+        onPress={hideDialogs}
+        style={styles.secondaryButton}
+        labelStyle={{ color: '#24325f' }}
+      >
+        Cancel
+      </Button>
+      <Button 
+        onPress={handleClearBackups} 
+        loading={clearingBackups}
+        mode="contained"
+        style={[styles.primaryButton, { backgroundColor: '#951d1e' }]}
+        labelStyle={{ color: 'white' }}
+      >
+        Clear Backups
+      </Button>
+    </Dialog.Actions>
+  </Dialog>
+</Portal>
     </ScrollView>
   );
 }
@@ -1544,8 +1717,22 @@ const styles = StyleSheet.create({
     color: '#666',
     fontStyle: 'italic',
   },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    margin: 20,
+    borderRadius: 8,
+    elevation: 5,
+  },
   selectionDialog: {
     maxHeight: '80%',
+    backgroundColor: 'white',
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 16,
+    backgroundColor: 'transparent',
   },
   selectionHeader: {
     flexDirection: 'row',
@@ -1612,16 +1799,29 @@ mappingDialog: {
 previewDialog: {
   maxHeight: '80%',
 },
-dialogText: {
-  marginBottom: 10,
-  fontSize: 14,
-  lineHeight: 20,
-},
-dialogSubTitle: {
-  fontWeight: 'bold',
-  marginBottom: 10,
-  fontSize: 14,
-},
+  primaryButton: {
+    backgroundColor: '#24325f',
+    borderColor: '#24325f',
+    marginLeft: 8,
+  },
+  secondaryButton: {
+    backgroundColor: 'white',
+    borderColor: '#24325f',
+    borderWidth: 1,
+    marginLeft: 8,
+  },
+  dialogText: {
+    marginBottom: 10,
+    fontSize: 14,
+    lineHeight: 20,
+    color: '#24325f',
+  },
+  dialogSubTitle: {
+    fontWeight: 'bold',
+    marginBottom: 10,
+    fontSize: 14,
+    color: '#24325f',
+  },
 mappingItem: {
   flexDirection: 'row',
   alignItems: 'center',

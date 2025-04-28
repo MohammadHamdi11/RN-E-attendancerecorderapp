@@ -4,10 +4,8 @@ import { Text, Surface, Title, Subheading, List, Divider } from 'react-native-pa
 
 const AboutScreen = () => {
   const openUserGuide = () => {
-    // In a real app, this would open the PDF file
-    console.log("Opening user guide");
-    // You could use Linking API to open a URL or Expo DocumentPicker to open a file
-    // Linking.openURL('https://www.hostize.com/v/5DX6NGfApj');
+    // Open the user guide from Google Drive
+    Linking.openURL('https://drive.google.com/file/d/1Ep3iBe9rEqWBzOGAN6bUEMYtKeOCYbyk/view?usp=drive_link');
   };
 
   return (

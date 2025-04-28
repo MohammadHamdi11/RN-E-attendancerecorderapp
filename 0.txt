@@ -1,1037 +1,204 @@
-<Provider>
-<ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
-{connectionMessage && (
-<View style={[styles.connectionStatus, { backgroundColor: isOnline ? '#e7f3e8' : '#fff3cd' }]}>
-<Text style={{ color: isOnline ? '#28a745' : '#856404' }}>{connectionMessage}</Text>
-</View>
-)}
-<Surface style={styles.card}>
-<Title style={styles.title}>Student Selector</Title>
-<View style={styles.buttonContainer}>
-<Button 
-mode="contained" 
-style={[styles.primaryButton, styles.fullWidthButton]}
-labelStyle={styles.primaryButtonText}
-onPress={() => activeSession ? endChecklistSession() : startChecklistSession()}
->
-{activeSession ? 'End Session' : 'Start New Session'}
-</Button>
-{!activeSession && (
-<Button 
-mode="outlined" 
-style={[styles.secondaryButton, styles.fullWidthButton]}
-labelStyle={styles.secondaryButtonText}
-onPress={handleSyncData}
-disabled={!isOnline}
->
-Sync Data
-</Button>
-)}
-{activeSession && (
-<Button 
-mode="outlined" 
-style={[styles.secondaryButton, styles.fullWidthButton]}
-labelStyle={styles.secondaryButtonText}
-onPress={() => setShowManualEntryModal(true)}
->
-Manual Entry
-</Button>
-)}
-</View>
-{activeSession && (
-<View style={styles.sessionInfo}>
-<Text style={styles.locationText}>Location: {activeSession.location}</Text>
-<Text style={styles.dateTimeText}>Date/Time: {activeSession.formattedDateTime}</Text>
-</View>
-)}
-{selectionStatus ? (
-<View style={styles.statusContainer}>
-<Text style={styles.statusText}>{selectionStatus}</Text>
-</View>
-) : null}
-{activeSession ? (
-<View style={styles.checklistContainer}>
-<Searchbar
-placeholder="Search students..."
-onChangeText={query => setSearchQuery(query)}
-value={searchQuery}
-style={styles.searchbar}
-/>
-<View style={styles.filterContainer}>
-<View style={styles.filterItem}>
-<Text style={styles.filterLabel}>Year:</Text>
-<Button 
-mode="outlined" 
-onPress={() => setShowYearFilterModal(true)}
-style={styles.secondaryButton}
-labelStyle={styles.secondaryButtonText}
->
-{yearFilter === 'all' ? 'All Years' : yearFilter}
-</Button>
-</View>
-<View style={styles.filterItem}>
-<Text style={styles.filterLabel}>Group:</Text>
-<Button 
-mode="outlined" 
-onPress={() => setShowGroupFilterModal(true)}
-style={styles.secondaryButton}
-labelStyle={styles.secondaryButtonText}
->
-{groupFilter === 'all' ? 'All Groups' : groupFilter}
-</Button>
-</View>
-</View>
-<FlatList
-  style={[styles.studentList, { height: 250, backgroundColor: '#ffffff' }]}
-  data={filteredStudents}
-  keyExtractor={(student) => `student-${student["Student ID"] || student.id || ""}`}
-  renderItem={({ item: student }) => (
-    <StudentItem 
-      student={student}
-      isSelected={selectedStudents.has(student["Student ID"] || student.id || "")}
-      onToggle={(id) => handleStudentSelection(id, !selectedStudents.has(id))}
-      textStyle={{ color: '#24325f' }}
-      backgroundColor="#ffffff"
-    />
-)}
-getItemLayout={(data, index) => ({
-length: 48,
-offset: 48 * index,
-index,
-})}
-nestedScrollEnabled={true}
-windowSize={10}
-maxToRenderPerBatch={10}
-updateCellsBatchingPeriod={50}
-removeClippedSubviews={true}
-initialNumToRender={10}
-ListEmptyComponent={() => (
-<View style={styles.emptyList}>
-<Text style={styles.emptyText}>
-{studentsData.length === 0 
-? "No student data available." 
-: "No students match the current filters."}
-</Text>
-</View>
-)}
-/>
-</View>
-) : (
-<View style={styles.checklistContainer}>
-<Text style={styles.placeholderText}>
-Click "Start New Session" to begin selecting students.
-</Text>
-</View>
-)}
-<Title style={styles.subtitle}>Selected Students</Title>
-{activeSession && activeSession.scans && activeSession.scans.length > 0 ? (
-<View style={styles.tableContainer}>
-  <DataTable>
-<DataTable.Header style={{ backgroundColor: '#ffffff' }}>
-  <DataTable.Title numeric style={{ flex: 0.2 }}><Text style={{ color: '#24325f' }}>ID</Text></DataTable.Title>
-  <DataTable.Title style={{ flex: 0.6 }}><Text style={{ color: '#24325f' }}>Content</Text></DataTable.Title>
-  <DataTable.Title style={{ flex: 0.4 }}><Text style={{ color: '#24325f' }}>Time</Text></DataTable.Title>
-</DataTable.Header>
-    <ScrollView style={{ maxHeight: 200 }} nestedScrollEnabled={true}>
-      {activeSession.scans.map((scan, index) => (
-<DataTable.Row key={scan.id || index} style={{ backgroundColor: '#ffffff' }}>
-  <DataTable.Cell numeric style={{ flex: 0.2 }}><Text style={{ color: '#24325f' }}>{index + 1}</Text></DataTable.Cell>
-  <DataTable.Cell style={{ flex: 0.6 }}><Text style={{ color: '#24325f' }}>
-    {scan.content || scan.id}
-    {scan.isManual ? ' (Manual)' : ''}
-  </Text></DataTable.Cell>
-  <DataTable.Cell style={{ flex: 0.4 }}><Text style={{ color: '#24325f' }}>{scan.formattedTime}</Text></DataTable.Cell>
-</DataTable.Row>
-      ))}
-    </ScrollView>
-  </DataTable>
-</View>
-) : (
-  <Text style={styles.noDataText}>No students selected yet.</Text>
-)}
-</Surface>
-<Portal>
-<Modal
-  visible={showSessionModal}
-  onDismiss={() => setShowSessionModal(false)}
-  contentContainerStyle={[styles.modalContent, { backgroundColor: '#ffffff' }]}
->
-  <Title style={{ color: '#24325f' }}>Start New Session</Title>
-  <Text style={[styles.dropdownLabel, { color: '#24325f' }]}>Location:</Text>
-  <View style={[styles.dropdownContainer, { backgroundColor: '#ffffff' }]}>
-    <ScrollView style={styles.locationDropdown} nestedScrollEnabled={true}>
-      {locationOptions.map(option => (
-        <List.Item
-          key={option}
-          title={option}
-          titleStyle={{ color: '#24325f' }}
-          onPress={() => {
-setLocation(option);
-setShowSessionModal(false);
-setTimeout(() => {
-if (option) {
-const now = new Date();
-const sessionId = `checklist_${now.getTime()}`;
-const formattedDateTime = formatDateTime(now);
-const newSession = {
-id: sessionId,
-location: option,
-dateTime: now.toISOString(),
-formattedDateTime: formattedDateTime,
-scans: [],
-inProgress: true,
-isChecklist: true
-};
-setActiveSession(newSession);
-setSelectedStudents(new Set());
-setSelectionStatus('Session started - Ready to select students');
-AsyncStorage.getItem('sessions').then(savedSessions => {
-const parsedSessions = savedSessions ? JSON.parse(savedSessions) : [];
-const updatedSessions = [...parsedSessions, newSession];
-setSessions(updatedSessions);
-AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions));
-AsyncStorage.setItem(TEMP_CHECKLIST_SESSION_INDEX_KEY, String(updatedSessions.length - 1));
-});
-saveActiveChecklistSession(newSession);
-console.log("New checklist session created:", sessionId);
-}
-}, 100);
-          }}
-          style={[styles.locationOption, { backgroundColor: '#ffffff' }]}
-        />
-      ))}
-    </ScrollView>
-  </View>
-<View style={styles.modalButtons}>
-<Button 
-mode="text"
-labelStyle={styles.secondaryButtonText}
-onPress={() => setShowSessionModal(false)}
-style={styles.secondaryButton}
->
-Cancel
-</Button>
-</View>
-</Modal>
-</Portal>
-<Portal>
-<Modal
-visible={showManualEntryModal}
-onDismiss={() => setShowManualEntryModal(false)}
-contentContainerStyle={styles.modalContent}
->
-<Title>Manual Entry</Title>
-<TextInput
-label="Student ID"
-value={manualId}
-onChangeText={setManualId}
-style={styles.input}
-autoFocus
-onSubmitEditing={processManualEntry}
-/>
-<View style={styles.modalButtons}>
-<Button 
-mode="text" 
-onPress={() => setShowManualEntryModal(false)}
-style={styles.secondaryButton}
-labelStyle={styles.secondaryButtonText}
->
-Cancel
-</Button>
-<Button 
-mode="contained" 
-onPress={processManualEntry}
-disabled={!manualId.trim()}
-style={styles.primaryButton}
-labelStyle={styles.primaryButtonText}
->
-Add
-</Button>
-</View>
-</Modal>
-</Portal>
-<Portal>
-<Modal
-visible={showYearFilterModal}
-onDismiss={() => setShowYearFilterModal(false)}
-contentContainerStyle={styles.modalContent}
->
-<Title>Select Year</Title>
-<Button 
-onPress={() => handleYearFilter('all')}
-style={styles.secondaryButton}
-labelStyle={styles.secondaryButtonText}
->
-All Years
-</Button>
-<ScrollView style={{ maxHeight: 300 }}>
-{getUniqueYears.map(year => (
-<Button 
-key={year} 
-onPress={() => handleYearFilter(year)}
-style={styles.secondaryButton}
-labelStyle={styles.secondaryButtonText}
->
-{year}
-</Button>
-))}
-</ScrollView>
-</Modal>
-</Portal>
-<Portal>
-<Modal
-visible={showGroupFilterModal}
-onDismiss={() => setShowGroupFilterModal(false)}
-contentContainerStyle={styles.modalContent}
->
-<Title>Select Group</Title>
-<Button 
-onPress={() => handleGroupFilter('all')}
-style={styles.secondaryButton}
-labelStyle={styles.secondaryButtonText}
->
-All Groups
-</Button>
-<ScrollView style={{ maxHeight: 300 }}>
-{getUniqueGroups.map(group => (
-<Button 
-key={group} 
-onPress={() => handleGroupFilter(group)}
-style={styles.secondaryButton}
-labelStyle={styles.secondaryButtonText}
->
-{group}
-</Button>
-))}
-</ScrollView>
-</Modal>
-</Portal>
-</ScrollView>
-</Provider>
-);
-};
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: '#f9f9f9',
-  },
-  scrollContent: {
-    flexGrow: 1,
-    paddingBottom: 20,
-    backgroundColor: '#f9f9f9',
-  },
-  card: {
-    padding: 16,
-    borderRadius: 8,
-    elevation: 4,
-    backgroundColor: '#ffffff',
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 20,
-    marginBottom: 16,
-    color: '#24325f',
-    fontWeight: 'bold',
-    backgroundColor: 'transparent',
-  },
-  subtitle: {
-    fontSize: 16,
-    marginTop: 16,
-    marginBottom: 8,
-    color: '#24325f',
-    fontWeight: '500',
-    backgroundColor: 'transparent',
-  },
-  buttonContainer: {
-    marginBottom: 16,
-    backgroundColor: 'transparent',
-  },
-  primaryButton: {
-    backgroundColor: '#24325f',
-    borderColor: '#24325f',
-    marginBottom: 8,
-    marginRight: 8,
-  },
-  primaryButtonText: {
-    color: 'white',
-  },
-  secondaryButton: {
-    backgroundColor: 'white',
-    borderColor: '#24325f',
-    borderWidth: 1,
-    marginBottom: 8,
-    marginRight: 8,
-  },
-  secondaryButtonText: {
-    color: '#24325f',
-  },
-  sessionInfo: {
-    backgroundColor: '#f0f0f5',
-    padding: 8,
-    borderRadius: 4,
-    marginBottom: 8,
-    borderWidth: 1,
-    borderColor: '#24325f',
-  },
-  locationText: {
-    fontWeight: 'bold',
-    color: '#24325f',
-    backgroundColor: 'transparent',
-  },
-  dateTimeText: {
-    color: '#24325f',
-    backgroundColor: 'transparent',
-  },
-  statusContainer: {
-    backgroundColor: 'rgba(0,0,0,0.7)',
-    padding: 8,
-    borderRadius: 20,
-    marginBottom: 16,
-    alignItems: 'center',
-  },
-  statusText: {
-    color: 'white',
-    backgroundColor: 'transparent',
-  },
-  scannerContainer: {
-    height: 300,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: '#24325f',
-  },
-  checklistContainer: {
-    height: 300,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
-    justifyContent: 'center',
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#24325f',
-  },
-  tableContainer: {
-    borderWidth: 1,
-    borderColor: '#24325f',
-    borderRadius: 8,
-    overflow: 'hidden',
-    marginBottom: 20,
-    backgroundColor: '#fff',
-  },
-  tableHeader: {
-    backgroundColor: '#ffffff',
-  },
-  tableHeaderText: {
-    color: '#24325f',
-    fontWeight: 'bold',
-  },
-  tableRow: {
-    backgroundColor: '#ffffff',
-  },
-  tableCell: {
-    color: '#24325f',
-  },
-  connectionStatus: {
-    padding: 8,
-    borderRadius: 4,
-    marginBottom: 8,
-    alignItems: 'center',
-  },
-  connectionText: {
-    color: '#24325f',
-    fontWeight: '500',
-    backgroundColor: 'transparent',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    margin: 20,
-    borderRadius: 8,
-    elevation: 5,
-  },
-  modalButtons: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginTop: 16,
-    backgroundColor: 'transparent',
-  },
-  dropdownLabel: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    color: '#24325f',
-    backgroundColor: 'transparent',
-  },
-  dropdownContainer: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 4,
-    marginBottom: 16,
-    backgroundColor: '#fff',
-  },
-  locationDropdown: {
-    maxHeight: 250,
-    backgroundColor: '#ffffff',
-  },
-  locationOption: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-    padding: 10,
-    backgroundColor: '#ffffff',
-  },
-  locationOptionText: {
-    color: '#24325f',
-  },
-  input: {
-    marginVertical: 10,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 4,
-    padding: 8,
-    backgroundColor: '#ffffff',
-    color: '#24325f',
-  },
-  placeholderText: {
-    textAlign: 'center',
-    color: '#24325f',
-    backgroundColor: 'transparent',
-  },
-  noDataText: {
-    textAlign: 'center',
-    color: '#24325f',
-    fontStyle: 'italic',
-    marginTop: 8,
-    backgroundColor: 'transparent',
-  },
-  errorText: {
-    color: '#951d1e',
-    fontSize: 14,
-    marginBottom: 10,
-    backgroundColor: 'transparent',
-  },
-  searchbar: {
-    marginBottom: 8,
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 4,
-  },
-  filterContainer: {
-    flexDirection: 'row',
-    marginBottom: 8,
-    backgroundColor: 'transparent',
-  },
-  filterItem: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 8,
-    backgroundColor: 'transparent',
-  },
-  filterLabel: {
-    marginRight: 8,
-    fontWeight: 'bold',
-    color: '#24325f',
-    backgroundColor: 'transparent',
-  },
-  studentList: {
-    flex: 1,
-    backgroundColor: 'white',
-    borderRadius: 4,
-    marginBottom: 8,
-    borderWidth: 1,
-    borderColor: '#24325f',
-  },
-  studentItem: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-    padding: 10,
-    backgroundColor: '#fff',
-  },
-  studentItemText: {
-    color: '#24325f',
-  },
-  selectionItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 12,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  selectionItemText: {
-    color: '#24325f',
-  },
-  emptyList: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#f0f0f0',
-  },
-  emptyText: {
-    textAlign: 'center',
-    color: '#24325f',
-    fontStyle: 'italic',
-    backgroundColor: 'transparent',
-  },
-});
-export default ChecklistScreen;
+Attendance Recorder App: User Guide
 
-<Provider>
-<ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
-{connectionMessage && (
-<View style={[styles.connectionStatus, { backgroundColor: isOnline ? '#e7f3e8' : '#fff3cd' }]}>
-<Text style={{ color: isOnline ? '#28a745' : '#856404' }}>{connectionMessage}</Text>
-</View>
-)}
-<Surface style={styles.card}>
-<Title style={styles.title}>QR Code Scanner</Title>
-<View style={styles.buttonContainer}>
-<Button 
-mode="contained" 
-style={[styles.primaryButton, styles.fullWidthButton]}
-labelStyle={styles.primaryButtonText}
-onPress={() => activeSession ? endSession() : setShowSessionModal(true)}
->
-{activeSession ? 'End Session' : 'Start New Session'}
-</Button>
-{activeSession && (
-<Button 
-mode="outlined" 
-style={[styles.secondaryButton, styles.fullWidthButton]}
-labelStyle={styles.secondaryButtonText}
-onPress={() => setShowManualEntryModal(true)}
->
-Manual Entry
-</Button>
-)}
-</View>
-{activeSession && (
-<View style={styles.sessionInfo}>
-<Text style={styles.locationText}>Location: {activeSession.location}</Text>
-<Text style={styles.dateTimeText}>Date/Time: {activeSession.formattedDateTime}</Text>
-</View>
-)}
-{scanStatus ? (
-<View style={styles.statusContainer}>
-<Text style={styles.statusText}>{scanStatus}</Text>
-</View>
-) : null}
-<View style={styles.scannerContainer}>
-{activeSession ? (
-<BarCodeScanner
-onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-style={StyleSheet.absoluteFillObject}
-/>
-) : (
-<Text style={styles.placeholderText}>
-Click "Start New Session" to begin scanning QR codes.
-</Text>
-)}
-</View>
-<Title style={styles.subtitle}>Scanned QR Codes</Title>
-{activeSession && activeSession.scans && activeSession.scans.length > 0 ? (
-<View style={styles.tableContainer}>
-<DataTable>
-<DataTable.Header style={{ backgroundColor: '#ffffff' }}>
-  <DataTable.Title numeric style={{ flex: 0.2 }}><Text style={{ color: '#24325f' }}>ID</Text></DataTable.Title>
-  <DataTable.Title style={{ flex: 0.6 }}><Text style={{ color: '#24325f' }}>Content</Text></DataTable.Title>
-  <DataTable.Title style={{ flex: 0.4 }}><Text style={{ color: '#24325f' }}>Time</Text></DataTable.Title>
-</DataTable.Header>
-<ScrollView style={{ maxHeight: 200 }} nestedScrollEnabled={true}>
-{activeSession.scans.map((scan, index) => (
-<DataTable.Row key={scan.id || index} style={{ backgroundColor: '#ffffff' }}>
-  <DataTable.Cell numeric style={{ flex: 0.2 }}><Text style={{ color: '#24325f' }}>{index + 1}</Text></DataTable.Cell>
-  <DataTable.Cell style={{ flex: 0.6 }}><Text style={{ color: '#24325f' }}>
-    {scan.content || scan.id}
-    {scan.isManual ? ' (Manual)' : ''}
-  </Text></DataTable.Cell>
-  <DataTable.Cell style={{ flex: 0.4 }}><Text style={{ color: '#24325f' }}>{scan.formattedTime}</Text></DataTable.Cell>
-</DataTable.Row>
-))}
-</ScrollView>
-</DataTable>
-</View>
-) : (
-<Text style={styles.noDataText}>No QR codes scanned yet.</Text>
-)}
-</Surface>
-<Portal>
-<Modal
-  visible={showSessionModal}
-  onDismiss={() => setShowSessionModal(false)}
-  contentContainerStyle={[styles.modalContent, { backgroundColor: '#ffffff' }]}
->
-  <Title style={{ color: '#24325f' }}>Start New Session</Title>
-  <Text style={[styles.dropdownLabel, { color: '#24325f' }]}>Location:</Text>
-  <View style={[styles.dropdownContainer, { backgroundColor: '#ffffff' }]}>
-    <ScrollView style={styles.locationDropdown} nestedScrollEnabled={true}>
-      {locationOptions.map(option => (
-        <List.Item
-          key={option}
-          title={option}
-          titleStyle={{ color: '#24325f' }}
-          onPress={() => {
-setLocation(option);
-setShowSessionModal(false);
-setTimeout(() => {
-if (option) {
-const now = new Date();
-const sessionId = `session_${now.getTime()}`;
-const formattedDateTime = formatDateTime(now);
-const newSession = {
-id: sessionId,
-location: option,
-dateTime: now.toISOString(),
-formattedDateTime: formattedDateTime,
-scans: [],
-inProgress: true
-};
-setActiveSession(newSession);
-setScans([]);
-setScanStatus('Session started - Ready to scan');
-AsyncStorage.getItem('sessions').then(savedSessions => {
-const parsedSessions = savedSessions ? JSON.parse(savedSessions) : [];
-const updatedSessions = [...parsedSessions, newSession];
-setSessions(updatedSessions);
-AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions));
-AsyncStorage.setItem(TEMP_SCANNER_SESSION_INDEX_KEY, String(updatedSessions.length - 1));
-});
-saveActiveScannerSession(newSession);
-console.log("New scanner session created:", sessionId);
-}
-}, 100);
-          }}
-          style={[styles.locationOption, { backgroundColor: '#ffffff' }]}
-        />
-      ))}
-    </ScrollView>
-  </View>
-<View style={styles.modalButtons}>
-<Button 
-mode="text"
-onPress={() => setShowSessionModal(false)}
-style={styles.secondaryButton}
-labelStyle={styles.secondaryButtonText}
->
-Cancel
-</Button>
-</View>
-</Modal>
-</Portal>
-<Portal>
-<Modal
-visible={showManualEntryModal}
-onDismiss={() => setShowManualEntryModal(false)}
-contentContainerStyle={styles.modalContent}
->
-<Title>Manual Entry</Title>
-<TextInput
-label="Student ID"
-value={manualId}
-onChangeText={setManualId}
-style={styles.input}
-autoFocus
-onSubmitEditing={processManualEntry}
-/>
-<View style={styles.modalButtons}>
-<Button 
-mode="text" 
-onPress={() => setShowManualEntryModal(false)}
-style={styles.secondaryButton}
-labelStyle={styles.secondaryButtonText}
->
-Cancel
-</Button>
-<Button 
-mode="contained" 
-onPress={processManualEntry}
-disabled={!manualId.trim()}
-style={styles.primaryButton}
-labelStyle={styles.primaryButtonText}
->
-Add
-</Button>
-</View>
-</Modal>
-</Portal>
-</ScrollView>
-</Provider>
-);
-};
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: '#f9f9f9',
-  },
-  scrollContent: {
-    flexGrow: 1,
-    paddingBottom: 20,
-    backgroundColor: '#f9f9f9',
-  },
-  card: {
-    padding: 16,
-    borderRadius: 8,
-    elevation: 4,
-    backgroundColor: '#ffffff',
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 20,
-    marginBottom: 16,
-    color: '#24325f',
-    fontWeight: 'bold',
-    backgroundColor: 'transparent',
-  },
-  subtitle: {
-    fontSize: 16,
-    marginTop: 16,
-    marginBottom: 8,
-    color: '#24325f',
-    fontWeight: '500',
-    backgroundColor: 'transparent',
-  },
-  buttonContainer: {
-    marginBottom: 16,
-    backgroundColor: 'transparent',
-  },
-  primaryButton: {
-    backgroundColor: '#24325f',
-    borderColor: '#24325f',
-    marginBottom: 8,
-    marginRight: 8,
-  },
-  primaryButtonText: {
-    color: 'white',
-  },
-  secondaryButton: {
-    backgroundColor: 'white',
-    borderColor: '#24325f',
-    borderWidth: 1,
-    marginBottom: 8,
-    marginRight: 8,
-  },
-  secondaryButtonText: {
-    color: '#24325f',
-  },
-  sessionInfo: {
-    backgroundColor: '#f0f0f5',
-    padding: 8,
-    borderRadius: 4,
-    marginBottom: 8,
-    borderWidth: 1,
-    borderColor: '#24325f',
-  },
-  locationText: {
-    fontWeight: 'bold',
-    color: '#24325f',
-    backgroundColor: 'transparent',
-  },
-  dateTimeText: {
-    color: '#24325f',
-    backgroundColor: 'transparent',
-  },
-  statusContainer: {
-    backgroundColor: 'rgba(0,0,0,0.7)',
-    padding: 8,
-    borderRadius: 20,
-    marginBottom: 16,
-    alignItems: 'center',
-  },
-  statusText: {
-    color: 'white',
-    backgroundColor: 'transparent',
-  },
-  scannerContainer: {
-    height: 300,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: '#24325f',
-  },
-  checklistContainer: {
-    height: 300,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
-    justifyContent: 'center',
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#24325f',
-  },
-  tableContainer: {
-    borderWidth: 1,
-    borderColor: '#24325f',
-    borderRadius: 8,
-    overflow: 'hidden',
-    marginBottom: 20,
-    backgroundColor: '#fff',
-  },
-  tableHeader: {
-    backgroundColor: '#ffffff',
-  },
-  tableHeaderText: {
-    color: '#24325f',
-    fontWeight: 'bold',
-  },
-  tableRow: {
-    backgroundColor: '#ffffff',
-  },
-  tableCell: {
-    color: '#24325f',
-  },
-  connectionStatus: {
-    padding: 8,
-    borderRadius: 4,
-    marginBottom: 8,
-    alignItems: 'center',
-  },
-  connectionText: {
-    color: '#24325f',
-    fontWeight: '500',
-    backgroundColor: 'transparent',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    margin: 20,
-    borderRadius: 8,
-    elevation: 5,
-  },
-  modalButtons: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginTop: 16,
-    backgroundColor: 'transparent',
-  },
-  dropdownLabel: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    color: '#24325f',
-    backgroundColor: 'transparent',
-  },
-  dropdownContainer: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 4,
-    marginBottom: 16,
-    backgroundColor: '#fff',
-  },
-  locationDropdown: {
-    maxHeight: 250,
-    backgroundColor: '#ffffff',
-  },
-  locationOption: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-    padding: 10,
-    backgroundColor: '#ffffff',
-  },
-  locationOptionText: {
-    color: '#24325f',
-  },
-  input: {
-    marginVertical: 10,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 4,
-    padding: 8,
-    backgroundColor: '#ffffff',
-    color: '#24325f',
-  },
-  placeholderText: {
-    textAlign: 'center',
-    color: '#24325f',
-    backgroundColor: 'transparent',
-  },
-  noDataText: {
-    textAlign: 'center',
-    color: '#24325f',
-    fontStyle: 'italic',
-    marginTop: 8,
-    backgroundColor: 'transparent',
-  },
-  errorText: {
-    color: '#951d1e',
-    fontSize: 14,
-    marginBottom: 10,
-    backgroundColor: 'transparent',
-  },
-  searchbar: {
-    marginBottom: 8,
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 4,
-  },
-  filterContainer: {
-    flexDirection: 'row',
-    marginBottom: 8,
-    backgroundColor: 'transparent',
-  },
-  filterItem: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 8,
-    backgroundColor: 'transparent',
-  },
-  filterLabel: {
-    marginRight: 8,
-    fontWeight: 'bold',
-    color: '#24325f',
-    backgroundColor: 'transparent',
-  },
-  studentList: {
-    flex: 1,
-    backgroundColor: 'white',
-    borderRadius: 4,
-    marginBottom: 8,
-    borderWidth: 1,
-    borderColor: '#24325f',
-  },
-  studentItem: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-    padding: 10,
-    backgroundColor: '#fff',
-  },
-  studentItemText: {
-    color: '#24325f',
-  },
-  selectionItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 12,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  selectionItemText: {
-    color: '#24325f',
-  },
-  emptyList: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#f0f0f0',
-  },
-  emptyText: {
-    textAlign: 'center',
-    color: '#24325f',
-    fontStyle: 'italic',
-    backgroundColor: 'transparent',
-  },
-});
-export default ScannerScreen;
+Table of Contents
+Getting Started
+Login and Account Management
+Scanner Tab
+Selector Tab
+History Tab
+Backup Tab
+About Tab
+Contact Tab
+Settings Tab (Admin Only)
+Troubleshooting
+Getting Started
+Requesting Access
+Visit the app's sign-in page
+Click the "Support Form" button to open the Google Form
+Complete the form with your details to request access
+Wait for confirmation email (typically sent within 24-48 hours)
+Login and Account Management
+Signing In
+Once approved (getting a confirmation email), return to the app's sign-in page
+Enter the email address you provided in the request form
+Enter the password you created
+Click the "Sign In" button
+If you encounter any issues, use the Support Form link at the bottom of the sign-in page
+Login Session Management
+Your login session remains active until you explicitly sign out; it is a one-time Login
+The app will remember your login between sessions
+If credentials change on the server while you're logged in, you may be prompted to sign in again
+Signing Out
+Click the account icon in the top-right corner of any screen
+In the Account screen, click the "Sign Out" button
+Confirm the action when prompted
+You will be returned to the login screen
+Offline Login
+The app displays an "Offline" notification when no internet connection is available
+You can still log in using previously stored credential
+Note that only credentials synchronized during previous online sessions will work
+Scanner Tab
+The Scanner tab is the default view when you first open the app. It allows you to record attendance by scanning student QR codes.
+Starting a Scanning Session
+Click the "Start New Session" button
+Enter the location in the popup (e.g., "Morgue", "Histology Lab")
+Click "Start Now"
+When prompted, allow the app to access your device's camera
+Scanning QR Codes
+Position student QR codes within the camera frame
+The app can scan multiple QR codes simultaneously in a single frame
+Real-time scanning logs appear in the top right corner of the camera frame
+Successfully scanned data automatically appears in the table below
+Adding Custom Entries
+If a student doesn't have their QR code:
+Click the "Add Custom Entry" button
+Enter the student's ID in the popup form
+Click "Add Entry" to add them to the session
+Ending a Session
+Click the "End Session" button when finished
+The session data will be:
+Automatically exported as an Excel file to your device
+Automatically backed up to the cloud
+Session Recovery
+If a session is interrupted (app closed, browser crashed, etc.):
+Reopen the application
+You will be prompted to recover the previous session
+Choose to continue scanning or end the interrupted session
+Selector Tab
+The Selector tab provides a checklist interface to manually select students from a pre-set reference list.
+Starting a Selection Session
+Click the "Start New Session" button
+Enter the location in the popup (e.g., "Morgue", "Histology Lab")
+Click "Start Now"
+Selecting Students
+Use the search bar to find specific students
+Filter students by year/group using the dropdown options
+Click the checkbox next to student names to mark them present
+Selected students will appear in the table below
+Syncing Student Data
+To refresh the student checklist data from the cloud: Click the "Sync Data" button. (This requires an internet connection)
+The student list will be updated with the latest data
+Use this feature when:
+You need to get the most recent student data
+Student information appears outdated
+You've been instructed to sync by an administrator
+Adding Custom Entries
+If a student isn’t in the checklist:
+Click the "Add Custom Entry" button
+Enter the student's ID in the popup form
+Click "Add Entry" to add them to the session
+Ending a Session
+Click the "End Session" button when finished
+The session data will be:
+Automatically exported as an Excel file to your device
+Automatically backed up to the cloud
+Session Recovery
+If a session is interrupted (app closed, browser crashed, etc.):
+Reopen the application
+You will be prompted to recover the previous session
+Choose to continue scanning or end the interrupted session
+History Tab
+The History tab allows you to view, search, and export past attendance sessions.
+Viewing Session History
+All past sessions are displayed in chronological order
+Use the dropdown to sort by:
+Date (newest first)
+Date (oldest first)
+Location
+Accessing Session Details
+Click on any session in the list
+View detailed information including:
+Location
+Date and time
+Number of scans
+Complete list of recorded student IDs
+Exporting Session Data
+To export a single session:
+Click on the session to view details
+Click "Export Session" button
+To export all sessions:
+Click "Export All History" at the top of the page
+Backup Tab
+The Backup tab helps ensure your attendance data is safely stored.
+Checking Backup Status
+Connection Status: Shows if the app is currently online
+Last Backup: Displays the date and time of the most recent backup
+Manual Backup
+Click "Backup Now" to manually sync data to the cloud
+A confirmation message will appear when the backup is complete
+Important Notes
+Automatic backups occur:
+When the app starts
+When a session ends
+Periodically while the app is running
+Important: Perform a manual backup before:
+Deleting browser history
+Clearing app data
+Uninstalling the app
+Settings Tab (Admin Only)
+The Settings tab is only available to users with Administrator privileges. It provides system-wide configuration options.
+Accessing Settings
+Click the "Settings" tab in the navigation menu
+Note: This tab is only visible to administrators; regular users will not see this tab in their interface
+Admin Settings Overview
+The admin settings screen provides comprehensive management capabilities separated into multiple sections:
+Backup Management
+Number of backup files
+Clear all backups
+Admin Management
+Number of current admin accounts
+Add new admin
+View admin accounts
+Remove admin accounts
+User Management
+Number of current user accounts
+Add new user
+View user accounts
+Remove user accounts
+Student Management
+Total number of students in database
+Add individual student
+View student records
+Remove students
+Import from Excel
+About Tab
+The About tab provides information about the application including:
+Function and purpose
+Technical details
+Features
+Usage instructions
+Development team information
+Contact Tab
+The Contact tab provides access to support through a Google Form with three pathways:
+Request Access: For new users needing credentials
+Change/Forgot/lost credentials: for when any of the previous cases emerge
+Feedback: For suggestions and comments
+Issues/Complaints: For reporting problems or technical issues
+Troubleshooting
+Login Issues
+Verify you are using the correct email and password
+Check your internet connection (an offline notification will appear if you're not connected)
+Try clicking "Refresh Credentials" on the login screen if available
+If persistent issues occur, use the "Support Form" link on the login screen
+Camera Access Issues
+Ensure you've granted camera permissions to the app
+Try refreshing the page and starting a new session
+On mobile devices, check your privacy settings
+QR Code Not Scanning
+Ensure adequate lighting
+Position code within the camera frame
+Clean camera lens if using a mobile device
+If problems persist, use the add entry method as an alternative
+Data Recovery
+If you encounter data loss:
+Check the History tab to see if sessions were properly saved
+Check the Backup tab to verify the last successful backup
+Contact support through the Contact tab if data cannot be recovered
+Session Interruptions
+The app will attempt to recover any interrupted sessions
+Always properly end sessions with the "End Session" button
+Download Excel exports as a backup measure
+Connection Issues
+The app can work offline once loaded
+Data will be synchronized when connection is restored
+Perform manual backups when connection is available
