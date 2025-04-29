@@ -1,6 +1,8 @@
 //======IMPORT SECTION======//
 import React, { useState, useEffect, useMemo } from 'react';
 import { View, StyleSheet, FlatList, ScrollView, Alert } from 'react-native';
+import { TouchableOpacity } from 'react-native';
+import Icon from '@expo/vector-icons/MaterialIcons';
 import { Text, Button, Surface, Title, Checkbox, Modal, Portal, Provider, Searchbar, List, Divider, DataTable, TextInput } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as FileSystem from 'expo-file-system';
@@ -215,26 +217,42 @@ const filterStudents = async () => {
 };
 const prepareStudentSelection = async () => {
   if (!activeSession) return;
+  
+  // Check if year and group filters are set
+  if (yearFilter === 'all' || groupFilter === 'all') {
+    Alert.alert(
+      "Missing Filters",
+      "Please select both year and group before selecting students.",
+      [{ text: "OK" }]
+    );
+    return;
+  }
+  
   // Show loading state
   setSelectionStatus('Preparing student list...');
+  
   try {
-    // Get filtered students based on session filters - now these are mandatory
-    const yearToUse = activeSession.filters?.year || yearFilter;
-    const groupToUse = activeSession.filters?.group || groupFilter;
-    // Check that we have filters
-    if (yearToUse === 'all' || groupToUse === 'all') {
-      setSelectionStatus('Error: No year or group filter specified');
-      Alert.alert(
-        "Filter Error",
-        "No year or group specified. Please end this session and create a new one with proper filters.",
-        [{ text: "OK" }]
-      );
-      return;
-    }
-    const filteredData = await loadFilteredStudentsData(yearToUse, groupToUse);
+    // Update the session filters with current selections
+    const updatedSession = {
+      ...activeSession,
+      filters: {
+        year: yearFilter,
+        group: groupFilter
+      }
+    };
+    
+    // Update active session with the new filters
+    setActiveSession(updatedSession);
+    
+    // Save the updated session
+    await saveActiveChecklistSession(updatedSession);
+    await updateSessionInHistory(updatedSession);
+    
+    // Get filtered students based on session filters
+    const filteredData = await loadFilteredStudentsData(yearFilter, groupFilter);
     setFilteredStudents(filteredData);
     setShowStudentSelectorModal(true);
-    setSelectionStatus(`Showing ${filteredData.length} students from Year ${yearToUse}, Group ${groupToUse}`);
+    setSelectionStatus(`Showing ${filteredData.length} students from Year ${yearFilter}, Group ${groupFilter}`);
   } catch (error) {
     console.error("Error preparing student selection:", error);
     setSelectionStatus('Error loading student data');
@@ -276,7 +294,8 @@ const prepareStudentSelection = async () => {
     } else {
       setConnectionMessage('Offline - Working in local mode');
     }
-  }, [isOnline, activeSession]);
+}, [isOnline]); // Only depend on isOnline, not activeSession
+
   //======INITIALIZATION SECTION======//
   // Load initial data on component mount
   useEffect(() => {
@@ -501,88 +520,166 @@ const prepareStudentSelection = async () => {
     }
   };
   // Recover checklist session
-  const recoverChecklistSession = (session) => {
-    // Set active session
-    setActiveSession(session);
-    // Restore selections
-    const selectedSet = new Set();
-    session.scans.forEach(scan => {
-      selectedSet.add(scan.id);
-    });
-    setSelectedStudents(selectedSet);
-    setSelectionStatus('Session recovered - Ready to select students');
-    // Check if session exists in sessions array
-    AsyncStorage.getItem('sessions').then(savedSessions => {
-      if (savedSessions) {
-        const parsedSessions = JSON.parse(savedSessions);
-        const sessionIndex = parsedSessions.findIndex(s => s.id === session.id);
-        if (sessionIndex === -1) {
-          // Add session to sessions array
-          const updatedSessions = [...parsedSessions, session];
-          setSessions(updatedSessions);
-          AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions));
-          // Store temp index
-          const newIndex = updatedSessions.length - 1;
-          AsyncStorage.setItem(TEMP_CHECKLIST_SESSION_INDEX_KEY, String(newIndex));
-        } else {
-          // Update existing session
-          const updatedSessions = [...parsedSessions];
-          updatedSessions[sessionIndex] = {...session};
-          setSessions(updatedSessions);
-          AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions));
-          AsyncStorage.setItem(TEMP_CHECKLIST_SESSION_INDEX_KEY, String(sessionIndex));
-        }
+const recoverChecklistSession = (session) => {
+  // Set active session
+  setActiveSession(session);
+  // Restore selections
+  const selectedSet = new Set();
+  session.scans.forEach(scan => {
+    selectedSet.add(scan.id);
+  });
+  setSelectedStudents(selectedSet);
+  setSelectionStatus('Session recovered - Ready to select students');
+  // Check if session exists in sessions array
+  AsyncStorage.getItem('sessions').then(savedSessions => {
+    if (savedSessions) {
+      const parsedSessions = JSON.parse(savedSessions);
+      const sessionIndex = parsedSessions.findIndex(s => s.id === session.id);
+      if (sessionIndex === -1) {
+        // Add session to sessions array
+        const updatedSessions = [...parsedSessions, session];
+        setSessions(updatedSessions);
+        AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions));
+        // Store temp index
+        const newIndex = updatedSessions.length - 1;
+        AsyncStorage.setItem(TEMP_CHECKLIST_SESSION_INDEX_KEY, String(newIndex));
       } else {
-        // Create new sessions array
-        const newSessions = [session];
-        setSessions(newSessions);
-        AsyncStorage.setItem('sessions', JSON.stringify(newSessions));
-        AsyncStorage.setItem(TEMP_CHECKLIST_SESSION_INDEX_KEY, '0');
+        // Update existing session
+        const updatedSessions = [...parsedSessions];
+        updatedSessions[sessionIndex] = {...session};
+        setSessions(updatedSessions);
+        AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions));
+        AsyncStorage.setItem(TEMP_CHECKLIST_SESSION_INDEX_KEY, String(sessionIndex));
       }
-    });
-    // Save active session
-    saveActiveChecklistSession(session);
-    console.log("Checklist session recovered successfully");
-  };
-  // Save active session to storage
-  const saveActiveChecklistSession = (session = activeSession) => {
-    if (session) {
-      AsyncStorage.setItem(CHECKLIST_ACTIVE_SESSION_STORAGE_KEY, JSON.stringify(session))
-        .then(() => console.log("Active session saved:", session.id))
-        .catch(error => console.error("Error saving active session:", error));
+    } else {
+      // Create new sessions array
+      const newSessions = [session];
+      setSessions(newSessions);
+      AsyncStorage.setItem('sessions', JSON.stringify(newSessions));
+      AsyncStorage.setItem(TEMP_CHECKLIST_SESSION_INDEX_KEY, '0');
     }
-  };
-  // Clear active session from storage
-  const clearActiveChecklistSession = () => {
-    AsyncStorage.removeItem(CHECKLIST_ACTIVE_SESSION_STORAGE_KEY)
-      .then(() => AsyncStorage.removeItem(TEMP_CHECKLIST_SESSION_INDEX_KEY))
-      .then(() => console.log("Active session cleared from storage"))
-      .catch(error => console.error("Error clearing active session:", error));
-  };
+  });
+  
+  // Save active session
+  saveActiveChecklistSession(session);
+  
+  // Start auto-save timer
+  startAutoSaveTimer();
+  
+  console.log("Checklist session recovered successfully");
+};
+// Save active session to storage
+const saveActiveChecklistSession = (session = activeSession) => {
+  if (session) {
+    return AsyncStorage.setItem(CHECKLIST_ACTIVE_SESSION_STORAGE_KEY, JSON.stringify(session))
+      .then(() => console.log("Active session saved:", session.id))
+      .catch(error => {
+        console.error("Error saving active session:", error);
+        throw error; // Re-throw so Promise.all can catch it
+      });
+  }
+  return Promise.resolve(); // Return a resolved promise if no session
+};
+
+// Clear active session from storage
+const clearActiveChecklistSession = () => {
+  // Stop auto-save timer
+  stopAutoSaveTimer();
+  
+  AsyncStorage.removeItem(CHECKLIST_ACTIVE_SESSION_STORAGE_KEY)
+    .then(() => AsyncStorage.removeItem(TEMP_CHECKLIST_SESSION_INDEX_KEY))
+    .then(() => console.log("Active session cleared from storage"))
+    .catch(error => console.error("Error clearing active session:", error));
+};
+
 //====================SESSION CREATION SECTION======//
 // Start a new checklist session
 const startChecklistSession = () => {
+  // Reset location first
   setLocation('');
+  // Then show the modal
   setShowSessionModal(true);
 };
 
 const onLocationSelected = (selectedLocation) => {
+  console.log("Selected location:", selectedLocation);
+  // First set the location in state
   setLocation(selectedLocation);
+  
+  // Then close the modal
   setShowSessionModal(false);
+  
+  // Wait for the state to update before creating the session
+  setTimeout(() => {
+    if (selectedLocation) {
+      console.log("Creating new session with location:", selectedLocation);
+      createNewChecklistSessionWithLocation(selectedLocation);
+    } else {
+      console.log("No location selected");
+    }
+  }, 500); // Increased delay to ensure state is updated
 };
 
-//====================SESSION CREATION====================//
-// Create a new checklist session
-const createNewChecklistSession = () => {
-  console.log("Create session button pressed");
-  if (!location.trim()) {
+// Create a new checklist session with a specific location
+const createNewChecklistSessionWithLocation = (sessionLocation) => {
+  console.log("Creating session at location:", sessionLocation);
+  if (!sessionLocation || !sessionLocation.trim()) {
     Alert.alert("Error", "Please enter a location");
     return;
   }
   
-  // Validate that filters are selected
-  if (yearFilter === 'all' || groupFilter === 'all') {
-    Alert.alert("Error", "Please select both year and group first");
+  // Create new session
+  const now = new Date();
+  const sessionId = `checklist_${now.getTime()}`;
+  const formattedDateTime = formatDateTime(now);
+  
+  // Store the current filter settings with the session
+  const newSession = {
+    id: sessionId,
+    location: sessionLocation,
+    dateTime: now.toISOString(),
+    formattedDateTime: formattedDateTime,
+    scans: [],
+    inProgress: true,
+    isChecklist: true,
+    // Store filters with the session for reference - these will be selected later
+    filters: {
+      year: 'all',  // Start with default values
+      group: 'all'
+    }
+  };
+  
+  // Set active session
+  setActiveSession(newSession);
+  // Clear selected students
+  setSelectedStudents(new Set());
+  setSelectionStatus(`Session started at ${sessionLocation}`);
+  
+  // Add session to sessions array
+  AsyncStorage.getItem('sessions').then(savedSessions => {
+    const parsedSessions = savedSessions ? JSON.parse(savedSessions) : [];
+    const updatedSessions = [...parsedSessions, newSession];
+    setSessions(updatedSessions);
+    AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions));
+    // Store temp index
+    const index = updatedSessions.length - 1;
+    AsyncStorage.setItem(TEMP_CHECKLIST_SESSION_INDEX_KEY, String(index));
+  });
+  
+  // Save active session
+  saveActiveChecklistSession(newSession);
+  
+  // Start auto-save timer
+  startAutoSaveTimer();
+  
+  console.log("New checklist session created:", sessionId);
+};
+//====================SESSION CREATION====================//
+// Create a new checklist session
+const createNewChecklistSession = () => {
+  console.log("Create session button pressed");
+  if (!location || !location.trim()) {
+    Alert.alert("Error", "Please enter a location");
     return;
   }
   
@@ -600,10 +697,10 @@ const createNewChecklistSession = () => {
     scans: [],
     inProgress: true,
     isChecklist: true,
-    // Store filters with the session for reference
+    // Store filters with the session for reference - these will be selected later
     filters: {
-      year: yearFilter,
-      group: groupFilter
+      year: 'all',  // Start with default values
+      group: 'all'
     }
   };
   
@@ -611,7 +708,7 @@ const createNewChecklistSession = () => {
   setActiveSession(newSession);
   // Clear selected students
   setSelectedStudents(new Set());
-  setSelectionStatus(`Session started - Year ${yearFilter}, Group ${groupFilter}`);
+  setSelectionStatus(`Session started at ${location}`);
   
   // Add session to sessions array
   AsyncStorage.getItem('sessions').then(savedSessions => {
@@ -626,32 +723,83 @@ const createNewChecklistSession = () => {
   
   // Save active session
   saveActiveChecklistSession(newSession);
+  
+  // Start auto-save timer
+  startAutoSaveTimer();
+  
   console.log("New checklist session created:", sessionId);
 };
-//====================STUDENT SELECTION====================//
-// Handle student selection
+
+//====================STUDENT SELECTION SECTION====================//
+// Handle student selection with optimized performance
 const handleStudentSelection = (studentId, isChecked) => {
   if (!activeSession) return;
-  // Create new set to avoid direct mutation
+  
+  // IMMEDIATE UI FEEDBACK: Update the selected set first for immediate UI response
   const updatedSelection = new Set(selectedStudents);
+  
   if (isChecked) {
-    // Add student to selected set
+    // First update the visual state - this happens instantly
     updatedSelection.add(studentId);
-    addStudentToSelectionTable(studentId);
+    setSelectedStudents(updatedSelection);
+    setSelectionStatus(`✓ Selecting: ${studentId}`);
+    
+    // Create timestamp
+    const now = new Date();
+    const timestamp = now.toISOString();
+    const formattedTime = formatTime(now);
+    
+    // Create new scan - ensure ID is stored correctly
+    const newScan = {
+      id: studentId,
+      content: studentId, // Keep this the same as id for consistency
+      timestamp: timestamp,
+      formattedTime: formattedTime,
+      time: now,
+      isManual: false
+    };
+    
+    // Update active session state - this updates the UI
+    setActiveSession(prevSession => ({
+      ...prevSession,
+      scans: [...prevSession.scans, newScan]
+    }));
+    
+    // Mark session as needing save - but don't save immediately
+    window.sessionNeedsSaving = true;
+    
   } else {
-    // Remove student from selected set
+    // Deselection - update UI immediately
     updatedSelection.delete(studentId);
-    removeStudentFromSelectionTable(studentId);
+    setSelectedStudents(updatedSelection);
+    setSelectionStatus(`✗ Removing: ${studentId}`);
+    
+    // Filter out scans for this student - for immediate UI update
+    const updatedScans = activeSession.scans.filter(scan => scan.id !== studentId);
+    
+    // Update active session state - this updates the UI
+    setActiveSession(prevSession => ({
+      ...prevSession,
+      scans: updatedScans
+    }));
+    
+    // Mark session as needing save - but don't save immediately
+    window.sessionNeedsSaving = true;
   }
-  setSelectedStudents(updatedSelection);
 };
+
 // Add student to selection table
 const addStudentToSelectionTable = (studentId, isManual = false) => {
   if (!activeSession) return;
+  
+  // First update the selection status for immediate feedback
+  setSelectionStatus(`✓ ${isManual ? 'Manually added' : 'Selected'}: ${studentId}`);
+  
   // Create timestamp
   const now = new Date();
   const timestamp = now.toISOString();
   const formattedTime = formatTime(now);
+  
   // Create new scan
   const newScan = {
     id: studentId,
@@ -659,37 +807,53 @@ const addStudentToSelectionTable = (studentId, isManual = false) => {
     timestamp: timestamp,
     formattedTime: formattedTime,
     time: now,
-    isManual: isManual // Track if this was manually entered
+    isManual: isManual
   };
-  // Update active session
-  const updatedSession = {
-    ...activeSession,
-    scans: [...activeSession.scans, newScan]
-  };
-  setActiveSession(updatedSession);
-  // Save updated session
-  saveActiveChecklistSession(updatedSession);
-  updateSessionInHistory(updatedSession);
-  // Update status
-  setSelectionStatus(`✓ ${isManual ? 'Manually added' : 'Selected'}: ${studentId}`);
+  
+  // Update active session - for immediate UI update
+  setActiveSession(prevSession => ({
+    ...prevSession,
+    scans: [...prevSession.scans, newScan]
+  }));
+  
+  // Update selectedStudents set - for immediate UI update
+  setSelectedStudents(prevSelected => {
+    const updated = new Set(prevSelected);
+    updated.add(studentId);
+    return updated;
+  });
+  
+  // Mark session as needing save - but don't save immediately
+  window.sessionNeedsSaving = true;
 };
+
 // Remove student from selection table
 const removeStudentFromSelectionTable = (studentId) => {
   if (!activeSession) return;
-  // Filter out scans for this student
-  const updatedScans = activeSession.scans.filter(scan => scan.id !== studentId);
-  // Update active session
-  const updatedSession = {
-    ...activeSession,
-    scans: updatedScans
-  };
-  setActiveSession(updatedSession);
-  // Save updated session
-  saveActiveChecklistSession(updatedSession);
-  updateSessionInHistory(updatedSession);
-  // Update status
+  
+  // Update status immediately for feedback
   setSelectionStatus(`✗ Removed: ${studentId}`);
+  
+  // Filter out scans for this student - for immediate UI update
+  const updatedScans = activeSession.scans.filter(scan => scan.id !== studentId);
+  
+  // Update active session - for immediate UI update
+  setActiveSession(prevSession => ({
+    ...prevSession,
+    scans: updatedScans
+  }));
+  
+  // Update selectedStudents set - for immediate UI update
+  setSelectedStudents(prevSelected => {
+    const updated = new Set(prevSelected);
+    updated.delete(studentId);
+    return updated;
+  });
+  
+  // Mark session as needing save - but don't save immediately
+  window.sessionNeedsSaving = true;
 };
+
 // Process manual entry
 const processManualEntry = () => {
   const studentId = manualId.trim();
@@ -697,51 +861,164 @@ const processManualEntry = () => {
     Alert.alert('Error', 'Please enter a Student ID');
     return;
   }
-  // Check if already selected
+  
+  // Check if already selected - give immediate feedback
   if (selectedStudents.has(studentId)) {
     Alert.alert('Already Selected', `Student ${studentId} is already in your selection.`);
     setManualId(''); // Just clear the input but keep modal open
     return;
   }
-  // Add to selected students
-  handleStudentSelection(studentId, true);
-  // Add to selection table with isManual flag
-  addStudentToSelectionTable(studentId, true);
-  // Set last added ID for feedback
+  
+  // Add to selected students - immediate UI update
+  const updatedSelection = new Set(selectedStudents);
+  updatedSelection.add(studentId);
+  setSelectedStudents(updatedSelection);
+  
+  // Set last added ID for feedback - immediate UI update
   setLastAddedId(studentId);
-  // Clear the message after 3 seconds
-  setTimeout(() => {
-    setLastAddedId('');
-  }, 3000);
-  // Reset input but keep modal open
+  setSelectionStatus(`✓ Adding: ${studentId}`);
+  
+  // Reset input but keep modal open - immediate UI update
   setManualId('');
-  // Update status
-  setSelectionStatus(`✓ Manually added: ${studentId}`);
+  
+  // Process the heavier operations asynchronously
+  setTimeout(() => {
+    // Add to selection table with isManual flag
+    addStudentToSelectionTable(studentId, true);
+    
+    // Update status with complete message
+    setSelectionStatus(`✓ Manually added: ${studentId}`);
+    
+    // Clear the message after 3 seconds
+    setTimeout(() => {
+      setLastAddedId('');
+    }, 3000);
+  }, 0);
+  
   console.log(`Manual entry processed: ${studentId}`);
+};
+//====================AUTO SAVE SECTION====================//
+// Initialize auto-save timer
+const startAutoSaveTimer = () => {
+  console.log("Starting auto-save timer");
+  
+  // Clear any existing timer
+  if (window.autoSaveTimerId) {
+    clearInterval(window.autoSaveTimerId);
+  }
+  
+  // Create flag for tracking if session needs saving
+  window.sessionNeedsSaving = false;
+  
+  // Create flag for tracking if save is in progress
+  window.saveInProgress = false;
+  
+  // Set up interval timer (every 15 seconds)
+  window.autoSaveTimerId = setInterval(() => {
+    performAutoSave();
+  }, 15000);
+  
+  console.log("Auto-save timer started");
+};
+
+// Stop auto-save timer
+const stopAutoSaveTimer = () => {
+  console.log("Stopping auto-save timer");
+  
+  if (window.autoSaveTimerId) {
+    clearInterval(window.autoSaveTimerId);
+    window.autoSaveTimerId = null;
+  }
+  
+  // Final save if needed
+  if (window.sessionNeedsSaving && !window.saveInProgress) {
+    performAutoSave(true);
+  }
+};
+
+// Perform auto-save if needed
+const performAutoSave = (forceSave = false) => {
+  // Skip if no active session
+  if (!activeSession) {
+    console.log("No active session to save");
+    return;
+  }
+  
+  // Skip if save already in progress
+  if (window.saveInProgress) {
+    console.log("Save in progress, skipping");
+    return;
+  }
+  
+  // Skip if nothing has changed since last save (unless force save)
+  if (!window.sessionNeedsSaving && !forceSave) {
+    return;
+  }
+  
+  console.log("Auto-saving session...");
+  
+  // Mark save as in progress to prevent multiple simultaneous saves
+  window.saveInProgress = true;
+  
+  // Create a snapshot of current session state
+  const sessionSnapshot = {...activeSession};
+  
+  // Handle storage updates asynchronously
+  Promise.all([
+    saveActiveChecklistSession(sessionSnapshot),
+    updateSessionInHistory(sessionSnapshot)
+  ])
+    .then(() => {
+      // Reset flag since we've saved
+      window.sessionNeedsSaving = false;
+      console.log("Auto-save completed successfully");
+    })
+    .catch(error => {
+      console.error("Error during auto-save:", error);
+    })
+    .finally(() => {
+      // Mark save as complete
+      window.saveInProgress = false;
+    });
 };
 //====================SESSION MANAGEMENT====================//
 // Update session in history
 const updateSessionInHistory = (updatedSession) => {
-  AsyncStorage.getItem('sessions').then(savedSessions => {
-    if (savedSessions) {
-      const parsedSessions = JSON.parse(savedSessions);
-      const sessionIndex = parsedSessions.findIndex(s => s.id === updatedSession.id);
-      if (sessionIndex !== -1) {
-        const updatedSessions = [...parsedSessions];
-        updatedSessions[sessionIndex] = {...updatedSession};
-        setSessions(updatedSessions);
-        AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions));
+  return AsyncStorage.getItem('sessions')
+    .then(savedSessions => {
+      if (savedSessions) {
+        const parsedSessions = JSON.parse(savedSessions);
+        const sessionIndex = parsedSessions.findIndex(s => s.id === updatedSession.id);
+        if (sessionIndex !== -1) {
+          const updatedSessions = [...parsedSessions];
+          updatedSessions[sessionIndex] = {...updatedSession};
+          setSessions(updatedSessions);
+          return AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions));
+        }
       }
-    }
-  });
+      return Promise.resolve();
+    })
+    .catch(error => {
+      console.error("Error updating session in history:", error);
+      throw error; // Re-throw so Promise.all can catch it
+    });
 };
+
 // End checklist session
 const endChecklistSession = () => {
   if (!activeSession) {
     console.log("No active checklist session to end");
     return;
   }
+  
   console.log("Ending checklist session:", activeSession.id);
+  
+  // Stop auto-save timer
+  stopAutoSaveTimer();
+  
+  // Perform one final save before ending
+  performAutoSave(true);
+  
   // Confirm if there are no selections
   if (activeSession.scans.length === 0) {
     Alert.alert(
@@ -776,6 +1053,7 @@ const endChecklistSession = () => {
 const finalizeChecklistSession = () => {
   // Create a copy of the session for export
   const sessionToExport = { ...activeSession };
+  
   // Mark session as completed in history
   AsyncStorage.getItem('sessions').then(savedSessions => {
     if (savedSessions) {
@@ -795,13 +1073,16 @@ const finalizeChecklistSession = () => {
   }).catch(error => {
     console.error("Error updating session in storage:", error);
   });
+  
   // Clear active session
   setActiveSession(null);
   setSelectedStudents(new Set());
   setSelectionStatus('');
   clearActiveChecklistSession();
+  
   // Show alert
   Alert.alert('Success', 'Session ended successfully');
+  
   // Show alert about offline backup
   if (!isOnline && activeSession.scans.length > 0) {
     setTimeout(() => {
@@ -812,7 +1093,9 @@ const finalizeChecklistSession = () => {
       );
     }, 1500);
   }
+  
   console.log("Checklist session ended successfully");
+  
   // Export session to Excel only if there are scans
   if (sessionToExport && sessionToExport.scans && sessionToExport.scans.length > 0) {
     setTimeout(() => {
@@ -1264,18 +1547,19 @@ return (
           )}
         </View>
         
-        {/* Configuration section before starting a session */}
-        {!activeSession && location && (
-          <View style={styles.configSection}>
-            <Text style={styles.configTitle}>Session Configuration</Text>
-            <Text style={styles.locationText}>Location: {location}</Text>
+        {activeSession && (
+          <View style={styles.sessionInfo}>
+            <Text style={styles.locationText}>Location: {activeSession.location}</Text>
+            <Text style={styles.dateTimeText}>Date/Time: {activeSession.formattedDateTime}</Text>
             
+            {/* Streamlined filtering UI directly in main layout */}
             <View style={styles.filterControls}>
               <View style={styles.filterRow}>
                 <Text style={styles.filterLabel}>Year:</Text>
                 <Button 
                   mode="outlined" 
-                  style={styles.filterButton}
+                  style={styles.secondaryButton}
+                  labelStyle={styles.secondaryButtonText}
                   onPress={() => setShowYearFilterModal(true)}
                 >
                   {yearFilter === 'all' ? 'Select Year' : yearFilter}
@@ -1286,7 +1570,8 @@ return (
                 <Text style={styles.filterLabel}>Group:</Text>
                 <Button 
                   mode="outlined" 
-                  style={styles.filterButton}
+                  style={styles.secondaryButton}
+                  labelStyle={styles.secondaryButtonText}
                   onPress={() => setShowGroupFilterModal(true)}
                 >
                   {groupFilter === 'all' ? 'Select Group' : groupFilter}
@@ -1294,23 +1579,15 @@ return (
               </View>
             </View>
             
+            {/* Direct Start Selection button */}
             <Button 
               mode="contained" 
-              style={[styles.primaryButton, styles.fullWidthButton, 
-                     (yearFilter === 'all' || groupFilter === 'all') ? styles.disabledButton : null]}
+              style={[styles.primaryButton, styles.fullWidthButton]}
               labelStyle={styles.primaryButtonText}
-              onPress={createNewChecklistSession}
-              disabled={yearFilter === 'all' || groupFilter === 'all'}
+              onPress={() => prepareStudentSelection()}    
             >
-              Start Session
+              Start Selection
             </Button>
-          </View>
-        )}
-        
-        {activeSession && (
-          <View style={styles.sessionInfo}>
-            <Text style={styles.locationText}>Location: {activeSession.location}</Text>
-            <Text style={styles.dateTimeText}>Date/Time: {activeSession.formattedDateTime}</Text>
           </View>
         )}
         
@@ -1320,25 +1597,10 @@ return (
           </View>
         ) : null}
         
-        {activeSession ? (
-          <View style={styles.checklistContainer}>
-            <View style={styles.sessionFiltersDisplay}>
-              <Text style={styles.sessionFilterText}>Year: {activeSession.filters?.year || yearFilter}</Text>
-              <Text style={styles.sessionFilterText}>Group: {activeSession.filters?.group || groupFilter}</Text>
-            </View>
-            <Button 
-              mode="contained" 
-              style={[styles.primaryButton, styles.fullWidthButton]}
-              labelStyle={styles.primaryButtonText}
-              onPress={() => prepareStudentSelection()}    
-            >
-              Select Students
-            </Button>
-          </View>
-        ) : (
+        {!activeSession && (
           <View style={styles.checklistContainer}>
             <Text style={styles.placeholderText}>
-              {location ? "Configure your session above" : "Click \"Start New Session\" to begin."}
+              Click "Start New Session" to begin.
             </Text>
           </View>
         )}
@@ -1348,16 +1610,14 @@ return (
           <View style={styles.tableContainer}>
             <DataTable>
               <DataTable.Header style={{ backgroundColor: '#ffffff' }}>
-                <DataTable.Title numeric style={{ flex: 0.2 }}><Text style={{ color: '#24325f' }}>ID</Text></DataTable.Title>
-                <DataTable.Title style={{ flex: 0.6 }}><Text style={{ color: '#24325f' }}>Content</Text></DataTable.Title>
+                <DataTable.Title style={{ flex: 0.6 }}><Text style={{ color: '#24325f' }}>Student ID</Text></DataTable.Title>
                 <DataTable.Title style={{ flex: 0.4 }}><Text style={{ color: '#24325f' }}>Time</Text></DataTable.Title>
               </DataTable.Header>
               <ScrollView style={{ maxHeight: 200 }} nestedScrollEnabled={true}>
                 {activeSession.scans.map((scan, index) => (
                   <DataTable.Row key={scan.id || index} style={{ backgroundColor: '#ffffff' }}>
-                    <DataTable.Cell numeric style={{ flex: 0.2 }}><Text style={{ color: '#24325f' }}>{index + 1}</Text></DataTable.Cell>
                     <DataTable.Cell style={{ flex: 0.6 }}><Text style={{ color: '#24325f' }}>
-                      {scan.content || scan.id}
+                      {scan.id}
                       {scan.isManual ? ' (Manual)' : ''}
                     </Text></DataTable.Cell>
                     <DataTable.Cell style={{ flex: 0.4 }}><Text style={{ color: '#24325f' }}>{scan.formattedTime}</Text></DataTable.Cell>
@@ -1403,109 +1663,125 @@ return (
           </View>
         </Modal>
       </Portal>
-<Portal>
-  <Modal
-    visible={showStudentSelectorModal}
-    onDismiss={() => setShowStudentSelectorModal(false)}
-    contentContainerStyle={[styles.selectorModalContent, { backgroundColor: '#ffffff' }]}
-  >
-    <Title style={{ color: '#24325f' }}>Select Students</Title>
-    <Searchbar
-      placeholder="Search students..."
-      onChangeText={query => setSearchQuery(query)}
-      value={searchQuery}
-      style={styles.searchbar}
-    />
-    <View style={styles.filterSummary}>
-      <Text style={styles.filterSummaryText}>
-        Showing {filteredStudents.length} students
-        {yearFilter !== 'all' ? ` from Year ${yearFilter}` : ''}
-        {groupFilter !== 'all' ? ` in Group ${groupFilter}` : ''}
-      </Text>
-    </View>
-    <ScrollView style={styles.studentModalList}>
-      {filteredStudents.length > 0 ? (
-        filteredStudents.map(student => {
-          const studentId = student["Student ID"] || student.id || "";
-          const studentYear = student["Year"] || student.year || "";
-          const studentGroup = student["Group"] || student.group || "";
-          const isSelected = selectedStudents.has(studentId);
-          return (
-            <View key={`student-${studentId}`} style={styles.studentItem}>
-              <Checkbox.Item
-                label={`${studentId} (${studentYear}, Group ${studentGroup})`}
-                status={isSelected ? 'checked' : 'unchecked'}
-                onPress={() => handleStudentSelection(studentId, !isSelected)}
-                style={{ backgroundColor: '#ffffff' }}
-                labelStyle={{ color: '#24325f' }}
-              />
+      
+      <Portal>
+        <Modal
+          visible={showStudentSelectorModal}
+          onDismiss={() => setShowStudentSelectorModal(false)}
+          contentContainerStyle={[styles.selectorModalContent, { backgroundColor: '#ffffff' }]}
+        >
+          <Title style={{ color: '#24325f' }}>Select Students</Title>
+          <Searchbar
+            placeholder="Search students..."
+            onChangeText={query => setSearchQuery(query)}
+            value={searchQuery}
+            style={styles.searchbar}
+          />
+          <View style={styles.filterSummary}>
+            <Text style={styles.filterSummaryText}>
+              Showing {filteredStudents.length} students
+              {yearFilter !== 'all' ? ` from Year ${yearFilter}` : ''}
+              {groupFilter !== 'all' ? ` in Group ${groupFilter}` : ''}
+            </Text>
+          </View>
+          <ScrollView style={styles.studentModalList}>
+            {filteredStudents.length > 0 ? (
+              filteredStudents.map(student => {
+                const studentId = student["Student ID"] || student.id || "";
+                const studentYear = student["Year"] || student.year || "";
+                const studentGroup = student["Group"] || student.group || "";
+                const isSelected = selectedStudents.has(studentId);
+                
+                return (
+                  <TouchableOpacity
+                    key={`student-${studentId}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`}
+                    style={[
+                      styles.studentSelectItem,
+                      isSelected ? styles.studentItemSelected : styles.studentItemNotSelected
+                    ]}
+                    onPress={() => handleStudentSelection(studentId, !isSelected)}
+                    activeOpacity={0.7}
+                  >
+                    <View style={styles.studentSelectCheckCircle}>
+                      {isSelected && (
+                        <Icon name="check" size={16} color="#ffffff" />
+                      )}
+                    </View>
+                    <Text style={[
+                      styles.studentSelectLabel,
+                      isSelected ? styles.studentLabelSelected : styles.studentLabelNotSelected
+                    ]}>
+                      {`${studentId} (${studentYear}, Group ${studentGroup})`}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })
+            ) : (
+              <View style={styles.emptyList}>
+                <Text style={styles.emptyText}>
+                  {studentsData.length === 0 
+                    ? "No student data available." 
+                    : "No students match the current filters."}
+                </Text>
+              </View>
+            )}
+          </ScrollView>
+          <View style={styles.modalButtons}>
+            <Button 
+              mode="text" 
+              onPress={() => setShowStudentSelectorModal(false)}
+              style={styles.secondaryButton}
+              labelStyle={styles.secondaryButtonText}
+            >
+              Done
+            </Button>
+          </View>
+        </Modal>
+      </Portal>
+      
+      <Portal>
+        <Modal
+          visible={showManualEntryModal}
+          onDismiss={() => setShowManualEntryModal(false)}
+          contentContainerStyle={[styles.modalContent, { backgroundColor: '#ffffff' }]}
+        >
+          <Title style={{ color: '#24325f' }}>Manual Entry</Title>
+          <Text style={{ marginBottom: 10, color: '#24325f' }}>Enter student IDs one at a time and click "Add" after each. The modal will stay open so you can add multiple entries.</Text>
+          {lastAddedId ? (
+            <View style={{ backgroundColor: '#e7f3e8', padding: 8, borderRadius: 4, marginBottom: 10 }}>
+              <Text style={{ color: '#28a745' }}>✓ Added: {lastAddedId}</Text>
             </View>
-          );
-        })
-      ) : (
-        <View style={styles.emptyList}>
-          <Text style={styles.emptyText}>
-            {studentsData.length === 0 
-              ? "No student data available." 
-              : "No students match the current filters."}
-          </Text>
-        </View>
-      )}
-    </ScrollView>
-    <View style={styles.modalButtons}>
-      <Button 
-        mode="text" 
-        onPress={() => setShowStudentSelectorModal(false)}
-        style={styles.secondaryButton}
-        labelStyle={styles.secondaryButtonText}
-      >
-        Done
-      </Button>
-    </View>
-  </Modal>
-</Portal>
-<Portal>
-<Modal
-  visible={showManualEntryModal}
-  onDismiss={() => setShowManualEntryModal(false)}
-  contentContainerStyle={[styles.modalContent, { backgroundColor: '#ffffff' }]}
->
-  <Title style={{ color: '#24325f' }}>Manual Entry</Title>
-  <Text style={{ marginBottom: 10, color: '#24325f' }}>Enter student IDs one at a time and click "Add" after each. The modal will stay open so you can add multiple entries.</Text>
-  {lastAddedId ? (
-    <View style={{ backgroundColor: '#e7f3e8', padding: 8, borderRadius: 4, marginBottom: 10 }}>
-      <Text style={{ color: '#28a745' }}>✓ Added: {lastAddedId}</Text>
-    </View>
-  ) : null}
-  <TextInput
-    label="Student ID"
-    value={manualId}
-    onChangeText={setManualId}
-    style={[styles.input, { backgroundColor: '#ffffff', color: '#24325f' }]}
-    autoFocus
-    onSubmitEditing={processManualEntry}
-  />
-  <View style={styles.modalButtons}>
-    <Button 
-      mode="text" 
-      onPress={() => setShowManualEntryModal(false)}
-      style={styles.secondaryButton}
-      labelStyle={styles.secondaryButtonText}
-    >
-      Done
-    </Button>
-    <Button 
-      mode="contained" 
-      onPress={processManualEntry}
-      disabled={!manualId.trim()}
-      style={styles.primaryButton}
-      labelStyle={styles.primaryButtonText}
-    >
-      Add
-    </Button>
-  </View>
-</Modal>
-</Portal>
+          ) : null}
+          <TextInput
+            label="Student ID"
+            value={manualId}
+            onChangeText={setManualId}
+            style={[styles.input, { backgroundColor: '#ffffff', color: '#24325f' }]}
+            autoFocus
+            onSubmitEditing={processManualEntry}
+          />
+          <View style={styles.modalButtons}>
+            <Button 
+              mode="text" 
+              onPress={() => setShowManualEntryModal(false)}
+              style={styles.secondaryButton}
+              labelStyle={styles.secondaryButtonText}
+            >
+              Done
+            </Button>
+            <Button 
+              mode="contained" 
+              onPress={processManualEntry}
+              disabled={!manualId.trim()}
+              style={styles.primaryButton}
+              labelStyle={styles.primaryButtonText}
+            >
+              Add
+            </Button>
+          </View>
+        </Modal>
+      </Portal>
+      
       <Portal>
         <Modal
           visible={showYearFilterModal}
@@ -1538,6 +1814,7 @@ return (
           </Button>
         </Modal>
       </Portal>
+      
       <Portal>
         <Modal
           visible={showGroupFilterModal}
@@ -1570,10 +1847,11 @@ return (
           </Button>
         </Modal>
       </Portal>
-</ScrollView>
-</Provider>
+    </ScrollView>
+  </Provider>
 );
 };
+
 //======STYLESHEET SECTION======//
 const styles = StyleSheet.create({
   container: {
@@ -1897,6 +2175,46 @@ const styles = StyleSheet.create({
   },
   disabledButton: {
     opacity: 0.6,
+  },
+  studentSelectItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    borderRadius: 8,
+    marginVertical: 4,
+    marginHorizontal: 8,
+  },
+  studentItemSelected: {
+    backgroundColor: '#e8f0fe',
+    borderWidth: 1,
+    borderColor: '#24325f',
+  },
+  studentItemNotSelected: {
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+  },
+  studentSelectCheckCircle: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#24325f',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+    borderWidth: 1,
+    borderColor: '#24325f',
+  },
+  studentLabelSelected: {
+    color: '#24325f',
+    fontWeight: '500',
+  },
+  studentLabelNotSelected: {
+    color: '#24325f',
+  },
+  studentSelectLabel: {
+    flex: 1,
+    fontSize: 16,
   },
 });
 export default ChecklistScreen;
