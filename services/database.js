@@ -153,135 +153,30 @@ export const syncSessionsWithRemote = async (isOnline) => {
 // Add function to save a single session
 export const saveSession = async (session) => {
   try {
-    if (!session || !session.id) {
-      throw new Error("Invalid session object");
-    }
-    
-    console.log("Saving session:", session.id, "inProgress:", session.inProgress);
-    
     // Get current sessions
     const sessions = await loadSessionsFromStorage();
-    
+
     // Find if session already exists
     const existingIndex = sessions.findIndex(s => s.id === session.id);
-    
+
     if (existingIndex >= 0) {
-      // Update existing session - make sure inProgress is correctly set
-      sessions[existingIndex] = {
-        ...session,
-        inProgress: !!session.inProgress // Convert to boolean
-      };
-      console.log(`Updated session at index ${existingIndex}, inProgress: ${!!session.inProgress}`);
+      // Update existing session
+      sessions[existingIndex] = session;
     } else {
       // Add new session
-      sessions.push({
-        ...session,
-        inProgress: !!session.inProgress // Convert to boolean
-      });
-      console.log(`Added new session, inProgress: ${!!session.inProgress}`);
+      sessions.push(session);
     }
-    
+
     // Save back to storage
     await saveSessionsToStorage(sessions);
-    console.log("Session saved to AsyncStorage");
-    
+
     // Also save to SQLite
-    try {
-      await saveSessionToSQL(session);
-      console.log("Session saved to SQLite");
-    } catch (dbError) {
-      console.error("Error saving to SQLite, but continuing:", dbError);
-      // Continue despite SQLite error
-    }
-    
+    await saveSessionToSQL(session);
+
     return true;
   } catch (error) {
     console.error('Error saving session:', error);
     return false;
-  }
-};
-
-// Add this function after saveSession in database.js
-export const updateSessionStatus = async (sessionId, inProgress) => {
-  try {
-    if (!sessionId) {
-      throw new Error("Session ID is required");
-    }
-    
-    // Update in AsyncStorage
-    const sessions = await loadSessionsFromStorage();
-    if (sessions && sessions.length > 0) {
-      const sessionIndex = sessions.findIndex(s => s.id === sessionId);
-      if (sessionIndex !== -1) {
-        sessions[sessionIndex].inProgress = inProgress;
-        await saveSessionsToStorage(sessions);
-        console.log(`Session ${sessionId} status updated in AsyncStorage: inProgress=${inProgress}`);
-      }
-    }
-    
-    // Update in SQLite
-    try {
-      await db.runAsync(
-        'UPDATE sessions SET inProgress = ? WHERE id = ?',
-        [inProgress ? 1 : 0, sessionId]
-      );
-      console.log(`Session ${sessionId} status updated in SQLite: inProgress=${inProgress}`);
-    } catch (dbError) {
-      console.error("Error updating session in SQLite:", dbError);
-      // Continue despite SQLite error
-    }
-    
-    return true;
-  } catch (error) {
-    console.error("Error updating session status:", error);
-    return false;
-  }
-};
-
-// Add this function to get a specific session by ID
-export const getSessionById = async (sessionId) => {
-  try {
-    if (!sessionId) {
-      throw new Error("Session ID is required");
-    }
-    
-    // First try AsyncStorage (faster)
-    const sessions = await loadSessionsFromStorage();
-    if (sessions && sessions.length > 0) {
-      const session = sessions.find(s => s.id === sessionId);
-      if (session) {
-        return session;
-      }
-    }
-    
-    // Fallback to SQLite
-    try {
-      const session = await db.getFirstAsync(
-        'SELECT * FROM sessions WHERE id = ?',
-        [sessionId]
-      );
-      
-      if (!session) {
-        return null;
-      }
-      
-      // Get scans for this session
-      const scans = await getSessionScans(sessionId);
-      
-      // Format session
-      return {
-        ...session,
-        formattedDateTime: formatDateTime(new Date(session.dateTime)),
-        scans: scans,
-        inProgress: session.inProgress === 1
-      };
-    } catch (dbError) {
-      console.error("Error getting session from SQLite:", dbError);
-      return null;
-    }
-  } catch (error) {
-    console.error("Error getting session by ID:", error);
-    return null;
   }
 };
 

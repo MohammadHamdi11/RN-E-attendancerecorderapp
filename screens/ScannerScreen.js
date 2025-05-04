@@ -28,15 +28,13 @@ import * as XLSX from 'xlsx';
 import { useNavigation } from '@react-navigation/native';
 import { backupToGitHub, tryAutoBackup, processPendingBackups } from '../services/backup';
 import { initDatabase, getAllSessions, saveSession, getDatabase } from '../services/database';
-import { loadSessionsFromStorage, saveSessionsToStorage, updateSessionStatus } from '../services/database';
 import { 
   SESSION_TYPE, 
   checkForRecoverableSession, 
   recoverSession, 
   clearRecoverableSession, 
   cleanUpRecoveryTimers,
-  resetRecoverySystem,
-completeSession
+  resetRecoverySystem 
 } from '../services/recover';
 
 //======CONSTANTS SECTION======//
@@ -394,77 +392,30 @@ const createNewScannerSession = (sessionLocation) => {
 //======SESSION MANAGEMENT SECTION======//
 // Mark session as completed
 const markSessionAsCompleted = async (sessionId) => {
-  if (!sessionId) return false;
-  
   try {
-    console.log(`Marking session ${sessionId} as completed`);
-    
-    // Use updateSessionStatus which is properly exported from database.js
-    const success = await updateSessionStatus(sessionId, false);
-    
-    if (success) {
-      console.log(`Session ${sessionId} successfully marked as completed using updateSessionStatus`);
-      
-      // Also clear recovery data
-      await AsyncStorage.removeItem(SCANNER_ACTIVE_SESSION_STORAGE_KEY);
-      await AsyncStorage.removeItem(TEMP_SCANNER_SESSION_INDEX_KEY);
-      
-      console.log(`Session ${sessionId} recovery data cleared`);
-      return true;
-    } else {
-      throw new Error("updateSessionStatus returned false");
+    // Get the sessions
+    const savedSessions = await getAllSessions();
+    if (savedSessions) {
+      const sessionIndex = savedSessions.findIndex(s => s.id === sessionId);
+      if (sessionIndex !== -1) {
+        // Update session status
+        const updatedSession = {
+          ...savedSessions[sessionIndex],
+          inProgress: false
+        };
+        // Save updated session
+        await saveSession(updatedSession);
+        // Update sessions state
+        const updatedSessions = [...savedSessions];
+        updatedSessions[sessionIndex] = updatedSession;
+        setSessions(updatedSessions);
+        console.log(`Session ${sessionId} marked as completed`);
+      }
     }
-  } catch (error) {
-    console.error(`Error marking session ${sessionId} as completed:`, error);
-    return false;
-  }
-};
-
-// Add this function to ensure sessions properly close in all storage locations
-const robustSessionClose = async (sessionId) => {
-  if (!sessionId) {
-    console.error("No session ID provided for closing");
-    return false;
-  }
-  
-  console.log(`Performing robust session closure for session: ${sessionId}`);
-  
-  try {
-    // 1. First use the recovery system's completeSession function
-    const completionResult = await completeSession(sessionId, SESSION_TYPE.SCANNER);
-    
-    if (!completionResult.success) {
-      console.error("Recovery system completion failed:", completionResult.error);
-      // Continue with other steps anyway
-    }
-    
-    // 2. Explicitly update in database
-    const dbUpdateSuccess = await updateSessionStatus(sessionId, false);
-    if (!dbUpdateSuccess) {
-      console.error("Database update failed for session:", sessionId);
-    }
-    
-    // 3. Explicitly remove from all AsyncStorage keys
-    await AsyncStorage.removeItem(SCANNER_ACTIVE_SESSION_STORAGE_KEY);
+    // Clear recovery data
     await AsyncStorage.removeItem(TEMP_SCANNER_SESSION_INDEX_KEY);
-    
-    // 4. Update in main sessions list in AsyncStorage
-    const sessions = await loadSessionsFromStorage();
-    if (sessions && sessions.length > 0) {
-      const updatedSessions = sessions.map(session => {
-        if (session.id === sessionId) {
-          return { ...session, inProgress: false };
-        }
-        return session;
-      });
-      await saveSessionsToStorage(updatedSessions);
-    }
-    
-    console.log(`Session ${sessionId} robustly closed in all storage locations`);
-    return true;
   } catch (error) {
-    console.error("Error in robust session close:", error);
-    return false;
+    console.error("Error marking session as completed:", error);
   }
 };
 
@@ -535,25 +486,8 @@ const endSession = () => {
       { 
         text: 'End Session', 
         style: 'destructive',
-        onPress: async () => {
-          try {
-            // Just call finalizeSession directly - it now handles all the closing logic
-            await finalizeSession();
-          } catch (error) {
-            console.error("Error ending session:", error);
-            Alert.alert("Error", "Failed to end session. Please try again.");
-            
-            // In case of error, attempt emergency closure
-            try {
-              await robustSessionClose(activeSession.id);
-              // Reset UI state regardless of closure success
-              setActiveSession(null);
-              setScans([]);
-              setScanStatus('');
-            } catch (emergencyError) {
-              console.error("Emergency closure failed:", emergencyError);
-            }
-          }
+        onPress: () => {
+          finalizeSession();
         }
       }
     ]
@@ -561,20 +495,11 @@ const endSession = () => {
 };
 
 // Finalize the scanning session
-const finalizeSession = async () => {
-  if (!activeSession) return;
-  
-  try {
-    console.log("Finalizing session:", activeSession.id);
+  const finalizeSession = async () => {
+    if (!activeSession) return;
     
     // Save session for export
     const sessionToExport = { ...activeSession };
-    
-    // IMPORTANT CHANGE: First robustly close the session in all storage locations
-    const closureSuccess = await robustSessionClose(activeSession.id);
-    if (!closureSuccess) {
-      console.warn("Session closure may be incomplete. Continuing with finalization...");
-    }
     
     // Mark session as completed
     const updatedSession = {
@@ -584,14 +509,15 @@ const finalizeSession = async () => {
       sessionType: SESSION_TYPE.SCANNER // Explicitly mark session type
     };
     
-    // Update in database - this is most important
+    // Save to database
     await saveSession(updatedSession);
     
-    // Update local state with the new sessions list - get fresh data
+    // Clear from recovery system
+    await clearRecoverableSession(activeSession.id, SESSION_TYPE.SCANNER);
+    
+    // Get updated sessions list
     const updatedSessions = await getAllSessions();
-    if (updatedSessions) {
-      setSessions(updatedSessions);
-    }
+    setSessions(updatedSessions);
     
     // Clear active session
     setActiveSession(null);
@@ -653,11 +579,7 @@ const finalizeSession = async () => {
     }
     
     console.log("Scanner session ended successfully");
-  } catch (error) {
-    console.error("Error finalizing session:", error);
-    Alert.alert("Error", "Failed to properly close the session. Please try again.");
-  }
-};
+  };
 
 //======SESSION RECOVERY SECTION======//
 // Check for recoverable scanner session
@@ -1061,12 +983,13 @@ const exportScannerSession = async (session, silentMode = false) => {
     const fileName = `Scanner_${session.location.replace(/[^a-z0-9]/gi, '_')}_${formatDateTimeForFile(new Date(session.dateTime))}.xlsx`;
     // Prepare data
     const data = [
-      ['Student ID', 'Location', 'Log Date', 'Log Time', 'Type']
+      ['Number', 'Content', 'Location', 'Log Date', 'Log Time', 'Type']
     ];
     // Add scans with row numbers
     session.scans.forEach((scan, index) => {
       const scanDate = new Date(scan.timestamp);
       data.push([
+        index + 1,                   // Row number
         scan.content,                // Scanned content
         session.location,            // Location
         formatDate(scanDate),        // Log Date
