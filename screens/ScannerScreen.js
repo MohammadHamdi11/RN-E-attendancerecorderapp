@@ -35,7 +35,8 @@ import {
   recoverSession, 
   clearRecoverableSession, 
   cleanUpRecoveryTimers,
-  resetRecoverySystem 
+  resetRecoverySystem,
+completeSession
 } from '../services/recover';
 
 //======CONSTANTS SECTION======//
@@ -419,6 +420,54 @@ const markSessionAsCompleted = async (sessionId) => {
   }
 };
 
+// Add this function to ensure sessions properly close in all storage locations
+const robustSessionClose = async (sessionId) => {
+  if (!sessionId) {
+    console.error("No session ID provided for closing");
+    return false;
+  }
+  
+  console.log(`Performing robust session closure for session: ${sessionId}`);
+  
+  try {
+    // 1. First use the recovery system's completeSession function
+    const completionResult = await completeSession(sessionId, SESSION_TYPE.SCANNER);
+    
+    if (!completionResult.success) {
+      console.error("Recovery system completion failed:", completionResult.error);
+      // Continue with other steps anyway
+    }
+    
+    // 2. Explicitly update in database
+    const dbUpdateSuccess = await updateSessionStatus(sessionId, false);
+    if (!dbUpdateSuccess) {
+      console.error("Database update failed for session:", sessionId);
+    }
+    
+    // 3. Explicitly remove from all AsyncStorage keys
+    await AsyncStorage.removeItem(SCANNER_ACTIVE_SESSION_STORAGE_KEY);
+    await AsyncStorage.removeItem(TEMP_SCANNER_SESSION_INDEX_KEY);
+    
+    // 4. Update in main sessions list in AsyncStorage
+    const sessions = await loadSessionsFromStorage();
+    if (sessions && sessions.length > 0) {
+      const updatedSessions = sessions.map(session => {
+        if (session.id === sessionId) {
+          return { ...session, inProgress: false };
+        }
+        return session;
+      });
+      await saveSessionsToStorage(updatedSessions);
+    }
+    
+    console.log(`Session ${sessionId} robustly closed in all storage locations`);
+    return true;
+  } catch (error) {
+    console.error("Error in robust session close:", error);
+    return false;
+  }
+};
+
 // Start new session
 const startSession = async (selectedLocation) => {
   try {
@@ -488,17 +537,22 @@ const endSession = () => {
         style: 'destructive',
         onPress: async () => {
           try {
-            // First explicitly mark as completed in all places
-            const success = await markSessionAsCompleted(activeSession.id);
-            if (success) {
-              // Then run the regular finalization process
-              finalizeSession();
-            } else {
-              throw new Error("Failed to mark session as completed");
-            }
+            // Just call finalizeSession directly - it now handles all the closing logic
+            await finalizeSession();
           } catch (error) {
             console.error("Error ending session:", error);
             Alert.alert("Error", "Failed to end session. Please try again.");
+            
+            // In case of error, attempt emergency closure
+            try {
+              await robustSessionClose(activeSession.id);
+              // Reset UI state regardless of closure success
+              setActiveSession(null);
+              setScans([]);
+              setScanStatus('');
+            } catch (emergencyError) {
+              console.error("Emergency closure failed:", emergencyError);
+            }
           }
         }
       }
@@ -516,6 +570,12 @@ const finalizeSession = async () => {
     // Save session for export
     const sessionToExport = { ...activeSession };
     
+    // IMPORTANT CHANGE: First robustly close the session in all storage locations
+    const closureSuccess = await robustSessionClose(activeSession.id);
+    if (!closureSuccess) {
+      console.warn("Session closure may be incomplete. Continuing with finalization...");
+    }
+    
     // Mark session as completed
     const updatedSession = {
       ...activeSession,
@@ -524,23 +584,14 @@ const finalizeSession = async () => {
       sessionType: SESSION_TYPE.SCANNER // Explicitly mark session type
     };
     
-    // ----- NEW CODE: More robust session updating -----
-    // 1. First update in database - this is most important
+    // Update in database - this is most important
     await saveSession(updatedSession);
     
-    // 2. Explicitly clear from recovery system
-    await clearRecoverableSession(activeSession.id, SESSION_TYPE.SCANNER);
-    
-    // 3. Clear from direct AsyncStorage references
-    await AsyncStorage.removeItem(SCANNER_ACTIVE_SESSION_STORAGE_KEY);
-    await AsyncStorage.removeItem(TEMP_SCANNER_SESSION_INDEX_KEY);
-    
-    // 4. Update local state with the new sessions list - get fresh data
+    // Update local state with the new sessions list - get fresh data
     const updatedSessions = await getAllSessions();
     if (updatedSessions) {
       setSessions(updatedSessions);
     }
-    // ----- END NEW CODE -----
     
     // Clear active session
     setActiveSession(null);

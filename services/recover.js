@@ -196,8 +196,27 @@ const markSessionAsPrompted = async (sessionId) => {
     await AsyncStorage.setItem(RECOVERY_PROMPTED_KEY, JSON.stringify(promptedSessions));
     console.log(`Session ${sessionId} marked as prompted at ${new Date(currentTime).toISOString()}`);
     
-    // Also explicitly mark as not in progress in the sessions list
+    // CRITICAL: Also explicitly mark as not in progress in the sessions list
     try {
+      // Load all sessions
+      const sessions = await loadSessionsFromStorage();
+      if (sessions && sessions.length > 0) {
+        let updated = false;
+        const updatedSessions = sessions.map(session => {
+          if (session.id === sessionId) {
+            updated = true;
+            return { ...session, inProgress: false };
+          }
+          return session;
+        });
+        
+        if (updated) {
+          await saveSessionsToStorage(updatedSessions);
+          console.log(`Session ${sessionId} marked as not in progress in sessions list`);
+        }
+      }
+      
+      // Also update in database
       const { updateSessionStatus } = require('./database');
       await updateSessionStatus(sessionId, false);
     } catch (e) {
