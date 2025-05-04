@@ -21,6 +21,7 @@ import {
 import * as SQLite from 'expo-sqlite';
 import { CameraView, BarcodeScanningResult, useCameraPermissions, BarCodeType } from 'expo-camera';  // Updated import
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import NetInfo from '@react-native-community/netinfo';
 import * as MediaLibrary from 'expo-media-library';
 import * as FileSystem from 'expo-file-system';
 import * as Haptics from 'expo-haptics';
@@ -194,13 +195,13 @@ useEffect(() => {
       // Reset recovery system on app startup
       await resetRecoverySystem();
 
-      // Check for SCANNER-specific recoverable session
-      await checkForRecoverableScannerSession();
-
       // Check for pending backups when coming online
       if (isOnline) {
         await checkAndProcessPendingBackups();
       }
+
+    // Check for recoverable session
+      await checkForRecoverableScannerSession();
 
       // Initialize database schema
       try {
@@ -487,34 +488,90 @@ const finalizeScannerSession = async () => {
 
 //======SESSION RECOVERY SECTION======//
   // Check for recoverable session
-  const checkForRecoverableScannerSession = async () => {
-    try {
-      // Use the improved recovery service
-      const result = await checkForRecoverableSession(SESSION_TYPE.SCANNER);
-      if (result.hasRecoverableSession) {
-        Alert.alert(
-          "Recover scanner Session",
-          `Found an incomplete scanner session at ${result.session.location} with ${result.session.scans?.length || 0} selections. Would you like to recover it?`,
-          [
-            {
-              text: "Yes",
-              onPress: () => recoverScannerSession(result.session)
-            },
-            {
-              text: "No",
-              onPress: () => {
-                // Clear the active session
-                clearRecoverableSession(result.session.id, SESSION_TYPE.SCANNER)
-                  .catch(error => console.error("Error clearing scanner session:", error));
-              }
+const checkForRecoverableScannerSession = async () => {
+  try {
+    // Use the improved recovery service
+    const result = await checkForRecoverableSession(SESSION_TYPE.SCANNER);
+    if (result.hasRecoverableSession) {
+      Alert.alert(
+        "Recover Scanner Session",
+        `Found an incomplete scanner session at ${result.session.location} with ${result.session.scans?.length || 0} selections. Would you like to recover it?`,
+        [
+          {
+            text: "Yes",
+            onPress: () => recoverScannerSession(result.session)
+          },
+          {
+            text: "No",
+            onPress: () => {
+              // Instead of just clearing the session, backup the session first
+              handleDeclinedRecovery(result.session)
+                .then(() => {
+                  // After backing up, clear the recoverable session
+                  clearRecoverableSession(result.session.id, SESSION_TYPE.SCANNER)
+                    .catch(error => console.error("Error clearing scanner session:", error));
+                })
+                .catch(error => {
+                  console.error("Error handling declined recovery:", error);
+                  // Still attempt to clear the recoverable session
+                  clearRecoverableSession(result.session.id, SESSION_TYPE.SCANNER)
+                    .catch(clearError => console.error("Error clearing scanner session:", clearError));
+                });
             }
-          ]
-        );
-      }
-    } catch (error) {
-      console.error("Error checking for recoverable scanner session:", error);
+          }
+        ]
+      );
     }
-  };
+  } catch (error) {
+    console.error("Error checking for recoverable scanner session:", error);
+  }
+};
+
+// Handle declined recovery by backing up the session
+const handleDeclinedRecovery = async (session) => {
+  try {
+    console.log("Handling declined recovery for session:", session.id);
+    
+    // First mark the session as completed
+    const completedSession = {
+      ...session,
+      inProgress: false,
+      backedUp: false,
+      sessionType: SESSION_TYPE.SCANNER,
+      recoveryStatus: SESSION_STATUS.DECLINED_RECOVERY
+    };
+    
+    // Update the session in history
+    await updateSessionInHistory(completedSession);
+    
+    // Check online status
+    const isCurrentlyOnline = await checkOnlineStatus();
+    
+    // If we're online, try to export and backup directly
+    if (isCurrentlyOnline) {
+      console.log("Online - attempting to backup declined session");
+      try {
+        // Silent export (no UI alerts)
+        await exportScannerSession(completedSession, true);
+        console.log("Declined session backed up successfully");
+      } catch (exportError) {
+        console.error("Failed to export declined session:", exportError);
+        // Fall back to queuing
+        await queueSessionForBackup(completedSession);
+      }
+    } else {
+      // If offline, queue for later backup
+      console.log("Offline - queueing declined session for later backup");
+      await queueSessionForBackup(completedSession);
+    }
+    
+    console.log("Declined session handled successfully");
+    return { success: true };
+  } catch (error) {
+    console.error("Error handling declined recovery:", error);
+    return { success: false, error };
+  }
+};
 
 // Update session in history
 const updateSessionInHistory = (updatedSession) => {
@@ -583,7 +640,7 @@ const startAutoSaveTimer = () => {
   // Set up interval timer (every 15 seconds)
   window.autoSaveTimerId = setInterval(() => {
     performAutoSave();
-  }, 15000);
+  }, 5000);
   console.log("Auto-save timer started");
 };
 // Stop auto-save timer
@@ -790,13 +847,12 @@ const exportScannerSession = async (session, silentMode = false) => {
     const fileName = `Scanner_${session.location.replace(/[^a-z0-9]/gi, '_')}_${formatDateTimeForFile(new Date(session.dateTime))}.xlsx`;
     // Prepare data
     const data = [
-      ['Number', 'Content', 'Location', 'Log Date', 'Log Time', 'Type']
+      ['Student ID', 'Location', 'Log Date', 'Log Time', 'Type']
     ];
     // Add scans with row numbers
     session.scans.forEach((scan, index) => {
       const scanDate = new Date(scan.timestamp);
       data.push([
-        index + 1,                   // Row number
         scan.content,                // Scanned content
         session.location,            // Location
         formatDate(scanDate),        // Log Date
@@ -840,47 +896,43 @@ const exportScannerSession = async (session, silentMode = false) => {
       dialogTitle: 'Export Scanner Session Data',
       UTI: 'com.microsoft.excel.xlsx'
     });
+    // Check connection and handle backup
+    const isOnline = await checkOnlineStatus();
+    console.log("Online status for backup:", isOnline);
+    
     // Handle backup if online
-    try {
-      if (isOnline) {
-        console.log("Online - attempting GitHub backup");
+    if (isOnline) {
+      console.log("Online - attempting GitHub backup");
+      try {
         await backupToGitHub([session], false, fileName, wb);
         console.log("Scanner session backed up successfully");
+        
         // Update backup status in database and state
         const updatedSession = { ...session, backedUp: true };
         await saveSession(updatedSession);
+        
         // Refresh sessions list
         const updatedSessions = await getAllSessions();
         setSessions(updatedSessions);
-      } else {
-        console.log("Offline - queueing for backup later");
-        // Queue for backup when back online
-        const pendingBackups = await AsyncStorage.getItem('pendingBackups') || '[]';
-        const backupsArray = JSON.parse(pendingBackups);
-        backupsArray.push({
-          session: session,
-          fileName: fileName,
-          timestamp: new Date().toISOString(),
-          type: 'scanner',
-          retryCount: 0
-        });
-        await AsyncStorage.setItem('pendingBackups', JSON.stringify(backupsArray));
+        
+        // FIXED: Always show backup success alert, matching the checklist behavior
+        Alert.alert("Backup Successful", "Session backed up to server successfully!");
+      } catch (backupError) {
+        console.error("Backup error:", backupError);
+        
+        // Queue for later backup - and show consolidated error alert
+        await queueSessionForBackup(session, silentMode);
+        
+        if (!silentMode) {
+          Alert.alert("Backup Failed", "Unable to backup to server. The session is saved locally and will be backed up when online.");
+        }
       }
-    } catch (backupError) {
-      console.error("Backup error:", backupError);
-      // Queue for later if backup fails
-      const pendingBackups = await AsyncStorage.getItem('pendingBackups') || '[]';
-      const backupsArray = JSON.parse(pendingBackups);
-      backupsArray.push({
-        session: session,
-        fileName: fileName,
-        timestamp: new Date().toISOString(),
-        type: 'scanner',
-        retryCount: 0,
-        error: backupError.message
-      });
-      await AsyncStorage.setItem('pendingBackups', JSON.stringify(backupsArray));
+    } else {
+      console.log("Offline - queueing for backup later");
+      // Queue for backup when back online
+      await queueSessionForBackup(session, silentMode);
     }
+    
     console.log("Scanner export completed successfully");
     return { success: true, message: 'Export successful!', filePath: saveResult.uri };
   } catch (error) {
@@ -888,6 +940,14 @@ const exportScannerSession = async (session, silentMode = false) => {
     if (!silentMode) {
       Alert.alert("Export Error", "Failed to export scanner data: " + error.message);
     }
+    
+    // Still try to queue for backup even if export failed
+    try {
+      await queueSessionForBackup(session, silentMode);
+    } catch (queueError) {
+      console.error("Error queueing for backup:", queueError);
+    }
+    
     return { success: false, message: `Error exporting file: ${error.message}` };
   }
 };

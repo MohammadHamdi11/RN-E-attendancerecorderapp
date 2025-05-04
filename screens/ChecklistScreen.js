@@ -14,6 +14,7 @@ import { backupToGitHub, tryAutoBackup, processPendingBackups } from '../service
 import NetInfo from '@react-native-community/netinfo';
 import { syncStudentsDataWithGitHub } from '../services/loadData';
 import { loadStudentsData, loadFilteredStudentsData } from '../services/loadData';
+import { initDatabase, getAllSessions, saveSession, getDatabase } from '../services/database';
 import { 
   SESSION_TYPE, 
   SESSION_STATUS,
@@ -259,14 +260,25 @@ const initializeChecklistModule = async () => {
   console.log("Initializing checklist module...");
   
   try {
-    // Reset recovery system on app startup
+    // Reset recovery system on app startup - do this first
     await resetRecoverySystem();
+    
+    // Initialize database schema
+    try {
+      await initDatabase();
+      console.log('Database initialized successfully');
+    } catch (initError) {
+      console.error('Database initialization failed:', initError);
+      Alert.alert(
+        'Database Error',
+        'There was a problem setting up the app database. Some features may not work correctly.',
+        [{ text: 'OK' }]
+      );
+      return;
+    }
     
     // Load students data
     await loadStudentsDataForChecklist();
-    
-    // Check for recoverable session
-    await checkForRecoverableChecklistSession();
     
     // Load sessions from storage
     const savedSessions = await AsyncStorage.getItem('sessions');
@@ -274,14 +286,18 @@ const initializeChecklistModule = async () => {
       setSessions(JSON.parse(savedSessions));
     }
     
+    // Check for recoverable session - do this last after everything else is set up
+    await checkForRecoverableChecklistSession();
+    
     console.log("Checklist module initialized successfully");
   } catch (error) {
     console.error("Error initializing checklist module:", error);
   }
 };
 
-// Then in the component, update the initialization useEffect
+// Single useEffect for initialization
 useEffect(() => {
+  // Run initialization once
   initializeChecklistModule();
   
   // Clean up when component unmounts
@@ -301,49 +317,7 @@ useEffect(() => {
     // Clean up timers from recovery system
     cleanUpRecoveryTimers();
   };
-}, []);
-
-// Initialize checklist module
-useEffect(() => {
-  const initializeApp = async () => {
-    console.log("Initializing checklist module...");
-    
-    // Reset recovery system on app startup
-    await resetRecoverySystem();
-    
-    // Load students data
-    await loadStudentsDataForChecklist();
-    
-    // Check for recoverable session
-    await checkForRecoverableChecklistSession();
-    
-    // Load sessions from storage
-    const savedSessions = await AsyncStorage.getItem('sessions');
-    if (savedSessions) {
-      setSessions(JSON.parse(savedSessions));
-    }
-  };
-  
-  initializeApp();
-  
-  // Clean up when component unmounts
-  return () => {
-    // If there's an active session, save it before unmounting
-    if (activeSession) {
-      saveActiveChecklistSession(activeSession)
-        .catch(error => console.error("Error saving active session on unmount:", error));
-    }
-    
-    // Stop auto-save timer if running
-    if (window.autoSaveTimerId) {
-      clearInterval(window.autoSaveTimerId);
-      window.autoSaveTimerId = null;
-    }
-    
-    // Clean up timers from recovery system
-    cleanUpRecoveryTimers();
-  };
-}, []);
+}, []); // Empty dependency array means this runs once on mount
 
 
   // Add this effect to check for pending backups when coming online
@@ -781,34 +755,91 @@ const finalizeChecklistSession = async () => {
 
 //======SESSION RECOVERY SECTION======//
   // Check for recoverable session
-  const checkForRecoverableChecklistSession = async () => {
-    try {
-      // Use the improved recovery service
-      const result = await checkForRecoverableSession(SESSION_TYPE.CHECKLIST);
-      if (result.hasRecoverableSession) {
-        Alert.alert(
-          "Recover Checklist Session",
-          `Found an incomplete checklist session at ${result.session.location} with ${result.session.scans?.length || 0} selections. Would you like to recover it?`,
-          [
-            {
-              text: "Yes",
-              onPress: () => recoverChecklistSession(result.session)
-            },
-            {
-              text: "No",
-              onPress: () => {
-                // Clear the active session
-                clearRecoverableSession(result.session.id, SESSION_TYPE.CHECKLIST)
-                  .catch(error => console.error("Error clearing checklist session:", error));
-              }
+const checkForRecoverableChecklistSession = async () => {
+  try {
+    // Use the improved recovery service
+    const result = await checkForRecoverableSession(SESSION_TYPE.CHECKLIST);
+    if (result.hasRecoverableSession) {
+      Alert.alert(
+        "Recover Checklist Session",
+        `Found an incomplete checklist session at ${result.session.location} with ${result.session.scans?.length || 0} selections. Would you like to recover it?`,
+        [
+          {
+            text: "Yes",
+            onPress: () => recoverChecklistSession(result.session)
+          },
+          {
+            text: "No",
+            onPress: () => {
+              // Instead of just clearing the session, backup the session first
+              handleDeclinedRecovery(result.session)
+                .then(() => {
+                  // After backing up, clear the recoverable session
+                  clearRecoverableSession(result.session.id, SESSION_TYPE.CHECKLIST)
+                    .catch(error => console.error("Error clearing checklist session:", error));
+                })
+                .catch(error => {
+                  console.error("Error handling declined recovery:", error);
+                  // Still attempt to clear the recoverable session
+                  clearRecoverableSession(result.session.id, SESSION_TYPE.CHECKLIST)
+                    .catch(clearError => console.error("Error clearing checklist session:", clearError));
+                });
             }
-          ]
-        );
-      }
-    } catch (error) {
-      console.error("Error checking for recoverable checklist session:", error);
+          }
+        ]
+      );
     }
-  };
+  } catch (error) {
+    console.error("Error checking for recoverable checklist session:", error);
+  }
+};
+
+// Handle declined recovery by backing up the session
+const handleDeclinedRecovery = async (session) => {
+  try {
+    console.log("Handling declined recovery for session:", session.id);
+    
+    // First mark the session as completed
+    const completedSession = {
+      ...session,
+      inProgress: false,
+      backedUp: false,
+      sessionType: SESSION_TYPE.CHECKLIST,
+      recoveryStatus: SESSION_STATUS.DECLINED_RECOVERY
+    };
+    
+    // Update the session in history
+    await updateSessionInHistory(completedSession);
+    
+    // Check online status
+    const isCurrentlyOnline = await checkOnlineStatus();
+    
+    // If we're online, try to export and backup directly
+    if (isCurrentlyOnline) {
+      console.log("Online - attempting to backup declined session");
+      try {
+        // Silent export (no UI alerts)
+        await exportChecklistSession(completedSession, true);
+        console.log("Declined session backed up successfully");
+      } catch (exportError) {
+        console.error("Failed to export declined session:", exportError);
+        // Fall back to queuing
+        await queueSessionForBackup(completedSession);
+      }
+    } else {
+      // If offline, queue for later backup
+      console.log("Offline - queueing declined session for later backup");
+      await queueSessionForBackup(completedSession);
+    }
+    
+    console.log("Declined session handled successfully");
+    return { success: true };
+  } catch (error) {
+    console.error("Error handling declined recovery:", error);
+    return { success: false, error };
+  }
+};
+
 // Update session in history
 const updateSessionInHistory = (updatedSession) => {
   return AsyncStorage.getItem('sessions').then(savedSessions => {
@@ -884,7 +915,7 @@ const startAutoSaveTimer = () => {
   // Set up interval timer (every 15 seconds)
   window.autoSaveTimerId = setInterval(() => {
     performAutoSave();
-  }, 15000);
+  }, 5000);
   console.log("Auto-save timer started");
 };
 // Stop auto-save timer
@@ -943,13 +974,24 @@ const saveActiveChecklistSession = async (session) => {
     console.error("Cannot save null or undefined session");
     return Promise.reject(new Error("Invalid session"));
   }
+  
   try {
     console.log(`Saving active checklist session: ${session.id}`);
+    
     // Save to AsyncStorage for persistent storage
     await AsyncStorage.setItem(CHECKLIST_ACTIVE_SESSION_STORAGE_KEY, JSON.stringify(session));
+    
     // Register with recovery system for crash protection
-    // Note: We use the session type constant defined in the recovery service
     await recoverSession(session, SESSION_TYPE.CHECKLIST);
+    
+    // Optional: Add a database save like the scanner does
+    try {
+      await saveSession(session);
+      console.log('Session updated in database with new selection');
+    } catch (dbError) {
+      console.error('Error updating session in database:', dbError);
+    }
+    
     console.log("Checklist session saved successfully");
     return Promise.resolve({ success: true });
   } catch (error) {
@@ -959,7 +1001,7 @@ const saveActiveChecklistSession = async (session) => {
 };
 //====================STUDENT SELECTION SECTION====================//
 // Handle student selection with optimized performance
-const handleStudentSelection = (studentId, isChecked) => {
+const handleStudentSelection = async (studentId, isChecked) => {
   if (!activeSession) return;
   // IMMEDIATE UI FEEDBACK: Update the selected set first for immediate UI response
   const updatedSelection = new Set(selectedStudents);
@@ -981,38 +1023,68 @@ const handleStudentSelection = (studentId, isChecked) => {
       time: now,
       isManual: false
     };
+    
+    // Update active session with the new scan
+    const updatedSession = {
+      ...activeSession,
+      scans: [...activeSession.scans, newScan]
+    };
+    
     // Update active session state - this updates the UI
-    setActiveSession(prevSession => ({
-      ...prevSession,
-      scans: [...prevSession.scans, newScan]
-    }));
-    // Mark session as needing save - but don't save immediately
-    window.sessionNeedsSaving = true;
+    setActiveSession(updatedSession);
+    
+    // IMPORTANT: Save immediately instead of just marking as needing save
+    try {
+      // Save to AsyncStorage for persistent storage
+      await saveActiveChecklistSession(updatedSession);
+      // Update the session in history
+      await updateSessionInHistory(updatedSession);
+      console.log(`Selection saved immediately: ${studentId}`);
+    } catch (error) {
+      console.error("Error saving selection:", error);
+    }
   } else {
     // Deselection - update UI immediately
     updatedSelection.delete(studentId);
     setSelectedStudents(updatedSelection);
     setSelectionStatus(`✗ Removing: ${studentId}`);
-    // Filter out scans for this student - for immediate UI update
+    
+    // Filter out scans for this student
     const updatedScans = activeSession.scans.filter(scan => scan.id !== studentId);
-    // Update active session state - this updates the UI
-    setActiveSession(prevSession => ({
-      ...prevSession,
+    
+    // Create updated session object
+    const updatedSession = {
+      ...activeSession,
       scans: updatedScans
-    }));
-    // Mark session as needing save - but don't save immediately
-    window.sessionNeedsSaving = true;
+    };
+    
+    // Update active session state - this updates the UI
+    setActiveSession(updatedSession);
+    
+    // IMPORTANT: Save immediately instead of just marking as needing save
+    try {
+      // Save to AsyncStorage for persistent storage
+      await saveActiveChecklistSession(updatedSession);
+      // Update the session in history
+      await updateSessionInHistory(updatedSession);
+      console.log(`Deselection saved immediately: ${studentId}`);
+    } catch (error) {
+      console.error("Error saving deselection:", error);
+    }
   }
 };
-// Add student to selection table
-const addStudentToSelectionTable = (studentId, isManual = false) => {
+
+// Updated addStudentToSelectionTable function
+const addStudentToSelectionTable = async (studentId, isManual = false) => {
   if (!activeSession) return;
   // First update the selection status for immediate feedback
   setSelectionStatus(`✓ ${isManual ? 'Manually added' : 'Selected'}: ${studentId}`);
+  
   // Create timestamp
   const now = new Date();
   const timestamp = now.toISOString();
   const formattedTime = formatTime(now);
+  
   // Create new scan
   const newScan = {
     id: studentId,
@@ -1022,75 +1094,137 @@ const addStudentToSelectionTable = (studentId, isManual = false) => {
     time: now,
     isManual: isManual
   };
+  
+  // Create updated session with new scan
+  const updatedSession = {
+    ...activeSession,
+    scans: [...activeSession.scans, newScan]
+  };
+  
   // Update active session - for immediate UI update
-  setActiveSession(prevSession => ({
-    ...prevSession,
-    scans: [...prevSession.scans, newScan]
-  }));
+  setActiveSession(updatedSession);
+  
   // Update selectedStudents set - for immediate UI update
-  setSelectedStudents(prevSelected => {
-    const updated = new Set(prevSelected);
-    updated.add(studentId);
-    return updated;
-  });
-  // Mark session as needing save - but don't save immediately
-  window.sessionNeedsSaving = true;
+  const updatedSelection = new Set(selectedStudents);
+  updatedSelection.add(studentId);
+  setSelectedStudents(updatedSelection);
+  
+  // IMPORTANT: Save immediately instead of just marking as needing save
+  try {
+    // Save to AsyncStorage for persistent storage
+    await saveActiveChecklistSession(updatedSession);
+    // Update the session in history
+    await updateSessionInHistory(updatedSession);
+    console.log(`Manual entry saved immediately: ${studentId}`);
+  } catch (error) {
+    console.error("Error saving manual entry:", error);
+  }
 };
-// Remove student from selection table
-const removeStudentFromSelectionTable = (studentId) => {
+
+// Updated removeStudentFromSelectionTable function
+const removeStudentFromSelectionTable = async (studentId) => {
   if (!activeSession) return;
   // Update status immediately for feedback
   setSelectionStatus(`✗ Removed: ${studentId}`);
-  // Filter out scans for this student - for immediate UI update
+  
+  // Filter out scans for this student
   const updatedScans = activeSession.scans.filter(scan => scan.id !== studentId);
-  // Update active session - for immediate UI update
-  setActiveSession(prevSession => ({
-    ...prevSession,
+  
+  // Create updated session object
+  const updatedSession = {
+    ...activeSession,
     scans: updatedScans
-  }));
+  };
+  
+  // Update active session - for immediate UI update
+  setActiveSession(updatedSession);
+  
   // Update selectedStudents set - for immediate UI update
-  setSelectedStudents(prevSelected => {
-    const updated = new Set(prevSelected);
-    updated.delete(studentId);
-    return updated;
-  });
-  // Mark session as needing save - but don't save immediately
-  window.sessionNeedsSaving = true;
+  const updatedSelection = new Set(selectedStudents);
+  updatedSelection.delete(studentId);
+  setSelectedStudents(updatedSelection);
+  
+  // IMPORTANT: Save immediately instead of just marking as needing save
+  try {
+    // Save to AsyncStorage for persistent storage
+    await saveActiveChecklistSession(updatedSession);
+    // Update the session in history
+    await updateSessionInHistory(updatedSession);
+    console.log(`Removal saved immediately: ${studentId}`);
+  } catch (error) {
+    console.error("Error saving removal:", error);
+  }
 };
-// Process manual entry
-const processManualEntry = () => {
+
+// Updated processManualEntry function
+const processManualEntry = async () => {
   const studentId = manualId.trim();
   if (!studentId) {
     Alert.alert('Error', 'Please enter a Student ID');
     return;
   }
+  
   // Check if already selected - give immediate feedback
   if (selectedStudents.has(studentId)) {
     Alert.alert('Already Selected', `Student ${studentId} is already in your selection.`);
     setManualId(''); // Just clear the input but keep modal open
     return;
   }
+  
   // Add to selected students - immediate UI update
   const updatedSelection = new Set(selectedStudents);
   updatedSelection.add(studentId);
   setSelectedStudents(updatedSelection);
+  
   // Set last added ID for feedback - immediate UI update
   setLastAddedId(studentId);
   setSelectionStatus(`✓ Adding: ${studentId}`);
+  
   // Reset input but keep modal open - immediate UI update
   setManualId('');
-  // Process the heavier operations asynchronously
-  setTimeout(() => {
-    // Add to selection table with isManual flag
-    addStudentToSelectionTable(studentId, true);
+  
+  // Create timestamp
+  const now = new Date();
+  const timestamp = now.toISOString();
+  const formattedTime = formatTime(now);
+  
+  // Create new scan
+  const newScan = {
+    id: studentId,
+    content: studentId,
+    timestamp: timestamp,
+    formattedTime: formattedTime,
+    time: now,
+    isManual: true
+  };
+  
+  // Create updated session with new scan
+  const updatedSession = {
+    ...activeSession,
+    scans: [...activeSession.scans, newScan]
+  };
+  
+  // Update active session - for immediate UI update
+  setActiveSession(updatedSession);
+  
+  // IMPORTANT: Save immediately instead of just marking as needing save
+  try {
+    // Save to AsyncStorage for persistent storage
+    await saveActiveChecklistSession(updatedSession);
+    // Update the session in history
+    await updateSessionInHistory(updatedSession);
+    console.log(`Manual entry saved immediately: ${studentId}`);
+    
     // Update status with complete message
     setSelectionStatus(`✓ Manually added: ${studentId}`);
+    
     // Clear the message after 3 seconds
     setTimeout(() => {
       setLastAddedId('');
     }, 3000);
-  }, 0);
-  console.log(`Manual entry processed: ${studentId}`);
+  } catch (error) {
+    console.error("Error saving manual entry:", error);
+  }
 };
 //======EXPORT AND FILE MANAGEMENT SECTION======//
 // Export checklist session to Excel
@@ -1100,13 +1234,12 @@ const exportChecklistSession = async (session, silentMode = false) => {
     const fileName = `Checklist_${session.location.replace(/[^a-z0-9]/gi, '_')}_${formatDateTimeForFile(new Date(session.dateTime))}.xlsx`;
     // Prepare data
     const data = [
-      ['Number', 'Student ID', 'Location', 'Log Date', 'Log Time', 'Type']
+      ['Student ID', 'Location', 'Log Date', 'Log Time', 'Type']
     ];
     // Add scans with row numbers
     session.scans.forEach((scan, index) => {
       const scanDate = new Date(scan.time || scan.timestamp);
       data.push([
-        index + 1,            // Row number
         scan.content,         // Student ID
         session.location,     // Location
         formatDate(scanDate), // Log Date
@@ -1163,7 +1296,7 @@ const exportChecklistSession = async (session, silentMode = false) => {
           // Update backup status in UI and storage
           await updateBackupStatus(session.id, true);
           // Only show a single backup success alert
-          Alert.alert("Backup Successful", "Session backed up to GitHub successfully!");
+          Alert.alert("Backup Successful", "Session backed up to server successfully!");
         } else {
           throw new Error("Backup failed with error: " + (backupResult?.message || "Unknown error"));
         }
@@ -1171,7 +1304,7 @@ const exportChecklistSession = async (session, silentMode = false) => {
         console.error("Error during backup:", backupError);
         // Queue for later backup - and show single consolidated error alert
         await queueSessionForBackup(session, true); // Added silent flag parameter
-        Alert.alert("Backup Failed", "Unable to backup to GitHub. The session is saved locally and will be backed up when online.");
+        Alert.alert("Backup Failed", "Unable to backup to server. The session is saved locally and will be backed up when online.");
       }
     } else {
       console.log("Offline - queueing for backup later");

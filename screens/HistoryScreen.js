@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, StyleSheet, FlatList, ScrollView, TouchableOpacity, Alert, ActivityIndicator, Platform } from 'react-native';
-import { Text, Button, Surface, Title, Divider, Card, Menu, Provider, List } from 'react-native-paper';
+import { Text, Button, Surface, Title, Divider, Card, Menu, Provider, List, Dialog, Portal } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
-import { loadSessionsFromStorage, saveSessionsToStorage } from '../services/database';
+import { loadSessionsFromStorage, saveSessionsToStorage, clearAllSessions } from '../services/database';
 import { recoverSession } from '../services/recover';
 import { exportSessionToExcel, exportAllSessionsToExcel } from '../services/export';
 
@@ -15,6 +15,8 @@ const HistoryScreen = ({ navigation }) => {
   const [sortOrder, setSortOrder] = useState('date-desc');
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState(null);
+  const [clearDialogVisible, setClearDialogVisible] = useState(false);
+  const [clearingInProgress, setClearingInProgress] = useState(false);
   
   // Add stronger focus effect to reload data every time the screen is focused
   useFocusEffect(
@@ -175,6 +177,45 @@ const HistoryScreen = ({ navigation }) => {
     }
   };
   
+  // Show clear all confirmation dialog
+  const showClearConfirmation = () => {
+    if (sessions.length === 0) {
+      Alert.alert(
+        "No Data",
+        "There are no sessions to clear.",
+        [{ text: "OK" }]
+      );
+      return;
+    }
+    
+    setClearDialogVisible(true);
+  };
+  
+  // Handle clear all sessions
+  const handleClearAllSessions = async () => {
+    setClearDialogVisible(false);
+    setClearingInProgress(true);
+    
+    try {
+      await clearAllSessions();
+      setSessions([]);
+      Alert.alert(
+        "Success",
+        "All sessions have been cleared.",
+        [{ text: "OK" }]
+      );
+    } catch (error) {
+      console.error("Clear all error:", error);
+      Alert.alert(
+        "Error",
+        "Failed to clear sessions. Please try again.",
+        [{ text: "OK" }]
+      );
+    } finally {
+      setClearingInProgress(false);
+    }
+  };
+  
   // Sort sessions based on selected option
   const sortSessions = (sessionsToSort, sortType) => {
     if (!Array.isArray(sessionsToSort)) {
@@ -208,18 +249,12 @@ const HistoryScreen = ({ navigation }) => {
   // Render session item
   const renderSessionItem = ({ item }) => (
     <TouchableOpacity onPress={() => showSessionDetails(item)}>
-      <Card style={[
-        styles.historyItem, 
-        item.inProgress && styles.inProgressItem
-      ]}>
+      <Card style={styles.historyItem}>
         <Card.Content>
           <View style={styles.historyItemHeader}>
             <View>
               <Text style={styles.locationText}>
                 {item.location}
-                {item.inProgress && 
-                  <Text style={styles.inProgressText}> (In Progress)</Text>
-                }
               </Text>
               <Text style={styles.dateText}>{item.formattedDateTime}</Text>
             </View>
@@ -258,7 +293,7 @@ const HistoryScreen = ({ navigation }) => {
         style={styles.retryButton}
         onPress={loadSessions}
       >
-        Retry
+        <Text style={styles.buttonText}>Retry</Text>
       </Button>
     </View>
   );
@@ -277,55 +312,73 @@ const HistoryScreen = ({ navigation }) => {
       <View style={styles.container}>
         {!sessionDetails ? (
           <Surface style={styles.card}>
-            <Title style={styles.title}>Scanning History</Title>
+            {/* Header with title and sort button side by side */}
+            <View style={styles.headerTop}>
+              <Title style={styles.title}>Scanning History</Title>
+              
+              <Menu
+                visible={sortMenuVisible}
+                onDismiss={() => setSortMenuVisible(false)}
+                anchor={
+                  <Button 
+                    mode="outlined" 
+                    icon="sort" 
+                    onPress={() => setSortMenuVisible(true)}
+                    style={styles.sortButton}
+                    labelStyle={styles.sortButtonText}
+                    disabled={isLoading || sessions.length === 0 || clearingInProgress}
+                  >
+                    <Text style={styles.sortButtonText}>Sort</Text>
+                  </Button>
+                }
+              >
+                <Menu.Item 
+                  title={<Text>Newest First</Text>}
+                  onPress={() => handleSortChange('date-desc')} 
+                />
+                <Menu.Item 
+                  title={<Text>Oldest First</Text>}
+                  onPress={() => handleSortChange('date-asc')} 
+                />
+                <Menu.Item 
+                  title={<Text>By Location</Text>}
+                  onPress={() => handleSortChange('location')} 
+                />
+              </Menu>
+            </View>
             
-            <View style={styles.headerControls}>
+            {/* Action buttons row moved below title */}
+            <View style={styles.actionButtonsRow}>
               <Button 
                 mode="contained" 
                 icon="export"
-                style={styles.exportButton}
-                labelStyle={styles.exportButtonText}
+                style={[styles.button, styles.primaryButton]}
+                labelStyle={styles.buttonLabelStyle}
                 onPress={handleExportAllHistory}
-                disabled={isLoading || sessions.length === 0}
+                disabled={isLoading || sessions.length === 0 || clearingInProgress}
               >
-                Export All History
+                <Text style={styles.buttonText}>Export All</Text>
               </Button>
               
-              <View style={styles.filterControl}>
-                <Menu
-                  visible={sortMenuVisible}
-                  onDismiss={() => setSortMenuVisible(false)}
-                  anchor={
-                    <Button 
-                      mode="outlined" 
-                      icon="sort" 
-                      onPress={() => setSortMenuVisible(true)}
-                      style={styles.sortButton}
-                      labelStyle={styles.sortButtonText}
-                      disabled={isLoading || sessions.length === 0}
-                    >
-                      Sort
-                    </Button>
-                  }
-                >
-                  <Menu.Item 
-                    title="Newest First" 
-                    onPress={() => handleSortChange('date-desc')} 
-                  />
-                  <Menu.Item 
-                    title="Oldest First" 
-                    onPress={() => handleSortChange('date-asc')} 
-                  />
-                  <Menu.Item 
-                    title="By Location" 
-                    onPress={() => handleSortChange('location')} 
-                  />
-                </Menu>
-              </View>
+              <Button 
+                mode="contained" 
+                icon="delete-sweep"
+                style={[styles.button, styles.dangerButton]}
+                labelStyle={styles.buttonLabelStyle}
+                onPress={showClearConfirmation}
+                disabled={isLoading || sessions.length === 0 || clearingInProgress}
+              >
+                <Text style={styles.buttonText}>Clear All</Text>
+              </Button>
             </View>
                         
             <View style={styles.historyListContainer}>
-              {isLoading ? (
+              {clearingInProgress ? (
+                <View style={styles.loadingContainer}>
+                  <ActivityIndicator size="large" color="#951d1e" />
+                  <Text style={styles.clearingText}>Clearing sessions...</Text>
+                </View>
+              ) : isLoading ? (
                 renderLoading()
               ) : loadError ? (
                 renderError()
@@ -358,9 +411,6 @@ const HistoryScreen = ({ navigation }) => {
             <View style={styles.detailsHeader}>
               <Title style={styles.subtitle}>
                 Session Details
-                {selectedSession?.inProgress && 
-                  <Text style={styles.inProgressText}> (In Progress)</Text>
-                }
               </Title>
               <Button 
                 mode="text" 
@@ -369,7 +419,7 @@ const HistoryScreen = ({ navigation }) => {
                 style={styles.closeButton}
                 labelStyle={styles.closeButtonText}
               >
-                Close
+                <Text style={styles.closeButtonText}>Close</Text>
               </Button>
             </View>
             
@@ -389,7 +439,6 @@ const HistoryScreen = ({ navigation }) => {
             </View>
             
             <View style={styles.detailButtons}>
-              
               <Button 
                 mode="contained" 
                 icon="export"
@@ -397,7 +446,7 @@ const HistoryScreen = ({ navigation }) => {
                 labelStyle={styles.exportSessionButtonText}
                 onPress={() => handleExportSession(selectedSession)}
               >
-                Export Session
+                <Text style={styles.buttonText}>Export Session</Text>
               </Button>
             </View>
             
@@ -430,6 +479,41 @@ const HistoryScreen = ({ navigation }) => {
             </View>
           </Surface>
         )}
+        
+        {/* Updated Confirmation Dialog for Clear All */}
+        <Portal>
+          <Dialog
+            visible={clearDialogVisible}
+            onDismiss={() => setClearDialogVisible(false)}
+            style={{ backgroundColor: '#ffffff' }}
+            contentContainerStyle={styles.modalContent}
+          >
+            <Dialog.Title style={styles.dialogTitle}>Clear All Sessions</Dialog.Title>
+            <Dialog.Content>
+              <Text style={[styles.warningText, { color: '#951d1e' }]}>
+                Are you sure you want to clear all {sessions.length} sessions? This action cannot be undone.
+              </Text>
+            </Dialog.Content>
+            <Dialog.Actions style={styles.modalButtons}>
+              <Button 
+                onPress={() => setClearDialogVisible(false)}
+                style={styles.secondaryButton}
+                labelStyle={{ color: '#24325f' }}
+              >
+                <Text style={{ color: '#24325f' }}>Cancel</Text>
+              </Button>
+              <Button 
+                onPress={handleClearAllSessions}
+                loading={clearingInProgress}
+                mode="contained"
+                style={[styles.primaryButton, { backgroundColor: '#951d1e' }]}
+                labelStyle={{ color: 'white' }}
+              >
+                <Text style={{ color: 'white' }}>Clear All</Text>
+              </Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
       </View>
     </Provider>
   );
@@ -459,7 +543,21 @@ const styles = StyleSheet.create({
       },
     }),
   },
-  // New wrapper specifically to fix iOS FlatList issues
+  // New header top layout
+  headerTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+    zIndex: 1, // Fix for menu on iOS
+  },
+  // New action buttons row styling
+  actionButtonsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  // Fix wrapper specifically for iOS FlatList issues
   flatListWrapper: {
     flex: 1,
     height: '100%',
@@ -474,7 +572,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    marginBottom: 16,
     color: '#24325f', // Matches --primary-color
     fontWeight: 'bold',
   },
@@ -484,17 +581,23 @@ const styles = StyleSheet.create({
     color: '#24325f', // Matches --primary-color
     fontWeight: '500',
   },
-  headerControls: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-    zIndex: 1, // Fix for menu on iOS
+  // Button styles
+  button: {
+    flex: 1,
+    marginHorizontal: 4,
+    borderRadius: 4,
   },
   exportButton: {
     backgroundColor: '#24325f', // Matches --primary-color
   },
-  exportButtonText: {
+  dangerButton: {
+    backgroundColor: '#951d1e', // Red color for dangerous action
+    borderRadius: 18,
+  },
+  buttonLabelStyle: {
+    color: 'white',
+  },
+  buttonText: {
     color: 'white',
   },
   sortButton: {
@@ -502,10 +605,6 @@ const styles = StyleSheet.create({
   },
   sortButtonText: {
     color: '#24325f', // Matches --primary-color
-  },
-  filterControl: {
-    flexDirection: 'row',
-    alignItems: 'center',
   },
   historyListContainer: {
     flex: 1,
@@ -520,7 +619,7 @@ const styles = StyleSheet.create({
   historyItem: {
     marginBottom: 8,
     backgroundColor: '#fff',
-    borderRadius: 8,
+    borderRadius: 18,
     borderWidth: 1,
     borderColor: '#e0e0e0',
     ...Platform.select({
@@ -535,10 +634,6 @@ const styles = StyleSheet.create({
       },
     }),
   },
-  inProgressItem: {
-    borderLeftWidth: 4,
-    borderLeftColor: '#951d1e', // Matches --secondary-color
-  },
   historyItemHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -548,10 +643,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
     color: '#24325f', // Matches --primary-color
-  },
-  inProgressText: {
-    color: '#951d1e', // Matches --secondary-color
-    fontWeight: 'bold',
   },
   dateText: {
     color: '#24325f',
@@ -588,6 +679,11 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     color: '#24325f',
+    marginTop: 16,
+    fontSize: 16,
+  },
+  clearingText: {
+    color: '#951d1e',
     marginTop: 16,
     fontSize: 16,
   },
@@ -650,18 +746,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 16,
   },
-  resumeButton: {
-    backgroundColor: '#951d1e', // Matches --secondary-color
-    flex: 1,
-    marginRight: 8,
-  },
-  resumeButtonText: {
-    color: 'white',
-  },
   exportSessionButton: {
     backgroundColor: '#24325f', // Matches --primary-color
     flex: 1,
-    marginLeft: 8,
   },
   exportSessionButtonText: {
     color: 'white',
@@ -728,16 +815,41 @@ const styles = StyleSheet.create({
     color: '#666',
     fontStyle: 'italic',
   },
-  // Debug styling
-  debugContainer: {
-    padding: 8,
-    backgroundColor: '#ffe0e0',
-    borderRadius: 4,
-    marginBottom: 8,
+  // Dialog styling
+  modalContent: {
+    padding: 20,
+    backgroundColor: '#ffffff',
+    borderRadius: 8,
   },
-  debugText: {
-    fontSize: 12,
-    color: '#333',
+  dialogTitle: {
+    color: '#24325f',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  warningText: {
+    marginBottom: 10,
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  modalButtons: {
+    justifyContent: 'flex-end',
+    marginTop: 10,
+  },
+  primaryButton: {
+    backgroundColor: '#24325f',
+    borderColor: '#24325f',
+    marginLeft: 8,
+    flex: 1,
+    borderRadius: 18,
+  },
+  secondaryButton: {
+    backgroundColor: 'white',
+    borderColor: '#24325f',
+    borderWidth: 1,
+    marginLeft: 8,
+    flex: 1,
+    borderRadius: 18,
+
   },
 });
 

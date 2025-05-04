@@ -64,6 +64,32 @@ export const saveSessionsToStorage = async (sessions) => {
   }
 };
 
+// Clear all sessions from storage and database
+export const clearAllSessions = async () => {
+  try {
+    console.log('Clearing all sessions...');
+    
+    // Clear from AsyncStorage
+    await AsyncStorage.removeItem(SESSIONS_STORAGE_KEY);
+    
+    // Clear from SQLite database
+    if (db) {
+      // Delete all scans first (due to foreign key constraints)
+      await db.runAsync('DELETE FROM scans');
+      
+      // Then delete all sessions
+      await db.runAsync('DELETE FROM sessions');
+      
+      console.log('All sessions cleared from database successfully');
+    }
+    
+    return true;
+  } catch (error) {
+    console.error('Error clearing all sessions:', error);
+    throw error;
+  }
+};
+
 // Get all sessions from database (fallback to SQL)
 export const getAllSessions = async () => {
   try {
