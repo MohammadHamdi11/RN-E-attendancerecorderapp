@@ -1,5 +1,6 @@
 // services/base64utils.js
 import { Buffer } from 'buffer';
+import { Platform } from 'react-native';
 
 // Standardized Base64 encoder function
 export const encodeBase64 = (str) => {

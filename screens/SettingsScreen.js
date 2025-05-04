@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, ScrollView, Alert } from 'react-native';
+import { Platform } from 'react-native';
 import { 
   Text, 
   Button, 
@@ -83,6 +84,65 @@ const [columnMappings, setColumnMappings] = useState({ year: null, group: null, 
 const [uploadingExcel, setUploadingExcel] = useState(false);
 const [previewData, setPreviewData] = useState([]);
 const [excelPreviewDialogVisible, setExcelPreviewDialogVisible] = useState(false);
+const [entries, setEntries] = useState([]);
+const [currentEntry, setCurrentEntry] = useState({ name: '', email: '', password: '' });
+const [currentStudentEntry, setCurrentStudentEntry] = useState({ year: '', group: '', id: '' });
+const [entriesType, setEntriesType] = useState('');  // 'users', 'admins', or 'students'
+
+const ColumnSelector = ({ label, value, options, onSelect }) => {
+  const [visible, setVisible] = useState(false);
+
+  return (
+    <View style={styles.mappingItem}>
+      <Text style={[styles.mappingLabel, { color: '#24325f' }]}>{label}:</Text>
+      <View style={styles.selectorContainer}>
+        <Button 
+          mode="outlined" 
+          onPress={() => setVisible(true)}
+          style={styles.selectorButton}
+          contentStyle={styles.selectorContent}
+        >
+          {value !== null && value !== undefined ? options[value] : "Select column..."}
+        </Button>
+        
+        <Portal>
+          <Dialog 
+            visible={visible} 
+            onDismiss={() => setVisible(false)}
+            style={styles.selectorDialog}
+          >
+            <Dialog.Title>Select {label} Column</Dialog.Title>
+            <Dialog.Content>
+              <ScrollView style={styles.selectorList}>
+                {options.map((option, index) => (
+                  <List.Item
+                    key={index}
+                    title={option}
+                    onPress={() => {
+                      onSelect(index);
+                      setVisible(false);
+                    }}
+                    titleStyle={{ color: '#24325f' }}
+                    left={props => (
+                      <List.Icon 
+                        {...props} 
+                        icon={value === index ? "check-circle" : "circle-outline"} 
+                        color={value === index ? "#24325f" : "#ccc"} 
+                      />
+                    )}
+                  />
+                ))}
+              </ScrollView>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={() => setVisible(false)}>Cancel</Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
+      </View>
+    </View>
+  );
+};
   // Set navigation options to include refresh button
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -263,19 +323,19 @@ const handleRefresh = async () => {
   }
 };
   // Show add user dialog
-  const showAddUserDialog = () => {
-    setName('');
-    setEmail('');
-    setPassword('');
-    setAddUserDialogVisible(true);
-  };
+const showAddUserDialog = () => {
+  setEntries([]);
+  setCurrentEntry({ name: '', email: '', password: '' });
+  setEntriesType('users');
+  setAddUserDialogVisible(true);
+};
   // Show add admin dialog
-  const showAddAdminDialog = () => {
-    setName('');
-    setEmail('');
-    setPassword('');
-    setAddAdminDialogVisible(true);
-  };
+const showAddAdminDialog = () => {
+  setEntries([]);
+  setCurrentEntry({ name: '', email: '', password: '' });
+  setEntriesType('admins');
+  setAddAdminDialogVisible(true);
+};
   // Show remove user dialog
   const showRemoveUserDialog = () => {
     setSelectedUsers([]);
@@ -295,12 +355,12 @@ const handleRefresh = async () => {
     setViewAdminDialogVisible(true);
   };
   // students dialog control functions:
-  const showAddStudentDialog = () => {
-    setYear('');
-    setGroup('');
-    setId('');
-    setAddStudentDialogVisible(true);
-  };
+const showAddStudentDialog = () => {
+  setEntries([]);
+  setCurrentStudentEntry({ year: '', group: '', id: '' });
+  setEntriesType('students');
+  setAddStudentDialogVisible(true);
+};
   const showRemoveStudentDialog = () => {
     setSelectedStudents([]);
     setRemoveStudentDialogVisible(true);
@@ -679,6 +739,122 @@ const isStudentSelected = (student) => {
          s.id === student.id
   );
 };
+
+// Add current entry to the batch list
+const addEntryToBatch = () => {
+  // Validate fields based on type
+  if (entriesType === 'students') {
+    if (!currentStudentEntry.year || !currentStudentEntry.group || !currentStudentEntry.id) {
+      Alert.alert('Error', 'Please fill in all fields');
+      return;
+    }
+    setEntries([...entries, { ...currentStudentEntry }]);
+    setCurrentStudentEntry({ year: '', group: '', id: '' });
+  } else {
+    // For users and admins
+    if (!currentEntry.name || !currentEntry.email || !currentEntry.password) {
+      Alert.alert('Error', 'Please fill in all fields');
+      return;
+    }
+    setEntries([...entries, { ...currentEntry }]);
+    setCurrentEntry({ name: '', email: '', password: '' });
+  }
+};
+
+// Remove an entry from the batch list
+const removeEntryFromBatch = (index) => {
+  const updatedEntries = [...entries];
+  updatedEntries.splice(index, 1);
+  setEntries(updatedEntries);
+};
+
+// PART 4: Functions to handle batch submission
+
+// Handle batch addition of users
+const handleAddUsersBatch = async () => {
+  if (entries.length === 0) {
+    Alert.alert('Error', 'No users to add');
+    return;
+  }
+  
+  setLoading(true);
+  try {
+    // Process all user entries
+    const results = await Promise.all(
+      entries.map(entry => addUser(entry.name, entry.email, entry.password))
+    );
+    
+    hideDialogs();
+    // Add delay before refreshing
+    setTimeout(async () => {
+      const { users: refreshedUsers } = await fetchUsers();
+      setUsers(refreshedUsers);
+      setLoading(false);
+      Alert.alert('Success', `${entries.length} users added successfully`);
+    }, 1500);
+  } catch (err) {
+    setLoading(false);
+    Alert.alert('Error', err.message || 'Failed to add users');
+  }
+};
+
+// Handle batch addition of admins
+const handleAddAdminsBatch = async () => {
+  if (entries.length === 0) {
+    Alert.alert('Error', 'No admins to add');
+    return;
+  }
+  
+  setLoading(true);
+  try {
+    // Process all admin entries
+    const results = await Promise.all(
+      entries.map(entry => addAdmin(entry.name, entry.email, entry.password))
+    );
+    
+    hideDialogs();
+    // Add delay before refreshing
+    setTimeout(async () => {
+      const { admins: refreshedAdmins } = await fetchAdmins();
+      setAdmins(refreshedAdmins);
+      setLoading(false);
+      Alert.alert('Success', `${entries.length} admins added successfully`);
+    }, 1500);
+  } catch (err) {
+    setLoading(false);
+    Alert.alert('Error', err.message || 'Failed to add admins');
+  }
+};
+
+// Handle batch addition of students
+const handleAddStudentsBatch = async () => {
+  if (entries.length === 0) {
+    Alert.alert('Error', 'No students to add');
+    return;
+  }
+  
+  setLoading(true);
+  try {
+    // Process all student entries
+    const results = await Promise.all(
+      entries.map(entry => addStudent(entry.year, entry.group, entry.id))
+    );
+    
+    hideDialogs();
+    // Add delay before refreshing
+    setTimeout(async () => {
+      const { students: refreshedStudents } = await fetchStudents();
+      setStudents(refreshedStudents);
+      setLoading(false);
+      Alert.alert('Success', `${entries.length} students added successfully`);
+    }, 1500);
+  } catch (err) {
+    setLoading(false);
+    Alert.alert('Error', err.message || 'Failed to add students');
+  }
+};
+
+
   // Render a section (Admins or Users)
 const renderSection = (title, items, onAdd, onRemove, onView, count, isLoading, error, onRetry) => (
   <Card style={styles.card}>
@@ -916,93 +1092,229 @@ if ((refreshing || allLoading) && !addUserDialogVisible && !addAdminDialogVisibl
       )}
       {/* Students Section - using the more feature-rich version */}
       {renderStudentSection()}
+
       {/* Add User Dialog */}
-<Portal>
-  <Dialog 
-    visible={addUserDialogVisible} 
-    onDismiss={hideDialogs}
-    style={{ backgroundColor: '#ffffff' }}
-    contentContainerStyle={styles.modalContent}
-  >
-    <Dialog.Title style={{ color: '#24325f' }}>Add User</Dialog.Title>
-    <Dialog.Content>
-      <TextInput
-        label="Name"
-        value={name}
-        onChangeText={setName}
-        mode="outlined"
-        style={[styles.input, { backgroundColor: '#ffffff' }]}
-      />
-      <TextInput
-        label="Email"
-        value={email}
-        onChangeText={setEmail}
-        mode="outlined"
-        keyboardType="email-address"
-        style={[styles.input, { backgroundColor: '#ffffff' }]}
-      />
-      <TextInput
-        label="Password"
-        value={password}
-        onChangeText={setPassword}
-        mode="outlined"
-        secureTextEntry
-        style={[styles.input, { backgroundColor: '#ffffff' }]}
-      />
-    </Dialog.Content>
-    <Dialog.Actions style={styles.modalButtons}>
-      <Button 
-        onPress={hideDialogs}
-        style={styles.secondaryButton}
-        labelStyle={{ color: '#24325f' }}
-      >
-        Cancel
-      </Button>
-      <Button 
-        onPress={handleAddUser} 
-        loading={loading}
-        mode="contained"
-        style={styles.primaryButton}
-        labelStyle={{ color: 'white' }}
-      >
-        Add
-      </Button>
-    </Dialog.Actions>
-  </Dialog>
-</Portal>
+const renderAddUserDialog = () => (
+  <Portal>
+    <Dialog 
+      visible={addUserDialogVisible} 
+      onDismiss={hideDialogs}
+      style={{ backgroundColor: '#ffffff' }}
+      contentContainerStyle={[styles.modalContent, { maxHeight: '80%' }]}
+    >
+      <Dialog.Title style={{ color: '#24325f' }}>Add Multiple Users</Dialog.Title>
+      <Dialog.ScrollArea>
+        <ScrollView>
+          <View style={styles.batchEntryForm}>
+            <TextInput
+              label="Name"
+              value={currentEntry.name}
+              onChangeText={(text) => setCurrentEntry({...currentEntry, name: text})}
+              mode="outlined"
+              style={[styles.input, { backgroundColor: '#ffffff' }]}
+            />
+            <TextInput
+              label="Email"
+              value={currentEntry.email}
+              onChangeText={(text) => setCurrentEntry({...currentEntry, email: text})}
+              mode="outlined"
+              keyboardType="email-address"
+              style={[styles.input, { backgroundColor: '#ffffff' }]}
+            />
+            <TextInput
+              label="Password"
+              value={currentEntry.password}
+              onChangeText={(text) => setCurrentEntry({...currentEntry, password: text})}
+              mode="outlined"
+              secureTextEntry
+              style={[styles.input, { backgroundColor: '#ffffff' }]}
+            />
+            <Button 
+              mode="contained" 
+              onPress={addEntryToBatch}
+              style={[styles.addToBatchButton, { marginTop: 10 }]}
+              icon="plus"
+            >
+              Add to List
+            </Button>
+          </View>
+          
+          {entries.length > 0 && (
+            <View style={styles.entriesList}>
+              <Divider style={{ marginVertical: 10 }} />
+              <Text style={styles.entriesHeader}>Users to Add ({entries.length})</Text>
+              {entries.map((entry, index) => (
+                <View key={index} style={styles.entryItem}>
+                  <View style={styles.entryDetails}>
+                    <Text style={styles.entryName}>{entry.name}</Text>
+                    <Text style={styles.entrySubtext}>{entry.email}</Text>
+                  </View>
+                  <IconButton
+                    icon="delete"
+                    size={20}
+                    color="#ff5252"
+                    onPress={() => removeEntryFromBatch(index)}
+                  />
+                </View>
+              ))}
+            </View>
+          )}
+        </ScrollView>
+      </Dialog.ScrollArea>
+      <Dialog.Actions style={styles.modalButtons}>
+        <Button 
+          onPress={hideDialogs}
+          style={styles.secondaryButton}
+          labelStyle={{ color: '#24325f' }}
+        >
+          Cancel
+        </Button>
+        <Button 
+          onPress={handleAddUsersBatch} 
+          loading={loading}
+          mode="contained"
+          style={styles.primaryButton}
+          labelStyle={{ color: 'white' }}
+          disabled={entries.length === 0}
+        >
+          Submit All
+        </Button>
+      </Dialog.Actions>
+    </Dialog>
+  </Portal>
+);
       {/* Add Admin Dialog */}
+const renderAddAdminDialog = () => (
+  <Portal>
+    <Dialog 
+      visible={addAdminDialogVisible} 
+      onDismiss={hideDialogs}
+      style={{ backgroundColor: '#ffffff' }}
+      contentContainerStyle={[styles.modalContent, { maxHeight: '80%' }]}
+    >
+      <Dialog.Title style={{ color: '#24325f' }}>Add Multiple Admins</Dialog.Title>
+      <Dialog.ScrollArea>
+        <ScrollView>
+          <View style={styles.batchEntryForm}>
+            <TextInput
+              label="Name"
+              value={currentEntry.name}
+              onChangeText={(text) => setCurrentEntry({...currentEntry, name: text})}
+              mode="outlined"
+              style={[styles.input, { backgroundColor: '#ffffff' }]}
+            />
+            <TextInput
+              label="Email"
+              value={currentEntry.email}
+              onChangeText={(text) => setCurrentEntry({...currentEntry, email: text})}
+              mode="outlined"
+              keyboardType="email-address"
+              style={[styles.input, { backgroundColor: '#ffffff' }]}
+            />
+            <TextInput
+              label="Password"
+              value={currentEntry.password}
+              onChangeText={(text) => setCurrentEntry({...currentEntry, password: text})}
+              mode="outlined"
+              secureTextEntry
+              style={[styles.input, { backgroundColor: '#ffffff' }]}
+            />
+            <Button 
+              mode="contained" 
+              onPress={addEntryToBatch}
+              style={[styles.addToBatchButton, { marginTop: 10 }]}
+              icon="plus"
+            >
+              Add to List
+            </Button>
+          </View>
+          
+          {entries.length > 0 && (
+            <View style={styles.entriesList}>
+              <Divider style={{ marginVertical: 10 }} />
+              <Text style={styles.entriesHeader}>Admins to Add ({entries.length})</Text>
+              {entries.map((entry, index) => (
+                <View key={index} style={styles.entryItem}>
+                  <View style={styles.entryDetails}>
+                    <Text style={styles.entryName}>{entry.name}</Text>
+                    <Text style={styles.entrySubtext}>{entry.email}</Text>
+                  </View>
+                  <IconButton
+                    icon="delete"
+                    size={20}
+                    color="#ff5252"
+                    onPress={() => removeEntryFromBatch(index)}
+                  />
+                </View>
+              ))}
+            </View>
+          )}
+        </ScrollView>
+      </Dialog.ScrollArea>
+      <Dialog.Actions style={styles.modalButtons}>
+        <Button 
+          onPress={hideDialogs}
+          style={styles.secondaryButton}
+          labelStyle={{ color: '#24325f' }}
+        >
+          Cancel
+        </Button>
+        <Button 
+          onPress={handleAddAdminsBatch} 
+          loading={loading}
+          mode="contained"
+          style={styles.primaryButton}
+          labelStyle={{ color: 'white' }}
+          disabled={entries.length === 0}
+        >
+          Submit All
+        </Button>
+      </Dialog.Actions>
+    </Dialog>
+  </Portal>
+);
+      {/* Remove Admins Dialog */}
 <Portal>
   <Dialog 
-    visible={addAdminDialogVisible} 
-    onDismiss={hideDialogs}
+    visible={removeAdminDialogVisible} 
+    onDismiss={hideDialogs} 
     style={{ backgroundColor: '#ffffff' }}
-    contentContainerStyle={styles.modalContent}
+    contentContainerStyle={[styles.modalContent, styles.selectionDialog]}
   >
-    <Dialog.Title style={{ color: '#24325f' }}>Add Admin</Dialog.Title>
+    <Dialog.Title style={{ color: '#24325f' }}>Remove Admins</Dialog.Title>
     <Dialog.Content>
-      <TextInput
-        label="Name"
-        value={name}
-        onChangeText={setName}
-        mode="outlined"
-        style={[styles.input, { backgroundColor: '#ffffff' }]}
-      />
-      <TextInput
-        label="Email"
-        value={email}
-        onChangeText={setEmail}
-        mode="outlined"
-        keyboardType="email-address"
-        style={[styles.input, { backgroundColor: '#ffffff' }]}
-      />
-      <TextInput
-        label="Password"
-        value={password}
-        onChangeText={setPassword}
-        mode="outlined"
-        secureTextEntry
-        style={[styles.input, { backgroundColor: '#ffffff' }]}
-      />
+      <View style={styles.selectionHeader}>
+        <Text style={{ color: '#24325f' }}>Select admins to remove:</Text>
+        <Button 
+          onPress={toggleSelectAllAdmins}
+          mode="text"
+          labelStyle={{ color: '#24325f' }}
+        >
+          {selectedAdmins.length === admins.length ? 'Deselect All' : 'Select All'}
+        </Button>
+      </View>
+      <ScrollView style={[styles.selectionList, { backgroundColor: '#ffffff' }]}>
+        {admins.map((admin, index) => (
+          <List.Item
+            key={index}
+            title={admin.name}
+            description={admin.email}
+            titleStyle={{ color: '#24325f' }}
+            descriptionStyle={{ color: '#666' }}
+            onPress={() => toggleAdminSelection(admin.email)}
+            left={props => (
+              <Checkbox
+                status={selectedAdmins.includes(admin.email) ? 'checked' : 'unchecked'}
+                onPress={() => toggleAdminSelection(admin.email)}
+                color="#24325f"
+              />
+            )}
+          />
+        ))}
+        {admins.length === 0 && (
+          <Text style={[styles.emptyText, { backgroundColor: 'transparent' }]}>No admins found</Text>
+        )}
+      </ScrollView>
     </Dialog.Content>
     <Dialog.Actions style={styles.modalButtons}>
       <Button 
@@ -1013,13 +1325,14 @@ if ((refreshing || allLoading) && !addUserDialogVisible && !addAdminDialogVisibl
         Cancel
       </Button>
       <Button 
-        onPress={handleAddAdmin} 
+        onPress={handleRemoveAdmins} 
         loading={loading}
+        disabled={selectedAdmins.length === 0}
         mode="contained"
         style={styles.primaryButton}
         labelStyle={{ color: 'white' }}
       >
-        Add
+        Remove Selected
       </Button>
     </Dialog.Actions>
   </Dialog>
@@ -1079,70 +1392,6 @@ if ((refreshing || allLoading) && !addUserDialogVisible && !addAdminDialogVisibl
         onPress={handleRemoveUsers} 
         loading={loading}
         disabled={selectedUsers.length === 0}
-        mode="contained"
-        style={styles.primaryButton}
-        labelStyle={{ color: 'white' }}
-      >
-        Remove Selected
-      </Button>
-    </Dialog.Actions>
-  </Dialog>
-</Portal>
-      {/* Remove Admins Dialog */}
-<Portal>
-  <Dialog 
-    visible={removeAdminDialogVisible} 
-    onDismiss={hideDialogs} 
-    style={{ backgroundColor: '#ffffff' }}
-    contentContainerStyle={[styles.modalContent, styles.selectionDialog]}
-  >
-    <Dialog.Title style={{ color: '#24325f' }}>Remove Admins</Dialog.Title>
-    <Dialog.Content>
-      <View style={styles.selectionHeader}>
-        <Text style={{ color: '#24325f' }}>Select admins to remove:</Text>
-        <Button 
-          onPress={toggleSelectAllAdmins}
-          mode="text"
-          labelStyle={{ color: '#24325f' }}
-        >
-          {selectedAdmins.length === admins.length ? 'Deselect All' : 'Select All'}
-        </Button>
-      </View>
-      <ScrollView style={[styles.selectionList, { backgroundColor: '#ffffff' }]}>
-        {admins.map((admin, index) => (
-          <List.Item
-            key={index}
-            title={admin.name}
-            description={admin.email}
-            titleStyle={{ color: '#24325f' }}
-            descriptionStyle={{ color: '#666' }}
-            onPress={() => toggleAdminSelection(admin.email)}
-            left={props => (
-              <Checkbox
-                status={selectedAdmins.includes(admin.email) ? 'checked' : 'unchecked'}
-                onPress={() => toggleAdminSelection(admin.email)}
-                color="#24325f"
-              />
-            )}
-          />
-        ))}
-        {admins.length === 0 && (
-          <Text style={[styles.emptyText, { backgroundColor: 'transparent' }]}>No admins found</Text>
-        )}
-      </ScrollView>
-    </Dialog.Content>
-    <Dialog.Actions style={styles.modalButtons}>
-      <Button 
-        onPress={hideDialogs}
-        style={styles.secondaryButton}
-        labelStyle={{ color: '#24325f' }}
-      >
-        Cancel
-      </Button>
-      <Button 
-        onPress={handleRemoveAdmins} 
-        loading={loading}
-        disabled={selectedAdmins.length === 0}
         mode="contained"
         style={styles.primaryButton}
         labelStyle={{ color: 'white' }}
@@ -1228,38 +1477,174 @@ if ((refreshing || allLoading) && !addUserDialogVisible && !addAdminDialogVisibl
     </Dialog.Actions>
   </Dialog>
 </Portal>
-      {/* Add Student Dialog */}
+{/* Add Student Dialog */}
+const renderAddStudentDialog = () => (
+  <Portal>
+    <Dialog 
+      visible={addStudentDialogVisible} 
+      onDismiss={hideDialogs}
+      style={{ backgroundColor: '#ffffff' }}
+      contentContainerStyle={[styles.modalContent, { maxHeight: '80%' }]}
+    >
+      <Dialog.Title style={{ color: '#24325f' }}>Add Multiple Students</Dialog.Title>
+      <Dialog.ScrollArea>
+        <ScrollView>
+          <View style={styles.batchEntryForm}>
+            <TextInput
+              label="Year"
+              value={currentStudentEntry.year}
+              onChangeText={(text) => setCurrentStudentEntry({...currentStudentEntry, year: text})}
+              mode="outlined"
+              style={[styles.input, { backgroundColor: '#ffffff' }]}
+              keyboardType="numeric"
+            />
+            <TextInput
+              label="Group"
+              value={currentStudentEntry.group}
+              onChangeText={(text) => setCurrentStudentEntry({...currentStudentEntry, group: text})}
+              mode="outlined"
+              style={[styles.input, { backgroundColor: '#ffffff' }]}
+            />
+            <TextInput
+              label="ID"
+              value={currentStudentEntry.id}
+              onChangeText={(text) => setCurrentStudentEntry({...currentStudentEntry, id: text})}
+              mode="outlined"
+              style={[styles.input, { backgroundColor: '#ffffff' }]}
+            />
+            <Button 
+              mode="contained" 
+              onPress={addEntryToBatch}
+              style={[styles.addToBatchButton, { marginTop: 10 }]}
+              icon="plus"
+            >
+              <Text style={{ color: 'white' }}>Add to List</Text>
+            </Button>
+          </View>
+          
+          {entries.length > 0 && (
+            <View style={styles.entriesList}>
+              <Divider style={{ marginVertical: 10 }} />
+              <Text style={styles.entriesHeader}>Students to Add ({entries.length})</Text>
+              {entries.map((entry, index) => (
+                <View key={index} style={styles.entryItem}>
+                  <View style={styles.entryDetails}>
+                    <Text style={styles.entryName}>Year: {entry.year}, Group: {entry.group}</Text>
+                    <Text style={styles.entrySubtext}>ID: {entry.id}</Text>
+                  </View>
+                  <IconButton
+                    icon="delete"
+                    size={20}
+                    color="#ff5252"
+                    onPress={() => removeEntryFromBatch(index)}
+                  />
+                </View>
+              ))}
+            </View>
+          )}
+        </ScrollView>
+      </Dialog.ScrollArea>
+      <Dialog.Actions style={styles.modalButtons}>
+        <Button 
+          onPress={hideDialogs}
+          style={styles.secondaryButton}
+          labelStyle={{ color: '#24325f' }}
+        >
+          <Text style={{ color: '#24325f' }}>Cancel</Text>
+        </Button>
+        <Button 
+          onPress={handleAddStudentsBatch} 
+          loading={loading}
+          mode="contained"
+          style={styles.primaryButton}
+          labelStyle={{ color: 'white' }}
+          disabled={entries.length === 0}
+        >
+          <Text style={{ color: 'white' }}>Submit All</Text>
+        </Button>
+      </Dialog.Actions>
+    </Dialog>
+  </Portal>
+);
+
+{/* Remove Students Dialog */}
 <Portal>
   <Dialog 
-    visible={addStudentDialogVisible} 
-    onDismiss={hideDialogs}
+    visible={removeStudentDialogVisible} 
+    onDismiss={hideDialogs} 
     style={{ backgroundColor: '#ffffff' }}
-    contentContainerStyle={styles.modalContent}
+    contentContainerStyle={[styles.modalContent, styles.selectionDialog]}
   >
-    <Dialog.Title style={{ color: '#24325f' }}>Add Student</Dialog.Title>
+    <Dialog.Title style={{ color: '#24325f' }}>Remove Students</Dialog.Title>
     <Dialog.Content>
       <TextInput
-        label="Year"
-        value={year}
-        onChangeText={setYear}
-        mode="outlined"
-        style={[styles.input, { backgroundColor: '#ffffff' }]}
-        keyboardType="numeric"
-      />
-      <TextInput
-        label="Group"
-        value={group}
-        onChangeText={setGroup}
+        label="Search by Year, Group, or ID"
+        value={studentSearchQuery}
+        onChangeText={text => {
+          setStudentSearchQuery(text);
+          setCurrentPage(0); // Reset to first page on search
+        }}
         mode="outlined"
         style={[styles.input, { backgroundColor: '#ffffff' }]}
       />
-      <TextInput
-        label="ID"
-        value={id}
-        onChangeText={setId}
-        mode="outlined"
-        style={[styles.input, { backgroundColor: '#ffffff' }]}
-      />
+      <View style={styles.selectionHeader}>
+        <Text style={{ color: '#24325f' }}>Select students to remove:</Text>
+        <Button 
+          onPress={toggleSelectAllStudents}
+          mode="text"
+          labelStyle={{ color: '#24325f' }}
+        >
+          <Text>{selectedStudents.length === filteredStudents.length ? 'Deselect All' : 'Select All'}</Text>
+        </Button>
+      </View>
+      <ScrollView style={[styles.selectionList, { backgroundColor: '#ffffff' }]}>
+        {filteredStudents
+          .slice(currentPage * studentsPerPage, (currentPage + 1) * studentsPerPage)
+          .map((student, index) => (
+            <List.Item
+              key={index}
+              title={`Year: ${student.year}, Group: ${student.group}`}
+              description={`ID: ${student.id}`}
+              titleStyle={{ color: '#24325f' }}
+              descriptionStyle={{ color: '#666' }}
+              onPress={() => toggleStudentSelection(student)}
+              left={props => (
+                <Checkbox
+                  status={isStudentSelected(student) ? 'checked' : 'unchecked'}
+                  onPress={() => toggleStudentSelection(student)}
+                  color="#24325f"
+                />
+              )}
+            />
+          ))}
+        {filteredStudents.length === 0 && (
+          <Text style={[styles.emptyText, { backgroundColor: 'transparent' }]}>No matching students found</Text>
+        )}
+      </ScrollView>
+      {/* Pagination controls */}
+      {filteredStudents.length > studentsPerPage && (
+        <View style={styles.paginationContainer}>
+          <Button 
+            disabled={currentPage === 0}
+            onPress={() => setCurrentPage(p => p - 1)}
+            style={currentPage === 0 ? {} : styles.secondaryButton}
+            labelStyle={currentPage === 0 ? { color: '#999' } : { color: '#24325f' }}
+          >
+            <Text style={{ color: '#24325f' }}>Previous</Text>
+          </Button>
+          <Text style={[styles.paginationText, { color: '#24325f' }]}>
+            Page {currentPage + 1} of {Math.ceil(filteredStudents.length / studentsPerPage)}
+          </Text>
+          <Button 
+            disabled={currentPage >= Math.ceil(filteredStudents.length / studentsPerPage) - 1}
+            onPress={() => setCurrentPage(p => p + 1)}
+            style={currentPage >= Math.ceil(filteredStudents.length / studentsPerPage) - 1 ? {} : styles.secondaryButton}
+            labelStyle={currentPage >= Math.ceil(filteredStudents.length / studentsPerPage) - 1 ? { color: '#999' } : { color: '#24325f' }}
+          >
+            <Text style={{ color: '#24325f' }}>Next</Text>
+          </Button>
+        </View>
+      )}
     </Dialog.Content>
     <Dialog.Actions style={styles.modalButtons}>
       <Button 
@@ -1267,99 +1652,23 @@ if ((refreshing || allLoading) && !addUserDialogVisible && !addAdminDialogVisibl
         style={styles.secondaryButton}
         labelStyle={{ color: '#24325f' }}
       >
-        Cancel
+        <Text style={{ color: '#24325f' }}>Cancel</Text>
       </Button>
       <Button 
-        onPress={handleAddStudent} 
+        onPress={handleRemoveStudents} 
         loading={loading}
+        disabled={selectedStudents.length === 0}
         mode="contained"
         style={styles.primaryButton}
         labelStyle={{ color: 'white' }}
       >
-        Add
+        <Text style={{ color: 'white' }}>Remove Selected ({selectedStudents.length})</Text>
       </Button>
     </Dialog.Actions>
   </Dialog>
 </Portal>
-      {/* Remove Students Dialog */}
-      <Portal>
-        <Dialog visible={removeStudentDialogVisible} onDismiss={hideDialogs} style={styles.selectionDialog}>
-          <Dialog.Title>Remove Students</Dialog.Title>
-          <Dialog.Content>
-            <TextInput
-              label="Search by Year, Group, or ID"
-              value={studentSearchQuery}
-              onChangeText={text => {
-                setStudentSearchQuery(text);
-                setCurrentPage(0); // Reset to first page on search
-              }}
-              mode="outlined"
-              style={styles.input}
-            />
-            <View style={styles.selectionHeader}>
-              <Text>Select students to remove:</Text>
-              <Button 
-                onPress={toggleSelectAllStudents}
-                mode="text"
-              >
-                {selectedStudents.length === filteredStudents.length ? 'Deselect All' : 'Select All'}
-              </Button>
-            </View>
-            <ScrollView style={styles.selectionList}>
-              {filteredStudents
-                .slice(currentPage * studentsPerPage, (currentPage + 1) * studentsPerPage)
-                .map((student, index) => (
-                  <List.Item
-                    key={index}
-                    title={`Year: ${student.year}, Group: ${student.group}`}
-                    description={`ID: ${student.id}`}
-                    onPress={() => toggleStudentSelection(student)}
-                    left={props => (
-                      <Checkbox
-                        status={isStudentSelected(student) ? 'checked' : 'unchecked'}
-                        onPress={() => toggleStudentSelection(student)}
-                      />
-                    )}
-                  />
-                ))}
-              {filteredStudents.length === 0 && (
-                <Text style={styles.emptyText}>No matching students found</Text>
-              )}
-            </ScrollView>
-            {/* Pagination controls */}
-            {filteredStudents.length > studentsPerPage && (
-              <View style={styles.paginationContainer}>
-                <Button 
-                  disabled={currentPage === 0}
-                  onPress={() => setCurrentPage(p => p - 1)}
-                >
-                  Previous
-                </Button>
-                <Text style={styles.paginationText}>
-                  Page {currentPage + 1} of {Math.ceil(filteredStudents.length / studentsPerPage)}
-                </Text>
-                <Button 
-                  disabled={currentPage >= Math.ceil(filteredStudents.length / studentsPerPage) - 1}
-                  onPress={() => setCurrentPage(p => p + 1)}
-                >
-                  Next
-                </Button>
-              </View>
-            )}
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={hideDialogs}>Cancel</Button>
-            <Button 
-              onPress={handleRemoveStudents} 
-              loading={loading}
-              disabled={selectedStudents.length === 0}
-            >
-              Remove Selected ({selectedStudents.length})
-            </Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
-      {/* Excel Upload Dialog */}
+
+{/* Excel Upload Dialog */}
 <Portal>
   <Dialog 
     visible={excelUploadDialogVisible} 
@@ -1369,10 +1678,10 @@ if ((refreshing || allLoading) && !addUserDialogVisible && !addAdminDialogVisibl
   >
     <Dialog.Title style={{ color: '#24325f' }}>Import Students from Excel</Dialog.Title>
     <Dialog.Content>
-      <Text style={styles.dialogText}>
+      <Text style={[styles.dialogText, { color: '#24325f' }]}>
         Upload an Excel file containing student data. The file should have columns for Year, Group, and Student ID.
       </Text>
-      <Text style={styles.dialogText}>
+      <Text style={[styles.dialogText, { color: '#24325f' }]}>
         You'll be able to map the columns in the next step.
       </Text>
     </Dialog.Content>
@@ -1382,7 +1691,7 @@ if ((refreshing || allLoading) && !addUserDialogVisible && !addAdminDialogVisibl
         style={styles.secondaryButton}
         labelStyle={{ color: '#24325f' }}
       >
-        Cancel
+        <Text style={{ color: '#24325f' }}>Cancel</Text>
       </Button>
       <Button 
         mode="contained"
@@ -1392,12 +1701,13 @@ if ((refreshing || allLoading) && !addUserDialogVisible && !addAdminDialogVisibl
         style={styles.primaryButton}
         labelStyle={{ color: 'white' }}
       >
-        Choose File
+        <Text style={{ color: 'white' }}>Choose File</Text>
       </Button>
     </Dialog.Actions>
   </Dialog>
 </Portal>
-      {/* Excel Column Mapping Dialog */}
+
+{/* Excel Column Mapping Dialog */}
 <Portal>
   <Dialog 
     visible={excelMappingDialogVisible} 
@@ -1407,64 +1717,32 @@ if ((refreshing || allLoading) && !addUserDialogVisible && !addAdminDialogVisibl
   >
     <Dialog.Title style={{ color: '#24325f' }}>Map Excel Columns</Dialog.Title>
     <Dialog.Content>
-      <Text style={styles.dialogSubTitle}>File: {excelFileName}</Text>
-      <Text style={styles.dialogText}>
+      <Text style={[styles.dialogSubTitle, { color: '#24325f' }]}>File: {excelFileName}</Text>
+      <Text style={[styles.dialogText, { color: '#24325f' }]}>
         Please match each required field to the appropriate column from your Excel file:
       </Text>
-      <View style={styles.mappingItem}>
-        <Text style={[styles.mappingLabel, { color: '#24325f' }]}>Year:</Text>
-        <View style={[styles.pickerContainer, { backgroundColor: '#ffffff' }]}>
-          <Picker
-            selectedValue={columnMappings.year !== null ? columnMappings.year : ""}
-            onValueChange={(itemValue) => {
-              setColumnMappings(prev => ({...prev, year: itemValue === "" ? null : itemValue}));
-            }}
-            style={styles.picker}
-            mode="dropdown"
-          >
-            <Picker.Item label="Select column..." value="" />
-            {excelHeaders.map((header, index) => (
-              <Picker.Item key={index} label={header} value={index} />
-            ))}
-          </Picker>
-        </View>
-      </View>
-      <View style={styles.mappingItem}>
-        <Text style={[styles.mappingLabel, { color: '#24325f' }]}>Group:</Text>
-        <View style={[styles.pickerContainer, { backgroundColor: '#ffffff' }]}>
-          <Picker
-            selectedValue={columnMappings.group !== null ? columnMappings.group : ""}
-            onValueChange={(itemValue) => {
-              setColumnMappings(prev => ({...prev, group: itemValue === "" ? null : itemValue}));
-            }}
-            style={styles.picker}
-            mode="dropdown"
-          >
-            <Picker.Item label="Select column..." value="" />
-            {excelHeaders.map((header, index) => (
-              <Picker.Item key={index} label={header} value={index} />
-            ))}
-          </Picker>
-        </View>
-      </View>
-      <View style={styles.mappingItem}>
-        <Text style={[styles.mappingLabel, { color: '#24325f' }]}>Student ID:</Text>
-        <View style={[styles.pickerContainer, { backgroundColor: '#ffffff' }]}>
-          <Picker
-            selectedValue={columnMappings.id !== null ? columnMappings.id : ""}
-            onValueChange={(itemValue) => {
-              setColumnMappings(prev => ({...prev, id: itemValue === "" ? null : itemValue}));
-            }}
-            style={styles.picker}
-            mode="dropdown"
-          >
-            <Picker.Item label="Select column..." value="" />
-            {excelHeaders.map((header, index) => (
-              <Picker.Item key={index} label={header} value={index} />
-            ))}
-          </Picker>
-        </View>
-      </View>
+      
+      <ColumnSelector
+        label="Year"
+        value={columnMappings.year}
+        options={excelHeaders}
+        onSelect={(index) => setColumnMappings(prev => ({...prev, year: index}))}
+      />
+      
+      <ColumnSelector
+        label="Group"
+        value={columnMappings.group}
+        options={excelHeaders}
+        onSelect={(index) => setColumnMappings(prev => ({...prev, group: index}))}
+      />
+      
+      <ColumnSelector
+        label="Student ID"
+        value={columnMappings.id}
+        options={excelHeaders}
+        onSelect={(index) => setColumnMappings(prev => ({...prev, id: index}))}
+      />
+      
       <Text style={[styles.noteText, { color: '#666' }]}>
         Note: If your Year column contains values like "Year 1", the system will extract just the number.
       </Text>
@@ -1475,7 +1753,7 @@ if ((refreshing || allLoading) && !addUserDialogVisible && !addAdminDialogVisibl
         style={styles.secondaryButton}
         labelStyle={{ color: '#24325f' }}
       >
-        Cancel
+        <Text style={{ color: '#24325f' }}>Cancel</Text>
       </Button>
       <Button 
         mode="contained"
@@ -1486,12 +1764,13 @@ if ((refreshing || allLoading) && !addUserDialogVisible && !addAdminDialogVisibl
         style={styles.primaryButton}
         labelStyle={{ color: 'white' }}
       >
-        Next
+        <Text style={{ color: '#24325f' }}>Next</Text>
       </Button>
     </Dialog.Actions>
   </Dialog>
 </Portal>
-      {/* Excel Data Preview Dialog */}
+
+{/* Excel Data Preview Dialog */}
 <Portal>
   <Dialog 
     visible={excelPreviewDialogVisible} 
@@ -1501,7 +1780,7 @@ if ((refreshing || allLoading) && !addUserDialogVisible && !addAdminDialogVisibl
   >
     <Dialog.Title style={{ color: '#24325f' }}>Data Preview</Dialog.Title>
     <Dialog.Content>
-      <Text style={styles.dialogSubTitle}>First 5 records from Excel:</Text>
+      <Text style={[styles.dialogSubTitle, { color: '#24325f' }]}>First 5 records from Excel:</Text>
       <ScrollView style={[styles.previewTable, { backgroundColor: '#ffffff' }]}>
         <View style={[styles.tableHeader, { backgroundColor: '#f0f0f0' }]}>
           <Text style={[styles.tableCell, styles.headerCell, { color: '#24325f' }]}>Year</Text>
@@ -1509,7 +1788,7 @@ if ((refreshing || allLoading) && !addUserDialogVisible && !addAdminDialogVisibl
           <Text style={[styles.tableCell, styles.headerCell, { color: '#24325f' }]}>Student ID</Text>
         </View>
         {previewData.map((student, index) => (
-          <View key={index} style={[styles.tableRow, { backgroundColor: '#ffffff' }]}>
+          <View key={index} style={[styles.tableRow, { backgroundColor: index % 2 === 0 ? '#ffffff' : '#f9f9f9' }]}>
             <Text style={[styles.tableCell, { color: '#24325f' }]}>{student.Year}</Text>
             <Text style={[styles.tableCell, { color: '#24325f' }]}>{student.Group}</Text>
             <Text style={[styles.tableCell, { color: '#24325f' }]}>{student["Student ID"]}</Text>
@@ -1523,7 +1802,7 @@ if ((refreshing || allLoading) && !addUserDialogVisible && !addAdminDialogVisibl
         style={styles.secondaryButton}
         labelStyle={{ color: '#24325f' }}
       >
-        Close
+        <Text style={{ color: 'white' }}>Close</Text>
       </Button>
       <Button 
         mode="contained"
@@ -1536,80 +1815,104 @@ if ((refreshing || allLoading) && !addUserDialogVisible && !addAdminDialogVisibl
         style={styles.primaryButton}
         labelStyle={{ color: 'white' }}
       >
-        Import All
+        <Text style={{ color: 'white' }}>Import All</Text>
       </Button>
     </Dialog.Actions>
   </Dialog>
 </Portal>
-      {/* View Students Dialog */}
-      <Portal>
-        <Dialog visible={viewStudentDialogVisible} onDismiss={hideDialogs} style={styles.selectionDialog}>
-          <Dialog.Title>View Students</Dialog.Title>
-          <Dialog.Content>
-            <TextInput
-              label="Search by Year, Group, or ID"
-              value={studentSearchQuery}
-              onChangeText={setStudentSearchQuery}
-              mode="outlined"
-              style={styles.input}
-            />
-            <Text style={styles.resultCount}>
-              {filteredStudents.length} students found
-              {!studentSearchQuery && students.length > 100 ? " (showing first 100)" : ""}
-            </Text>
-            <ScrollView style={styles.selectionList}>
-              {filteredStudents.map((student, index) => (
-                <List.Item
-                  key={index}
-                  title={`Year: ${student.year}, Group: ${student.group}`}
-                  description={`ID: ${student.id}`}
-                  left={props => <List.Icon {...props} icon="school" />}
-                />
-              ))}
-              {filteredStudents.length === 0 && (
-                <Text style={styles.emptyText}>No matching students found</Text>
-              )}
-            </ScrollView>
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={hideDialogs}>Close</Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
-      {/* View Backup Files Dialog */}
-      <Portal>
-        <Dialog visible={backupFilesDialogVisible} onDismiss={hideDialogs} style={styles.selectionDialog}>
-          <Dialog.Title>Backup Files</Dialog.Title>
-          <Dialog.Content>
-            <ScrollView style={styles.selectionList}>
-              {backupFiles.map((file, index) => (
-                <List.Item
-                  key={index}
-                  title={file.name}
-                  description={`Size: ${(file.size / 1024).toFixed(2)} KB`}
-                  left={props => <List.Icon {...props} icon="file-document" />}
-                />
-              ))}
-              {backupFiles.length === 0 && (
-                <Text style={styles.emptyText}>No backup files found</Text>
-              )}
-            </ScrollView>
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={hideDialogs}>Close</Button>
-            <Button 
-              onPress={showClearBackupsConfirmDialog}
-              mode="contained"
-              icon="delete-sweep"
-              style={styles.dangerButton}
-              disabled={backupFiles.length === 0}
-            >
-              Clear All
-            </Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
-      {/* Clear Backups Confirmation Dialog */}
+
+{/* View Students Dialog */}
+<Portal>
+  <Dialog 
+    visible={viewStudentDialogVisible} 
+    onDismiss={hideDialogs} 
+    style={{ backgroundColor: '#ffffff' }}
+    contentContainerStyle={[styles.modalContent, styles.selectionDialog]}
+  >
+    <Dialog.Title style={{ color: '#24325f' }}>View Students</Dialog.Title>
+    <Dialog.Content>
+      <TextInput
+        label="Search by Year, Group, or ID"
+        value={studentSearchQuery}
+        onChangeText={setStudentSearchQuery}
+        mode="outlined"
+        style={[styles.input, { backgroundColor: '#ffffff' }]}
+      />
+      <Text style={[styles.resultCount, { color: '#666' }]}>
+        {filteredStudents.length} students found
+        {!studentSearchQuery && students.length > 100 ? " (showing first 100)" : ""}
+      </Text>
+      <ScrollView style={[styles.selectionList, { backgroundColor: '#ffffff' }]}>
+        {filteredStudents.map((student, index) => (
+          <List.Item
+            key={index}
+            title={`Year: ${student.year}, Group: ${student.group}`}
+            description={`ID: ${student.id}`}
+            titleStyle={{ color: '#24325f' }}
+            descriptionStyle={{ color: '#666' }}
+            left={props => <List.Icon {...props} icon="school" color="#24325f" />}
+          />
+        ))}
+        {filteredStudents.length === 0 && (
+          <Text style={[styles.emptyText, { backgroundColor: 'transparent' }]}>No matching students found</Text>
+        )}
+      </ScrollView>
+    </Dialog.Content>
+    <Dialog.Actions style={styles.modalButtons}>
+      <Button 
+        onPress={hideDialogs}
+        mode="contained"
+        style={styles.primaryButton}
+        labelStyle={{ color: 'white' }}
+      >
+        <Text style={{ color: 'white' }}>Close</Text>
+      </Button>
+    </Dialog.Actions>
+  </Dialog>
+</Portal>
+
+{/* View Backup Files Dialog */}
+<Portal>
+  <Dialog visible={backupFilesDialogVisible} onDismiss={hideDialogs} style={styles.selectionDialog}>
+    <Dialog.Title>Backup Files</Dialog.Title>
+    <Dialog.Content>
+      <ScrollView style={styles.selectionList}>
+        {backupFiles.map((file, index) => (
+          <List.Item
+            key={index}
+            title={file.name}
+            description={`Size: ${(file.size / 1024).toFixed(2)} KB`}
+            left={props => <List.Icon {...props} icon="file-document" color="#24325f" />}
+            titleStyle={{ color: '#24325f' }} 
+          />
+        ))}
+        {backupFiles.length === 0 && (
+          <Text style={styles.emptyText}>No backup files found</Text>
+        )}
+      </ScrollView>
+    </Dialog.Content>
+    <Dialog.Actions style={styles.modalButtons}>
+      <Button 
+        onPress={hideDialogs}
+        style={styles.secondaryButton}
+        labelStyle={{ color: '#24325f' }}
+      >
+        <Text style={{ color: '#24325f' }}>Cancel</Text>
+      </Button>
+      <Button 
+        onPress={showClearBackupsConfirmDialog}
+        mode="contained"
+        icon="delete-sweep"
+        style={styles.dangerButton}
+        disabled={backupFiles.length === 0}
+      >
+        <Text style={{ color: 'white' }}>Clear All</Text>
+      </Button>
+    </Dialog.Actions>
+  </Dialog>
+</Portal>
+
+{/* Clear Backups Confirmation Dialog */}
 <Portal>
   <Dialog 
     visible={clearBackupsConfirmDialogVisible} 
@@ -1632,7 +1935,7 @@ if ((refreshing || allLoading) && !addUserDialogVisible && !addAdminDialogVisibl
         style={styles.secondaryButton}
         labelStyle={{ color: '#24325f' }}
       >
-        Cancel
+        <Text style={{ color: '#24325f' }}>Cancel</Text>
       </Button>
       <Button 
         onPress={handleClearBackups} 
@@ -1641,7 +1944,7 @@ if ((refreshing || allLoading) && !addUserDialogVisible && !addAdminDialogVisibl
         style={[styles.primaryButton, { backgroundColor: '#951d1e' }]}
         labelStyle={{ color: 'white' }}
       >
-        Clear Backups
+        <Text style={{ color: 'white' }}>Clear Backups</Text>
       </Button>
     </Dialog.Actions>
   </Dialog>
@@ -1823,6 +2126,9 @@ sectionRetryButton: {
 },
 mappingDialog: {
   maxHeight: '80%',
+  width: '90%', // Add width constraint
+  alignSelf: 'center', // Center the dialog
+  backgroundColor: '#ffffff',
 },
 previewDialog: {
   maxHeight: '80%',
@@ -1854,6 +2160,7 @@ mappingItem: {
   flexDirection: 'row',
   alignItems: 'center',
   marginVertical: 6,
+  paddingHorizontal: 8,
 },
 mappingLabel: {
   width: 80,
@@ -1865,9 +2172,13 @@ pickerContainer: {
   borderColor: '#ccc',
   borderRadius: 4,
   justifyContent: 'center',
+  height: 50,
+  minWidth: 150,
 },
 picker: {
-  height: 40,
+  height: '100%',
+  width: '100%',
+  backgroundColor: 'transparent',
 },
 noteText: {
   fontStyle: 'italic',
@@ -1879,6 +2190,8 @@ previewTable: {
   maxHeight: 300,
   borderWidth: 1,
   borderColor: '#ddd',
+overflow: 'hidden',
+borderRadius: 4,
 },
 tableHeader: {
   flexDirection: 'row',
@@ -1899,5 +2212,67 @@ tableCell: {
 headerCell: {
   fontWeight: 'bold',
 },
+selectorContainer: {
+  flex: 1,
+},
+selectorButton: {
+  borderColor: '#24325f',
+  justifyContent: 'flex-start',
+},
+selectorContent: {
+  justifyContent: 'flex-start',
+},
+selectorDialog: {
+  backgroundColor: '#ffffff',
+  maxHeight: '80%',
+},
+selectorList: {
+  maxHeight: 300,
+},
+  modalContent: {
+    backgroundColor: '#ffffff',
+    padding: 20,
+    borderRadius: 8,
+    maxWidth: Platform.OS === 'web' ? '70%' : '95%',
+    width: Platform.OS === 'web' ? 600 : undefined,
+    alignSelf: 'center',
+    maxHeight: '80%', // Allow scrolling for many entries
+  },
+  batchEntryForm: {
+    marginBottom: 10,
+  },
+  addToBatchButton: {
+    backgroundColor: '#4CAF50',
+    marginTop: 10,
+  },
+  entriesList: {
+    marginTop: 10,
+  },
+  entriesHeader: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#24325f',
+    marginBottom: 10,
+  },
+  entryItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  entryDetails: {
+    flex: 1,
+  },
+  entryName: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#333',
+  },
+  entrySubtext: {
+    fontSize: 12,
+    color: '#666',
+  },
 });
 export default SettingsScreen;

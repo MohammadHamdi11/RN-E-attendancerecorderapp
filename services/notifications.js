@@ -1,7 +1,8 @@
 import * as Notifications from 'expo-notifications';
 import * as TaskManager from 'expo-task-manager';
-import * as BackgroundFetch from 'expo-background-fetch';
+import * as BackgroundTask from 'expo-background-task';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Platform } from 'react-native';
 
 // Define task names
 const BACKGROUND_NOTIFICATION_TASK = 'background-notification-task';
@@ -107,12 +108,12 @@ async function scheduleDailyNotification() {
   }
 }
 
-// Register the background tasks
+// Register the background task - updated to use BackgroundTask module
 async function registerBackgroundTasks() {
   try {
-    // Register the background notification task
+    // Register the background notification task with BackgroundTask
     if (!await TaskManager.isTaskRegisteredAsync(BACKGROUND_NOTIFICATION_TASK)) {
-      await BackgroundFetch.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK, {
+      await BackgroundTask.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK, {
         minimumInterval: 60 * 60, // Check every hour
         stopOnTerminate: false,
         startOnBoot: true,
@@ -187,7 +188,7 @@ TaskManager.defineTask(BACKGROUND_NOTIFICATION_TASK, async () => {
     const pendingBackups = JSON.parse(await AsyncStorage.getItem('pendingBackups') || '[]');
     if (pendingBackups.length === 0) {
       console.log('[Notifications] No pending backups, no notification needed');
-      return BackgroundFetch.BackgroundFetchResult.NoData;
+      return BackgroundTask.Result.NoData;
     }
     
     const now = new Date();
@@ -200,7 +201,7 @@ TaskManager.defineTask(BACKGROUND_NOTIFICATION_TASK, async () => {
           now.getMonth() === lastNotifDate.getMonth() && 
           now.getFullYear() === lastNotifDate.getFullYear()) {
         console.log('[Notifications] Already sent a notification today, skipping');
-        return BackgroundFetch.BackgroundFetchResult.NoData;
+        return BackgroundTask.Result.NoData;
       }
     }
     
@@ -217,15 +218,15 @@ TaskManager.defineTask(BACKGROUND_NOTIFICATION_TASK, async () => {
           "Backup Reminder", 
           "You haven't used the app in a while. Remember to backup your data!"
         );
-        return BackgroundFetch.BackgroundFetchResult.NewData;
+        return BackgroundTask.Result.Success;
       }
     }
     
     // Default return if no notification was sent
-    return BackgroundFetch.BackgroundFetchResult.NoData;
+    return BackgroundTask.Result.NoData;
   } catch (error) {
     console.error('[Notifications] Background task error:', error);
-    return BackgroundFetch.BackgroundFetchResult.Failed;
+    return BackgroundTask.Result.Failed;
   }
 });
 

@@ -4,6 +4,8 @@ import * as Sharing from 'expo-sharing';
 import NetInfo from '@react-native-community/netinfo';
 import * as XLSX from 'xlsx';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Platform } from 'react-native';
+
 // Storage keys
 const GITHUB_TOKEN_KEY = 'qrScannerGithubToken';
 const LAST_BACKUP_TIME_KEY = 'qrScannerLastBackupTime';

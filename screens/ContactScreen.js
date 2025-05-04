@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, Linking } from 'react-native';
+import { Platform } from 'react-native';
 import { Text, Surface, Title, Button, Divider } from 'react-native-paper';
 
 const ContactScreen = () => {

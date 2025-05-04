@@ -5,6 +5,7 @@ import XLSX from 'xlsx';
 import { Alert } from 'react-native';
 import { encodeBase64, decodeBase64 } from './base64utils';
 import { fetchStudents, updateStudentsFile } from './updatestudentsdata';
+import { Platform } from 'react-native';
 
 // Function to parse Excel file and return data
 export const parseExcelFile = async () => {

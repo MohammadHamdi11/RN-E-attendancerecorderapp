@@ -5,6 +5,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as BackupService from '../services/backup';
 import * as Database from '../services/database';
 import NetInfo from '@react-native-community/netinfo';
+import { Platform } from 'react-native';
 
 const BackupScreen = () => {
   const [connectionStatus, setConnectionStatus] = useState('checking');
@@ -197,8 +198,8 @@ const refreshBackupData = async () => {
       <Button 
         mode="contained" 
         icon="cloud-upload"
-        style={styles.backupButton}
-        labelStyle={styles.backupButtonText}
+        style={styles.primaryButton}
+        labelStyle={styles.primaryButtonText}
         onPress={handleBackupNow}
         loading={isBackingUp}
         disabled={isBackingUp || connectionStatus !== 'online'}
@@ -209,8 +210,8 @@ const refreshBackupData = async () => {
       <Button 
         mode="outlined" 
         icon="connection"
-        style={styles.testButton}
-        labelStyle={styles.testButtonText}
+        style={styles.secondaryButton}
+        labelStyle={styles.secondaryButtonText}
         onPress={testGitHubConnection}
         loading={isTestingConnection}
         disabled={isTestingConnection || connectionStatus !== 'online'}
@@ -322,6 +323,27 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontStyle: 'italic',
     paddingHorizontal: 16,
+  },
+  primaryButton: {
+    backgroundColor: '#24325f',
+    borderColor: '#24325f',
+    marginBottom: 8,
+    marginRight: 8,
+    width: '90%',
+  },
+  primaryButtonText: {
+    color: 'white',
+  },
+  secondaryButton: {
+    backgroundColor: 'white',
+    borderColor: '#24325f',
+    borderWidth: 1,
+    marginBottom: 8,
+    marginRight: 8,
+    width: '90%',
+  },
+  secondaryButtonText: {
+    color: '#24325f',
   },
 });
 

@@ -3,6 +3,7 @@ import * as FileSystem from 'expo-file-system';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import { encodeBase64, decodeBase64 } from './base64utils';
+import { Platform } from 'react-native';
 
 // GitHub configuration (moved from updateusers.js)
 const DEFAULT_GITHUB_OWNER = 'MohammadHamdi11';

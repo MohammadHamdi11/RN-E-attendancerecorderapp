@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
-import { Text, Button, Surface, Title, Divider, Card, Menu, Provider } from 'react-native-paper';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, StyleSheet, FlatList, ScrollView, TouchableOpacity, Alert, ActivityIndicator, Platform } from 'react-native';
+import { Text, Button, Surface, Title, Divider, Card, Menu, Provider, List } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
 import { loadSessionsFromStorage, saveSessionsToStorage } from '../services/database';
 import { recoverSession } from '../services/recover';
 import { exportSessionToExcel, exportAllSessionsToExcel } from '../services/export';
@@ -12,31 +13,61 @@ const HistoryScreen = ({ navigation }) => {
   const [sessionDetails, setSessionDetails] = useState(false);
   const [sortMenuVisible, setSortMenuVisible] = useState(false);
   const [sortOrder, setSortOrder] = useState('date-desc');
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(null);
   
-  // Load sessions when component mounts
+  // Add stronger focus effect to reload data every time the screen is focused
+  useFocusEffect(
+    useCallback(() => {
+      console.log('HistoryScreen focused - loading sessions');
+      loadSessions();
+      return () => {
+        // Clean up if needed
+      };
+    }, [])
+  );
+  
+  // Load sessions when component mounts (keep this for initial load)
   useEffect(() => {
     loadSessions();
-    
-    // Add listener to reload sessions when this screen comes into focus
-    const unsubscribe = navigation.addListener('focus', () => {
-      loadSessions();
-    });
-    
-    return unsubscribe;
-  }, [navigation]);
+  }, []);
   
-  // Load sessions from storage
+  // Load sessions from storage with better error handling
   const loadSessions = async () => {
+    setIsLoading(true);
+    setLoadError(null);
+    
     try {
+      console.log('Loading sessions from storage...');
       const loadedSessions = await loadSessionsFromStorage();
-      setSessions(loadedSessions || []);
+      
+      // Validate the response
+      if (Array.isArray(loadedSessions)) {
+        console.log(`Successfully loaded ${loadedSessions.length} sessions`);
+        setSessions(loadedSessions);
+      } else {
+        console.error("Loaded sessions is not an array:", loadedSessions);
+        setSessions([]);
+        setLoadError("Invalid data format received");
+      }
     } catch (error) {
       console.error("Error loading sessions:", error);
+      setSessions([]);
+      setLoadError(error.message || "Failed to load session history");
+      
       Alert.alert(
         "Error",
         "Failed to load session history. Please try again.",
-        [{ text: "OK" }]
+        [{ 
+          text: "Retry", 
+          onPress: () => loadSessions() 
+        },
+        { 
+          text: "OK" 
+        }]
       );
+    } finally {
+      setIsLoading(false);
     }
   };
   
@@ -146,6 +177,11 @@ const HistoryScreen = ({ navigation }) => {
   
   // Sort sessions based on selected option
   const sortSessions = (sessionsToSort, sortType) => {
+    if (!Array.isArray(sessionsToSort)) {
+      console.error("Cannot sort non-array:", sessionsToSort);
+      return [];
+    }
+    
     return [...sessionsToSort].sort((a, b) => {
       if (sortType === 'date-desc') {
         return new Date(b.dateTime) - new Date(a.dateTime);
@@ -187,19 +223,52 @@ const HistoryScreen = ({ navigation }) => {
               </Text>
               <Text style={styles.dateText}>{item.formattedDateTime}</Text>
             </View>
-            <Text style={styles.countText}>Scans: {item.scans.length}</Text>
+            <Text style={styles.countText}>Scans: {Array.isArray(item.scans) ? item.scans.length : 0}</Text>
           </View>
         </Card.Content>
       </Card>
     </TouchableOpacity>
   );
   
-  // Render scan item
+  // Render scan item with safety check
   const renderScanItem = ({ item }) => (
     <View style={styles.scanItem}>
-      <Text style={styles.scanId}>{item.id}</Text>
-      <Text style={styles.scanContent}>{item.content}</Text>
-      <Text style={styles.scanTime}>{item.formattedTime}</Text>
+      <Text style={styles.scanId}>{item?.id || 'N/A'}</Text>
+      <Text style={styles.scanContent}>{item?.content || 'N/A'}</Text>
+      <Text style={styles.scanTime}>{item?.formattedTime || 'N/A'}</Text>
+    </View>
+  );
+  
+  // Render loading state
+  const renderLoading = () => (
+    <View style={styles.loadingContainer}>
+      <ActivityIndicator size="large" color="#24325f" />
+      <Text style={styles.loadingText}>Loading sessions...</Text>
+    </View>
+  );
+  
+  // Render error state
+  const renderError = () => (
+    <View style={styles.errorContainer}>
+      <MaterialCommunityIcons name="alert-circle-outline" size={48} color="#951d1e" />
+      <Text style={styles.errorText}>Failed to load sessions</Text>
+      <Text style={styles.errorSubtext}>{loadError}</Text>
+      <Button 
+        mode="contained"
+        style={styles.retryButton}
+        onPress={loadSessions}
+      >
+        Retry
+      </Button>
+    </View>
+  );
+  
+  // Render no sessions state
+  const renderNoSessions = () => (
+    <View style={styles.noResults}>
+      <MaterialCommunityIcons name="history" size={48} color="#24325f" />
+      <Text style={styles.noResultsText}>No scanning sessions found.</Text>
+      <Text style={styles.noResultsSubtext}>Sessions will appear here after scanning.</Text>
     </View>
   );
   
@@ -217,6 +286,7 @@ const HistoryScreen = ({ navigation }) => {
                 style={styles.exportButton}
                 labelStyle={styles.exportButtonText}
                 onPress={handleExportAllHistory}
+                disabled={isLoading || sessions.length === 0}
               >
                 Export All History
               </Button>
@@ -232,6 +302,7 @@ const HistoryScreen = ({ navigation }) => {
                       onPress={() => setSortMenuVisible(true)}
                       style={styles.sortButton}
                       labelStyle={styles.sortButtonText}
+                      disabled={isLoading || sessions.length === 0}
                     >
                       Sort
                     </Button>
@@ -252,19 +323,33 @@ const HistoryScreen = ({ navigation }) => {
                 </Menu>
               </View>
             </View>
-            
+                        
             <View style={styles.historyListContainer}>
-              {sessions.length > 0 ? (
-                <FlatList
-                  data={getSortedSessions()}
-                  renderItem={renderSessionItem}
-                  keyExtractor={item => item.id}
-                  contentContainerStyle={styles.historyList}
-                />
-              ) : (
-                <View style={styles.noResults}>
-                  <Text style={styles.noResultsText}>No scanning sessions found.</Text>
+              {isLoading ? (
+                renderLoading()
+              ) : loadError ? (
+                renderError()
+              ) : sessions.length > 0 ? (
+                <View style={styles.flatListWrapper}>
+                  <FlatList
+                    data={getSortedSessions()}
+                    renderItem={renderSessionItem}
+                    keyExtractor={item => item.id}
+                    contentContainerStyle={styles.historyList}
+                    extraData={sortOrder}
+                    removeClippedSubviews={Platform.OS === 'android'}
+                    initialNumToRender={10}
+                    maxToRenderPerBatch={5}
+                    windowSize={5}
+                    keyboardShouldPersistTaps="handled"
+                    scrollEnabled={true}
+                    bounces={true}
+                    indicatorStyle="black"
+                    showsVerticalScrollIndicator={true}
+                  />
                 </View>
+              ) : (
+                renderNoSessions()
               )}
             </View>
           </Surface>
@@ -291,30 +376,19 @@ const HistoryScreen = ({ navigation }) => {
             <View style={styles.detailsInfo}>
               <Text style={styles.detailText}>
                 <Text style={styles.detailLabel}>Location: </Text>
-                {selectedSession?.location}
+                {selectedSession?.location || 'N/A'}
               </Text>
               <Text style={styles.detailText}>
                 <Text style={styles.detailLabel}>Date & Time: </Text>
-                {selectedSession?.formattedDateTime}
+                {selectedSession?.formattedDateTime || 'N/A'}
               </Text>
               <Text style={styles.detailText}>
                 <Text style={styles.detailLabel}>Scans: </Text>
-                {selectedSession?.scans.length}
+                {Array.isArray(selectedSession?.scans) ? selectedSession.scans.length : 0}
               </Text>
             </View>
             
             <View style={styles.detailButtons}>
-              {selectedSession?.inProgress && (
-                <Button 
-                  mode="contained" 
-                  icon="play"
-                  style={styles.resumeButton}
-                  labelStyle={styles.resumeButtonText}
-                  onPress={() => resumeSession(selectedSession)}
-                >
-                  Resume Session
-                </Button>
-              )}
               
               <Button 
                 mode="contained" 
@@ -330,16 +404,29 @@ const HistoryScreen = ({ navigation }) => {
             <View style={styles.scansContainer}>
               <View style={styles.tableHeader}>
                 <Text style={[styles.columnHeader, styles.idColumn]}>ID</Text>
-                <Text style={[styles.columnHeader, styles.contentColumn]}>Content</Text>
                 <Text style={[styles.columnHeader, styles.timeColumn]}>Time</Text>
               </View>
               
-              <FlatList
-                data={selectedSession?.scans || []}
-                renderItem={renderScanItem}
-                keyExtractor={item => item.id}
-                contentContainerStyle={styles.scansList}
-              />
+              {Array.isArray(selectedSession?.scans) && selectedSession.scans.length > 0 ? (
+                <View style={styles.scanListWrapper}>
+                  <FlatList
+                    data={selectedSession.scans}
+                    renderItem={renderScanItem}
+                    keyExtractor={item => item.id.toString()}
+                    contentContainerStyle={styles.scansList}
+                    removeClippedSubviews={Platform.OS === 'android'}
+                    keyboardShouldPersistTaps="handled"
+                    scrollEnabled={true}
+                    bounces={true}
+                    indicatorStyle="black"
+                    showsVerticalScrollIndicator={true}
+                  />
+                </View>
+              ) : (
+                <View style={styles.noScans}>
+                  <Text style={styles.noScansText}>No scans in this session</Text>
+                </View>
+              )}
             </View>
           </Surface>
         )}
@@ -355,11 +442,35 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f9f9', // Matches --light-bg
   },
   card: {
+    flex: 1,
     padding: 16,
     borderRadius: 8,
-    elevation: 4,
+    height: '100%',
     backgroundColor: '#ffffff', // Matches --card-bg
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 4,
+      },
+    }),
+  },
+  // New wrapper specifically to fix iOS FlatList issues
+  flatListWrapper: {
     flex: 1,
+    height: '100%',
+    width: '100%',
+    backgroundColor: 'transparent',
+  },
+  scanListWrapper: {
+    flex: 1,
+    height: '100%',
+    width: '100%',
+    backgroundColor: 'transparent',
   },
   title: {
     fontSize: 20,
@@ -378,47 +489,51 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 16,
+    zIndex: 1, // Fix for menu on iOS
   },
   exportButton: {
     backgroundColor: '#24325f', // Matches --primary-color
-    borderColor: '#24325f', // Matches --primary-color
   },
   exportButtonText: {
     color: 'white',
   },
   sortButton: {
-    backgroundColor: '#24325f', // Matches --primary-color
     borderColor: '#24325f', // Matches --primary-color
   },
   sortButtonText: {
-    color: 'white',
+    color: '#24325f', // Matches --primary-color
   },
   filterControl: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  filterButton: {
-    backgroundColor: '#24325f', // Matches --primary-color
-    borderColor: '#24325f', // Matches --primary-color
-  },
-  filterButtonText: {
-    color: 'white',
-  },
   historyListContainer: {
     flex: 1,
     marginTop: 8,
+    height: '100%',
+    backgroundColor: 'transparent',
   },
   historyList: {
     paddingBottom: 16,
+    backgroundColor: 'transparent',
   },
   historyItem: {
     marginBottom: 8,
-    elevation: 2,
     backgroundColor: '#fff',
     borderRadius: 8,
-    padding: 12,
     borderWidth: 1,
-    borderColor: '#24325f',
+    borderColor: '#e0e0e0',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 2,
+      },
+    }),
   },
   inProgressItem: {
     borderLeftWidth: 4,
@@ -450,12 +565,56 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f0f0',
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#24325f',
+    borderColor: '#e0e0e0',
+    justifyContent: 'center',
+    flex: 1,
   },
   noResultsText: {
     color: '#24325f',
-    fontStyle: 'italic',
+    fontWeight: 'bold',
     fontSize: 16,
+    marginTop: 16,
+  },
+  noResultsSubtext: {
+    color: '#666',
+    marginTop: 8,
+    textAlign: 'center',
+  },
+  loadingContainer: {
+    padding: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+  },
+  loadingText: {
+    color: '#24325f',
+    marginTop: 16,
+    fontSize: 16,
+  },
+  errorContainer: {
+    padding: 32,
+    alignItems: 'center',
+    backgroundColor: '#fff0f0',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#951d1e',
+    justifyContent: 'center',
+    flex: 1,
+  },
+  errorText: {
+    color: '#951d1e',
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginTop: 16,
+  },
+  errorSubtext: {
+    color: '#666',
+    marginTop: 8,
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  retryButton: {
+    backgroundColor: '#24325f',
   },
   detailsHeader: {
     flexDirection: 'row',
@@ -466,11 +625,9 @@ const styles = StyleSheet.create({
   closeButton: {
     margin: 0,
     padding: 0,
-    backgroundColor: '#24325f', // Matches --primary-color
-    borderColor: '#24325f', // Matches --primary-color
   },
   closeButtonText: {
-    color: 'white',
+    color: '#24325f',
   },
   detailsInfo: {
     backgroundColor: '#f0f0f0',
@@ -478,7 +635,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#24325f',
+    borderColor: '#e0e0e0',
   },
   detailText: {
     marginBottom: 6,
@@ -495,7 +652,6 @@ const styles = StyleSheet.create({
   },
   resumeButton: {
     backgroundColor: '#951d1e', // Matches --secondary-color
-    borderColor: '#951d1e', // Matches --secondary-color
     flex: 1,
     marginRight: 8,
   },
@@ -504,7 +660,6 @@ const styles = StyleSheet.create({
   },
   exportSessionButton: {
     backgroundColor: '#24325f', // Matches --primary-color
-    borderColor: '#24325f', // Matches --primary-color
     flex: 1,
     marginLeft: 8,
   },
@@ -563,6 +718,26 @@ const styles = StyleSheet.create({
   },
   scansList: {
     backgroundColor: '#fff',
+  },
+  noScans: {
+    padding: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  noScansText: {
+    color: '#666',
+    fontStyle: 'italic',
+  },
+  // Debug styling
+  debugContainer: {
+    padding: 8,
+    backgroundColor: '#ffe0e0',
+    borderRadius: 4,
+    marginBottom: 8,
+  },
+  debugText: {
+    fontSize: 12,
+    color: '#333',
   },
 });
 

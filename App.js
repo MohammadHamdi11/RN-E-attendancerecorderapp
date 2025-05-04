@@ -9,7 +9,7 @@ import { Provider as PaperProvider, DefaultTheme, IconButton } from 'react-nativ
 import { View, Text, StyleSheet, AppState } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import NetInfo from '@react-native-community/netinfo';
-import * as BackgroundFetch from 'expo-background-fetch';
+import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
 // Import screens

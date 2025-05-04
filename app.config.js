@@ -27,16 +27,18 @@ ios: {
     NSCameraUsageDescription: "Allow $(PRODUCT_NAME) to access your camera for scanning QR codes.",
     NSPhotoLibraryUsageDescription: "Allow $(PRODUCT_NAME) to access photos for saving exported data files.",
     NSPhotoLibraryAddUsageDescription: "Allow $(PRODUCT_NAME) to save exported files to your photo library.",
-    NSMicrophoneUsageDescription: "Allow $(PRODUCT_NAME) to access your microphone for audio features.",
+    // REMOVED: NSMicrophoneUsageDescription line since we don't need microphone access anymore
     NSUserNotificationAlertStyle: "alert",
     NSUserNotificationsUsageDescription: "Allow $(PRODUCT_NAME) to send you notifications about backup reminders.",
     NSDocumentsFolderUsageDescription: "Allow $(PRODUCT_NAME) to save exported files to the Documents folder.",
     NSDocumentPickerUsageDescription: "Allow $(PRODUCT_NAME) to access documents for file imports and exports.",
     NSFileProviderPresenceUsageDescription: "Allow $(PRODUCT_NAME) to access files for data import and export.",
     NSFileProviderDomainUsageDescription: "Allow $(PRODUCT_NAME) to manage files for your attendance data.",
-    UIBackgroundModes: ["fetch", "remote-notification", "processing"],
+    UIBackgroundModes: ["fetch", "processing", "process", "remote-notification"],
     UIRequiredDeviceCapabilities: ["armv7"]
-  }
+  },
+  // Adding task identifiers for background tasks
+  backgroundModes: ["fetch", "processing", "remote-notification"]
 },
     android: {
       adaptiveIcon: {
@@ -57,13 +59,13 @@ ios: {
     "android.permission.ACTION_OPEN_DOCUMENT",
     "READ_MEDIA_IMAGES", 
     "READ_MEDIA_VIDEO",
-    "READ_MEDIA_AUDIO",
+    // REMOVED: "READ_MEDIA_AUDIO",
     "android.permission.CAMERA",
     "android.permission.READ_EXTERNAL_STORAGE",
     "android.permission.WRITE_EXTERNAL_STORAGE",
     "android.permission.READ_MEDIA_IMAGES",
     "android.permission.READ_MEDIA_VIDEO",
-    "android.permission.READ_MEDIA_AUDIO",
+    // REMOVED: "android.permission.READ_MEDIA_AUDIO",
     "android.permission.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION",
     "android.permission.DOWNLOAD_WITHOUT_NOTIFICATION",
     "android.permission.INTERNET",
@@ -85,14 +87,20 @@ ios: {
     },
     plugins: [
       [
-        "expo-barcode-scanner",
+        "expo-camera",
         {
           cameraPermission: "Allow $(PRODUCT_NAME) to access your camera for scanning QR codes."
         }
       ],
+[
+    "expo-background-task"
+  ],
+      [
+        "expo-sqlite"
+      ],
       "expo-file-system",
-      "expo-background-fetch",
       "expo-task-manager",
+      "expo-background-task",  // Added this plugin for background tasks
       [
         "expo-document-picker",
         {
@@ -105,6 +113,13 @@ ios: {
           photosPermission: "Allow $(PRODUCT_NAME) to access your photos to save exported data files.",
           savePhotosPermission: "Allow $(PRODUCT_NAME) to save exported files to your photo library.",
           isAccessMediaLocationEnabled: true
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          icon: "./assets/notification_icon.png",
+          color: "#24325f"
         }
       ]
     ],

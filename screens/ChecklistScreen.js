@@ -1,6 +1,6 @@
 //======IMPORT SECTION======//
 import React, { useState, useEffect, useMemo } from 'react';
-import { View, StyleSheet, FlatList, ScrollView, Alert } from 'react-native';
+import { View, StyleSheet, FlatList, ScrollView, Alert, Platform } from 'react-native';
 import { TouchableOpacity } from 'react-native';
 import Icon from '@expo/vector-icons/MaterialIcons';
 import { Text, Button, Surface, Title, Checkbox, Modal, Portal, Provider, Searchbar, List, Divider, DataTable, TextInput } from 'react-native-paper';
@@ -14,6 +14,14 @@ import { backupToGitHub, tryAutoBackup, processPendingBackups } from '../service
 import NetInfo from '@react-native-community/netinfo';
 import { syncStudentsDataWithGitHub } from '../services/loadData';
 import { loadStudentsData, loadFilteredStudentsData } from '../services/loadData';
+import { 
+  SESSION_TYPE, 
+  checkForRecoverableSession, 
+  recoverSession, 
+  clearRecoverableSession, 
+  cleanUpRecoveryTimers,
+  resetRecoverySystem 
+} from '../services/recover';
 //======CONSTANTS SECTION======//
 // Storage keys
 const GITHUB_TOKEN_KEY = 'qrScannerGithubToken';
@@ -96,6 +104,7 @@ const ChecklistScreen = ({ isOnline }) => {
     "Building 'A' Lecture Hall",
     "Building 'B' Lecture Hall"
   ];
+//======EFFECT HOOKS SECTION======//
   //======CONNECTION MONITORING SECTION======//
   // Debug connection status
   useEffect(() => {
@@ -297,23 +306,96 @@ const prepareStudentSelection = async () => {
 }, [isOnline]); // Only depend on isOnline, not activeSession
 
   //======INITIALIZATION SECTION======//
-  // Load initial data on component mount
-  useEffect(() => {
-    initializeChecklistModule();
-  }, []);
-  // Initialize checklist module
-  const initializeChecklistModule = async () => {
-    console.log("Initializing checklist module...");
+// Add this function before the component definition
+const initializeChecklistModule = async () => {
+  console.log("Initializing checklist module...");
+  
+  try {
+    // Reset recovery system on app startup
+    await resetRecoverySystem();
+    
     // Load students data
     await loadStudentsDataForChecklist();
+    
     // Check for recoverable session
     await checkForRecoverableChecklistSession();
+    
+    // Load sessions from storage
+    const savedSessions = await AsyncStorage.getItem('sessions');
+    if (savedSessions) {
+      setSessions(JSON.parse(savedSessions));
+    }
+    
+    console.log("Checklist module initialized successfully");
+  } catch (error) {
+    console.error("Error initializing checklist module:", error);
+  }
+};
+
+// Then in the component, update the initialization useEffect
+useEffect(() => {
+  initializeChecklistModule();
+  
+  // Clean up when component unmounts
+  return () => {
+    // If there's an active session, save it before unmounting
+    if (activeSession) {
+      saveActiveChecklistSession(activeSession)
+        .catch(error => console.error("Error saving active session on unmount:", error));
+    }
+    
+    // Stop auto-save timer if running
+    if (window.autoSaveTimerId) {
+      clearInterval(window.autoSaveTimerId);
+      window.autoSaveTimerId = null;
+    }
+    
+    // Clean up timers from recovery system
+    cleanUpRecoveryTimers();
+  };
+}, []);
+
+// Initialize checklist module
+useEffect(() => {
+  const initializeApp = async () => {
+    console.log("Initializing checklist module...");
+    
+    // Reset recovery system on app startup
+    await resetRecoverySystem();
+    
+    // Load students data
+    await loadStudentsDataForChecklist();
+    
+    // Check for recoverable session
+    await checkForRecoverableChecklistSession();
+    
     // Load sessions from storage
     const savedSessions = await AsyncStorage.getItem('sessions');
     if (savedSessions) {
       setSessions(JSON.parse(savedSessions));
     }
   };
+  
+  initializeApp();
+  
+  // Clean up when component unmounts
+  return () => {
+    // If there's an active session, save it before unmounting
+    if (activeSession) {
+      saveActiveChecklistSession(activeSession)
+        .catch(error => console.error("Error saving active session on unmount:", error));
+    }
+    
+    // Stop auto-save timer if running
+    if (window.autoSaveTimerId) {
+      clearInterval(window.autoSaveTimerId);
+      window.autoSaveTimerId = null;
+    }
+    
+    // Clean up timers from recovery system
+    cleanUpRecoveryTimers();
+  };
+}, []);
   //======DATA LOADING SECTION======//
   // Load students data
   const loadStudentsDataForChecklist = async () => {
@@ -434,163 +516,75 @@ const prepareStudentSelection = async () => {
   // Check for recoverable session
   const checkForRecoverableChecklistSession = async () => {
     try {
-      // Check for active session
-      const savedActiveSession = await AsyncStorage.getItem(CHECKLIST_ACTIVE_SESSION_STORAGE_KEY);
-      if (savedActiveSession) {
-        const parsedSession = JSON.parse(savedActiveSession);
-        if (parsedSession && parsedSession.id && parsedSession.scans && parsedSession.isChecklist) {
-          Alert.alert(
-            "Recover Session",
-            `Found an incomplete checklist session at ${parsedSession.location} with ${parsedSession.scans.length} selections. Would you like to recover it?`,
-            [
-              {
-                text: "Yes",
-                onPress: () => recoverChecklistSession(parsedSession)
-              },
-              {
-                text: "No",
-                onPress: () => {
-                  // Clear the active session
-                  clearActiveChecklistSession();
-                  // Also update the session in history to mark it as not in progress
-                  AsyncStorage.getItem('sessions').then(savedSessions => {
-                    if (savedSessions) {
-                      const parsedSessions = JSON.parse(savedSessions);
-                      const sessionIndex = parsedSessions.findIndex(s => s.id === parsedSession.id);
-                      if (sessionIndex !== -1) {
-                        const updatedSessions = [...parsedSessions];
-                        updatedSessions[sessionIndex].inProgress = false;
-                        setSessions(updatedSessions);
-                        AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions))
-                          .then(() => console.log("Session marked as not in progress after recovery declined"))
-                          .catch(error => console.error("Error updating session status:", error));
-                      }
-                    }
-                  }).catch(error => console.error("Error updating session in storage:", error));
-                }
+      // Use the improved recovery service
+      const result = await checkForRecoverableSession(SESSION_TYPE.CHECKLIST);
+      
+      if (result.hasRecoverableSession) {
+        Alert.alert(
+          "Recover Checklist Session",
+          `Found an incomplete checklist session at ${result.session.location} with ${result.session.scans?.length || 0} selections. Would you like to recover it?`,
+          [
+            {
+              text: "Yes",
+              onPress: () => recoverChecklistSession(result.session)
+            },
+            {
+              text: "No",
+              onPress: () => {
+                // Clear the active session
+                clearRecoverableSession(result.session.id, SESSION_TYPE.CHECKLIST)
+                  .catch(error => console.error("Error clearing checklist session:", error));
               }
-            ]
-          );
-          return;
-        }
-      }
-      // Check for in-progress session in history
-      const tempSessionIndex = await AsyncStorage.getItem(TEMP_CHECKLIST_SESSION_INDEX_KEY);
-      if (tempSessionIndex !== null) {
-        const allSessions = await AsyncStorage.getItem('sessions');
-        if (allSessions) {
-          const parsedSessions = JSON.parse(allSessions);
-          const index = parseInt(tempSessionIndex);
-          if (!isNaN(index) && index >= 0 && index < parsedSessions.length) {
-            const tempSession = parsedSessions[index];
-            if (tempSession && tempSession.inProgress && tempSession.isChecklist) {
-              Alert.alert(
-                "Recover Session",
-                `Found an incomplete checklist session at ${tempSession.location} with ${tempSession.scans.length} selections in history. Would you like to recover it?`,
-                [
-                  {
-                    text: "Yes",
-                    onPress: () => recoverChecklistSession(tempSession)
-                  },
-                  {
-                    text: "No",
-                    onPress: () => {
-                      const updatedSessions = [...parsedSessions];
-                      updatedSessions[index].inProgress = false;
-                      setSessions(updatedSessions);
-                      AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions))
-                        .then(() => {
-                          AsyncStorage.removeItem(TEMP_CHECKLIST_SESSION_INDEX_KEY);
-                          console.log("Session marked as not in progress after recovery declined");
-                        })
-                        .catch(error => {
-                          console.error("Error updating session status:", error);
-                        });
-                    }
-                  }
-                ]
-              );
             }
-          }
-        }
+          ]
+        );
       }
     } catch (error) {
-      console.error("Error checking for recoverable session:", error);
-      clearActiveChecklistSession();
+      console.error("Error checking for recoverable checklist session:", error);
     }
   };
-  // Recover checklist session
-const recoverChecklistSession = (session) => {
-  // Set active session
-  setActiveSession(session);
-  // Restore selections
-  const selectedSet = new Set();
-  session.scans.forEach(scan => {
-    selectedSet.add(scan.id);
-  });
-  setSelectedStudents(selectedSet);
-  setSelectionStatus('Session recovered - Ready to select students');
-  // Check if session exists in sessions array
-  AsyncStorage.getItem('sessions').then(savedSessions => {
-    if (savedSessions) {
-      const parsedSessions = JSON.parse(savedSessions);
-      const sessionIndex = parsedSessions.findIndex(s => s.id === session.id);
-      if (sessionIndex === -1) {
-        // Add session to sessions array
-        const updatedSessions = [...parsedSessions, session];
-        setSessions(updatedSessions);
-        AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions));
-        // Store temp index
-        const newIndex = updatedSessions.length - 1;
-        AsyncStorage.setItem(TEMP_CHECKLIST_SESSION_INDEX_KEY, String(newIndex));
-      } else {
-        // Update existing session
-        const updatedSessions = [...parsedSessions];
-        updatedSessions[sessionIndex] = {...session};
-        setSessions(updatedSessions);
-        AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions));
-        AsyncStorage.setItem(TEMP_CHECKLIST_SESSION_INDEX_KEY, String(sessionIndex));
-      }
-    } else {
-      // Create new sessions array
-      const newSessions = [session];
-      setSessions(newSessions);
-      AsyncStorage.setItem('sessions', JSON.stringify(newSessions));
-      AsyncStorage.setItem(TEMP_CHECKLIST_SESSION_INDEX_KEY, '0');
-    }
-  });
-  
-  // Save active session
-  saveActiveChecklistSession(session);
-  
-  // Start auto-save timer
-  startAutoSaveTimer();
-  
-  console.log("Checklist session recovered successfully");
-};
-// Save active session to storage
-const saveActiveChecklistSession = (session = activeSession) => {
-  if (session) {
-    return AsyncStorage.setItem(CHECKLIST_ACTIVE_SESSION_STORAGE_KEY, JSON.stringify(session))
-      .then(() => console.log("Active session saved:", session.id))
-      .catch(error => {
-        console.error("Error saving active session:", error);
-        throw error; // Re-throw so Promise.all can catch it
-      });
-  }
-  return Promise.resolve(); // Return a resolved promise if no session
-};
 
-// Clear active session from storage
-const clearActiveChecklistSession = () => {
-  // Stop auto-save timer
-  stopAutoSaveTimer();
-  
-  AsyncStorage.removeItem(CHECKLIST_ACTIVE_SESSION_STORAGE_KEY)
-    .then(() => AsyncStorage.removeItem(TEMP_CHECKLIST_SESSION_INDEX_KEY))
-    .then(() => console.log("Active session cleared from storage"))
-    .catch(error => console.error("Error clearing active session:", error));
-};
+  // Recover checklist session
+  const recoverChecklistSession = async (session) => {
+    try {
+      // Use the improved recovery service
+      const recoveryResult = await recoverSession(session, SESSION_TYPE.CHECKLIST);
+      
+      if (recoveryResult.success) {
+        // Set active session
+        setActiveSession(session);
+        
+        // Restore selections
+        const selectedSet = new Set();
+        session.scans.forEach(scan => {
+          selectedSet.add(scan.id);
+        });
+        setSelectedStudents(selectedSet);
+        
+        setSelectionStatus('Session recovered - Ready to select students');
+        
+        // Update sessions list
+        const savedSessions = await AsyncStorage.getItem('sessions');
+        if (savedSessions) {
+          setSessions(JSON.parse(savedSessions));
+        }
+        
+        // Start auto-save timer
+        startAutoSaveTimer();
+        
+        console.log("Checklist session recovered successfully");
+      } else {
+        throw new Error(recoveryResult.error || "Failed to recover checklist session");
+      }
+    } catch (error) {
+      console.error("Error recovering checklist session:", error);
+      Alert.alert(
+        "Recovery Error",
+        "Could not recover the checklist session. Please try again.",
+        [{ text: "OK" }]
+      );
+    }
+  };
 
 //====================SESSION CREATION SECTION======//
 // Start a new checklist session
@@ -981,6 +975,31 @@ const performAutoSave = (forceSave = false) => {
       window.saveInProgress = false;
     });
 };
+
+const saveActiveChecklistSession = async (session) => {
+  if (!session) {
+    console.error("Cannot save null or undefined session");
+    return Promise.reject(new Error("Invalid session"));
+  }
+  
+  try {
+    console.log(`Saving active checklist session: ${session.id}`);
+    
+    // Save to AsyncStorage for persistent storage
+    await AsyncStorage.setItem(CHECKLIST_ACTIVE_SESSION_STORAGE_KEY, JSON.stringify(session));
+    
+    // Register with recovery system for crash protection
+    // Note: We use the session type constant defined in the recovery service
+    await recoverSession(session, SESSION_TYPE.CHECKLIST);
+    
+    console.log("Checklist session saved successfully");
+    return Promise.resolve({ success: true });
+  } catch (error) {
+    console.error("Error saving active checklist session:", error);
+    return Promise.reject(error);
+  }
+};
+
 //====================SESSION MANAGEMENT====================//
 // Update session in history
 const updateSessionInHistory = (updatedSession) => {
@@ -1049,65 +1068,57 @@ const endChecklistSession = () => {
     );
   }
 };
+
 // Finalize the checklist session
-const finalizeChecklistSession = () => {
-  // Create a copy of the session for export
-  const sessionToExport = { ...activeSession };
-  
-  // Mark session as completed in history
-  AsyncStorage.getItem('sessions').then(savedSessions => {
-    if (savedSessions) {
-      const parsedSessions = JSON.parse(savedSessions);
-      const sessionIndex = parsedSessions.findIndex(s => s.id === activeSession.id);
-      if (sessionIndex !== -1) {
-        const updatedSessions = [...parsedSessions];
-        updatedSessions[sessionIndex] = {
-          ...updatedSessions[sessionIndex],
-          inProgress: false,
-          backedUp: isOnline // Mark if backed up based on connection status
-        };
-        setSessions(updatedSessions);
-        AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions));
+  const finalizeChecklistSession = async () => {
+    // Create a copy of the session for export
+    const sessionToExport = { ...activeSession };
+    
+    // Mark session as completed in history
+    AsyncStorage.getItem('sessions').then(savedSessions => {
+      if (savedSessions) {
+        const parsedSessions = JSON.parse(savedSessions);
+        const sessionIndex = parsedSessions.findIndex(s => s.id === activeSession.id);
+        if (sessionIndex !== -1) {
+          const updatedSessions = [...parsedSessions];
+          updatedSessions[sessionIndex] = {
+            ...updatedSessions[sessionIndex],
+            inProgress: false,
+            backedUp: isOnline, // Mark if backed up based on connection status
+            sessionType: SESSION_TYPE.CHECKLIST // Explicitly mark session type
+          };
+          setSessions(updatedSessions);
+          AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions));
+        }
       }
+    }).catch(error => {
+      console.error("Error updating session in storage:", error);
+    });
+    
+    // Clear active session from recovery system
+    clearRecoverableSession(activeSession.id, SESSION_TYPE.CHECKLIST)
+      .catch(error => console.error("Error clearing recoverable session:", error));
+    
+    // Clear active session
+    setActiveSession(null);
+    setSelectedStudents(new Set());
+    setSelectionStatus('');
+    
+    // Export session to Excel only if there are scans
+    if (sessionToExport && sessionToExport.scans && sessionToExport.scans.length > 0) {
+      setTimeout(() => {
+        if (!isOnline) {
+          // If offline, queue for backup instead of immediate export
+          queueSessionForBackup(sessionToExport);
+        } else {
+          exportChecklistSession(sessionToExport, true); // Pass true to indicate silent export
+        }
+      }, 500);
     }
-  }).catch(error => {
-    console.error("Error updating session in storage:", error);
-  });
-  
-  // Clear active session
-  setActiveSession(null);
-  setSelectedStudents(new Set());
-  setSelectionStatus('');
-  clearActiveChecklistSession();
-  
-  // Show alert
-  Alert.alert('Success', 'Session ended successfully');
-  
-  // Show alert about offline backup
-  if (!isOnline && activeSession.scans.length > 0) {
-    setTimeout(() => {
-      Alert.alert(
-        "Session Saved Offline",
-        "This session has been saved offline and will be backed up automatically when you're back online.",
-        [{ text: "OK" }]
-      );
-    }, 1500);
-  }
-  
-  console.log("Checklist session ended successfully");
-  
-  // Export session to Excel only if there are scans
-  if (sessionToExport && sessionToExport.scans && sessionToExport.scans.length > 0) {
-    setTimeout(() => {
-      if (!isOnline) {
-        // If offline, queue for backup instead of immediate export
-        queueSessionForBackup(sessionToExport);
-      } else {
-        exportChecklistSession(sessionToExport);
-      }
-    }, 500);
-  }
-};
+    
+    console.log("Checklist session ended successfully");
+  };
+
 //====================DATA SYNC====================//
 const handleSyncData = async () => {
   setcheckliststatus('Syncing student data with server...');
@@ -1195,10 +1206,7 @@ const queueSessionForBackup = async (session) => {
     // Save updated pending backups
     await AsyncStorage.setItem('pendingBackups', JSON.stringify(backupsArray));
     console.log(`Checklist session queued for backup. Total pending: ${backupsArray.length}`);
-    
-    // Display status message about offline backup
-    setSelectionStatus(`Session saved offline. Will be backed up when online.`);
-    
+        
     // Show alert with offline backup information
     Alert.alert(
       "Session Saved Offline",
@@ -1210,9 +1218,10 @@ const queueSessionForBackup = async (session) => {
     Alert.alert("Backup Error", "Failed to queue checklist session for later backup.");
   }
 };
+
 //====================EXPORT SECTION====================//
 // Export checklist session to Excel
-const exportChecklistSession = async (session) => {
+const exportChecklistSession = async (session, silentMode = false) => {
   try {
     console.log("Starting checklist export for session:", session.id);
     const fileName = `Checklist_${session.location.replace(/[^a-z0-9]/gi, '_')}_${formatDateTimeForFile(new Date(session.dateTime))}.xlsx`;
@@ -1266,7 +1275,7 @@ const exportChecklistSession = async (session) => {
     
     // Save to downloads using our fixed function
     console.log("Saving to Downloads folder");
-    const saveResult = await saveToAttendanceRecorder(fileUri, fileName);
+    const saveResult = await saveToAttendanceRecorder(fileUri, fileName, silentMode);
     if (!saveResult.success) {
       console.error("Save to downloads failed:", saveResult.message);
       throw new Error(`Failed to save to Downloads: ${saveResult.message}`);
@@ -1285,7 +1294,7 @@ const exportChecklistSession = async (session) => {
     console.log("Online status for backup:", isOnline);
     
     if (isOnline) {
-      console.log("Online - attempting GitHub backup");
+      console.log("Online - attempting backup");
       try {
         const backupResult = await backupToGitHub([session], false, fileName);
         console.log("Backup result:", backupResult);
@@ -1293,29 +1302,37 @@ const exportChecklistSession = async (session) => {
           console.log("Checklist backed up successfully");
           // Update backup status in UI and storage
           await updateBackupStatus(session.id, true);
+          
+          // Only show a single backup success alert
+          Alert.alert("Backup Successful", "Session backed up to GitHub successfully!");
         } else {
           throw new Error("Backup failed with error: " + (backupResult?.message || "Unknown error"));
         }
       } catch (backupError) {
         console.error("Error during backup:", backupError);
-        // Queue for later backup
-        await queueSessionForBackup(session);
+        // Queue for later backup - and show single consolidated error alert
+        await queueSessionForBackup(session, true); // Added silent flag parameter
+        Alert.alert("Backup Failed", "Unable to backup to GitHub. The session is saved locally and will be backed up when online.");
       }
     } else {
       console.log("Offline - queueing for backup later");
-      // Queue for backup when back online
-      await queueSessionForBackup(session);
+      // Queue for backup when back online with silent flag (to avoid duplicate alerts)
+      await queueSessionForBackup(session, false); // Will show its own alert
     }
     
     console.log("Checklist export completed successfully");
     return { success: true, message: 'Export successful!', filePath: saveResult.uri };
   } catch (error) {
     console.error("Error exporting checklist session:", error);
-    Alert.alert("Export Error", "Failed to export checklist: " + error.message);
+    
+    // Only show alert if not in silent mode
+    if (!silentMode) {
+      Alert.alert("Export Error", "Failed to export checklist: " + error.message);
+    }
     
     // Still try to queue for backup even if export failed
     try {
-      await queueSessionForBackup(session);
+      await queueSessionForBackup(session, silentMode);
     } catch (queueError) {
       console.error("Error queueing for backup:", queueError);
     }
@@ -1323,9 +1340,10 @@ const exportChecklistSession = async (session) => {
     return { success: false, message: `Error exporting file: ${error.message}` };
   }
 };
+
 //====================FILE HANDLING SECTION====================//
 // Save a file to the "Attendance Recorder" directory with multiple fallback options
-const saveToAttendanceRecorder = async (fileUri, fileName) => {
+const saveToAttendanceRecorder = async (fileUri, fileName, silentMode = false) => {
   try {
     console.log(`Starting save operation for: ${fileName} on ${Platform.OS} device`);
     if (Platform.OS === 'android') {
@@ -1333,11 +1351,12 @@ const saveToAttendanceRecorder = async (fileUri, fileName) => {
       const { status } = await MediaLibrary.requestPermissionsAsync();
       console.log(`Permission status: ${status}`);
       if (status !== 'granted') {
-        Alert.alert(
-          "Permission Required",
-          "We need access to your media library to save files. Please enable this permission in your device settings.",
-          [{ text: "OK" }]
-        );
+        if (!silentMode) {
+          Alert.alert(
+            "Permission Required",
+            "We need access to your media library to save files. Please enable this permission in your device settings."
+          );
+        }
         return { success: false, message: "Permission not granted", shareOnly: true };
       }
       // STEP 1: Try direct save to app folder via MediaLibrary
@@ -1359,11 +1378,9 @@ const saveToAttendanceRecorder = async (fileUri, fileName) => {
           album = await MediaLibrary.createAlbumAsync(appFolderName, asset, false);
           console.log(`Created "${appFolderName}" album with asset`);
         }
-        Alert.alert(
-          "Export Successful",
-          `File saved to "${appFolderName}" folder as "${fileName}"`,
-          [{ text: "OK" }]
-        );
+        
+        // No export success alert - removed as requested
+        
         return { success: true, message: `File saved successfully`, uri: asset.uri };
       } catch (directSaveError) {
         console.error("Direct save method failed:", directSaveError);
@@ -1381,43 +1398,46 @@ const saveToAttendanceRecorder = async (fileUri, fileName) => {
             to: tempFileUri
           });
           // Now use document picker with SAF
-          Alert.alert(
-            "Save Location",
-            "Please select a folder where you'd like to save this file.",
-            [
-              {
-                text: "OK",
-                onPress: async () => {
-                  try {
-                    // We'll use sharing with action "SEND" which uses SAF internally
-                    await Sharing.shareAsync(tempFileUri, {
-                      mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                      dialogTitle: 'Save Excel File',
-                      UTI: 'com.microsoft.excel.xlsx'
-                    });
-                  } catch (shareError) {
-                    console.error("SAF sharing error:", shareError);
-                    // If this fails, we'll continue to the file sharing fallback
+          if (!silentMode) {
+            Alert.alert(
+              "Save Location",
+              "Please select a folder where you'd like to save this file.",
+              [
+                {
+                  text: "OK",
+                  onPress: async () => {
+                    try {
+                      // We'll use sharing with action "SEND" which uses SAF internally
+                      await Sharing.shareAsync(tempFileUri, {
+                        mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                        dialogTitle: 'Save Excel File',
+                        UTI: 'com.microsoft.excel.xlsx'
+                      });
+                    } catch (shareError) {
+                      console.error("SAF sharing error:", shareError);
+                      // If this fails, we'll continue to the file sharing fallback
+                    }
                   }
                 }
-              }
-            ]
-          );
+              ]
+            );
+          }
           return { success: true, message: "File available via Storage Access Framework", uri: tempFileUri, shareOnly: false };
         } catch (safError) {
           console.error("Storage Access Framework method failed:", safError);
           // STEP 3: Fall back to file sharing as last resort
           console.log('Falling back to sharing mechanism...');
-          Alert.alert(
-            "Storage Access Limited",
-            "Could not save file directly. Please use the Share screen to save the file to your preferred location.",
-            [{ text: "OK" }]
-          );
+          if (!silentMode) {
+            Alert.alert(
+              "Storage Access Limited",
+              "Could not save file directly. Please use the Share screen to save the file to your preferred location."
+            );
+          }
           return { success: true, message: "File available for sharing", uri: fileUri, shareOnly: true };
         }
       }
     } else if (Platform.OS === 'ios') {
-      // iOS code remains the same
+      // iOS code
       const documentDir = FileSystem.documentDirectory;
       const newFileUri = `${documentDir}${fileName}`;
       await FileSystem.copyAsync({
@@ -1425,11 +1445,9 @@ const saveToAttendanceRecorder = async (fileUri, fileName) => {
         to: newFileUri
       });
       console.log("File saved to documents:", newFileUri);
-      Alert.alert(
-        "Export Successful",
-        `File saved. Use the Share button to send it to another app or save it to Files.`,
-        [{ text: "OK" }]
-      );
+      
+      // No export success alert - removed as requested
+      
       return { success: true, message: `File saved to app documents`, uri: newFileUri };
     }
     // If all else fails
@@ -1440,6 +1458,7 @@ const saveToAttendanceRecorder = async (fileUri, fileName) => {
     return { success: false, message: `Error: ${error.message}`, shareOnly: true };
   }
 };
+
 //====================UTILITY FUNCTIONS====================//
 // Helper functions for date/time formatting
 const formatDateTime = (date) => {
@@ -1711,7 +1730,7 @@ return (
                       styles.studentSelectLabel,
                       isSelected ? styles.studentLabelSelected : styles.studentLabelNotSelected
                     ]}>
-                      {`${studentId} (${studentYear}, Group ${studentGroup})`}
+                      {`${studentId} (Y: ${studentYear}, G: ${studentGroup})`}
                     </Text>
                   </TouchableOpacity>
                 );
@@ -2126,13 +2145,14 @@ const styles = StyleSheet.create({
     margin: 20,
     padding: 20,
     borderRadius: 8,
-    maxHeight: '80%',
+    maxHeight: '100%',
     width: '90%',
     alignSelf: 'center',
   },
   studentModalList: {
     marginTop: 10,
     maxHeight: 400,
+    height: '100%',
     backgroundColor: '#ffffff',
     borderWidth: 1,
     borderColor: '#e0e0e0',

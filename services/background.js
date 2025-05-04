@@ -1,8 +1,9 @@
-import * as BackgroundFetch from 'expo-background-fetch';
+import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import { processPendingBackups } from './backup';
+import { Platform } from 'react-native';
 
 // Define the background task name
 const BACKGROUND_SYNC_TASK = 'background-sync-task';
@@ -16,7 +17,7 @@ TaskManager.defineTask(BACKGROUND_SYNC_TASK, async () => {
     const pendingBackups = JSON.parse(await AsyncStorage.getItem('pendingBackups') || '[]');
     if (pendingBackups.length === 0) {
       console.log('[Background Sync] No pending backups, skipping sync');
-      return BackgroundFetch.BackgroundFetchResult.NoData;
+      return BackgroundTask.Result.NoData;
     }
     
     // Check network status
@@ -27,7 +28,7 @@ TaskManager.defineTask(BACKGROUND_SYNC_TASK, async () => {
     
     if (!isConnected) {
       console.log('[Background Sync] Device is offline, skipping sync');
-      return BackgroundFetch.BackgroundFetchResult.NoData;
+      return BackgroundTask.Result.NoData;
     }
     
     // Process pending backups
@@ -38,14 +39,14 @@ TaskManager.defineTask(BACKGROUND_SYNC_TASK, async () => {
     await AsyncStorage.setItem('lastBackgroundSyncTime', new Date().toISOString());
     
     console.log('[Background Sync] Task completed:', result);
-    return BackgroundFetch.BackgroundFetchResult.NewData;
+    return BackgroundTask.Result.Success;
   } catch (error) {
     console.error('[Background Sync] Task error:', error);
-    return BackgroundFetch.BackgroundFetchResult.Failed;
+    return BackgroundTask.Result.Failed;
   }
 });
 
-// Register the background fetch task
+// Register the background task
 export const registerBackgroundSync = async () => {
   try {
     // First check if there are any pending backups
@@ -56,17 +57,19 @@ export const registerBackgroundSync = async () => {
     
     // Only register background task if there are pending backups
     if (pendingBackups.length > 0) {
-      // Register with more aggressive settings - 5 minutes instead of 15
-      const status = await BackgroundFetch.registerTaskAsync(BACKGROUND_SYNC_TASK, {
-        minimumInterval: 5 * 60, // 5 minutes in seconds (may be throttled by OS)
-        stopOnTerminate: false,   // Keep running after app is closed
-        startOnBoot: true,        // Start after device reboot
-      });
+      // Register the background task with a 5-minute interval
+      const options = {
+        minimumInterval: 5 * 60, // 5 minutes in seconds
+        stopOnTerminate: false,  // Keep running after app is closed
+        startOnBoot: true        // Start after device reboot
+      };
+      
+      const status = await BackgroundTask.registerTaskAsync(BACKGROUND_SYNC_TASK, options);
       
       console.log('[Background Sync] Task registered with status:', status);
       
-      // Force more frequent checks (might be limited by OS)
-      BackgroundFetch.setMinimumIntervalAsync(5 * 60); // 5 minutes
+      // Set the minimum interval to 5 minutes
+      await BackgroundTask.setMinimumIntervalAsync(5 * 60);
       
       // Test that the task is registered
       const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_SYNC_TASK);
@@ -87,7 +90,7 @@ export const registerBackgroundSync = async () => {
 export const unregisterBackgroundSync = async () => {
   try {
     if (await TaskManager.isTaskRegisteredAsync(BACKGROUND_SYNC_TASK)) {
-      await BackgroundFetch.unregisterTaskAsync(BACKGROUND_SYNC_TASK);
+      await BackgroundTask.unregisterTaskAsync(BACKGROUND_SYNC_TASK);
       console.log('[Background Sync] Task unregistered');
     }
   } catch (error) {

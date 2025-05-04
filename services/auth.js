@@ -2,6 +2,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as FileSystem from 'expo-file-system';
 import { loadCredentials, getCredentialPaths } from './loadcredentials';
+import { Platform } from 'react-native';
 
 // Storage keys
 const AUTH_STATUS_KEY = 'qrScannerAuthStatus';

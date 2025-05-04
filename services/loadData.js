@@ -1,6 +1,7 @@
 // services/loadData.js
 import * as FileSystem from 'expo-file-system';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Platform } from 'react-native';
 
 // Storage keys
 const STUDENTS_DATA_KEY = 'studentsData';

@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, Linking } from 'react-native';
 import { Text, Surface, Title, Subheading, List, Divider } from 'react-native-paper';
+import { Platform } from 'react-native';
 
 const AboutScreen = () => {
   const openUserGuide = () => {
@@ -24,74 +25,69 @@ const AboutScreen = () => {
           
           <Divider style={styles.divider} />
           
-<View style={styles.section}>
-  <Subheading style={styles.sectionTitle}>Special Thanks</Subheading>
-  <Text style={styles.paragraph}>
-    This project would not have been possible without the support and contributions of:
-  </Text>
-  <View style={styles.listContainer}>
-    <List.Item
-      title={
-        <Text>
-          <Text style={{fontWeight: 'bold'}}>Dr. Ahmad Samir</Text> who encouraged me to start working on this project
-        </Text>
-      }
-      left={props => <List.Icon {...props} icon="heart" color="#24325f" />}
-      titleStyle={[styles.listItemTitle, {flexShrink: 1}]}
-      titleNumberOfLines={3}
-    />
-    <List.Item
-      title={
-        <Text>
-          <Text style={{fontWeight: 'bold'}}>Dr. Amani Helmi</Text> who sponsored this project till it was launched successfully
-        </Text>
-      }
-      left={props => <List.Icon {...props} icon="heart" color="#24325f" />}
-      titleStyle={[styles.listItemTitle, {flexShrink: 1}]}
-      titleNumberOfLines={3}
-    />
-    <List.Item
-      title={
-        <Text>
-          <Text style={{fontWeight: 'bold'}}>Dr. Gehan Adel</Text> who supported me every step on the way
-        </Text>
-      }
-      left={props => <List.Icon {...props} icon="heart" color="#24325f" />}
-      titleStyle={[styles.listItemTitle, {flexShrink: 1}]}
-      titleNumberOfLines={3}
-    />
-    <List.Item
-      title={
-        <Text>
-          <Text style={{fontWeight: 'bold'}}>Dr. Doaa Mohammad Abu Bakr</Text> who was the catalyst to this project's success
-        </Text>
-      }
-      left={props => <List.Icon {...props} icon="heart" color="#24325f" />}
-      titleStyle={[styles.listItemTitle, {flexShrink: 1}]}
-      titleNumberOfLines={3}
-    />
-    <List.Item
-      title={
-        <Text>
-          <Text style={{fontWeight: 'bold'}}>Dr. Taqwa Mohammad Abd Al-Salam</Text> who aided me with her efforts in implementing the project
-        </Text>
-      }
-      left={props => <List.Icon {...props} icon="heart" color="#24325f" />}
-      titleStyle={[styles.listItemTitle, {flexShrink: 1}]}
-      titleNumberOfLines={3}
-    />
-    <List.Item
-      title={
-        <Text>
-          <Text style={{fontWeight: 'bold'}}>Dr. Mazin Helmy</Text> my companion and friend who never got tired of me
-        </Text>
-      }
-      left={props => <List.Icon {...props} icon="heart" color="#24325f" />}
-      titleStyle={[styles.listItemTitle, {flexShrink: 1}]}
-      titleNumberOfLines={3}
-    />
-  </View>
-</View>          
+          <View style={styles.section}>
+            <Subheading style={styles.sectionTitle}>Special Thanks</Subheading>
+            <Text style={styles.paragraph}>
+              This project would not have been possible without the support and contributions of:
+            </Text>
+            <View style={styles.listContainer}>
+              <List.Item
+                title={
+                  <Text style={styles.listItemText}>
+                    <Text style={[styles.boldText, { color: '#24325f' }]}>Dr. Ahmad Samir</Text> who encouraged me to start working on this project
+                  </Text>
+                }
+                left={props => <List.Icon {...props} icon="compass" color="#24325f" />}
+                titleNumberOfLines={3}
+              />
+              <List.Item
+                title={
+                  <Text style={styles.listItemText}>
+                    <Text style={[styles.boldText, { color: '#24325f' }]}>Dr. Amani Helmi</Text> for sponsoring this project and for being the reason behind its success
+                  </Text>
+                }
+                left={props => <List.Icon {...props} icon="diamond-stone" color="#24325f" />}
+                titleNumberOfLines={3}
+              />
+              <List.Item
+                title={
+                  <Text style={styles.listItemText}>
+                    <Text style={[styles.boldText, { color: '#24325f' }]}>Dr. Gehan Adel</Text> for supporting me every step on the way
+                  </Text>
+                }
+                left={props => <List.Icon {...props} icon="shield" color="#24325f" />}
+                titleNumberOfLines={3}
+              />
+              <List.Item
+                title={
+                  <Text style={styles.listItemText}>
+                    <Text style={[styles.boldText, { color: '#24325f' }]}>Dr. Doaa Mohammad Abu Bakr</Text> who was the catalyst to this project's success
+                  </Text>
+                }
+                left={props => <List.Icon {...props} icon="fire" color="#24325f" />}
+                titleNumberOfLines={3}
+              />
+              <List.Item
+                title={
+                  <Text style={styles.listItemText}>
+                    <Text style={[styles.boldText, { color: '#24325f' }]}>Dr. Taqwa Mohammad Abd Al-Salam</Text> for aiding me with her efforts in deployment
+                  </Text>
+                }
+                left={props => <List.Icon {...props} icon="code-braces" color="#24325f" />}
+                titleNumberOfLines={3}
+              />
+              <List.Item
+                title={
+                  <Text style={styles.listItemText}>
+                    <Text style={[styles.boldText, { color: '#24325f' }]}>Dr. Mazin Helmy</Text> my companion and friend who never got tired of me
+                  </Text>
+                }
+                left={props => <List.Icon {...props} icon="emoticon-happy" color="#24325f" />}
+                titleNumberOfLines={3}
+              />
+            </View>
+          </View>          
+          
           <Divider style={styles.divider} />
           
           <View style={styles.section}>
@@ -113,24 +109,24 @@ const AboutScreen = () => {
             <Text style={styles.paragraph}>The application was developed to:</Text>
             <View style={styles.listContainer}>
               <List.Item
-                title="Automate the attendance tracking process"
-                left={props => <List.Icon {...props} icon="check" color="#24325f" />}
+                title="-Automate the attendance tracking process"
                 titleStyle={styles.listItemTitle}
+                titleNumberOfLines={2}
               />
               <List.Item
-                title="Decrease unnecessary workload from staff"
-                left={props => <List.Icon {...props} icon="check" color="#24325f" />}
+                title="-Decrease unnecessary workload from staff"
                 titleStyle={styles.listItemTitle}
+                titleNumberOfLines={2}
               />
               <List.Item
-                title="Provide reliable tracking and data management"
-                left={props => <List.Icon {...props} icon="check" color="#24325f" />}
+                title="-Provide reliable tracking and data management"
                 titleStyle={styles.listItemTitle}
+                titleNumberOfLines={2}
               />
               <List.Item
-                title="Enable flexible student selection methods"
-                left={props => <List.Icon {...props} icon="check" color="#24325f" />}
+                title="-Enable flexible student selection methods"
                 titleStyle={styles.listItemTitle}
+                titleNumberOfLines={2}
               />
             </View>
           </View>
@@ -144,24 +140,24 @@ const AboutScreen = () => {
             </Text>
             <View style={styles.listContainer}>
               <List.Item
-                title="Work offline once installed"
-                left={props => <List.Icon {...props} icon="check" color="#24325f" />}
+                title="-Work offline once installed"
                 titleStyle={styles.listItemTitle}
+                titleNumberOfLines={2}
               />
               <List.Item
-                title="Be installed on mobile devices"
-                left={props => <List.Icon {...props} icon="check" color="#24325f" />}
+                title="-Be installed on mobile devices"
                 titleStyle={styles.listItemTitle}
+                titleNumberOfLines={2}
               />
               <List.Item
-                title="Provide a native app-like experience"
-                left={props => <List.Icon {...props} icon="check" color="#24325f" />}
+                title="-Provide a native app-like experience"
                 titleStyle={styles.listItemTitle}
+                titleNumberOfLines={2}
               />
               <List.Item
-                title="Synchronize data when connectivity is restored"
-                left={props => <List.Icon {...props} icon="check" color="#24325f" />}
+                title="-Synchronize data when connectivity is restored"
                 titleStyle={styles.listItemTitle}
+                titleNumberOfLines={2}
               />
             </View>
           </View>
@@ -190,21 +186,15 @@ const AboutScreen = () => {
             <Text style={[styles.instructionTitle, styles.boldText]}>Scanner Mode:</Text>
             <View style={styles.orderedList}>
               <View style={styles.orderedItem}>
-                <Text style={styles.orderedNumber}>1.</Text>
-                <Text style={styles.orderedText}>
-                  Start a new scanning session and specify the location
+                <Text style={styles.orderedText}>1. Start a new scanning session and specify the location
                 </Text>
               </View>
               <View style={styles.orderedItem}>
-                <Text style={styles.orderedNumber}>2.</Text>
-                <Text style={styles.orderedText}>
-                  Scan student QR codes or add entries manually
+                <Text style={styles.orderedText}>2. Scan student QR codes or add entries manually
                 </Text>
               </View>
               <View style={styles.orderedItem}>
-                <Text style={styles.orderedNumber}>3.</Text>
-                <Text style={styles.orderedText}>
-                  End the session when complete
+                <Text style={styles.orderedText}>3. End the session when complete
                 </Text>
               </View>
             </View>
@@ -212,33 +202,22 @@ const AboutScreen = () => {
             <Text style={[styles.instructionTitle, styles.boldText, styles.topMargin]}>Selector Mode:</Text>
             <View style={styles.orderedList}>
               <View style={styles.orderedItem}>
-                <Text style={styles.orderedNumber}>1.</Text>
-                <Text style={styles.orderedText}>
-                  Start a new session and specify the location
+                <Text style={styles.orderedText}>1. Start a new session and specify the location
                 </Text>
               </View>
               <View style={styles.orderedItem}>
-                <Text style={styles.orderedNumber}>2.</Text>
-                <Text style={styles.orderedText}>
-                  Filter students by year/group and select from the list
+                <Text style={styles.orderedText}>2. Filter students by year/group and select from the list
                 </Text>
               </View>
               <View style={styles.orderedItem}>
-                <Text style={styles.orderedNumber}>3.</Text>
-                <Text style={styles.orderedText}>
-                  Use the search function to quickly find specific students
+                <Text style={styles.orderedText}>3. se the search function to quickly find specific students
                 </Text>
               </View>
               <View style={styles.orderedItem}>
-                <Text style={styles.orderedNumber}>4.</Text>
-                <Text style={styles.orderedText}>
-                  Add custom entries for special cases
-                </Text>
+                <Text style={styles.orderedText}>4. Add custom entries for special cases</Text>
               </View>
               <View style={styles.orderedItem}>
-                <Text style={styles.orderedNumber}>5.</Text>
-                <Text style={styles.orderedText}>
-                  End the session when complete
+                <Text style={styles.orderedText}>5. End the session when complete
                 </Text>
               </View>
             </View>
@@ -246,19 +225,19 @@ const AboutScreen = () => {
             <Text style={[styles.instructionTitle, styles.boldText, styles.topMargin]}>For Both Modes:</Text>
             <View style={styles.listContainer}>
               <List.Item
-                title="Review past sessions in the History tab"
-                left={props => <List.Icon {...props} icon="check" color="#24325f" />}
+                title="-Review past sessions in the History tab"
                 titleStyle={styles.listItemTitle}
+                titleNumberOfLines={2}
               />
               <List.Item
-                title="Backup your data regularly from the Backup tab"
-                left={props => <List.Icon {...props} icon="check" color="#24325f" />}
+                title="-Backup your data regularly from the Backup tab"
                 titleStyle={styles.listItemTitle}
+                titleNumberOfLines={2}
               />
               <List.Item
-                title="Export data as needed for record keeping"
-                left={props => <List.Icon {...props} icon="check" color="#24325f" />}
+                title="-Export data as needed for record keeping"
                 titleStyle={styles.listItemTitle}
+                titleNumberOfLines={2}
               />
             </View>
             
@@ -321,6 +300,13 @@ const styles = StyleSheet.create({
   listItemTitle: {
     fontSize: 14,
     color: '#333',
+    flexWrap: 'wrap',
+    flex: 1,
+  },
+  listItemText: {
+    fontSize: 14,
+    color: '#333',
+    flexWrap: 'wrap',
   },
   featureTitle: {
     fontSize: 15,
@@ -332,6 +318,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#333',
     marginLeft: 8,
+    flexWrap: 'wrap',
   },
   boldText: {
     fontWeight: 'bold',
@@ -362,6 +349,7 @@ const styles = StyleSheet.create({
   orderedText: {
     flex: 1,
     color: '#333',
+    flexWrap: 'wrap',
   },
   linkText: {
     color: '#24325f', // Matches --primary-color

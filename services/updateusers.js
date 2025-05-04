@@ -1,6 +1,7 @@
 import * as FileSystem from 'expo-file-system';
 import { Alert } from 'react-native';
 import { encodeBase64, decodeBase64 } from './base64utils';
+import { Platform } from 'react-native';
 
 // GitHub configuration - import from backup service
 const DEFAULT_GITHUB_OWNER = 'MohammadHamdi11';
