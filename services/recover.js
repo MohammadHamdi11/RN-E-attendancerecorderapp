@@ -194,8 +194,62 @@ const markSessionAsPrompted = async (sessionId) => {
     
     // Save back to storage
     await AsyncStorage.setItem(RECOVERY_PROMPTED_KEY, JSON.stringify(promptedSessions));
+    console.log(`Session ${sessionId} marked as prompted at ${new Date(currentTime).toISOString()}`);
+    
+    // Also explicitly mark as not in progress in the sessions list
+    try {
+      const { updateSessionStatus } = require('./database');
+      await updateSessionStatus(sessionId, false);
+    } catch (e) {
+      console.warn("Could not update session status in database:", e);
+    }
   } catch (error) {
     console.error("Error marking session as prompted:", error);
+  }
+};
+
+// Add a dedicated function to handle session completion in the recovery system
+export const completeSession = async (sessionId, sessionType) => {
+  try {
+    console.log(`Completing session ${sessionId} of type ${sessionType}`);
+    
+    // Step 1: Use clearRecoverableSession to handle storage cleanup
+    const clearResult = await clearRecoverableSession(sessionId, sessionType);
+    
+    if (!clearResult.success) {
+      throw new Error(clearResult.error || "Failed to clear recoverable session");
+    }
+    
+    // Step 2: Ensure the session is marked as completed in the database
+    try {
+      const { updateSessionStatus } = require('./database');
+      await updateSessionStatus(sessionId, false);
+    } catch (dbError) {
+      console.warn("Error updating session in database, but continuing:", dbError);
+    }
+    
+    // Step 3: Remove from active session keys
+    const storageKey = (sessionType === SESSION_TYPE.SCANNER) 
+      ? SCANNER_ACTIVE_SESSION_STORAGE_KEY 
+      : CHECKLIST_ACTIVE_SESSION_STORAGE_KEY;
+      
+    await AsyncStorage.removeItem(storageKey);
+    
+    // Step 4: Clear any temp session indices
+    const indexKey = (sessionType === SESSION_TYPE.SCANNER)
+      ? TEMP_SCANNER_SESSION_INDEX_KEY
+      : TEMP_CHECKLIST_SESSION_INDEX_KEY;
+      
+    await AsyncStorage.removeItem(indexKey);
+    
+    console.log(`Session ${sessionId} successfully completed`);
+    return { success: true };
+  } catch (error) {
+    console.error(`Error completing session ${sessionId}:`, error);
+    return {
+      success: false,
+      error: error.message || "Failed to complete session"
+    };
   }
 };
 
@@ -236,35 +290,63 @@ export const clearRecoverableSession = async (sessionId, sessionType) => {
       throw new Error("Session ID is required");
     }
     
+    console.log(`Clearing recoverable session ${sessionId} of type ${sessionType}`);
+    
     // Clear any existing timer for this session
     clearSessionRecoveryTimer(sessionId);
     
+    // Update sessions in AsyncStorage
     const sessions = await loadSessionsFromStorage();
+    let updated = false;
     
-    // Find the session
-    const sessionIndex = sessions.findIndex(s => s.id === sessionId);
-    
-    if (sessionIndex !== -1) {
-      // Mark as not in progress
-      sessions[sessionIndex].inProgress = false;
+    // Find and update the session
+    if (sessions && sessions.length > 0) {
+      const sessionIndex = sessions.findIndex(s => s.id === sessionId);
       
-      // Save updated sessions
-      await saveSessionsToStorage(sessions);
+      if (sessionIndex !== -1) {
+        // Mark as not in progress
+        sessions[sessionIndex].inProgress = false;
+        updated = true;
+        
+        // Save updated sessions
+        await saveSessionsToStorage(sessions);
+        console.log(`Session ${sessionId} marked as not in progress in AsyncStorage`);
+      }
     }
     
-    // Clear from active session storage for the relevant type
+    // Try to update in the database as well
+    try {
+      // Import these functions if needed
+      // const { db } = require('./database');
+      
+      await db.runAsync(
+        'UPDATE sessions SET inProgress = 0 WHERE id = ?',
+        [sessionId]
+      );
+      console.log(`Session ${sessionId} marked as not in progress in SQLite`);
+    } catch (dbError) {
+      console.warn(`Could not update session ${sessionId} in SQLite:`, dbError);
+      // Continue despite SQLite error
+    }
+    
+    // Clear from active session storage for the relevant type - ALWAYS do this
     if (sessionType === SESSION_TYPE.SCANNER) {
       await AsyncStorage.removeItem(SCANNER_ACTIVE_SESSION_STORAGE_KEY);
       await AsyncStorage.removeItem(TEMP_SCANNER_SESSION_INDEX_KEY);
+      console.log(`Removed scanner session ${sessionId} from recovery storage`);
     } else if (sessionType === SESSION_TYPE.CHECKLIST) {
       await AsyncStorage.removeItem(CHECKLIST_ACTIVE_SESSION_STORAGE_KEY);
       await AsyncStorage.removeItem(TEMP_CHECKLIST_SESSION_INDEX_KEY);
+      console.log(`Removed checklist session ${sessionId} from recovery storage`);
     }
     
     // Mark as prompted to prevent any further prompts
     await markSessionAsPrompted(sessionId);
     
-    return { success: true };
+    return { 
+      success: true, 
+      updated: updated
+    };
   } catch (error) {
     console.error("Error clearing recoverable session:", error);
     return { 
