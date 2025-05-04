@@ -983,13 +983,12 @@ const exportScannerSession = async (session, silentMode = false) => {
     const fileName = `Scanner_${session.location.replace(/[^a-z0-9]/gi, '_')}_${formatDateTimeForFile(new Date(session.dateTime))}.xlsx`;
     // Prepare data
     const data = [
-      ['Number', 'Content', 'Location', 'Log Date', 'Log Time', 'Type']
+      ['Student ID', 'Location', 'Log Date', 'Log Time', 'Type']
     ];
     // Add scans with row numbers
     session.scans.forEach((scan, index) => {
       const scanDate = new Date(scan.timestamp);
       data.push([
-        index + 1,                   // Row number
         scan.content,                // Scanned content
         session.location,            // Location
         formatDate(scanDate),        // Log Date

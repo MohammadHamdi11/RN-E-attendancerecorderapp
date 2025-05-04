@@ -1228,14 +1228,13 @@ const exportChecklistSession = async (session, silentMode = false) => {
     
     // Prepare data
     const data = [
-      ['Number', 'Student ID', 'Location', 'Log Date', 'Log Time', 'Type']
+      ['Student ID', 'Location', 'Log Date', 'Log Time', 'Type']
     ];
     
     // Add scans with row numbers
     session.scans.forEach((scan, index) => {
       const scanDate = new Date(scan.time || scan.timestamp);
       data.push([
-        index + 1,            // Row number
         scan.content,         // Student ID
         session.location,     // Location
         formatDate(scanDate), // Log Date
