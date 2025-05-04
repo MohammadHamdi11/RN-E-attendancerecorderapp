@@ -11,14 +11,22 @@ export const SESSION_TYPE = {
   CHECKLIST: 'checklist'
 };
 
+// Session status constants
+export const SESSION_STATUS = {
+  IN_PROGRESS: 'in_progress',
+  CLOSED_NORMALLY: 'closed_normally',
+  INTERRUPTED: 'interrupted'
+};
+
 // Storage keys
 const SCANNER_ACTIVE_SESSION_STORAGE_KEY = 'activeScannerSession';
 const CHECKLIST_ACTIVE_SESSION_STORAGE_KEY = 'activeChecklistSession';
 const TEMP_SCANNER_SESSION_INDEX_KEY = 'tempScannerSessionIndex';
 const TEMP_CHECKLIST_SESSION_INDEX_KEY = 'tempChecklistSessionIndex';
 const RECOVERY_PROMPTED_KEY = 'recoveryPrompted';
+const CLOSED_SESSIONS_KEY = 'closedSessions';
 
-// Recover an interrupted session
+// Track a session in the recovery system
 export const recoverSession = async (session, sessionType) => {
   try {
     if (!session || !sessionType) {
@@ -34,6 +42,7 @@ export const recoverSession = async (session, sessionType) => {
     // Mark the session as in progress and set its type
     session.inProgress = true;
     session.sessionType = sessionType;
+    session.recoveryStatus = SESSION_STATUS.IN_PROGRESS;
     
     if (sessionIndex !== -1) {
       // Update existing session
@@ -69,12 +78,74 @@ export const recoverSession = async (session, sessionType) => {
   }
 };
 
+// Mark a session as normally closed
+export const markSessionAsNormallyClosed = async (sessionId, sessionType) => {
+  try {
+    if (!sessionId) {
+      throw new Error("Session ID is required");
+    }
+
+    // Get the list of closed sessions
+    const closedSessionsStr = await AsyncStorage.getItem(CLOSED_SESSIONS_KEY);
+    const closedSessions = closedSessionsStr ? JSON.parse(closedSessionsStr) : [];
+    
+    // Add this session to the closed sessions list if not already there
+    if (!closedSessions.includes(sessionId)) {
+      closedSessions.push(sessionId);
+      
+      // Maintain list at a reasonable size (keep last 100 sessions)
+      if (closedSessions.length > 100) {
+        closedSessions.shift(); // Remove oldest
+      }
+      
+      await AsyncStorage.setItem(CLOSED_SESSIONS_KEY, JSON.stringify(closedSessions));
+    }
+    
+    // Also clear from active session storage
+    if (sessionType === SESSION_TYPE.SCANNER) {
+      await AsyncStorage.removeItem(SCANNER_ACTIVE_SESSION_STORAGE_KEY);
+      await AsyncStorage.removeItem(TEMP_SCANNER_SESSION_INDEX_KEY);
+    } else if (sessionType === SESSION_TYPE.CHECKLIST) {
+      await AsyncStorage.removeItem(CHECKLIST_ACTIVE_SESSION_STORAGE_KEY);
+      await AsyncStorage.removeItem(TEMP_CHECKLIST_SESSION_INDEX_KEY);
+    }
+    
+    // Update the session status in the sessions list
+    const sessions = await loadSessionsFromStorage();
+    const sessionIndex = sessions.findIndex(s => s.id === sessionId);
+    
+    if (sessionIndex !== -1) {
+      sessions[sessionIndex].inProgress = false;
+      sessions[sessionIndex].recoveryStatus = SESSION_STATUS.CLOSED_NORMALLY;
+      await saveSessionsToStorage(sessions);
+    }
+    
+    // Also mark as prompted to prevent recovery prompts
+    await markSessionAsPrompted(sessionId);
+    
+    // Clear any recovery timer
+    clearSessionRecoveryTimer(sessionId);
+    
+    return { success: true };
+  } catch (error) {
+    console.error("Error marking session as normally closed:", error);
+    return { 
+      success: false, 
+      error: error.message || "Failed to mark session as closed" 
+    };
+  }
+};
+
 // Check for recoverable sessions of a specific type
 export const checkForRecoverableSession = async (sessionType) => {
   try {
     if (!sessionType) {
       throw new Error("Session type is required");
     }
+
+    // Get list of normally closed sessions
+    const closedSessionsStr = await AsyncStorage.getItem(CLOSED_SESSIONS_KEY);
+    const closedSessions = closedSessionsStr ? JSON.parse(closedSessionsStr) : [];
 
     // Check if we've already prompted for recovery in this app session
     const alreadyPrompted = await AsyncStorage.getItem(RECOVERY_PROMPTED_KEY);
@@ -110,6 +181,12 @@ export const checkForRecoverableSession = async (sessionType) => {
     if (savedSession) {
       const parsedSession = JSON.parse(savedSession);
       
+      // Skip if session was closed normally
+      if (closedSessions.includes(parsedSession.id)) {
+        console.log(`Session ${parsedSession.id} was closed normally, skipping recovery prompt`);
+        return { hasRecoverableSession: false };
+      }
+      
       // Check if we've already prompted for this session
       if (alreadyPrompted) {
         const promptedSessions = JSON.parse(alreadyPrompted);
@@ -139,6 +216,7 @@ export const checkForRecoverableSession = async (sessionType) => {
     // Find any in-progress sessions of the requested type
     const inProgressSessions = sessions.filter(session => 
       session.inProgress && 
+      !closedSessions.includes(session.id) && // Skip closed sessions
       (session.sessionType === sessionType || 
        (sessionType === SESSION_TYPE.CHECKLIST && session.isChecklist) ||
        (sessionType === SESSION_TYPE.SCANNER && !session.isChecklist))
@@ -149,6 +227,12 @@ export const checkForRecoverableSession = async (sessionType) => {
       const mostRecentSession = inProgressSessions.sort((a, b) => 
         new Date(b.dateTime) - new Date(a.dateTime)
       )[0];
+      
+      // Skip if session was closed normally
+      if (closedSessions.includes(mostRecentSession.id)) {
+        console.log(`Session ${mostRecentSession.id} was closed normally, skipping recovery prompt`);
+        return { hasRecoverableSession: false };
+      }
       
       // Check if we've already prompted for this session
       if (alreadyPrompted) {
@@ -247,6 +331,7 @@ export const clearRecoverableSession = async (sessionId, sessionType) => {
     if (sessionIndex !== -1) {
       // Mark as not in progress
       sessions[sessionIndex].inProgress = false;
+      sessions[sessionIndex].recoveryStatus = SESSION_STATUS.INTERRUPTED;
       
       // Save updated sessions
       await saveSessionsToStorage(sessions);
@@ -278,6 +363,10 @@ export const clearRecoverableSession = async (sessionId, sessionType) => {
 export const resetRecoverySystem = async () => {
   try {
     await AsyncStorage.removeItem(RECOVERY_PROMPTED_KEY);
+    
+    // Keep the closed sessions list (don't reset it)
+    // This ensures we don't prompt to recover sessions that were closed normally
+    
     return { success: true };
   } catch (error) {
     console.error("Error resetting recovery system:", error);

@@ -1,3 +1,4 @@
+//======IMPORT SECTION======//
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Alert, ScrollView, Platform } from 'react-native';
 // Use named imports consistently
@@ -30,9 +31,11 @@ import { backupToGitHub, tryAutoBackup, processPendingBackups } from '../service
 import { initDatabase, getAllSessions, saveSession, getDatabase } from '../services/database';
 import { 
   SESSION_TYPE, 
+  SESSION_STATUS,
   checkForRecoverableSession, 
   recoverSession, 
-  clearRecoverableSession, 
+  clearRecoverableSession,
+  markSessionAsNormallyClosed,
   cleanUpRecoveryTimers,
   resetRecoverySystem 
 } from '../services/recover';
@@ -43,7 +46,6 @@ const LAST_BACKUP_TIME_KEY = 'qrScannerLastBackupTime';
 // Storage keys for recovery
 const SCANNER_ACTIVE_SESSION_STORAGE_KEY = 'activeScannerSession';
 const TEMP_SCANNER_SESSION_INDEX_KEY = 'tempScannerSessionIndex';
-
 //======COMPONENT DEFINITION SECTION======//
 const ScannerScreen = ({ isOnline, navigation }) => {
   // State variables
@@ -59,13 +61,10 @@ const ScannerScreen = ({ isOnline, navigation }) => {
   const [sound, setSound] = useState();
   const [sessions, setSessions] = useState([]);
   const [cameraPermission, requestCameraPermission] = useCameraPermissions();
-
-  // Camera-specific state
   const [cameraRef, setCameraRef] = useState(null);
   const [isCameraAvailable, setIsCameraAvailable] = useState(true);
   const [isScanning, setIsScanning] = useState(true); 
-
-  // Location options for the session location dropdown
+  const [connectionMessage, setConnectionMessage] = useState('');
   const locationOptions = [
     "Morgue",
     "Anatomy Lecture Hall",
@@ -86,11 +85,36 @@ const ScannerScreen = ({ isOnline, navigation }) => {
     "Building 'A' Lecture Hall",
     "Building 'B' Lecture Hall"
   ];
-
 //======EFFECT HOOKS SECTION======//
-  // Add a message state to show online/offline status
-  const [connectionMessage, setConnectionMessage] = useState('');
-  
+  //======CONNECTION MONITORING SECTION======//
+  // Debug connection status
+  useEffect(() => {
+    console.log("isOnline prop value:", isOnline);
+    // Test network connection
+    const testConnection = async () => {
+      try {
+        const response = await fetch('https://www.google.com', { 
+          method: 'HEAD',
+          timeout: 3000
+        });
+        const actuallyOnline = (response.status >= 200 && response.status < 300);
+        console.log("Fetch test result:", actuallyOnline ? "Online" : "Offline");
+      } catch (error) {
+        console.log("Fetch test failed:", error.message);
+      }
+    };
+    testConnection();
+  }, [isOnline]);
+const checkOnlineStatus = async () => {
+  try {
+    const netInfo = await NetInfo.fetch();
+    return netInfo.isConnected && netInfo.isInternetReachable;
+  } catch (error) {
+    console.error("Error checking online status:", error);
+    return false;
+  }
+};
+  //======CONNECTION STATUS SECTION======//
   // Update connection message when online status changes
   useEffect(() => {
     if (isOnline) {
@@ -122,82 +146,15 @@ const ScannerScreen = ({ isOnline, navigation }) => {
     } else {
       setConnectionMessage('Offline - Working in local mode');
     }
-  }, [isOnline, activeSession]);
-  
-useEffect(() => {
-  const setupApp = async () => {
-    try {
-      console.log('Setting up scanner module...');
-      
-      // Reset recovery system on app startup
-      await resetRecoverySystem();
-      
-      // Initialize database schema
-      try {
-        await initDatabase();
-        console.log('Database initialized successfully');
-      } catch (initError) {
-        console.error('Database initialization failed:', initError);
-        Alert.alert(
-          'Database Error',
-          'There was a problem setting up the app database. Some features may not work correctly.',
-          [{ text: 'OK' }]
-        );
-        return;
-      }
-      
-      // Load sessions from database - with SESSION_TYPE filter
-      const savedSessions = await getAllSessions();
-      // Filter only scanner sessions
-      const scannerSessions = savedSessions.filter(s => s.sessionType === SESSION_TYPE.SCANNER);
-      setSessions(scannerSessions || []);
-      
-      // IMPORTANT CHANGE: Don't automatically load sessions here
-      // Instead, check for recoverable sessions first and let the user decide
-      
-      // Check for SCANNER-specific recoverable session
-      await checkForRecoverableScannerSession();
-      
-      // Check for pending backups when coming online
-      if (isOnline) {
-        await checkAndProcessPendingBackups();
-      }
-      
-      console.log('Scanner setup complete');
-    } catch (error) {
-      console.error('Error in setupApp:', error);
-      Alert.alert(
-        'Setup Error',
-        'There was a problem setting up the app: ' + error.message,
-        [{ text: 'OK' }]
-      );
-    }
-  };
-  
-  setupApp();
-  
-  // Clean up when component unmounts
-  return () => {
-    // Clean up timers from recovery system
-    cleanUpRecoveryTimers();
-
-    // If there's an active session, save it before unmounting
-    if (activeSession) {
-      recoverSession(activeSession, SESSION_TYPE.SCANNER)
-        .catch(error => console.error("Error saving active session on unmount:", error));
-    }
-  };
-}, []);
+}, [isOnline]); // Only depend on isOnline, not activeSession
 
 // Request camera permission when component mounts
   useEffect(() => {
     const setupCamera = async () => {
       try {
         console.log('Setting up camera...');
-        
         // Request MediaLibrary permissions
         const { status: mediaStatus } = await MediaLibrary.requestPermissionsAsync();
-        
         // Request Camera permissions using the hook
         if (!cameraPermission?.granted) {
           const permissionResult = await requestCameraPermission();
@@ -207,7 +164,6 @@ useEffect(() => {
           console.log('Camera permission already granted');
           setIsCameraAvailable(true);
         }
-        
         // Initialize scanner if we have permission
         if (cameraPermission?.granted) {
           console.log('Camera permission granted, initializing scanner module');
@@ -221,25 +177,85 @@ useEffect(() => {
         setIsCameraAvailable(false);
       }
     };
-    
     setupCamera();
   }, [cameraPermission, requestCameraPermission]);
-
 const handleSetCameraRef = (ref) => {
   if (ref) {
     setCameraRef(ref);
   }
 };
 
-//======FUNCTIONS SECTION======//
 //======INITIALIZATION SECTION======//
+
+useEffect(() => {
+  const initializeScannerModule = async () => {
+    console.log("Initializing checklist module...");
+    try {
+      // Reset recovery system on app startup
+      await resetRecoverySystem();
+
+      // Check for SCANNER-specific recoverable session
+      await checkForRecoverableScannerSession();
+
+      // Check for pending backups when coming online
+      if (isOnline) {
+        await checkAndProcessPendingBackups();
+      }
+
+      // Initialize database schema
+      try {
+        await initDatabase();
+        console.log('Database initialized successfully');
+      } catch (initError) {
+        console.error('Database initialization failed:', initError);
+        Alert.alert(
+          'Database Error',
+          'There was a problem setting up the app database. Some features may not work correctly.',
+          [{ text: 'OK' }]
+        );
+        return;
+      }
+
+      // Load sessions from storage
+      const savedSessions = await AsyncStorage.getItem('sessions');
+      if (savedSessions) {
+        setSessions(JSON.parse(savedSessions));
+      }
+
+
+      console.log("Scanner module initialized successfully");
+    } catch (error) {
+      console.error("Error initializing scanner module:", error);
+    }
+  };
+
+  // Execute initialization
+  initializeScannerModule();
+
+  // Clean up when component unmounts
+  return () => {
+    // If there's an active session, save it before unmounting
+    if (activeSession) {
+      saveActiveScannerSession(activeSession)
+        .catch(error => console.error("Error saving active session on unmount:", error));
+    }
+    
+    // Stop auto-save timer if running
+    if (window.autoSaveTimerId) {
+      clearInterval(window.autoSaveTimerId);
+      window.autoSaveTimerId = null;
+    }
+    
+    // Clean up timers from recovery system
+    cleanUpRecoveryTimers();
+  };
+}, []); 
+
 // Initialize scanner module
   const initializeScannerModule = async () => {
     console.log("Initializing scanner module...");
-    
     // Reset recovery system on app startup
     await resetRecoverySystem();
-    
     // Check for camera permissions status
     if (!cameraPermission?.granted) {
       console.log('Camera permission not granted, requesting...');
@@ -250,16 +266,13 @@ const handleSetCameraRef = (ref) => {
         return;
       }
     }
-    
     // If we have permission, set camera available
     setIsCameraAvailable(true);
-    
     // Load sessions from storage
     const savedSessions = await getAllSessions();
     if (savedSessions) {
       setSessions(savedSessions);
     }
-    
     // Make sure the pendingBackups array exists
     AsyncStorage.getItem('pendingBackups').then(pendingBackups => {
       if (!pendingBackups) {
@@ -268,7 +281,7 @@ const handleSetCameraRef = (ref) => {
       }
     });
   };
-
+//======FUNCTIONS SECTION======//
 //======BACKUP MANAGEMENT SECTION======//
 // Check and process pending backups when coming online
 const checkAndProcessPendingBackups = async () => {
@@ -293,7 +306,6 @@ const checkAndProcessPendingBackups = async () => {
     console.error('Error processing pending backups:', error);
   }
 };
-
 // Queue session for backup when offline
 const queueSessionForBackup = async (session) => {
   try {
@@ -326,155 +338,71 @@ const queueSessionForBackup = async (session) => {
     Alert.alert("Backup Error", "Failed to queue session for later backup.");
   }
 };
-
-//======SESSION CREATION SECTION======//
+//======SESSION MANAGEMENT SECTION======//
+// Start a new scanner session
+const startScannerSession = () => {
+  // Reset location first
+  setLocation('');
+  // Then show the modal
+  setShowSessionModal(true);
+};
 const onLocationSelected = (selectedLocation) => {
   console.log("Selected location:", selectedLocation);
-  
-  // Update location state
+  // First set the location in state
   setLocation(selectedLocation);
-  
-  // Close the modal first
+  // Then close the modal
   setShowSessionModal(false);
-  
-  // Use a clean setTimeout to ensure the modal has closed before starting session
+  // Wait for the state to update before creating the session
   setTimeout(() => {
     if (selectedLocation) {
       console.log("Creating new session with location:", selectedLocation);
-      // Call startSession with the selected location
-      startSession(selectedLocation);
+      createNewScannerSession(selectedLocation);
     } else {
       console.log("No location selected");
     }
-  }, 500);
+  }, 500); // Increased delay to ensure state is updated
 };
-
-// Create a new scanner session with the selected location
+// Create a new canner session with a specific location
 const createNewScannerSession = (sessionLocation) => {
+  console.log("Creating session at location:", sessionLocation);
   if (!sessionLocation || !sessionLocation.trim()) {
     Alert.alert("Error", "Please enter a location");
     return;
   }
-  
+  // Create new session
   const now = new Date();
-  const sessionId = `session_${now.getTime()}`;
+  const sessionId = `scanner_${now.getTime()}`;
   const formattedDateTime = formatDateTime(now);
-  
+  // Store the current filter settings with the session
   const newSession = {
     id: sessionId,
     location: sessionLocation,
     dateTime: now.toISOString(),
     formattedDateTime: formattedDateTime,
     scans: [],
-    inProgress: true
+    inProgress: true,
+    isScanner: true,
   };
-  
   // Set active session
   setActiveSession(newSession);
   setScans([]);
   setScanStatus('Session started - Ready to scan');
-  
-  // Save to AsyncStorage
+  // Add session to sessions array
   AsyncStorage.getItem('sessions').then(savedSessions => {
     const parsedSessions = savedSessions ? JSON.parse(savedSessions) : [];
     const updatedSessions = [...parsedSessions, newSession];
     setSessions(updatedSessions);
     AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions));
-    AsyncStorage.setItem(TEMP_SCANNER_SESSION_INDEX_KEY, String(updatedSessions.length - 1));
+    // Store temp index
+    const index = updatedSessions.length - 1;
+    AsyncStorage.setItem(TEMP_SCANNER_SESSION_INDEX_KEY, String(index));
   });
-  
-  // Save for recovery
+  // Save active session
   saveActiveScannerSession(newSession);
-  
+  // Start auto-save timer
+  startAutoSaveTimer();
   console.log("New scanner session created:", sessionId);
 };
-
-//======SESSION MANAGEMENT SECTION======//
-// Mark session as completed
-const markSessionAsCompleted = async (sessionId) => {
-  try {
-    // Get the sessions
-    const savedSessions = await getAllSessions();
-    if (savedSessions) {
-      const sessionIndex = savedSessions.findIndex(s => s.id === sessionId);
-      if (sessionIndex !== -1) {
-        // Update session status
-        const updatedSession = {
-          ...savedSessions[sessionIndex],
-          inProgress: false
-        };
-        // Save updated session
-        await saveSession(updatedSession);
-        // Update sessions state
-        const updatedSessions = [...savedSessions];
-        updatedSessions[sessionIndex] = updatedSession;
-        setSessions(updatedSessions);
-        console.log(`Session ${sessionId} marked as completed`);
-      }
-    }
-    // Clear recovery data
-    await AsyncStorage.removeItem(TEMP_SCANNER_SESSION_INDEX_KEY);
-  } catch (error) {
-    console.error("Error marking session as completed:", error);
-  }
-};
-
-// Start new session
-const startSession = async (selectedLocation) => {
-  try {
-    const finalLocation = selectedLocation || location;
-    
-    if (!finalLocation.trim()) {
-      Alert.alert('Error', 'Please enter a location');
-      return;
-    }
-
-    const now = new Date();
-    const sessionId = `session_${now.getTime()}`;
-    const formattedDateTime = formatDateTime(now);
-    
-    // Create a properly structured session object with empty scans array
-    const newSession = {
-      id: sessionId,
-      location: finalLocation,
-      dateTime: now.toISOString(),
-      formattedDateTime: formattedDateTime,
-      scans: [],
-      inProgress: true,
-      sessionType: SESSION_TYPE.SCANNER // Explicitly mark session type
-    };
-    
-    // First save session to database to ensure it's properly stored
-    await saveSession(newSession);
-    
-    // Update state - important: set direct values, not functions
-    setActiveSession(newSession);
-    setScans([]);
-    setScanStatus('Session started - Ready to scan');
-    
-    // Get updated sessions list - ONLY scanner sessions
-    const updatedSessions = await getAllSessions();
-    if (updatedSessions) {
-      // Filter only scanner sessions
-      const scannerSessions = updatedSessions.filter(s => s.sessionType === SESSION_TYPE.SCANNER);
-      setSessions(scannerSessions);
-    }
-    
-    // Save session in recovery system
-    await recoverSession(newSession, SESSION_TYPE.SCANNER);
-    
-    console.log("New scanner session created:", sessionId);
-  } catch (error) {
-    console.error("Error starting session:", error);
-    Alert.alert('Error', `Failed to start session: ${error.message}`);
-    
-    // Reset state in case of error
-    setActiveSession(null);
-    setScans([]);
-    setScanStatus('');
-  }
-};
-
 // End current session
 const endSession = () => {
   if (!activeSession) return;
@@ -487,299 +415,106 @@ const endSession = () => {
         text: 'End Session', 
         style: 'destructive',
         onPress: () => {
-          finalizeSession();
+          finalizeScannerSession();
         }
       }
     ]
   );
 };
-
 // Finalize the scanning session
-  const finalizeSession = async () => {
-    if (!activeSession) return;
-    
-    // Save session for export
-    const sessionToExport = { ...activeSession };
-    
-    // Mark session as completed
-    const updatedSession = {
-      ...activeSession,
-      inProgress: false,
-      backedUp: isOnline, // Mark if backed up based on connection status
-      sessionType: SESSION_TYPE.SCANNER // Explicitly mark session type
-    };
-    
-    // Save to database
-    await saveSession(updatedSession);
-    
-    // Clear from recovery system
-    await clearRecoverableSession(activeSession.id, SESSION_TYPE.SCANNER);
-    
-    // Get updated sessions list
-    const updatedSessions = await getAllSessions();
-    setSessions(updatedSessions);
-    
-    // Clear active session
-    setActiveSession(null);
-    setScans([]);
-    setScanStatus('');
-    
-    // If offline, queue for backup
-    if (!isOnline) {
-      console.log("App is offline, queueing session for backup");
-      queueSessionForBackup(sessionToExport);
-      // Note: queueSessionForBackup handles the alert for offline mode
-    } else {
-      console.log("App is online, attempting immediate backup");
-      // Try to backup immediately
-      try {
-        backupToGitHub([sessionToExport], false)
-          .then(result => {
-            console.log("Backup result:", result);
-            if (result && result.success) {
-              // Set last backup time to now
-              const now = new Date();
-              AsyncStorage.setItem(LAST_BACKUP_TIME_KEY, now.toISOString())
-                .then(() => console.log("Last backup time updated"));
-              // Show success message for online backup
-              Alert.alert("Backup Success", "Session backed up to Server successfully!");
-            } else {
-              console.error("Backup failed:", result);
-              // Only show alert if it's not an empty workbook error
-              if (!result.message || !result.message.includes('empty')) {
-                Alert.alert("Backup Failed", "Unable to backup to GitHub. The session is saved locally.");
-              } else {
-                console.log("Empty workbook - skipping backup silently");
-              }
-            }
-          })
-          .catch(error => {
-            console.error("Backup error:", error);
-            // Only show alert if it's not an empty workbook error
-            if (!error.message || !error.message.includes('Workbook is empty')) {
-              Alert.alert("Backup Error", `Error during backup: ${error.message}`);
-            } else {
-              console.log("Empty workbook - skipping backup silently");
-            }
-          });
-      } catch (error) {
-        console.error("Exception during backup:", error);
-        // Don't show alert for empty workbook errors
-        if (!error.message || !error.message.includes('Workbook is empty')) {
-          Alert.alert("Backup Error", `Exception during backup: ${error.message}`);
-        }
+const finalizeScannerSession = async () => {
+  // Create a copy of the session for export
+  const sessionToExport = { ...activeSession };
+  
+  // First, properly mark the session as closed normally in the recovery system
+  // This is the key fix - use the new function from the recovery service
+  try {
+    await markSessionAsNormallyClosed(activeSession.id, SESSION_TYPE.SCANNER);
+    console.log(`Session ${activeSession.id} marked as normally closed`);
+  } catch (error) {
+    console.error("Error marking session as normally closed:", error);
+  }
+  
+  // Mark session as completed in history
+  AsyncStorage.getItem('sessions').then(savedSessions => {
+    if (savedSessions) {
+      const parsedSessions = JSON.parse(savedSessions);
+      const sessionIndex = parsedSessions.findIndex(s => s.id === activeSession.id);
+      if (sessionIndex !== -1) {
+        const updatedSessions = [...parsedSessions];
+        updatedSessions[sessionIndex] = {
+          ...updatedSessions[sessionIndex],
+          inProgress: false,
+          backedUp: isOnline, // Mark if backed up based on connection status
+          sessionType: SESSION_TYPE.SCANNER, // Explicitly mark session type
+          recoveryStatus: SESSION_STATUS.CLOSED_NORMALLY // Add recovery status for clarity
+        };
+        setSessions(updatedSessions);
+        AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions));
       }
     }
-    
-    // Export session to Excel if there are scans
-    if (sessionToExport && sessionToExport.scans && sessionToExport.scans.length > 0) {
-      setTimeout(() => {
-        exportScannerSession(sessionToExport, true); // Pass true to indicate silent export (no alerts)
-      }, 500);
-    }
-    
-    console.log("Scanner session ended successfully");
-  };
+  }).catch(error => {
+    console.error("Error updating session in storage:", error);
+  });
+  
+  // Clear active session from AsyncStorage and recovery system
+  // This is redundant with markSessionAsNormallyClosed but kept for safety
+  AsyncStorage.removeItem(SCANNER_ACTIVE_SESSION_STORAGE_KEY)
+    .catch(error => console.error("Error clearing active scanner session:", error));
+  
+  AsyncStorage.removeItem(TEMP_SCANNER_SESSION_INDEX_KEY)
+    .catch(error => console.error("Error clearing temp session index:", error));
+  
+  // Clear active session
+  setActiveSession(null);
+  setScans([]);
+  setScanStatus('');
+  
+  // Export session to Excel only if there are scans
+  if (sessionToExport && sessionToExport.scans && sessionToExport.scans.length > 0) {
+    setTimeout(() => {
+      if (!isOnline) {
+        // If offline, queue for backup instead of immediate export
+        queueSessionForBackup(sessionToExport);
+      } else {
+        exportScannerSession(sessionToExport, true); // Pass true to indicate silent export
+      }
+    }, 500);
+  }
+  
+  console.log("Scanner session ended successfully");
+};
 
 //======SESSION RECOVERY SECTION======//
-// Check for recoverable scanner session
-const checkForRecoverableScannerSession = async () => {
-  try {
-    console.log("Checking for recoverable scanner session...");
-    
-    // Use SESSION_TYPE.SCANNER to ensure we only get scanner sessions
-    const result = await checkForRecoverableSession(SESSION_TYPE.SCANNER);
-    
-    if (result.hasRecoverableSession && result.session.sessionType === SESSION_TYPE.SCANNER) {
-      // IMPORTANT: Don't recover until user confirms
-      Alert.alert(
-        "Recover Scanner Session",
-        `Found an incomplete scanner session at ${result.session.location} with ${result.session.scans?.length || 0} scans. Would you like to recover it?`,
-        [
-          {
-            text: "Yes",
-            onPress: () => recoverScannerSession(result.session)
-          },
-          {
-            text: "No",
-            onPress: async () => {
-              try {
-                // First clear the session from recovery system
-                await clearRecoverableSession(result.session.id, SESSION_TYPE.SCANNER);
-                console.log(`Scanner session ${result.session.id} cleared`);
-                
-                // IMPORTANT: After clearing the recoverable session, explicitly check for active sessions
-                // This ensures we can still load an active session if the user declines recovery
-                checkForCurrentActiveSessions();
-              } catch (error) {
-                console.error("Error clearing scanner session:", error);
-                // Still try to check for active sessions even if clearing failed
-                checkForCurrentActiveSessions();
+  // Check for recoverable session
+  const checkForRecoverableScannerSession = async () => {
+    try {
+      // Use the improved recovery service
+      const result = await checkForRecoverableSession(SESSION_TYPE.SCANNER);
+      if (result.hasRecoverableSession) {
+        Alert.alert(
+          "Recover scanner Session",
+          `Found an incomplete scanner session at ${result.session.location} with ${result.session.scans?.length || 0} selections. Would you like to recover it?`,
+          [
+            {
+              text: "Yes",
+              onPress: () => recoverScannerSession(result.session)
+            },
+            {
+              text: "No",
+              onPress: () => {
+                // Clear the active session
+                clearRecoverableSession(result.session.id, SESSION_TYPE.SCANNER)
+                  .catch(error => console.error("Error clearing scanner session:", error));
               }
             }
-          }
-        ]
-      );
-    } else {
-      console.log("No recoverable scanner session found");
-      // If no recoverable sessions, check for active ones
-      checkForCurrentActiveSessions();
-    }
-  } catch (error) {
-    console.error("Error checking for recoverable scanner session:", error);
-    // If error occurred, still try to check for active sessions
-    checkForCurrentActiveSessions();
-  }
-};
-
-// This function checks for current active sessions after recovery decisions
-const checkForCurrentActiveSessions = async () => {
-  try {
-    console.log("Checking for current active sessions after recovery decision...");
-    const allSessions = await getAllSessions();
-    // First make sure we have sessions and filter for active scanner sessions only
-    if (!allSessions || allSessions.length === 0) {
-      console.log("No sessions found in database");
-      return;
-    }
-    
-    const activeSessionFound = allSessions.find(s => 
-      s.inProgress === true && s.sessionType === SESSION_TYPE.SCANNER
-    );
-    
-    if (activeSessionFound) {
-      console.log('Found active scanner session to load:', activeSessionFound.id);
-      // Make sure we have a properly formatted session object
-      const formattedSession = {
-        ...activeSessionFound,
-        formattedDateTime: formatDateTime(new Date(activeSessionFound.dateTime)),
-        scans: activeSessionFound.scans || []
-      };
-      
-      // Update state with the active session
-      setActiveSession(formattedSession);
-      setScans(formattedSession.scans || []);
-      setLocation(formattedSession.location);
-      
-      // Also save to AsyncStorage for recovery
-      await saveActiveScannerSession(formattedSession);
-      setScanStatus('Session loaded - Ready to scan');
-    } else {
-      console.log("No active sessions to load");
-      // Reset active session state if nothing is found
-      setActiveSession(null);
-      setScans([]);
-      setScanStatus('');
-    }
-  } catch (error) {
-    console.error("Error checking for current active sessions:", error);
-    // Reset state in case of error
-    setActiveSession(null);
-    setScans([]);
-    setScanStatus('');
-  }
-};
-
-// Recover scanner session
-const recoverScannerSession = async (session) => {
-  try {
-    console.log("Starting recovery of scanner session:", session.id);
-    
-    // Use the improved recovery service - but ONLY after user confirmation
-    const recoveryResult = await recoverSession(session, SESSION_TYPE.SCANNER);
-    
-    if (recoveryResult.success) {
-      // Set active session AFTER successful recovery
-      setActiveSession(session);
-      setScans(session.scans || []);
-      setScanStatus('Session recovered - Ready to scan');
-      
-      // Update sessions list
-      const savedSessions = await getAllSessions();
-      setSessions(savedSessions);
-      
-      console.log("Scanner session recovered successfully");
-    } else {
-      throw new Error(recoveryResult.error || "Failed to recover scanner session");
-    }
-  } catch (error) {
-    console.error("Error recovering scanner session:", error);
-    Alert.alert(
-      "Recovery Error",
-      "Could not recover the scanner session. Please try again.",
-      [{ text: "OK" }]
-    );
-    
-    // Reset active session in case of error
-    setActiveSession(null);
-    setScans([]);
-    setScanStatus('');
-    
-    // IMPORTANT: Check for other active sessions if recovery fails
-    await checkForCurrentActiveSessions();
-  }
-};
-
-//======STORAGE MANAGEMENT SECTION======//
-// Save active session to storage
-const saveActiveScannerSession = async (session) => {
-  if (session) {
-    try {
-      // Create a clean copy of the session without any potential non-serializable properties
-      const cleanSession = {
-        id: session.id,
-        location: session.location,
-        dateTime: session.dateTime,
-        formattedDateTime: session.formattedDateTime,
-        inProgress: session.inProgress,
-        sessionType: SESSION_TYPE.SCANNER, // Explicitly mark session type
-        scans: session.scans ? session.scans.map(scan => ({
-          id: scan.id,
-          content: scan.content,
-          timestamp: scan.timestamp,
-          formattedTime: scan.formattedTime,
-          isManual: scan.isManual
-        })) : []
-      };
-      
-      await AsyncStorage.setItem(SCANNER_ACTIVE_SESSION_STORAGE_KEY, JSON.stringify(cleanSession));
-      console.log("Active scanner session saved:", session.id);
+          ]
+        );
+      }
     } catch (error) {
-      console.error("Error saving active scanner session:", error);
+      console.error("Error checking for recoverable scanner session:", error);
     }
-  }
-};
-
-// Clear active session from storage
-const clearActiveScannerSession = () => {
-  AsyncStorage.removeItem(SCANNER_ACTIVE_SESSION_STORAGE_KEY)
-    .then(() => AsyncStorage.removeItem(TEMP_SCANNER_SESSION_INDEX_KEY))
-    .then(() => console.log("Active scanner session cleared from storage"))
-    .catch(error => console.error("Error clearing active scanner session:", error));
-};
-
-// Load active session from database
-const loadActiveSession = async () => {
-  try {
-    const allSessions = await getAllSessions();
-    const activeSessionFound = allSessions.find(s => s.inProgress);
-    if (activeSessionFound) {
-      const formattedSession = {
-        ...activeSessionFound,
-        formattedDateTime: formatDateTime(new Date(activeSessionFound.dateTime)),
-        scans: activeSessionFound.scans || []
-      };
-      setActiveSession(formattedSession);
-      setScans(formattedSession.scans || []);
-      setLocation(formattedSession.location);
-      setScanStatus('Session loaded - Ready to scan');
-      // Also save to AsyncStorage for recovery
-      saveActiveScannerSession(formattedSession);
-    }
-  } catch (error) {
-    console.error("Error loading active session:", error);
-  }
-};
+  };
 
 // Update session in history
 const updateSessionInHistory = (updatedSession) => {
@@ -787,18 +522,142 @@ const updateSessionInHistory = (updatedSession) => {
     if (savedSessions) {
       const parsedSessions = JSON.parse(savedSessions);
       const sessionIndex = parsedSessions.findIndex(s => s.id === updatedSession.id);
-      if (sessionIndex !== -1) {
-        const updatedSessions = [...parsedSessions];
-        updatedSessions[sessionIndex] = {...updatedSession};
-        setSessions(updatedSessions);
-        AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions));
+        if (sessionIndex !== -1) {
+          const updatedSessions = [...parsedSessions];
+          updatedSessions[sessionIndex] = {...updatedSession};
+          setSessions(updatedSessions);
+          return AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions));
+        }
       }
+      return Promise.resolve();
+    })
+    .catch(error => {
+      console.error("Error updating session in history:", error);
+      throw error; // Re-throw so Promise.all can catch it
+    });
+};
+  // Recover scanner session
+  const recoverScannerSession = async (session) => {
+    try {
+      // Use the improved recovery service
+      const recoveryResult = await recoverSession(session, SESSION_TYPE.CHECKLIST);
+    if (recoveryResult.success) {
+      setActiveSession(session);
+
+  setScans([]);
+  setScanStatus('Session started - Ready to scan');
+
+      // Update sessions list
+        const savedSessions = await AsyncStorage.getItem('sessions');
+        if (savedSessions) {
+          setSessions(JSON.parse(savedSessions));
+        }
+        // Start auto-save timer
+        startAutoSaveTimer();
+        console.log("Scanner session recovered successfully");
+      } else {
+        throw new Error(recoveryResult.error || "Failed to recover scanner session");
+      }
+    } catch (error) {
+      console.error("Error recovering scanner session:", error);
+      Alert.alert(
+        "Recovery Error",
+        "Could not recover the scanner session. Please try again.",
+        [{ text: "OK" }]
+      );
     }
-  });
+  };
+
+//====================AUTO SAVE SECTION====================//
+// Initialize auto-save timer
+const startAutoSaveTimer = () => {
+  console.log("Starting auto-save timer");
+  // Clear any existing timer
+  if (window.autoSaveTimerId) {
+    clearInterval(window.autoSaveTimerId);
+  }
+  // Create flag for tracking if session needs saving
+  window.sessionNeedsSaving = false;
+  // Create flag for tracking if save is in progress
+  window.saveInProgress = false;
+  // Set up interval timer (every 15 seconds)
+  window.autoSaveTimerId = setInterval(() => {
+    performAutoSave();
+  }, 15000);
+  console.log("Auto-save timer started");
+};
+// Stop auto-save timer
+const stopAutoSaveTimer = () => {
+  console.log("Stopping auto-save timer");
+  if (window.autoSaveTimerId) {
+    clearInterval(window.autoSaveTimerId);
+    window.autoSaveTimerId = null;
+  }
+  // Final save if needed
+  if (window.sessionNeedsSaving && !window.saveInProgress) {
+    performAutoSave(true);
+  }
+};
+// Perform auto-save if needed
+const performAutoSave = (forceSave = false) => {
+  // Skip if no active session
+  if (!activeSession) {
+    console.log("No active session to save");
+    return;
+  }
+  // Skip if save already in progress
+  if (window.saveInProgress) {
+    console.log("Save in progress, skipping");
+    return;
+  }
+  // Skip if nothing has changed since last save (unless force save)
+  if (!window.sessionNeedsSaving && !forceSave) {
+    return;
+  }
+  console.log("Auto-saving session...");
+  // Mark save as in progress to prevent multiple simultaneous saves
+  window.saveInProgress = true;
+  // Create a snapshot of current session state
+  const sessionSnapshot = {...activeSession};
+  // Handle storage updates asynchronously
+  Promise.all([
+    saveActiveScannerSession(sessionSnapshot),
+    updateSessionInHistory(sessionSnapshot)
+  ])
+    .then(() => {
+      // Reset flag since we've saved
+      window.sessionNeedsSaving = false;
+      console.log("Auto-save completed successfully");
+    })
+    .catch(error => {
+      console.error("Error during auto-save:", error);
+    })
+    .finally(() => {
+      // Mark save as complete
+      window.saveInProgress = false;
+    });
+};
+const saveActiveScannerSession = async (session) => {
+  if (!session) {
+    console.error("Cannot save null or undefined session");
+    return Promise.reject(new Error("Invalid session"));
+  }
+  try {
+    console.log(`Saving active scanner session: ${session.id}`);
+    // Save to AsyncStorage for persistent storage
+    await AsyncStorage.setItem(SCANNER_ACTIVE_SESSION_STORAGE_KEY, JSON.stringify(session));
+    // Register with recovery system for crash protection
+    // Note: We use the session type constant defined in the recovery service
+    await recoverSession(session, SESSION_TYPE.SCANNER);
+    console.log("Scanner session saved successfully");
+    return Promise.resolve({ success: true });
+  } catch (error) {
+    console.error("Error saving active scanner session:", error);
+    return Promise.reject(error);
+  }
 };
 
 //======AUDIO AND FEEDBACK SECTION======//
-
 // Play success sound
 async function playSuccessSound() { 
   // Modified to handle haptic feedback instead which is more reliable
@@ -808,93 +667,53 @@ async function playSuccessSound() {
     console.log("Could not use haptic feedback:", e);
   }
 }
-
 //======SCANNING FUNCTIONS SECTION======//
 // Handle barcode scanning - updated for expo-camera's CameraView
   const handleBarCodeScanned = (scanningResult) => {
     // Early exit conditions - preserve from original
     if (!activeSession || scanned) return;
-    
     // Log for debugging
     console.log("Barcode detected:", scanningResult);
-    
     // Extract data and type from scanning result
-
     const { data, type } = scanningResult;
-
-
-
     if (!data) {
-
       console.log("Scan detected but no data found");
-
       return;
-
     }
-
-    
-
   // Instead of setting scanned state, which triggers a re-render,
-
   // use a local variable to prevent multiple scans
-
   let processingInProgress = true;
-
-    
-
     // Add immediate haptic feedback when something is detected
-
     try {
-
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-
     } catch (e) {
-
       console.log("Could not use haptic feedback:", e);
-
     }
-
-    
-
     // Process the scanned code
-
     console.log("Processing scanned code:", data);
-
     processScannedCode(data, false);
-
-    
-
   // Allow scanning again after a short delay using a cleaner approach
-
   setTimeout(() => {
-
     processingInProgress = false;
-
   }, 1000); // Try reducing this delay
-
 };
-
 // Process scanned or manually entered code
 const processScannedCode = async (data, isManual = false) => {
   if (!data || !activeSession) {
     console.log("Cannot process scan: No data or no active session");
     return;
   }
-  
   // Trim data to handle extra spaces
   const cleanData = data.trim();
   if (!cleanData) {
     console.log("Cannot process scan: Empty data after trimming");
     return;
   }
-  
   console.log(`Processing ${isManual ? 'manual entry' : 'scan'}: ${cleanData}`);
-  
   // Check if already scanned in this session
   const alreadyScanned = scans.some(scan => scan.content === cleanData);
   if (alreadyScanned) {
     setScanStatus(`Already scanned: ${cleanData.substring(0, 20)}${cleanData.length > 20 ? '...' : ''}`);
-    
     // Add error haptic feedback for duplicates
     try {
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
@@ -903,11 +722,9 @@ const processScannedCode = async (data, isManual = false) => {
     }
     return;
   }
-  
   const now = new Date();
   const timestamp = now.toISOString();
   const formattedTime = formatTime(now);
-  
   // Create new scan
   const newScan = {
     id: Date.now().toString(),
@@ -917,26 +734,20 @@ const processScannedCode = async (data, isManual = false) => {
     time: now,
     isManual: isManual
   };
-  
   // Create copies of state to work with
   const updatedScans = [...scans, newScan];
-  
   // Update state directly instead of using functional updates
   setScans(updatedScans);
-  
   // Create a new activeSession object with updated scans
   if (activeSession) {
     const updatedSession = {
       ...activeSession,
       scans: updatedScans
     };
-    
     // Update activeSession state
     setActiveSession(updatedSession);
-    
     // Save the updated session
     saveActiveScannerSession(updatedSession);
-    
     // Update the session in the database
     try {
       await saveSession(updatedSession);
@@ -945,19 +756,16 @@ const processScannedCode = async (data, isManual = false) => {
       console.error('Error updating session in database:', dbError);
     }
   }
-  
   // Add success haptic feedback
   try {
     await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
   } catch (e) {
     console.log("Could not use haptic feedback:", e);
   }
-  
   // Update status
   setScanStatus(`✅ ${isManual ? 'Manual entry' : 'Scanned'}: ${cleanData.substring(0, 20)}${cleanData.length > 20 ? '...' : ''}`);
   console.log(`${isManual ? 'Manual entry' : 'Scan'} processed successfully: ${cleanData}`);
 };
-
 // Process manual entry
 const processManualEntry = () => {
   const studentId = manualId.trim();
@@ -974,7 +782,6 @@ const processManualEntry = () => {
   setScanStatus(`✅ Manual entry added: ${studentId.substring(0, 20)}${studentId.length > 20 ? '...' : ''}`);
   console.log(`Manual entry processed: ${studentId}`);
 };
-
 //======EXPORT AND FILE MANAGEMENT SECTION======//
 // Export scanner session to Excel
 const exportScannerSession = async (session, silentMode = false) => {
@@ -983,12 +790,13 @@ const exportScannerSession = async (session, silentMode = false) => {
     const fileName = `Scanner_${session.location.replace(/[^a-z0-9]/gi, '_')}_${formatDateTimeForFile(new Date(session.dateTime))}.xlsx`;
     // Prepare data
     const data = [
-      ['Student ID', 'Location', 'Log Date', 'Log Time', 'Type']
+      ['Number', 'Content', 'Location', 'Log Date', 'Log Time', 'Type']
     ];
     // Add scans with row numbers
     session.scans.forEach((scan, index) => {
       const scanDate = new Date(scan.timestamp);
       data.push([
+        index + 1,                   // Row number
         scan.content,                // Scanned content
         session.location,            // Location
         formatDate(scanDate),        // Log Date
@@ -1083,7 +891,6 @@ const exportScannerSession = async (session, silentMode = false) => {
     return { success: false, message: `Error exporting file: ${error.message}` };
   }
 };
-
 // Save a file to the "Attendance Recorder" directory with multiple fallback options
 const saveToAttendanceRecorder = async (fileUri, fileName, silentMode = false) => {
   try {
@@ -1121,7 +928,6 @@ const saveToAttendanceRecorder = async (fileUri, fileName, silentMode = false) =
           album = await MediaLibrary.createAlbumAsync(appFolderName, asset, false);
           console.log(`Created "${appFolderName}" album with asset`);
         }
-        
         // Only show alert if not in silent mode
         if (!silentMode) {
           Alert.alert(
@@ -1130,7 +936,6 @@ const saveToAttendanceRecorder = async (fileUri, fileName, silentMode = false) =
             [{ text: "OK" }]
           );
         }
-        
         return { success: true, message: `File saved successfully`, uri: asset.uri };
       } catch (directSaveError) {
         console.error("Direct save method failed:", directSaveError);
@@ -1196,7 +1001,6 @@ const saveToAttendanceRecorder = async (fileUri, fileName, silentMode = false) =
         to: newFileUri
       });
       console.log("File saved to documents:", newFileUri);
-      
       if (!silentMode) {
         Alert.alert(
           "Export Successful",
@@ -1204,7 +1008,6 @@ const saveToAttendanceRecorder = async (fileUri, fileName, silentMode = false) =
           [{ text: "OK" }]
         );
       }
-      
       return { success: true, message: `File saved to app documents`, uri: newFileUri };
     }
     // If all else fails
@@ -1215,25 +1018,20 @@ const saveToAttendanceRecorder = async (fileUri, fileName, silentMode = false) =
     return { success: false, message: `Error: ${error.message}`, shareOnly: true };
   }
 };
-
 //======UTILITY FUNCTIONS SECTION======//
 // Helper functions for date/time formatting
 const formatDateTime = (date) => {
   return `${formatDate(date)} ${formatTime(date)}`;
 };
-
 const formatDate = (date) => {
   return date.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
 };
-
 const formatTime = (date) => {
   return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 };
-
 const formatDateTimeForFile = (date) => {
   return date.toISOString().replace(/[:.]/g, '-').slice(0, 19);
 };
-
 // Render different content based on permissions
   if (cameraPermission === null) {
     return (
@@ -1242,7 +1040,6 @@ const formatDateTimeForFile = (date) => {
       </View>
     );
   }
-
   if (cameraPermission?.granted === false) {
     return (
       <View style={styles.container}>
@@ -1258,7 +1055,6 @@ const formatDateTimeForFile = (date) => {
       </View>
     );
   }
-
 return (
   <Provider>
     <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
@@ -1267,7 +1063,6 @@ return (
           <Text style={{ color: isOnline ? '#28a745' : '#856404' }}>{connectionMessage}</Text>
         </View>
       )}
-
       <Surface style={styles.card}>
         <Title style={styles.title}>QR Code Scanner</Title>
         <View style={styles.buttonContainer}>
@@ -1290,20 +1085,17 @@ return (
             </Button>
           )}
         </View>
-
         {activeSession && (
           <View style={styles.sessionInfo}>
             <Text style={styles.locationText}>Location: {activeSession.location}</Text>
             <Text style={styles.dateTimeText}>Date/Time: {activeSession.formattedDateTime}</Text>
           </View>
         )}
-
         {scanStatus ? (
           <View style={styles.statusContainer}>
             <Text style={styles.statusText}>{scanStatus}</Text>
           </View>
         ) : null}
-
           <View style={styles.scannerContainer}>
             {activeSession ? (
               <CameraView
@@ -1328,7 +1120,6 @@ return (
               </View>
             )}
           </View>
-
         <Title style={styles.subtitle}>Scanned QR Codes</Title>
         {activeSession && activeSession.scans && activeSession.scans.length > 0 ? (
           <View style={styles.tableContainer}>
@@ -1354,7 +1145,6 @@ return (
           <Text style={styles.noDataText}>No QR codes scanned yet.</Text>
         )}
       </Surface>
-
       <Portal>
         <Modal
           visible={showSessionModal}
@@ -1388,7 +1178,6 @@ return (
           </View>
         </Modal>
       </Portal>
-
       <Portal>
         <Modal
           visible={showManualEntryModal}
