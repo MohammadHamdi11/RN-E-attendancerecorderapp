@@ -1,92 +1,57 @@
 import * as Notifications from 'expo-notifications';
 import * as TaskManager from 'expo-task-manager';
-import * as BackgroundTask from 'expo-background-task';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
 
 // Define task names
-const BACKGROUND_NOTIFICATION_TASK = 'background-notification-task';
-const DAILY_NOTIFICATION_TASK = 'daily-notification-task';
+const TWICE_DAILY_NOTIFICATION_TASK = 'twice-daily-notification-task';
 
 // Configure how notifications should be handled when received
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: true,
+    shouldShowBanner: true,
     shouldPlaySound: true,
     shouldSetBadge: true,
   }),
 });
 
-// Function to record app usage time
-export async function recordAppUsage() {
-  try {
-    await AsyncStorage.setItem('@last_app_usage', new Date().toISOString());
-    console.log('[Notifications] App usage recorded');
-  } catch (error) {
-    console.error('[Notifications] Error recording app usage:', error);
-  }
-}
-
-// Function to send the backup reminder
-async function sendBackupReminder(title = "Backup Reminder", body = "Open the app to ensure your files are backed up!") {
-  try {
-    const pendingBackups = JSON.parse(await AsyncStorage.getItem('pendingBackups') || '[]');
-    
-    // Only send notification if there are pending backups
-    if (pendingBackups.length > 0) {
-      await Notifications.scheduleNotificationAsync({
-        content: {
-          title: title,
-          body: body + ` (${pendingBackups.length} pending backups)`,
-          data: { screen: 'Backup' },
-          // Android-specific settings using your existing icon
-          android: {
-            smallIcon: 'notification_icon', // Default name Expo will use
-            channelId: 'backup-reminders',
-          },
-          // iOS will automatically use apple-touch-icon.png
-        },
-        trigger: null, // Send immediately
-      });
-      console.log('[Notifications] Backup reminder sent');
-      
-      // Record that we sent a notification
-      await AsyncStorage.setItem('@last_backup_notification', new Date().toISOString());
-      return true;
-    } else {
-      console.log('[Notifications] No pending backups, skipping notification');
-      return false;
-    }
-  } catch (error) {
-    console.error('[Notifications] Error sending notification:', error);
-    return false;
-  }
-}
-
-// Schedule the daily 7 PM notification
-async function scheduleDailyNotification() {
+// Schedule twice daily notifications at 7 AM and 7 PM
+async function scheduleTwiceDailyNotifications() {
   try {
     // Cancel any existing scheduled notifications
     await Notifications.cancelAllScheduledNotificationsAsync();
     
-    // Schedule for 7:00 PM today
     const now = new Date();
-    const scheduledTime = new Date(now);
-    scheduledTime.setHours(19, 0, 0, 0); // 7:00 PM
     
-    // If it's already past 7 PM, schedule for tomorrow
-    if (now > scheduledTime) {
-      scheduledTime.setDate(scheduledTime.getDate() + 1);
+    // Schedule for 7:00 AM today
+    const morningTime = new Date(now);
+    morningTime.setHours(7, 0, 0, 0); // 7:00 AM
+    
+    // Schedule for 7:00 PM today
+    const eveningTime = new Date(now);
+    eveningTime.setHours(19, 0, 0, 0); // 7:00 PM
+    
+    // If it's already past 7 AM, schedule for tomorrow
+    if (now > morningTime) {
+      morningTime.setDate(morningTime.getDate() + 1);
     }
     
-    // Calculate seconds until scheduled time
-    const secondsUntil = Math.floor((scheduledTime - now) / 1000);
+    // If it's already past 7 PM, schedule for tomorrow
+    if (now > eveningTime) {
+      eveningTime.setDate(eveningTime.getDate() + 1);
+    }
     
-    console.log(`[Notifications] Scheduling daily notification for ${scheduledTime.toLocaleString()}`);
+    // Calculate seconds until scheduled times
+    const secondsUntilMorning = Math.floor((morningTime - now) / 1000);
+    const secondsUntilEvening = Math.floor((eveningTime - now) / 1000);
     
+    console.log(`[Notifications] Scheduling morning notification for ${morningTime.toLocaleString()}`);
+    console.log(`[Notifications] Scheduling evening notification for ${eveningTime.toLocaleString()}`);
+    
+    // Schedule morning notification
     await Notifications.scheduleNotificationAsync({
       content: {
-        title: "Daily Backup Check",
+        title: "Morning Backup Check",
         body: "Time to check if your attendance data is backed up!",
         data: { screen: 'Backup' },
         android: {
@@ -95,38 +60,32 @@ async function scheduleDailyNotification() {
         },
       },
       trigger: {
-        seconds: secondsUntil,
+        seconds: secondsUntilMorning,
         repeats: true,
       },
     });
     
-    console.log('[Notifications] Daily notification scheduled');
+    // Schedule evening notification
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Evening Backup Check",
+        body: "Time to check if your attendance data is backed up!",
+        data: { screen: 'Backup' },
+        android: {
+          smallIcon: 'notification_icon',
+          channelId: 'backup-reminders',
+        },
+      },
+      trigger: {
+        seconds: secondsUntilEvening,
+        repeats: true,
+      },
+    });
+    
+    console.log('[Notifications] Twice daily notifications scheduled successfully');
     return true;
   } catch (error) {
-    console.error('[Notifications] Error scheduling daily notification:', error);
-    return false;
-  }
-}
-
-// Register the background task - updated to use BackgroundTask module
-async function registerBackgroundTasks() {
-  try {
-    // Register the background notification task with BackgroundTask
-    if (!await TaskManager.isTaskRegisteredAsync(BACKGROUND_NOTIFICATION_TASK)) {
-      await BackgroundTask.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK, {
-        minimumInterval: 60 * 60, // Check every hour
-        stopOnTerminate: false,
-        startOnBoot: true,
-      });
-      console.log('[Notifications] Background notification task registered');
-    }
-    
-    // Schedule the daily notification
-    await scheduleDailyNotification();
-    
-    return true;
-  } catch (err) {
-    console.error("[Notifications] Background task registration failed:", err);
+    console.error('[Notifications] Error scheduling notifications:', error);
     return false;
   }
 }
@@ -166,10 +125,7 @@ export async function initNotifications() {
       return false;
     }
     
-    await registerBackgroundTasks();
-    
-    // Record initial app usage
-    await recordAppUsage();
+    await scheduleTwiceDailyNotifications();
     
     console.log('[Notifications] Notifications initialized successfully');
     return true;
@@ -179,101 +135,26 @@ export async function initNotifications() {
   }
 }
 
-// Register the background task handler
-TaskManager.defineTask(BACKGROUND_NOTIFICATION_TASK, async () => {
-  try {
-    console.log('[Notifications] Background task executing');
-    
-    // Check if there are any pending backups
-    const pendingBackups = JSON.parse(await AsyncStorage.getItem('pendingBackups') || '[]');
-    if (pendingBackups.length === 0) {
-      console.log('[Notifications] No pending backups, no notification needed');
-      return BackgroundTask.Result.NoData;
-    }
-    
-    const now = new Date();
-    
-    // Check if we've already sent a notification today
-    const lastNotification = await AsyncStorage.getItem('@last_backup_notification');
-    if (lastNotification) {
-      const lastNotifDate = new Date(lastNotification);
-      if (now.getDate() === lastNotifDate.getDate() && 
-          now.getMonth() === lastNotifDate.getMonth() && 
-          now.getFullYear() === lastNotifDate.getFullYear()) {
-        console.log('[Notifications] Already sent a notification today, skipping');
-        return BackgroundTask.Result.NoData;
-      }
-    }
-    
-    // Check if app was used in the last hour
-    const lastUsage = await AsyncStorage.getItem('@last_app_usage');
-    if (lastUsage) {
-      const lastUsageDate = new Date(lastUsage);
-      const hoursSinceUsage = (now - lastUsageDate) / (1000 * 60 * 60);
-      
-      if (hoursSinceUsage >= 1) {
-        // If it's been at least 1 hour since the app was used, send a reminder
-        console.log('[Notifications] App not used for 1+ hours, sending reminder');
-        await sendBackupReminder(
-          "Backup Reminder", 
-          "You haven't used the app in a while. Remember to backup your data!"
-        );
-        return BackgroundTask.Result.Success;
-      }
-    }
-    
-    // Default return if no notification was sent
-    return BackgroundTask.Result.NoData;
-  } catch (error) {
-    console.error('[Notifications] Background task error:', error);
-    return BackgroundTask.Result.Failed;
-  }
-});
-
 // Force a notification (for testing)
 export async function forceSendNotification() {
   try {
-    const result = await sendBackupReminder(
-      "Test Notification",
-      "This is a test notification from the Attendance Recorder app."
-    );
-    return result;
-  } catch (error) {
-    console.error('[Notifications] Error sending test notification:', error);
-    return false;
-  }
-}
-
-// Schedule reminder for one hour after app is closed
-export async function scheduleInactivityReminder() {
-  try {
-    // Check if there are pending backups
-    const pendingBackups = JSON.parse(await AsyncStorage.getItem('pendingBackups') || '[]');
-    if (pendingBackups.length === 0) {
-      console.log('[Notifications] No pending backups, not scheduling inactivity reminder');
-      return false;
-    }
-    
-    // Schedule for 1 hour from now
     await Notifications.scheduleNotificationAsync({
       content: {
-        title: "App Inactivity Reminder",
-        body: "You haven't used the Attendance Recorder app for a while. Remember to check your pending backups!",
+        title: "Test Notification",
+        body: "This is a test notification from the Attendance Recorder app.",
         data: { screen: 'Backup' },
         android: {
           smallIcon: 'notification_icon',
           channelId: 'backup-reminders',
         },
       },
-      trigger: {
-        seconds: 60 * 60, // 1 hour
-      },
+      trigger: null, // Send immediately
     });
     
-    console.log('[Notifications] Inactivity reminder scheduled for 1 hour from now');
+    console.log('[Notifications] Test notification sent');
     return true;
   } catch (error) {
-    console.error('[Notifications] Error scheduling inactivity reminder:', error);
+    console.error('[Notifications] Error sending test notification:', error);
     return false;
   }
 }

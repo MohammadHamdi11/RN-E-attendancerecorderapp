@@ -23,11 +23,7 @@ STEPS TO RUN THE PROJECT:
 
 use expo platform to build online:
 
-first acc: mohammadhamdisaid.mh@icloud.com        sehhat-1Junje-warxif
-
-second acc: mohammad_hamdi11@yahoo.com            pyhsos-wugpy3-gyQhac
-
-
+acc: mohammadhamdisaid.mh@icloud.com        
 
 a-app UUID:        36cc9f80-6e6f-419a-b970-583f5b4451d9
 b-project url: https://expo.dev/accounts/mohammadhamdi11/projects/qr-scanner-app

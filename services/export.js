@@ -7,6 +7,21 @@ import NetInfo from '@react-native-community/netinfo';
 import { backupToGitHub } from './backup';
 import * as MediaLibrary from 'expo-media-library';
 import * as DocumentPicker from 'expo-document-picker';
+import { getCurrentUser } from './auth';
+
+// Define the function
+async function getCurrentUserEmail() {
+  let userEmail = "unknown";
+  try {
+    const currentUser = await getCurrentUser();
+    if (currentUser && currentUser.email) {
+      userEmail = currentUser.email;
+    }
+  } catch (userError) {
+    console.error("Error getting current user email:", userError);
+  }
+  return userEmail;
+}
 
 // Format date as DD/MM/YYYY
 const formatDate = (date) => {
@@ -207,12 +222,15 @@ const saveToAttendanceRecorder = async (fileUri, fileName) => {
 // Export single session to Excel
 export const exportSession = async (session) => {
   try {
+    // Get the current user's email
+    const userEmail = await getCurrentUserEmail();
+    
     // Create a nice filename
     const fileName = `${session.location.replace(/[^a-z0-9]/gi, '_')}_${formatDateTimeForFile(new Date(session.dateTime))}.xlsx`;
 
     // Prepare data
     const data = [
-      ['Student ID', 'Location', 'Log Date', 'Log Time', 'Number']
+      ['Student ID', 'Subject', 'Log Date', 'Log Time', 'User']
     ];
 
     session.scans.forEach((scan, index) => {
@@ -222,7 +240,7 @@ export const exportSession = async (session) => {
         session.location,
         formatDate(scanDate),
         formatTime(scanDate),
-        scan.id || (index + 1)  // Row number
+        userEmail               // User email (current logged in user)
       ]);
     });
 
@@ -298,6 +316,9 @@ export const exportSession = async (session) => {
 // Export all sessions to Excel
 export const exportAllSessions = async (sessions) => {
   try {
+    // Get the current user's email
+    const userEmail = await getCurrentUserEmail();
+    
     if (sessions.length === 0) {
       Alert.alert(
         "No Data",
@@ -312,7 +333,7 @@ export const exportAllSessions = async (sessions) => {
 
     // First, create an "AllSessions" sheet with every scan
     const allScansData = [
-      ['Student ID', 'Location', 'Log Date', 'Log Time', 'Number']
+      ['Student ID', 'Subject', 'Log Date', 'Log Time', 'User']
     ];
 
     let globalCounter = 1;
@@ -332,7 +353,7 @@ export const exportAllSessions = async (sessions) => {
             session.location || "Unknown",
             formatDate(scanDate),
             formatTime(scanDate),
-            scan.id || globalCounter++
+            userEmail           // User email (current logged in user)
           ]);
         } catch (error) {
           console.error("Error processing scan:", scan, error);
@@ -359,7 +380,7 @@ export const exportAllSessions = async (sessions) => {
         }
 
         const sessionData = [
-          ['Student ID', 'Location', 'Log Date', 'Log Time', 'Number']
+          ['Student ID', 'Subject', 'Log Date', 'Log Time', 'User']
         ];
 
         session.scans.forEach((scan, idx) => {
@@ -370,7 +391,7 @@ export const exportAllSessions = async (sessions) => {
               session.location || "Unknown",
               formatDate(scanDate),
               formatTime(scanDate),
-              scan.id || (idx + 1)
+              userEmail           // User email (current logged in user)
             ]);
           } catch (error) {
             console.error("Error processing scan for session sheet:", scan, error);

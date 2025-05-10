@@ -5,6 +5,7 @@ import NetInfo from '@react-native-community/netinfo';
 import * as XLSX from 'xlsx';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
+import { getCurrentUser } from './auth';
 
 // Storage keys
 const GITHUB_TOKEN_KEY = 'qrScannerGithubToken';
@@ -58,6 +59,19 @@ export const checkConnectionStatus = async () => {
 const state = await NetInfo.fetch();
 return state.isConnected;
 };
+// Define the function
+async function getCurrentUserEmail(): Promise<string> {
+  let userEmail = "unknown";
+  try {
+    const currentUser = await getCurrentUser();
+    if (currentUser && currentUser.email) {
+      userEmail = currentUser.email;
+    }
+  } catch (userError) {
+    console.error("Error getting current user email:", userError);
+  }
+  return userEmail;
+}
 // Format date for filenames
 const formatDateTimeForFile = (date) => {
 return date.toISOString().replace(/:/g, '-').replace(/\..+/, '');
@@ -331,52 +345,72 @@ return false;
 }
 };
 // Prepare data for backup
-const prepareDataForBackup = (sessions) => {
-// Create a new workbook
-const workbook = XLSX.utils.book_new();
-// Counter for unique sheet names
-let sheetCounter = {};
-// For each session, create a separate sheet with proper format
-sessions.forEach(session => {
-const data = [
-['Student ID', 'Location', 'Log Date', 'Log Time', 'Number']
-];
-// Add each scan in the proper format
-session.scans.forEach(scan => {
-const scanDate = new Date(scan.time);
-data.push([
-scan.content,           // QR code content (Student ID)
-session.location,       // Location
-formatDate(scanDate),   // Date
-formatTime(scanDate),    // Time
-scan.id               // Row number
-]);
-});
-// Only create sheet if session has scans
-if (data.length > 1) {
-const ws = XLSX.utils.aoa_to_sheet(data);
-// Create unique sheet name based on location
-let baseSheetName = session.location.substring(0, 25).replace(/[^a-z0-9]/gi, '_');
-if (baseSheetName.length === 0) baseSheetName = "Session";
-// Ensure uniqueness
-if (sheetCounter[baseSheetName]) {
-sheetCounter[baseSheetName]++;
-baseSheetName = baseSheetName + "_" + sheetCounter[baseSheetName];
-} else {
-sheetCounter[baseSheetName] = 1;
-}
-// Excel sheet names cannot exceed 31 characters
-const sheetName = baseSheetName.substring(0, 31);
-try {
-XLSX.utils.book_append_sheet(workbook, ws, sheetName);
-} catch (e) {
-console.error("Error adding sheet:", e);
-// If there's an error with this sheet, try with a generic name
-XLSX.utils.book_append_sheet(workbook, ws, "Session_" + Math.random().toString(36).substring(2, 7));
-}
-}
-});
-return workbook;
+const prepareDataForBackup = async (sessions) => {
+  // Get current user email
+  let userEmail = "unknown";
+  try {
+    const currentUser = await getCurrentUser();
+    if (currentUser && currentUser.email) {
+      userEmail = currentUser.email;
+    }
+  } catch (userError) {
+    console.error("Error getting current user email:", userError);
+  }
+
+  // Create a new workbook
+  const workbook = XLSX.utils.book_new();
+  
+  // Counter for unique sheet names
+  let sheetCounter = {};
+  
+  // For each session, create a separate sheet with proper format
+  sessions.forEach(session => {
+    const data = [
+      ['Student ID', 'Subject', 'Log Date', 'Log Time', 'User']
+    ];
+    
+    // Add each scan in the proper format
+    session.scans.forEach(scan => {
+      const scanDate = new Date(scan.time || scan.timestamp);
+      data.push([
+        scan.content,           // QR code content (Student ID)
+        session.location,       // Subject
+        formatDate(scanDate),   // Date
+        formatTime(scanDate),   // Time
+        userEmail               // User email (current logged in user)
+      ]);
+    });
+    
+    // Only create sheet if session has scans
+    if (data.length > 1) {
+      const ws = XLSX.utils.aoa_to_sheet(data);
+      
+      // Create unique sheet name based on location
+      let baseSheetName = session.location.substring(0, 25).replace(/[^a-z0-9]/gi, '_');
+      if (baseSheetName.length === 0) baseSheetName = "Session";
+      
+      // Ensure uniqueness
+      if (sheetCounter[baseSheetName]) {
+        sheetCounter[baseSheetName]++;
+        baseSheetName = baseSheetName + "_" + sheetCounter[baseSheetName];
+      } else {
+        sheetCounter[baseSheetName] = 1;
+      }
+      
+      // Excel sheet names cannot exceed 31 characters
+      const sheetName = baseSheetName.substring(0, 31);
+      
+      try {
+        XLSX.utils.book_append_sheet(workbook, ws, sheetName);
+      } catch (e) {
+        console.error("Error adding sheet:", e);
+        // If there's an error with this sheet, try with a generic name
+        XLSX.utils.book_append_sheet(workbook, ws, "Session_" + Math.random().toString(36).substring(2, 7));
+      }
+    }
+  });
+  
+  return workbook;
 };
 // Check if backup is needed
 const isBackupNeeded = async (sessions) => {
@@ -386,150 +420,170 @@ return sessions.length > savedLastBackupSessions;
 };
 // Try automatic backup
 export const tryAutoBackup = async (sessions) => {
-// Don't run if already in progress or offline
-const isConnected = await checkConnectionStatus();
-if (backupInProgress || !isConnected) {
-return false;
-}
-const autoBackupEnabled = await AsyncStorage.getItem(AUTO_BACKUP_ENABLED_KEY) !== 'false';
-if (!autoBackupEnabled) {
-console.log('Auto-backup is disabled');
-return false;
-}
-// Get token
-const token = await getGitHubToken();
-if (!token) {
-console.log('GitHub token not found, auto-backup skipped');
-return false;
-}
-// Check if there's anything new to backup
-if (!await isBackupNeeded(sessions)) {
-console.log('No new data to backup');
-return false;
-}
-console.log('Starting automatic backup...');
-try {
-// Create Excel workbook
-const workbook = prepareDataForBackup(sessions);
-// Create filename with date
-const fileName = `qr_scanner_backup_${formatDateTimeForFile(new Date())}.xlsx`;
-// Perform the backup
-await backupToGitHub(sessions, true, fileName, workbook);
-console.log('Auto-backup completed successfully');
-return true;
-} catch (error) {
-console.error('Auto-backup failed:', error);
-return false;
-}
+  // Don't run if already in progress or offline
+  const isConnected = await checkConnectionStatus();
+  if (backupInProgress || !isConnected) {
+    return false;
+  }
+  
+  const autoBackupEnabled = await AsyncStorage.getItem(AUTO_BACKUP_ENABLED_KEY) !== 'false';
+  if (!autoBackupEnabled) {
+    console.log('Auto-backup is disabled');
+    return false;
+  }
+  
+  // Get token
+  const token = await getGitHubToken();
+  if (!token) {
+    console.log('GitHub token not found, auto-backup skipped');
+    return false;
+  }
+  
+  // Check if there's anything new to backup
+  if (!await isBackupNeeded(sessions)) {
+    console.log('No new data to backup');
+    return false;
+  }
+  
+  console.log('Starting automatic backup...');
+  try {
+    // Create Excel workbook
+    const workbook = await prepareDataForBackup(sessions);
+    
+    // Create filename with date
+    const fileName = `qr_scanner_backup_${formatDateTimeForFile(new Date())}.xlsx`;
+    
+    // Perform the backup
+    await backupToGitHub(sessions, true, fileName, workbook);
+    console.log('Auto-backup completed successfully');
+    return true;
+  } catch (error) {
+    console.error('Auto-backup failed:', error);
+    return false;
+  }
 };
 // Backup to GitHub
 export const backupToGitHub = async (sessions, isAutoBackup = false, customFileName = null, workbook = null) => {
-const isConnected = await checkConnectionStatus();
-if (!isConnected) {
-if (!isAutoBackup) {
-throw new Error('Cannot backup: You are offline.');
-}
-return;
-}
-// Get token
-const token = await getGitHubToken();
-if (!token) {
-if (!isAutoBackup) {
-throw new Error('No GitHub token available.');
-}
-return;
-}
-try {
-backupInProgress = true;
-// Create filename with date if not provided
-const fileName = customFileName || `qr_scanner_backup_${formatDateTimeForFile(new Date())}.xlsx`;
-// Create workbook if not provided
-if (!workbook) {
-workbook = prepareDataForBackup(sessions);
-}
-// Convert workbook to base64
-const excelBinary = XLSX.write(workbook, { bookType: 'xlsx', type: 'binary' });
-const excelBase64 = toBase64(excelBinary);
-// Repository information
-const repoOwner = DEFAULT_GITHUB_OWNER.toString().trim();
-const repoName = DEFAULT_GITHUB_REPO.toString().trim();
-const filePath = DEFAULT_GITHUB_PATH.toString().trim().replace(/^\/|\/$/g, '');
-const branchName = DEFAULT_GITHUB_BRANCH.toString().trim();
-// First, check if the repository exists and is accessible
-const repoCheckUrl = `https://api.github.com/repos/${encodeURIComponent(repoOwner)}/${encodeURIComponent(repoName)}`;
-console.log(`Checking repository: ${repoCheckUrl}`);
-const repoCheckResponse = await fetch(repoCheckUrl, {
-method: 'GET',
-headers: {
-'Authorization': `token ${token}`,
-'Accept': 'application/vnd.github.v3+json',
-'User-Agent': 'QRScannerApp/MobileClient'
-}
-});
-if (!repoCheckResponse.ok) {
-const repoErrorData = await repoCheckResponse.json();
-throw new Error(`Repository check failed: ${repoErrorData.message} (HTTP ${repoCheckResponse.status})`);
-}
-// Build the path components
-const directoryPath = filePath ? `${filePath}` : '';
-const filePathComponent = directoryPath ? `${directoryPath}/` : '';
-const fullFilePath = `${filePathComponent}${fileName}`;
-// Check for existing file to get SHA
-let sha = null;
-const fileCheckUrl = `https://api.github.com/repos/${encodeURIComponent(repoOwner)}/${encodeURIComponent(repoName)}/contents/${encodeURIComponent(fullFilePath)}?ref=${encodeURIComponent(branchName)}`;
-try {
-const checkResponse = await fetch(fileCheckUrl, {
-method: 'GET',
-headers: {
-'Authorization': `token ${token}`,
-'Accept': 'application/vnd.github.v3+json',
-'User-Agent': 'QRScannerApp/MobileClient'
-}
-});
-if (checkResponse.ok) {
-const fileInfo = await checkResponse.json();
-sha = fileInfo.sha;
-}
-} catch (error) {
-console.log('Error checking file existence:', error);
-}
-// Prepare the request body
-const requestBody = {
-message: `Backup QR Scanner data - ${new Date().toLocaleString()}`,
-content: excelBase64,
-branch: branchName
-};
-if (sha) {
-requestBody.sha = sha;
-}
-// Now create or update the file
-const putUrl = `https://api.github.com/repos/${encodeURIComponent(repoOwner)}/${encodeURIComponent(repoName)}/contents/${encodeURIComponent(fullFilePath)}`;
-const response = await fetch(putUrl, {
-method: 'PUT',
-headers: {
-'Authorization': `token ${token}`,
-'Content-Type': 'application/json',
-'Accept': 'application/vnd.github.v3+json',
-'User-Agent': 'QRScannerApp/MobileClient'
-},
-body: JSON.stringify(requestBody)
-});
-if (response.ok) {
-// Update last backup time
-const now = new Date().toISOString();
-await AsyncStorage.setItem(LAST_BACKUP_TIME_KEY, now);
-await AsyncStorage.setItem(LAST_BACKUP_SESSIONS_KEY, sessions.length.toString());
-return { success: true, message: 'Backup completed successfully!' };
-} else {
-const errorData = await response.json();
-throw new Error(`GitHub API error (HTTP ${response.status}): ${errorData.message}`);
-}
-} catch (error) {
-console.error('GitHub backup error:', error);
-throw new Error(`Backup failed: ${error.message}`);
-} finally {
-backupInProgress = false;
-}
+  const isConnected = await checkConnectionStatus();
+  if (!isConnected) {
+    if (!isAutoBackup) {
+      throw new Error('Cannot backup: You are offline.');
+    }
+    return;
+  }
+  
+  // Get token
+  const token = await getGitHubToken();
+  if (!token) {
+    if (!isAutoBackup) {
+      throw new Error('No GitHub token available.');
+    }
+    return;
+  }
+  
+  try {
+    backupInProgress = true;
+    
+    // Create filename with date if not provided
+    const fileName = customFileName || `qr_scanner_backup_${formatDateTimeForFile(new Date())}.xlsx`;
+    
+    // Create workbook if not provided
+    if (!workbook) {
+      workbook = await prepareDataForBackup(sessions);
+    }
+    
+    // Convert workbook to base64
+    const excelBinary = XLSX.write(workbook, { bookType: 'xlsx', type: 'binary' });
+    const excelBase64 = toBase64(excelBinary);
+    
+    // Repository information
+    const repoOwner = DEFAULT_GITHUB_OWNER.toString().trim();
+    const repoName = DEFAULT_GITHUB_REPO.toString().trim();
+    const filePath = DEFAULT_GITHUB_PATH.toString().trim().replace(/^\/|\/$/g, '');
+    const branchName = DEFAULT_GITHUB_BRANCH.toString().trim();
+    
+    // First, check if the repository exists and is accessible
+    const repoCheckUrl = `https://api.github.com/repos/${encodeURIComponent(repoOwner)}/${encodeURIComponent(repoName)}`;
+    console.log(`Checking repository: ${repoCheckUrl}`);
+    const repoCheckResponse = await fetch(repoCheckUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization': `token ${token}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'User-Agent': 'QRScannerApp/MobileClient'
+      }
+    });
+    
+    if (!repoCheckResponse.ok) {
+      const repoErrorData = await repoCheckResponse.json();
+      throw new Error(`Repository check failed: ${repoErrorData.message} (HTTP ${repoCheckResponse.status})`);
+    }
+    
+    // Build the path components
+    const directoryPath = filePath ? `${filePath}` : '';
+    const filePathComponent = directoryPath ? `${directoryPath}/` : '';
+    const fullFilePath = `${filePathComponent}${fileName}`;
+    
+    // Check for existing file to get SHA
+    let sha = null;
+    const fileCheckUrl = `https://api.github.com/repos/${encodeURIComponent(repoOwner)}/${encodeURIComponent(repoName)}/contents/${encodeURIComponent(fullFilePath)}?ref=${encodeURIComponent(branchName)}`;
+    try {
+      const checkResponse = await fetch(fileCheckUrl, {
+        method: 'GET',
+        headers: {
+          'Authorization': `token ${token}`,
+          'Accept': 'application/vnd.github.v3+json',
+          'User-Agent': 'QRScannerApp/MobileClient'
+        }
+      });
+      if (checkResponse.ok) {
+        const fileInfo = await checkResponse.json();
+        sha = fileInfo.sha;
+      }
+    } catch (error) {
+      console.log('Error checking file existence:', error);
+    }
+    
+    // Prepare the request body
+    const requestBody = {
+      message: `Backup QR Scanner data - ${new Date().toLocaleString()}`,
+      content: excelBase64,
+      branch: branchName
+    };
+    
+    if (sha) {
+      requestBody.sha = sha;
+    }
+    
+    // Now create or update the file
+    const putUrl = `https://api.github.com/repos/${encodeURIComponent(repoOwner)}/${encodeURIComponent(repoName)}/contents/${encodeURIComponent(fullFilePath)}`;
+    const response = await fetch(putUrl, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `token ${token}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/vnd.github.v3+json',
+        'User-Agent': 'QRScannerApp/MobileClient'
+      },
+      body: JSON.stringify(requestBody)
+    });
+    
+    if (response.ok) {
+      // Update last backup time
+      const now = new Date().toISOString();
+      await AsyncStorage.setItem(LAST_BACKUP_TIME_KEY, now);
+      await AsyncStorage.setItem(LAST_BACKUP_SESSIONS_KEY, sessions.length.toString());
+      return { success: true, message: 'Backup completed successfully!' };
+    } else {
+      const errorData = await response.json();
+      throw new Error(`GitHub API error (HTTP ${response.status}): ${errorData.message}`);
+    }
+  } catch (error) {
+    console.error('GitHub backup error:', error);
+    throw new Error(`Backup failed: ${error.message}`);
+  } finally {
+    backupInProgress = false;
+  }
 };
 // Validate GitHub token
 export const validateGitHubToken = async (token) => {

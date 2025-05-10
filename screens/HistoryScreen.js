@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, StyleSheet, FlatList, ScrollView, TouchableOpacity, Alert, ActivityIndicator, Platform } from 'react-native';
-import { Text, Button, Surface, Title, Divider, Card, Menu, Provider, List, Dialog, Portal } from 'react-native-paper';
+import { Text, DataTable, Button, Surface, Title, Divider, Card, Menu, Provider, List, Dialog, Portal } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { loadSessionsFromStorage, saveSessionsToStorage, clearAllSessions } from '../services/database';
@@ -307,7 +307,7 @@ const HistoryScreen = ({ navigation }) => {
     </View>
   );
   
-  return (
+return (
     <Provider>
       <View style={styles.container}>
         {!sessionDetails ? (
@@ -341,7 +341,7 @@ const HistoryScreen = ({ navigation }) => {
                   onPress={() => handleSortChange('date-asc')} 
                 />
                 <Menu.Item 
-                  title={<Text>By Location</Text>}
+                  title={<Text>By Subject</Text>}
                   onPress={() => handleSortChange('location')} 
                 />
               </Menu>
@@ -413,7 +413,7 @@ const HistoryScreen = ({ navigation }) => {
                 Session Details
               </Title>
               <Button 
-                mode="text" 
+                    mode="outlined" 
                 icon="close"
                 onPress={hideSessionDetails}
                 style={styles.closeButton}
@@ -425,7 +425,7 @@ const HistoryScreen = ({ navigation }) => {
             
             <View style={styles.detailsInfo}>
               <Text style={styles.detailText}>
-                <Text style={styles.detailLabel}>Location: </Text>
+                <Text style={styles.detailLabel}>Subject: </Text>
                 {selectedSession?.location || 'N/A'}
               </Text>
               <Text style={styles.detailText}>
@@ -451,26 +451,31 @@ const HistoryScreen = ({ navigation }) => {
             </View>
             
             <View style={styles.scansContainer}>
-              <View style={styles.tableHeader}>
-                <Text style={[styles.columnHeader, styles.idColumn]}>ID</Text>
-                <Text style={[styles.columnHeader, styles.timeColumn]}>Time</Text>
-              </View>
-              
               {Array.isArray(selectedSession?.scans) && selectedSession.scans.length > 0 ? (
-                <View style={styles.scanListWrapper}>
-                  <FlatList
-                    data={selectedSession.scans}
-                    renderItem={renderScanItem}
-                    keyExtractor={item => item.id.toString()}
-                    contentContainerStyle={styles.scansList}
-                    removeClippedSubviews={Platform.OS === 'android'}
-                    keyboardShouldPersistTaps="handled"
-                    scrollEnabled={true}
-                    bounces={true}
-                    indicatorStyle="black"
-                    showsVerticalScrollIndicator={true}
-                  />
-                </View>
+                <DataTable>
+                  <DataTable.Header style={{ backgroundColor: '#f0f0f0' }}>
+                    <DataTable.Title style={{ flex: 0.6 }}><Text style={{ color: '#24325f', fontWeight: 'bold' }}>Student ID</Text></DataTable.Title>
+                    <DataTable.Title style={{ flex: 0.4 }}><Text style={{ color: '#24325f', fontWeight: 'bold' }}>Time</Text></DataTable.Title>
+                  </DataTable.Header>
+                  
+                  <ScrollView style={{ maxHeight: 300 }} nestedScrollEnabled={true}>
+                    {selectedSession.scans.map((scan, index) => (
+                      <DataTable.Row key={scan.id || index} style={{ backgroundColor: '#ffffff' }}>
+                        <DataTable.Cell style={{ flex: 0.6 }}>
+                          <Text style={{ color: '#24325f' }}>
+                            {scan.content || scan.id}
+                            {scan.isManual ? ' (Manual)' : ''}
+                          </Text>
+                        </DataTable.Cell>
+                        <DataTable.Cell style={{ flex: 0.4 }}>
+                          <Text style={{ color: '#24325f' }}>
+                            {scan.formattedTime}
+                          </Text>
+                        </DataTable.Cell>
+                      </DataTable.Row>
+                    ))}
+                  </ScrollView>
+                </DataTable>
               ) : (
                 <View style={styles.noScans}>
                   <Text style={styles.noScansText}>No scans in this session</Text>
@@ -721,6 +726,8 @@ const styles = StyleSheet.create({
   closeButton: {
     margin: 0,
     padding: 0,
+    borderColor: '#24325f', // Matches --primary-color,
+
   },
   closeButtonText: {
     color: '#24325f',
@@ -736,10 +743,11 @@ const styles = StyleSheet.create({
   detailText: {
     marginBottom: 6,
     fontSize: 14,
+    color: '#000000',
   },
   detailLabel: {
     fontWeight: 'bold',
-    color: '#444',
+    color: '#24325f',
   },
   detailButtons: {
     flexDirection: 'row',
@@ -817,9 +825,12 @@ const styles = StyleSheet.create({
   },
   // Dialog styling
   modalContent: {
+    maxHeight: '100%',
+    backgroundColor: 'white',
     padding: 20,
-    backgroundColor: '#ffffff',
+    margin: 20,
     borderRadius: 8,
+    elevation: 5,
   },
   dialogTitle: {
     color: '#24325f',
@@ -849,7 +860,6 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     flex: 1,
     borderRadius: 18,
-
   },
 });
 

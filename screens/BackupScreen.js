@@ -6,12 +6,15 @@ import * as BackupService from '../services/backup';
 import * as Database from '../services/database';
 import NetInfo from '@react-native-community/netinfo';
 import { Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const BackupScreen = () => {
   const [connectionStatus, setConnectionStatus] = useState('checking');
   const [lastBackupTime, setLastBackupTime] = useState('Never');
   const [isBackingUp, setIsBackingUp] = useState(false);
+  const [isProcessingQueued, setIsProcessingQueued] = useState(false);
   const [sessions, setSessions] = useState([]);
+  const [queuedSessionsCount, setQueuedSessionsCount] = useState(0);
   const [autoBackupEnabled, setAutoBackupEnabled] = useState(true);
   const [isTestingConnection, setIsTestingConnection] = useState(false);
   
@@ -41,6 +44,9 @@ const BackupScreen = () => {
         if (allSessions && Array.isArray(allSessions)) {
           setSessions(allSessions);
         }
+
+        // Check for queued sessions
+        await checkQueuedSessionsCount();
         
         return unsubscribe;
       } catch (error) {
@@ -57,19 +63,19 @@ const BackupScreen = () => {
     };
   }, []);
 
-// Add this effect to refresh data when screen comes into focus
-useEffect(() => {
-  // This will run when the component mounts
-  refreshBackupData();
-  
-  // Set up an interval to refresh every 30 seconds while the screen is visible
-  const intervalId = setInterval(() => {
+  // Add this effect to refresh data when screen comes into focus
+  useEffect(() => {
+    // This will run when the component mounts
     refreshBackupData();
-  }, 30000);
-  
-  // Clean up the interval when component unmounts
-  return () => clearInterval(intervalId);
-}, []);
+    
+    // Set up an interval to refresh every 30 seconds while the screen is visible
+    const intervalId = setInterval(() => {
+      refreshBackupData();
+    }, 30000);
+    
+    // Clean up the interval when component unmounts
+    return () => clearInterval(intervalId);
+  }, []);
   
   // Perform manual backup
   const handleBackupNow = async () => {
@@ -97,26 +103,29 @@ useEffect(() => {
     }
   };
 
-// Add this function to refresh backup data
-const refreshBackupData = async () => {
-  try {
-    // Get last backup time
-    const lastBackup = await BackupService.getLastBackupTime();
-    setLastBackupTime(lastBackup);
-    
-    // Get auto-backup status
-    const autoBackup = await BackupService.getAutoBackupStatus();
-    setAutoBackupEnabled(autoBackup);
-    
-    // Get all sessions from database
-    const allSessions = await Database.getAllSessions();
-    if (allSessions && Array.isArray(allSessions)) {
-      setSessions(allSessions);
+  // Add this function to refresh backup data
+  const refreshBackupData = async () => {
+    try {
+      // Get last backup time
+      const lastBackup = await BackupService.getLastBackupTime();
+      setLastBackupTime(lastBackup);
+      
+      // Get auto-backup status
+      const autoBackup = await BackupService.getAutoBackupStatus();
+      setAutoBackupEnabled(autoBackup);
+      
+      // Get all sessions from database
+      const allSessions = await Database.getAllSessions();
+      if (allSessions && Array.isArray(allSessions)) {
+        setSessions(allSessions);
+      }
+
+      // Check for queued sessions
+      await checkQueuedSessionsCount();
+    } catch (error) {
+      console.error('Error refreshing backup data:', error);
     }
-  } catch (error) {
-    console.error('Error refreshing backup data:', error);
-  }
-};
+  };
   
   // Toggle auto-backup
   const toggleAutoBackup = async () => {
@@ -144,85 +153,156 @@ const refreshBackupData = async () => {
       setIsTestingConnection(false);
     }
   };
+
+  // Check how many sessions are queued for backup
+  const checkQueuedSessionsCount = async () => {
+    try {
+      const pendingBackups = await AsyncStorage.getItem('pendingBackups');
+      const backupsArray = pendingBackups ? JSON.parse(pendingBackups) : [];
+      setQueuedSessionsCount(backupsArray.length);
+    } catch (error) {
+      console.error('Error checking queued sessions count:', error);
+      setQueuedSessionsCount(0);
+    }
+  };
+
+  // Handle processing queued backups manually
+  const handleProcessQueuedBackups = async () => {
+    // If already processing, don't start again
+    if (isProcessingQueued) {
+      return;
+    }
+
+    // Check if we're online
+    if (connectionStatus !== 'online') {
+      Alert.alert('Offline', 'You must be online to process queued backups.');
+      return;
+    }
+    
+    // Check if there are any queued backups
+    if (queuedSessionsCount === 0) {
+      Alert.alert('No Queued Backups', 'There are no queued sessions to back up.');
+      return;
+    }
+
+    // Check if already backing up via the main backup process
+    if (isBackingUp) {
+      Alert.alert(
+        'Backup in Progress', 
+        'A backup is already in progress. Please wait for it to complete before processing queued backups.'
+      );
+      return;
+    }
+    
+    setIsProcessingQueued(true);
+    
+    try {
+      console.log("Manually processing queued backups...");
+      // Use the existing processPendingBackups function
+      const result = await BackupService.processPendingBackups();
+      
+      console.log("Process pending backups result:", result);
+      
+      if (result.success) {
+        // Update the UI with the number of processed backups
+        await checkQueuedSessionsCount(); // Refresh the count
+        
+        // Show success message
+        Alert.alert(
+          "Backup Complete",
+          `Successfully processed ${result.processed} queued ${result.processed === 1 ? 'session' : 'sessions'}.`,
+          [{ text: "OK" }]
+        );
+        
+        // Refresh the backup time
+        const lastBackup = await BackupService.getLastBackupTime();
+        setLastBackupTime(lastBackup);
+      } else {
+        Alert.alert("Backup Failed", result.message || "Failed to process queued backups");
+      }
+    } catch (error) {
+      console.error("Error processing queued backups:", error);
+      Alert.alert("Backup Error", error.message || "An unexpected error occurred");
+    } finally {
+      setIsProcessingQueued(false);
+    }
+  };
   
   return (
-<View style={styles.container}>
-  <Surface style={styles.card}>
-    <Title style={styles.title}>Backup Controls</Title>
-    
-    <View style={styles.statusContainer}>
-      <View style={styles.statusItem}>
-        <Text style={styles.statusLabel}>Connection Status:</Text>
-        <View style={styles.statusValue}>
-          {connectionStatus === 'checking' ? (
-            <ActivityIndicator size={16} color="#24325f" style={styles.statusIcon} />
-          ) : (
-            <MaterialCommunityIcons 
-              name={connectionStatus === 'online' ? 'wifi' : 'wifi-off'} 
-              size={20} 
-              color={connectionStatus === 'online' ? '#4CAF50' : '#F44336'} 
-              style={styles.statusIcon}
-            />
-          )}
-          <Text style={[
-            styles.statusText, 
-            connectionStatus === 'online' ? styles.statusOnline : 
-            connectionStatus === 'offline' ? styles.statusOffline : {}
-          ]}>
-            {connectionStatus === 'checking' ? 'Checking...' : 
-             connectionStatus === 'online' ? 'Online' : 'Offline'}
-          </Text>
-        </View>
-      </View>
-      
-      <View style={styles.statusItem}>
-        <Text style={styles.statusLabel}>Last Backup:</Text>
-        <Text style={styles.statusText}>
-          {lastBackupTime}
-        </Text>
-      </View>
-      
-      <View style={styles.statusItem}>
-        <Text style={styles.statusLabel}>Auto Backup:</Text>
-        <Switch
-          value={autoBackupEnabled}
-          onValueChange={toggleAutoBackup}
-          color="#24325f"
-        />
-      </View>
-    </View>
-    
-    <Divider style={styles.divider} />
-    
-    <View style={styles.backupControls}>
-      <Button 
-        mode="contained" 
-        icon="cloud-upload"
-        style={styles.primaryButton}
-        labelStyle={styles.primaryButtonText}
-        onPress={handleBackupNow}
-        loading={isBackingUp}
-        disabled={isBackingUp || connectionStatus !== 'online'}
-      >
-        {isBackingUp ? 'Backing up...' : 'Backup Now'}
-      </Button>
-      
-      <Button 
-        mode="outlined" 
-        icon="connection"
-        style={styles.secondaryButton}
-        labelStyle={styles.secondaryButtonText}
-        onPress={testGitHubConnection}
-        loading={isTestingConnection}
-        disabled={isTestingConnection || connectionStatus !== 'online'}
+    <View style={styles.container}>
+      <Surface style={styles.card}>
+        <Title style={styles.title}>Backup Controls</Title>
+        
+        <View style={styles.statusContainer}>
+          <View style={styles.statusItem}>
+            <Text style={styles.statusLabel}>Connection Status:</Text>
+            <View style={styles.statusValue}>
+              {connectionStatus === 'checking' ? (
+                <ActivityIndicator size={16} color="#24325f" style={styles.statusIcon} />
+              ) : (
+                <MaterialCommunityIcons 
+                  name={connectionStatus === 'online' ? 'wifi' : 'wifi-off'} 
+                  size={20} 
+                  color={connectionStatus === 'online' ? '#4CAF50' : '#F44336'} 
+                  style={styles.statusIcon}
+                />
+              )}
+              <Text style={[
+                styles.statusText, 
+                connectionStatus === 'online' ? styles.statusOnline : 
+                connectionStatus === 'offline' ? styles.statusOffline : {}
+              ]}>
+                {connectionStatus === 'checking' ? 'Checking...' : 
+                connectionStatus === 'online' ? 'Online' : 'Offline'}
+              </Text>
+            </View>
+          </View>
+          
+          <View style={styles.statusItem}>
+            <Text style={styles.statusLabel}>Last Backup:</Text>
+            <Text style={styles.statusText}>
+              {lastBackupTime}
+            </Text>
+          </View>
+          
+          <View style={styles.statusItem}>
+            <Text style={styles.statusLabel}>Queued Sessions:</Text>
+            <Text style={styles.statusText}>
+              {queuedSessionsCount}
+            </Text>
+          </View>       
+        </View>               
+        <View style={styles.backupControls}>
+          <Button 
+            mode="contained" 
+            icon="cloud-upload"
+            style={[styles.primaryButton]}
+            labelStyle={[styles.primaryButtonText]}
+            onPress={handleBackupNow}
+            loading={isBackingUp}
+            disabled={isBackingUp || isProcessingQueued || connectionStatus !== 'online'}
+            uppercase={false}
           >
-            Test Repository Connection
+            {isBackingUp ? 'Backing up...' : 'Backup All Sessions'}
           </Button>
           
+          <Button 
+            mode="contained" 
+            icon="file-sync"
+            style={[styles.primaryButton]}
+            labelStyle={[styles.primaryButtonText]}
+            onPress={handleProcessQueuedBackups}
+            loading={isProcessingQueued}
+            disabled={isBackingUp || isProcessingQueued || connectionStatus !== 'online' || queuedSessionsCount === 0}
+            uppercase={false}
+          >
+            {isProcessingQueued ? 'Processing...' : `Backup Queued Sessions (${queuedSessionsCount})`}
+          </Button>
+              
           <Text style={styles.noteText}>
             {autoBackupEnabled 
               ? 'Auto-backup is enabled. Backups will occur at app startup and when sessions end.' 
-              : 'Auto-backup is disabled. Use the "Backup Now" button to manually backup your data.'}
+              : 'Auto-backup is disabled. Use the buttons above to manually backup your data.'}
           </Text>
         </View>
       </Surface>
@@ -262,7 +342,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#24325f',
+    borderBottomColor: '#e0e0e0',
   },
   statusLabel: {
     fontWeight: 'bold',
@@ -288,31 +368,11 @@ const styles = StyleSheet.create({
     color: '#951d1e', // Matches --secondary-color
     fontWeight: 'bold',
   },
-  divider: {
-    marginVertical: 16,
-    height: 1,
-    backgroundColor: '#24325f',
-    width: '100%',
-  },
   backupControls: {
     alignItems: 'center',
   },
-  backupButton: {
-    marginBottom: 16,
-    paddingVertical: 6,
-    backgroundColor: '#24325f', // Matches --primary-color
-    borderColor: '#24325f', // Matches --primary-color
-    width: '80%',
-  },
   backupButtonText: {
     color: 'white',
-  },
-  testButton: {
-    marginBottom: 16,
-    paddingVertical: 6,
-    backgroundColor: '#24325f', // Matches --primary-color
-    borderColor: '#24325f', // Matches --primary-color
-    width: '80%',
   },
   testButtonText: {
     color: 'white',
@@ -323,27 +383,25 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontStyle: 'italic',
     paddingHorizontal: 16,
+    marginTop: 16,
   },
   primaryButton: {
     backgroundColor: '#24325f',
     borderColor: '#24325f',
-    marginBottom: 8,
-    marginRight: 8,
+    marginBottom: 16,
     width: '90%',
   },
   primaryButtonText: {
     color: 'white',
   },
   secondaryButton: {
-    backgroundColor: 'white',
+    backgroundColor: '#951d1e',
     borderColor: '#24325f',
-    borderWidth: 1,
-    marginBottom: 8,
-    marginRight: 8,
+    marginBottom: 16,
     width: '90%',
   },
   secondaryButtonText: {
-    color: '#24325f',
+    color: 'white',
   },
 });
 

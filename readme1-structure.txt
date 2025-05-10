@@ -1,36 +1,48 @@
-QRScannerApp/
+# QRScannerApp - Project Structure
+
+Attendance recorder/
 ├── App.js                 # Main entry point
 ├── app.json               # Expo configuration
-├── package.json           #
+├── package.json           # Project dependencies
 ├── assets/                # Icons, images, etc.
-│   ├── students_data.json
-│   ├── Attendance Recorder App User Guide.pdf
-│   ├── beep.mp3
-│   ├── usercredentials.json
+│   ├── adaptive-icon.png
 │   ├── admincredentials.json
-│   ├── favicon.ico
+│   ├── app-icon.png
 │   ├── apple-touch-icon.png
-│   ├── web-app-manifest-192x192.png
-│   ├── web-app-manifest-512x512.png
+│   ├── Attendance_Recorder_App_User_Guide.pdf
+│   ├── beep.mp3
+│   ├── favicon.ico
+│   ├── favicon.svg
 │   ├── favicon-96x96.png
-├── components/            # Reusable UI components
-│   └── NetworkStatus.js  #
+│   ├── notification_icon.png
+│   ├── students_data.json
+│   ├── subjectsmodal.json
+│   ├── usercredentials.json
+│   ├── web-app-manifest-192x192.png
+│   └── web-app-manifest-512x512.png
 ├── screens/               # Main app screens
-│   ├── LoginScreen.js     # sign in authentication screen
-│   ├── ScannerScreen.js   # QR scanner screen
-│   ├── ChecklistScreen.js # Student selector screen
-│   ├── HistoryScreen.js   # History/records screen 
-│   ├── BackupScreen.js    # Backup functionality
 │   ├── AboutScreen.js     # App information
-│   └── ContactScreen.js   # Contact/support
-├── services/              # Business logic
-│   ├── auth.js            # sign in authentication functionality
-│   ├── recover.js         # recovery of interrupted sessions
-│   ├── loaddata.js        # load the students data from excel file for the checklist screen
-│   ├── database.js        # SQLite operations
-│   ├── backup.js          # Backup functionality
-│   ├── notifications.js   # push notifications
-│   ├── export.js          # Excel export functionality
-│   └── background.js      # backgroundsync
-└── utils/                 # Helper functions
-    └── dateUtils.js       # format date for other functions
+│   ├── AccountScreen.js   # User account settings
+│   ├── BackupScreen.js    # Backup functionality
+│   ├── ChecklistScreen.js # Student selector screen
+│   ├── ContactScreen.js   # Contact/support
+│   ├── HistoryScreen.js   # History/records screen
+│   ├── LoginScreen.js     # Sign in authentication screen
+│   ├── ScannerScreen.js   # QR scanner screen
+│   └── SettingsScreen.js  # App settings
+└── services/              # Business logic
+    ├── auth.js            # Sign in authentication functionality
+    ├── background.js      # Background sync
+    ├── backup.js          # Backup functionality
+    ├── base64util.js      # Base64 encoding/decoding utilities
+    ├── database.js        # SQLite operations
+    ├── excelhandler.js    # Excel file handling
+    ├── export.js          # Excel export functionality
+    ├── loadcredentials.js # Load user credentials
+    ├── loadData.js        # Load students data for checklist
+    ├── managebackups.js   # Manage backup files
+    ├── notifications.js   # Push notifications
+    ├── recover.js         # Recovery of interrupted sessions
+    ├── updateadmins.js    # Update admin information
+    ├── updatestudentsdata.js # Update student information
+    └── updateusers.js     # Update user information

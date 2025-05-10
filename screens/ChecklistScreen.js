@@ -15,6 +15,7 @@ import NetInfo from '@react-native-community/netinfo';
 import { syncStudentsDataWithGitHub } from '../services/loadData';
 import { loadStudentsData, loadFilteredStudentsData } from '../services/loadData';
 import { initDatabase, getAllSessions, saveSession, getDatabase } from '../services/database';
+import { getCurrentUser } from '../services/auth';
 import { 
   SESSION_TYPE, 
   SESSION_STATUS,
@@ -85,26 +86,11 @@ const ChecklistScreen = ({ isOnline }) => {
   const [showStudentSelectorModal, setShowStudentSelectorModal] = useState(false);
   const [showYearFilterModal, setShowYearFilterModal] = useState(false);
   const [showGroupFilterModal, setShowGroupFilterModal] = useState(false);
-  const locationOptions = [
-    "Morgue",
-    "Anatomy Lecture Hall",
-    "Histology Lab",
-    "Histology Lecture Hall",
-    "Biochemistry Lab",
-    "Biochemistry Lecture Hall",
-    "Physiology Lab",
-    "Physiology Lecture Hall",
-    "Microbiology Lab",
-    "Microbiology Lecture Hall",
-    "Parasitology Lab",
-    "Parasitology Lecture Hall",
-    "Pathology Lab",
-    "Pathology Lecture Hall",
-    "Pharmacology Lab",
-    "Pharmacology Lecture Hall",
-    "Building 'A' Lecture Hall",
-    "Building 'B' Lecture Hall"
-  ];
+const [locationOptions, setLocationOptions] = useState([]);
+const [dataTableSearchQuery, setDataTableSearchQuery] = useState('');
+const [subjectSearchQuery, setSubjectSearchQuery] = useState('');
+const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
+const [studentToDelete, setStudentToDelete] = useState('');
 //======EFFECT HOOKS SECTION======//
   //======CONNECTION MONITORING SECTION======//
   // Debug connection status
@@ -136,18 +122,24 @@ const checkOnlineStatus = async () => {
 };
   //======CONNECTION STATUS SECTION======//
   // Update connection message when online status changes
-  useEffect(() => {
+ useEffect(() => {
     if (isOnline) {
       setConnectionMessage('Online - All features available');
       // If we're back online and there's a session that needs to be backed up remotely
       if (activeSession && !activeSession.backedUp) {
         setSelectionStatus('Back online - Session will be backed up automatically');
-        // Process any pending backups when we come back online
+        // Process any pending backups when coming online
         processPendingBackups()
           .then(result => {
             if (result && result.processed > 0) {
               setSelectionStatus(`Processed ${result.processed} pending backups`);
-              // Clear message after a timeout
+              // Show professional alert for successful backup of offline sessions
+              Alert.alert(
+                "Backup Complete", 
+                "Your offline sessions have been successfully backed up to the server.",
+                [{ text: "OK" }]
+              );
+              // Clear status message after a timeout
               setTimeout(() => {
                 setSelectionStatus('');
               }, 5000);
@@ -167,6 +159,7 @@ const checkOnlineStatus = async () => {
       setConnectionMessage('Offline - Working in local mode');
     }
 }, [isOnline]); // Only depend on isOnline, not activeSession
+
 
   //======SEARCH AND FILTER SECTION======//
   useEffect(() => {
@@ -280,6 +273,9 @@ const initializeChecklistModule = async () => {
     // Load students data
     await loadStudentsDataForChecklist();
     
+    // Load location options
+    await loadLocationOptions();
+    
     // Load sessions from storage
     const savedSessions = await AsyncStorage.getItem('sessions');
     if (savedSessions) {
@@ -294,6 +290,11 @@ const initializeChecklistModule = async () => {
     console.error("Error initializing checklist module:", error);
   }
 };
+
+useEffect(() => {
+  loadLocationOptions()
+    .catch(error => console.error("Failed to load location options:", error));
+}, []); // Empty dependency array means this runs once on mount
 
 // Single useEffect for initialization
 useEffect(() => {
@@ -340,7 +341,7 @@ useEffect(() => {
       console.log("Initialized empty pendingBackups array");
     }
   });
-  // Check and process pending backups when coming online
+// Check and process pending backups when coming online
   const checkAndProcessPendingBackups = async () => {
     if (!isOnline) {
       console.log("Cannot process backups while offline");
@@ -348,25 +349,44 @@ useEffect(() => {
     }
     try {
       console.log("Checking for pending backups...");
-      // setcheckliststatus('Checking for pending backups...');  // Removed UI update
+      setcheckliststatus('Checking for pending backups...');
       const result = await processPendingBackups();
       console.log("Process pending backups result:", result);
       if (result.success) {
-        if (result.message.includes('processed')) {
-          // setcheckliststatus(result.message);  // Removed UI update
+        if (result.processed > 0) {
+          setcheckliststatus(`Synchronized ${result.processed} offline sessions`);
+          
+          // Show professional alert for successful backup of offline sessions
+          Alert.alert(
+            "Synchronization Complete", 
+            "Sessions created while offline have been successfully synchronized with the server.",
+            [{ text: "OK" }]
+          );
+          
           // Refresh sessions to update backup status
           const savedSessions = await AsyncStorage.getItem('sessions');
           if (savedSessions) {
-            // setSessions(JSON.parse(savedSessions));  // Removed UI update
+            setSessions(JSON.parse(savedSessions));
           }
+          
+          // Clear status message after a timeout
+          setTimeout(() => {
+            setcheckliststatus('');
+          }, 5000);
         }
       }
     } catch (error) {
       console.error('Error processing pending backups:', error);
-      // setcheckliststatus('Error processing backups');  // Removed UI update
+      setcheckliststatus('Error processing backups');
+      
+      // Show alert for failed backup
+      Alert.alert(
+        "Synchronization Failed", 
+        "There was an error synchronizing your offline sessions. Please try again later.",
+        [{ text: "OK" }]
+      );
     }
   };
-
 //======FUNCTIONS SECTION======//
   //======DATA LOADING SECTION======//
   // Load students data
@@ -578,6 +598,157 @@ const queueSessionForBackup = async (session) => {
   }
 };
   //======SESSION MANAGEMENT SECTION======//
+const handleDeleteConfirmation = (studentId) => {
+  setStudentToDelete(studentId);
+  setShowDeleteConfirmModal(true);
+};
+const handleDeleteStudent = async () => {
+  if (!studentToDelete || !activeSession) return;
+  
+  // Create a new array without the deleted student
+  const updatedScans = activeSession.scans.filter(scan => scan.id !== studentToDelete);
+  
+  // Create updated session object
+  const updatedSession = {
+    ...activeSession,
+    scans: updatedScans
+  };
+  
+  // Update the active session state
+  setActiveSession(updatedSession);
+  
+  // Mark session as needing saving for auto-save mechanism
+  window.sessionNeedsSaving = true;
+  
+  // Immediately save the updated session to AsyncStorage
+  try {
+    await saveActiveChecklistSession(updatedSession);
+    console.log("Session saved after item deletion");
+    
+    // Update session in history
+    await updateSessionInHistory(updatedSession);
+    console.log("Session history updated after item deletion");
+    
+    // Update status message
+    setSelectionStatus(`✅ Deleted student: ${studentToDelete}`);
+    
+    // Clear status message after a few seconds
+    setTimeout(() => {
+      setSelectionStatus('');
+    }, 3000);
+  } catch (error) {
+    console.error("Error saving session after deletion:", error);
+    Alert.alert(
+      "Deletion Error",
+      "Student was removed from display but there was an error saving the changes."
+    );
+  }
+  
+  // Close the confirmation modal
+  setShowDeleteConfirmModal(false);
+  setStudentToDelete('');
+};
+// Add this function to load location options
+const loadLocationOptions = async () => {
+  try {
+    console.log("Loading location options from GitHub...");
+    setcheckliststatus("Loading location options...");
+    
+    // Use the same GitHub token approach as with students data
+    const token = `${GITHUB_TOKEN_PREFIX}${GITHUB_TOKEN_SUFFIX}`;
+    
+    // Define GitHub parameters - adjust path to point to your location options JSON
+    const owner = DEFAULT_GITHUB_OWNER;
+    const repo = DEFAULT_GITHUB_REPO;
+    const path = 'assets/subjectsmodal.json'; // Path to the locations JSON file
+    const branch = DEFAULT_GITHUB_BRANCH;
+    
+    // GitHub API URL to fetch file content
+    const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`;
+    
+    const headers = {
+      'Authorization': `token ${token}`,
+      'Accept': 'application/vnd.github.v3.raw'
+    };
+    
+    const response = await fetch(apiUrl, { headers });
+    
+    if (!response.ok) {
+      throw new Error(`GitHub API error: ${response.status}`);
+    }
+    
+    // Parse the JSON response
+    const locationData = await response.json();
+    
+    // Ensure we have valid data
+    if (Array.isArray(locationData) && locationData.length > 0) {
+      console.log(`Loaded ${locationData.length} location options`);
+      setLocationOptions(locationData);
+      setcheckliststatus(`Loaded ${locationData.length} location options`);
+      
+      // Cache the location options for offline use
+      await AsyncStorage.setItem('cachedLocationOptions', JSON.stringify(locationData));
+      console.log("Location options cached for offline use");
+      
+      return locationData;
+    } else {
+      throw new Error("Invalid location data format");
+    }
+  } catch (error) {
+    console.error("Error loading location options:", error);
+    setcheckliststatus("Error loading location options");
+    
+    // Try to load from cache if network request fails
+    try {
+      const cachedOptions = await AsyncStorage.getItem('cachedLocationOptions');
+      if (cachedOptions) {
+        const parsedOptions = JSON.parse(cachedOptions);
+        if (Array.isArray(parsedOptions) && parsedOptions.length > 0) {
+          console.log(`Using ${parsedOptions.length} cached location options`);
+          setLocationOptions(parsedOptions);
+          setcheckliststatus(`Using cached location options`);
+          return parsedOptions;
+        }
+      }
+    } catch (cacheError) {
+      console.error("Error loading cached location options:", cacheError);
+    }
+    
+    // If everything fails, fall back to default options
+    const defaultOptions = [
+      "Anatomy",
+      "Histology",
+      "Biochemistry",
+      "Physiology",
+      "Microbiology",
+      "Parasitology",
+      "Pathology",
+      "Pharmacology",
+      "Clinical"
+    ];
+    
+    console.log("Using fallback location options");
+    setLocationOptions(defaultOptions);
+    return defaultOptions;
+  }
+};
+// Add this function to refresh location options manually
+const handleRefreshLocationOptions = async () => {
+  setcheckliststatus('Refreshing location options...');
+  try {
+    await loadLocationOptions();
+    Alert.alert(
+      "Success",
+      "Location options refreshed successfully"
+    );
+  } catch (error) {
+    console.error('Error refreshing location options:', error);
+    Alert.alert(
+      "Error",
+      "Failed to refresh location options. Please check your connection."
+    );
+  }
+};
 // Start a new checklist session
 const startChecklistSession = () => {
   // Reset location first
@@ -650,27 +821,24 @@ const createNewChecklistSessionWithLocation = (sessionLocation) => {
 };
 // End checklist session
 const endChecklistSession = () => {
-  if (!activeSession) {
-    console.log("No active checklist session to end");
-    return;
-  }
-  console.log("Ending checklist session:", activeSession.id);
+  if (!activeSession) return;
+
   // Stop auto-save timer
   stopAutoSaveTimer();
   // Perform one final save before ending
   performAutoSave(true);
+
   // Confirm if there are no selections
   if (activeSession.scans.length === 0) {
     Alert.alert(
       "End Session",
       "No students selected in this session. Do you still want to end it?",
       [
-        {
-          text: "Yes",
+        { text: 'Cancel', style: 'cancel' },
+        { 
+          text: 'End Session', 
+          style: 'destructive',
           onPress: () => finalizeChecklistSession()
-        },
-        {
-          text: "No"
         }
       ]
     );
@@ -1164,6 +1332,12 @@ const processManualEntry = async () => {
     return;
   }
   
+  // Validate that input contains only numbers
+  if (!/^\d+$/.test(studentId)) {
+    Alert.alert('Invalid Input', 'Please enter numbers only');
+    return;
+  }
+  
   // Check if already selected - give immediate feedback
   if (selectedStudents.has(studentId)) {
     Alert.alert('Already Selected', `Student ${studentId} is already in your selection.`);
@@ -1226,28 +1400,42 @@ const processManualEntry = async () => {
     console.error("Error saving manual entry:", error);
   }
 };
+
 //======EXPORT AND FILE MANAGEMENT SECTION======//
 // Export checklist session to Excel
 const exportChecklistSession = async (session, silentMode = false) => {
   try {
     console.log("Starting checklist export for session:", session.id);
+
+    // Get current user email
+    let userEmail = "unknown";
+    try {
+      const currentUser = await getCurrentUser();
+      if (currentUser && currentUser.email) {
+        userEmail = currentUser.email;
+      }
+    } catch (userError) {
+      console.error("Error getting current user email:", userError);
+    }
+
     const fileName = `Checklist_${session.location.replace(/[^a-z0-9]/gi, '_')}_${formatDateTimeForFile(new Date(session.dateTime))}.xlsx`;
-    // Prepare data
+    // Prepare data with user column
     const data = [
-      ['Student ID', 'Location', 'Log Date', 'Log Time', 'Type']
+      ['Student ID', 'Subject', 'Log Date', 'Log Time', 'User']
     ];
-    // Add scans with row numbers
+    // Add selections
     session.scans.forEach((scan, index) => {
       const scanDate = new Date(scan.time || scan.timestamp);
       data.push([
         scan.content,         // Student ID
-        session.location,     // Location
+        session.location,     // Subject
         formatDate(scanDate), // Log Date
         formatTime(scanDate), // Log Time
-        scan.isManual ? 'Manual' : 'Scan'  // Type
+        userEmail             // User email (current logged in user)
       ]);
     });
-    console.log(`Prepared data with ${session.scans.length} entries`);
+    console.log(`Prepared data with ${session.scans.length} entries and user: ${userEmail}`);
+
     // Create workbook
     const ws = XLSX.utils.aoa_to_sheet(data);
     const wb = XLSX.utils.book_new();
@@ -1289,7 +1477,7 @@ const exportChecklistSession = async (session, silentMode = false) => {
     if (isOnline) {
       console.log("Online - attempting backup");
       try {
-        const backupResult = await backupToGitHub([session], false, fileName);
+        const backupResult = await backupToGitHub([session], false, fileName, wb);
         console.log("Backup result:", backupResult);
         if (backupResult && backupResult.success) {
           console.log("Checklist backed up successfully");
@@ -1598,23 +1786,53 @@ return (
           </View>
         )}
         <Title style={styles.subtitle}>Selected Students</Title>
+
+        {/* Search bar for DataTable */}
+        {activeSession && activeSession.scans && activeSession.scans.length > 0 && (
+          <Searchbar
+            placeholder="Search students..."
+            onChangeText={text => setDataTableSearchQuery(text)}
+            value={dataTableSearchQuery}
+            style={styles.searchbar}
+          />
+        )}
+
         {activeSession && activeSession.scans && activeSession.scans.length > 0 ? (
           <View style={styles.tableContainer}>
             <DataTable>
               <DataTable.Header style={{ backgroundColor: '#ffffff' }}>
                 <DataTable.Title style={{ flex: 0.6 }}><Text style={{ color: '#24325f' }}>Student ID</Text></DataTable.Title>
                 <DataTable.Title style={{ flex: 0.4 }}><Text style={{ color: '#24325f' }}>Time</Text></DataTable.Title>
+                <DataTable.Title style={{ flex: 0.2 }}><Text style={{ color: '#24325f' }}>Action</Text></DataTable.Title>
               </DataTable.Header>
               <ScrollView style={{ maxHeight: 200 }} nestedScrollEnabled={true}>
-                {activeSession.scans.map((scan, index) => (
-                  <DataTable.Row key={scan.id || index} style={{ backgroundColor: '#ffffff' }}>
-                    <DataTable.Cell style={{ flex: 0.6 }}><Text style={{ color: '#24325f' }}>
-                      {scan.id}
-                      {scan.isManual ? ' (Manual)' : ''}
-                    </Text></DataTable.Cell>
-                    <DataTable.Cell style={{ flex: 0.4 }}><Text style={{ color: '#24325f' }}>{scan.formattedTime}</Text></DataTable.Cell>
-                  </DataTable.Row>
-                ))}
+                {activeSession.scans
+                  .filter(scan => {
+                    // Filter based on search query
+                    if (!dataTableSearchQuery) return true;
+                    return scan.id.toLowerCase().includes(dataTableSearchQuery.toLowerCase());
+                  })
+                  .map((scan, index) => (
+                    <DataTable.Row key={scan.id || index} style={{ backgroundColor: '#ffffff' }}>
+                      <DataTable.Cell style={{ flex: 0.6 }}>
+                        <Text style={{ color: '#24325f' }}>
+                          {scan.id}
+                          {scan.isManual ? ' (Manual)' : ''}
+                        </Text>
+                      </DataTable.Cell>
+                      <DataTable.Cell style={{ flex: 0.4 }}>
+                        <Text style={{ color: '#24325f' }}>{scan.formattedTime}</Text>
+                      </DataTable.Cell>
+                      <DataTable.Cell style={{ flex: 0.2, alignItems: 'center', justifyContent: 'center' }}>
+                        <TouchableOpacity 
+                          onPress={() => handleDeleteConfirmation(scan.id)}
+                          style={styles.deleteButton}
+                        >
+                          <Icon name="close" size={16} color="#FF6B6B" />
+                        </TouchableOpacity>
+                      </DataTable.Cell>
+                    </DataTable.Row>
+                  ))}
               </ScrollView>
             </DataTable>
           </View>
@@ -1628,20 +1846,40 @@ return (
           onDismiss={() => setShowSessionModal(false)}
           contentContainerStyle={[styles.modalContent, { backgroundColor: '#ffffff' }]}
         >
-          <Title style={{ color: '#24325f' }}>Select Location</Title>
-          <Text style={[styles.dropdownLabel, { color: '#24325f' }]}>Location:</Text>
+          <Title style={{ color: '#24325f' }}>Select Subject</Title>
+          
+          {/* Search bar for Subjects */}
+          <Searchbar
+            placeholder="Search subjects..."
+            onChangeText={text => setSubjectSearchQuery(text)}
+            value={subjectSearchQuery}
+            style={styles.searchbar}
+          />
+          
+          <Text style={[styles.dropdownLabel, { color: '#24325f' }]}>Subjects:</Text>
           <View style={[styles.dropdownContainer, { backgroundColor: '#ffffff' }]}>
-            <ScrollView style={styles.locationDropdown} nestedScrollEnabled={true}>
-              {locationOptions.map(option => (
-                <List.Item
-                  key={option}
-                  title={option}
-                  titleStyle={{ color: '#24325f' }}
-                  onPress={() => onLocationSelected(option)}
-                  style={[styles.locationOption, { backgroundColor: '#ffffff' }]}
-                />
-              ))}
-            </ScrollView>
+            {locationOptions.length > 0 ? (
+              <ScrollView style={styles.locationDropdown} nestedScrollEnabled={true}>
+                {locationOptions
+                  .filter(option => {
+                    if (!subjectSearchQuery) return true;
+                    return option.toLowerCase().includes(subjectSearchQuery.toLowerCase());
+                  })
+                  .map(option => (
+                    <List.Item
+                      key={option}
+                      title={option}
+                      titleStyle={{ color: '#24325f' }}
+                      onPress={() => onLocationSelected(option)}
+                      style={[styles.locationOption, { backgroundColor: '#ffffff' }]}
+                    />
+                  ))}
+              </ScrollView>
+            ) : (
+              <Text style={{ padding: 16, textAlign: 'center', color: '#24325f' }}>
+                Loading subjects...
+              </Text>
+            )}
           </View>
           <View style={styles.modalButtons}>
             <Button 
@@ -1651,6 +1889,15 @@ return (
               style={styles.secondaryButton}
             >
               Cancel
+            </Button>
+            {/* Add refresh button */}
+            <Button 
+              mode="text"
+              labelStyle={styles.primaryButtonText}
+              onPress={handleRefreshLocationOptions}
+              style={styles.primaryButton}
+            >
+              Refresh
             </Button>
           </View>
         </Modal>
@@ -1744,10 +1991,15 @@ return (
           <TextInput
             label="Student ID"
             value={manualId}
-            onChangeText={setManualId}
+            onChangeText={(text) => {
+              // Only allow digits in the input field
+              const numericText = text.replace(/[^0-9]/g, '');
+              setManualId(numericText);
+            }}
             style={[styles.input, { backgroundColor: '#ffffff', color: '#24325f' }]}
             autoFocus
             onSubmitEditing={processManualEntry}
+            keyboardType="numeric" // Set numeric keyboard
           />
           <View style={styles.modalButtons}>
             <Button 
@@ -1832,6 +2084,38 @@ return (
           >
             Cancel
           </Button>
+        </Modal>
+      </Portal>
+      
+      {/* Add Delete Confirmation Modal */}
+      <Portal>
+        <Modal
+          visible={showDeleteConfirmModal}
+          onDismiss={() => setShowDeleteConfirmModal(false)}
+          contentContainerStyle={[styles.modalContent, { backgroundColor: '#ffffff' }]}
+        >
+          <Title style={{ color: '#24325f' }}>Confirm Deletion</Title>
+          <Text style={{ marginBottom: 20, color: '#24325f' }}>
+            Are you sure you want to remove student ID: {studentToDelete}?
+          </Text>
+          <View style={styles.modalButtons}>
+            <Button 
+              mode="text" 
+              onPress={() => setShowDeleteConfirmModal(false)}
+              style={styles.secondaryButton}
+              labelStyle={styles.secondaryButtonText}
+            >
+              Cancel
+            </Button>
+            <Button 
+              mode="contained" 
+              onPress={handleDeleteStudent}
+              style={styles.confirmdeleteButton}
+              labelStyle={styles.primaryButtonText}
+            >
+              Delete
+            </Button>
+          </View>
         </Modal>
       </Portal>
     </ScrollView>
@@ -1976,6 +2260,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   modalContent: {
+    maxHeight: '100%',
     backgroundColor: 'white',
     padding: 20,
     margin: 20,
@@ -2202,6 +2487,22 @@ const styles = StyleSheet.create({
   studentSelectLabel: {
     flex: 1,
     fontSize: 16,
+  },
+deleteButton: {
+  width: 28,
+  height: 28,
+  borderRadius: 14,
+  backgroundColor: '#FFF0F0',
+  alignItems: 'center',
+  justifyContent: 'center',
+  borderWidth: 1,
+  borderColor: '#FFDDDD',
+},
+confirmdeleteButton: {
+    backgroundColor: '#951d1e',
+    borderColor: '#951d1e',
+    marginBottom: 8,
+    marginRight: 8,
   },
 });
 export default ChecklistScreen;
