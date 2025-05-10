@@ -455,9 +455,9 @@ const loadLocationOptions = async () => {
     
     // Ensure we have valid data
     if (Array.isArray(locationData) && locationData.length > 0) {
-      console.log(`Loaded ${locationData.length} location options`);
+      console.log(`Loaded ${locationData.length} subject options`);
       setLocationOptions(locationData);
-      setScanStatus(`Loaded ${locationData.length} location options`);
+      setScanStatus(`Loaded ${locationData.length} subject options`);
       
       // Cache the location options for offline use
       await AsyncStorage.setItem('cachedLocationOptions', JSON.stringify(locationData));

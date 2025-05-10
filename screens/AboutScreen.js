@@ -34,7 +34,7 @@ const AboutScreen = () => {
               <List.Item
                 title={
                   <Text style={styles.listItemText}>
-                    <Text style={[styles.boldText, { color: '#24325f' }]}>Dr. Ahmad Samir</Text> who encouraged me to start working on this project
+                    <Text style={[styles.boldText, { color: '#24325f' }]}>Dr. Ahmad Sameir Bakr</Text> who encouraged me to start working on this project
                   </Text>
                 }
                 left={props => <List.Icon {...props} icon="compass" color="#24325f" />}
