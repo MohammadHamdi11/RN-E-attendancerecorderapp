@@ -28,7 +28,7 @@ const ContactScreen = () => {
             <Button 
               mode="contained" 
               icon="file-pdf-box"
-              style={styles.button}
+              style={styles.primaryButton}
               onPress={openUserGuide}
             >
               Download User Guide
@@ -49,7 +49,7 @@ const ContactScreen = () => {
             <Button 
               mode="contained" 
               icon="help-circle"
-              style={styles.button}
+              style={styles.primaryButton}
               onPress={openSupportForm}
             >
               Support Form
@@ -100,10 +100,49 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     textAlign: 'center',
   },
-  button: {
-    marginVertical: 12,
-    backgroundColor: '#24325f', // Matches --primary-color
-    width: '80%',
+  primaryButton: {
+    backgroundColor: '#24325f',
+    borderColor: '#24325f',
+  marginTop: 8,
+    marginBottom: 8,
+    marginRight: 8,
+    marginLeft: 8,
+    flex: 1,
+    borderRadius: 18,
+    width: '90%',
+  },
+  primaryButtonText: {
+    color: 'white',
+  },
+  secondaryButton: {
+    backgroundColor: 'white',
+    borderColor: '#24325f',
+    borderWidth: 1,  
+marginTop: 8,
+    marginBottom: 8,
+    marginRight: 8,
+    marginLeft: 8,
+    flex: 1,
+    borderRadius: 18,
+    width: '90%',
+  },
+  secondaryButtonText: {
+    color: '#24325f',
+  },
+  dangerButton: {
+    backgroundColor: '#951d1e', // Red color for dangerous action
+    borderColor: '#951d1e',
+    borderWidth: 1,
+  marginTop: 8,
+    marginBottom: 8,
+    marginRight: 8,
+    marginLeft: 8,
+    flex: 1,
+    borderRadius: 18,
+    width: '90%', 
+ },
+  dangerButtonText: {
+    color: '#ffffff',
   },
   caption: {
     fontSize: 12,

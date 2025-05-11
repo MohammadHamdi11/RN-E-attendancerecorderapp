@@ -2163,8 +2163,12 @@ const styles = StyleSheet.create({
   primaryButton: {
     backgroundColor: '#24325f',
     borderColor: '#24325f',
+  marginTop: 8,
     marginBottom: 8,
     marginRight: 8,
+    marginLeft: 8,
+    flex: 1,
+    borderRadius: 18,
   },
   primaryButtonText: {
     color: 'white',
@@ -2173,11 +2177,29 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderColor: '#24325f',
     borderWidth: 1,
+  marginTop: 8,
     marginBottom: 8,
     marginRight: 8,
+    marginLeft: 8,
+    flex: 1,
+    borderRadius: 18,
   },
   secondaryButtonText: {
     color: '#24325f',
+  },
+  dangerButton: {
+    backgroundColor: '#951d1e', // Red color for dangerous action
+    borderColor: '#951d1e',
+    borderWidth: 1,
+  marginTop: 8,
+    marginBottom: 8,
+    marginRight: 8,
+    marginLeft: 8,
+    flex: 1,
+    borderRadius: 18, 
+ },
+  dangerButtonText: {
+    color: '#ffffff',
   },
   sessionInfo: {
     backgroundColor: '#f0f0f5',

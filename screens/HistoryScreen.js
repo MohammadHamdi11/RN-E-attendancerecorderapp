@@ -595,10 +595,6 @@ const styles = StyleSheet.create({
   exportButton: {
     backgroundColor: '#24325f', // Matches --primary-color
   },
-  dangerButton: {
-    backgroundColor: '#951d1e', // Red color for dangerous action
-    borderRadius: 18,
-  },
   buttonLabelStyle: {
     color: 'white',
   },
@@ -849,17 +845,43 @@ const styles = StyleSheet.create({
   primaryButton: {
     backgroundColor: '#24325f',
     borderColor: '#24325f',
+  marginTop: 8,
+    marginBottom: 8,
+    marginRight: 8,
     marginLeft: 8,
     flex: 1,
     borderRadius: 18,
+  },
+  primaryButtonText: {
+    color: 'white',
   },
   secondaryButton: {
     backgroundColor: 'white',
     borderColor: '#24325f',
     borderWidth: 1,
+  marginTop: 8,
+    marginBottom: 8,
+    marginRight: 8,
     marginLeft: 8,
     flex: 1,
     borderRadius: 18,
+  },
+  secondaryButtonText: {
+    color: '#24325f',
+  },
+  dangerButton: {
+    backgroundColor: '#951d1e', // Red color for dangerous action
+    borderColor: '#951d1e',
+    borderWidth: 1,
+  marginTop: 8,
+    marginBottom: 8,
+    marginRight: 8,
+    marginLeft: 8,
+    flex: 1,
+    borderRadius: 18, 
+ },
+  dangerButtonText: {
+    color: '#ffffff',
   },
 });
 

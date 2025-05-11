@@ -18,8 +18,7 @@ const AboutScreen = () => {
           <View style={styles.section}>
             <Subheading style={styles.sectionTitle}>Function</Subheading>
             <Text style={styles.paragraph}>
-              This application serves as both a QR Code Scanner and Student Selector 
-              for attendance tracking in educational settings.
+              This application serves as both a <Text style={{ color: '#24325f' }}>QR Code Scanner</Text> and <Text style={{ color: '#24325f' }}>Student Selector</Text> for attendance tracking in educational settings.
             </Text>
           </View>
           
@@ -93,12 +92,12 @@ const AboutScreen = () => {
           <View style={styles.section}>
             <Subheading style={styles.sectionTitle}>Development Team</Subheading>
             <Text style={styles.paragraph}>
-              This application was developed by a medical student at Faculty of Medicine, 
+              This application was developed by a medical student at The Faculty of Medicine, 
               Ain Shams University as part of ongoing efforts to integrate technological
               solutions into educational processes at the university.
             </Text>
             <Text style={styles.paragraph}>
-              Development was assisted by AI models: Claude (mainly) and DeepSeek.
+              Development was assisted by AI models: <Text style={{ color: '#24325f' }}>Claude (mainly), DeepSeek, Perplexity and ChatGPT</Text>.
             </Text>
           </View>
           
@@ -140,12 +139,7 @@ const AboutScreen = () => {
             </Text>
             <View style={styles.listContainer}>
               <List.Item
-                title="-Work offline once installed"
-                titleStyle={styles.listItemTitle}
-                titleNumberOfLines={2}
-              />
-              <List.Item
-                title="-Be installed on mobile devices"
+                title="-Work offline once installed on mobile devices"
                 titleStyle={styles.listItemTitle}
                 titleNumberOfLines={2}
               />
@@ -210,7 +204,7 @@ const AboutScreen = () => {
                 </Text>
               </View>
               <View style={styles.orderedItem}>
-                <Text style={styles.orderedText}>3. se the search function to quickly find specific students
+                <Text style={styles.orderedText}>3. Use the search function to quickly find specific students
                 </Text>
               </View>
               <View style={styles.orderedItem}>
@@ -264,8 +258,13 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 8,
     elevation: 4,
-    marginBottom: 16,
-    backgroundColor: '#ffffff', // Matches --card-bg
+    backgroundColor: '#ffffff',
+    marginBottom: 20,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 20,
+    backgroundColor: '#f9f9f9',
   },
   title: {
     fontSize: 20,

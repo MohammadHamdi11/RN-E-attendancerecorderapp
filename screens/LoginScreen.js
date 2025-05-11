@@ -161,7 +161,7 @@ const LoginScreen = ({ onLoginSuccess }) => {
         
         <Button 
           mode="contained" 
-          style={styles.button}
+          style={styles.primaryButton}
           onPress={handleLogin}
           loading={loading}
           disabled={loading}
@@ -313,15 +313,46 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 8,
   },
-  button: {
-    width: '100%',
-    marginTop: 16,
-    paddingVertical: 8,
-    backgroundColor: '#24325f', // Matches --primary-color
-    borderColor: '#24325f', // Matches --primary-color
+  primaryButton: {
+    backgroundColor: '#24325f',
+    borderColor: '#24325f',
+  marginTop: 8,
+    marginBottom: 8,
+    marginRight: 8,
+    marginLeft: 8,
+    flex: 1,
+    borderRadius: 18,
   },
-  buttonText: {
+  primaryButtonText: {
     color: 'white',
+  },
+  secondaryButton: {
+    backgroundColor: 'white',
+    borderColor: '#24325f',
+    borderWidth: 1,
+  marginTop: 8,
+    marginBottom: 8,
+    marginRight: 8,
+    marginLeft: 8,
+    flex: 1,
+    borderRadius: 18,
+  },
+  secondaryButtonText: {
+    color: '#24325f',
+  },
+  dangerButton: {
+    backgroundColor: '#951d1e', // Red color for dangerous action
+    borderColor: '#951d1e',
+    borderWidth: 1,
+  marginTop: 8,
+    marginBottom: 8,
+    marginRight: 8,
+    marginLeft: 8,
+    flex: 1,
+    borderRadius: 18, 
+ },
+  dangerButtonText: {
+    color: '#ffffff',
   },
   hint: {
     marginTop: 12,

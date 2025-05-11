@@ -156,9 +156,9 @@ const AccountScreen = (props) => {
         <Card.Content>
           <Title style={styles.cardTitle}>Account Information</Title>
           <Divider style={styles.divider} />
-          <Text style={styles.infoText}>Email: {userData?.email || 'Not available'}</Text>
-          <Text style={styles.infoText}>Role: {isAdmin ? 'Administrator' : 'User'}</Text>
-          <Text style={styles.infoText}>Name: {userData?.name || 'Not available'}</Text>
+          <Text style={styles.infoText}>Email: </Text><Text style={styles.Text}>{userData?.email || 'Not available'}</Text>
+          <Text style={styles.infoText}>Role: </Text><Text style={styles.Text}>{isAdmin ? 'Administrator' : 'User'}</Text>
+          <Text style={styles.infoText}>Name: </Text><Text style={styles.Text}>{userData?.name || 'Not available'}</Text>
         </Card.Content>
       </Card>
 
@@ -166,34 +166,34 @@ const AccountScreen = (props) => {
         <Card.Content>
           <Title style={styles.cardTitle}>Credentials</Title>
           <Divider style={styles.divider} />
-          <Text style={styles.infoText}>Last credential sync: {lastSync || 'Never'}</Text>
-          <Text style={[styles.infoText, styles.connectionStatus]}>
-            Status: {isOnline ? 'Online' : 'Offline'}
+          <Text style={styles.infoText}>Last credential sync: </Text><Text style={styles.Text}>{lastSync || 'Never'}</Text>
+          <Text style={[styles.infoText, styles.infoText]}>
+            Status: </Text><Text style={styles.Text}>{isOnline ? 'Online' : 'Offline'}
           </Text>
           
           <Button
             mode="contained"
             onPress={handleRefreshCredentials}
             disabled={!isOnline}
-            style={styles.actionButton}
-            labelStyle={styles.buttonLabel}
+            style={styles.primaryButton}
+            labelStyle={styles.primaryButtonText}
             icon="refresh"
           >
             Refresh Credentials
           </Button>
         </Card.Content>
       </Card>
-
+<View style={styles.buttonContainer}>
       <Button
         mode="contained"
         onPress={handleSignOut}
-        style={[styles.actionButton, styles.signOutButton]}
-        labelStyle={styles.buttonLabel}
+        style={styles.dangerButton}
+        labelStyle={styles.dangerButtonText}
         icon="logout"
       >
         Sign Out
       </Button>
-
+</View>
       <Text style={styles.versionText}>Faculty of Medicine, Ain Shams University</Text>
     </ScrollView>
   );
@@ -212,6 +212,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 1,
     borderColor: '#e0e0e0',
+  marginTop: 10,
   },
   cardTitle: {
     color: '#24325f',
@@ -220,30 +221,21 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   divider: {
-    marginVertical: 8,
+    marginVertical: 10,
     backgroundColor: '#e0e0e0',
     height: 1,
   },
   infoText: {
     fontSize: 14,
-    color: '#333333',
+fontWeight: 'bold',
+    color: '#24325f',
     marginVertical: 4,
   },
-  actionButton: {
-    marginTop: 16,
-    backgroundColor: '#24325f',
-    borderRadius: 4,
-    paddingVertical: 6,
-  },
-  buttonLabel: {
-    color: 'white',
+  Text: {
     fontSize: 14,
-    fontWeight: '500',
-  },
-  signOutButton: {
-    backgroundColor: '#951d1e',
-    marginTop: 20,
-    marginBottom: 20,
+fontWeight: 'bold',
+    color: '#333333',
+    marginVertical: 4,
   },
   versionText: {
     textAlign: 'center',
@@ -251,10 +243,53 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontSize: 12,
   },
-  connectionStatus: {
-    marginTop: 8,
-    fontWeight: 'bold',
+  primaryButton: {
+    backgroundColor: '#24325f',
+    borderColor: '#24325f',
+  marginTop: 8,
+    marginBottom: 8,
+    marginRight: 8,
+    marginLeft: 8,
+    flex: 1,
+    borderRadius: 18,
   },
+  primaryButtonText: {
+    color: 'white',
+  },
+  secondaryButton: {
+    backgroundColor: 'white',
+    borderColor: '#24325f',
+    borderWidth: 1,
+  marginTop: 8,
+    marginBottom: 8,
+    marginRight: 8,
+    marginLeft: 8,
+    flex: 1,
+    borderRadius: 18,
+  },
+  secondaryButtonText: {
+    color: '#24325f',
+  },
+  dangerButton: {
+    backgroundColor: '#951d1e', // Red color for dangerous action
+    borderColor: '#951d1e',
+    borderWidth: 1,
+  marginTop: 8,
+    marginBottom: 8,
+    marginRight: 8,
+    marginLeft: 8,
+    flex: 1,
+    borderRadius: 18, 
+    width: '90%',
+ },
+  dangerButtonText: {
+    color: '#ffffff',
+  },
+buttonContainer: {
+  alignItems: 'center',
+  marginTop: 10,
+    marginBottom: 10,
+}
 });
 
 export default AccountScreen;
