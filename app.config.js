@@ -15,10 +15,12 @@ export default {
     },
     updates: {
       fallbackToCacheTimeout: 0,
-      url: "https://u.expo.dev/36cc9f80-6e6f-419a-b970-583f5b4451d9"
+      url: "https://u.expo.dev/36cc9f80-6e6f-419a-b970-583f5b4451d9",
+      enabled: true,
+      checkAutomatically: "ON_LOAD"
     },
     runtimeVersion: {
-      policy: "appVersion"
+      policy: "sdkVersion"
     },
     assetBundlePatterns: [
       "**/*"
@@ -128,6 +130,7 @@ export default {
         projectId: "36cc9f80-6e6f-419a-b970-583f5b4451d9"
       }
     },
-    owner: "mohammadhamdi11"
+    owner: "mohammadhamdi11",
+    channel: "production"
   }
 };

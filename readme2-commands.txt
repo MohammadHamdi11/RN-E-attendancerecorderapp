@@ -42,4 +42,12 @@ eas build:configure
 4-Build the APK:
 eas build -p android --profile production
 
+5-Publish to ExpoGo
+eas update
+visit the dashboard via the link displayed in the cmd or through your project's latest initial commit on expo account
+click preview in the top right corner to get the qr code to the update
+
+
+
+
 
