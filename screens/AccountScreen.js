@@ -156,9 +156,9 @@ const AccountScreen = (props) => {
         <Card.Content>
           <Title style={styles.cardTitle}>Account Information</Title>
           <Divider style={styles.divider} />
+          <Text style={styles.infoText}>Name: </Text><Text style={styles.Text}>{userData?.name || 'Not available'}</Text>
           <Text style={styles.infoText}>Email: </Text><Text style={styles.Text}>{userData?.email || 'Not available'}</Text>
           <Text style={styles.infoText}>Role: </Text><Text style={styles.Text}>{isAdmin ? 'Administrator' : 'User'}</Text>
-          <Text style={styles.infoText}>Name: </Text><Text style={styles.Text}>{userData?.name || 'Not available'}</Text>
         </Card.Content>
       </Card>
 
@@ -250,7 +250,6 @@ fontWeight: 'bold',
     marginBottom: 8,
     marginRight: 8,
     marginLeft: 8,
-    flex: 1,
     borderRadius: 18,
   },
   primaryButtonText: {
@@ -264,7 +263,6 @@ fontWeight: 'bold',
     marginBottom: 8,
     marginRight: 8,
     marginLeft: 8,
-    flex: 1,
     borderRadius: 18,
   },
   secondaryButtonText: {
@@ -278,7 +276,6 @@ fontWeight: 'bold',
     marginBottom: 8,
     marginRight: 8,
     marginLeft: 8,
-    flex: 1,
     borderRadius: 18, 
     width: '90%',
  },
