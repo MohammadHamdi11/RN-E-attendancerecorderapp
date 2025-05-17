@@ -81,7 +81,7 @@ const queueBackupForLater = async (session) => {
 };
 
 // Save a file to the "Attendance Recorder" directory with multiple fallback options
-const saveToAttendanceRecorder = async (fileUri, fileName) => {
+const saveToAttendanceRecorder = async (fileUri, fileName, silentMode = false) => {
   try {
     console.log(`Starting save operation for: ${fileName} on ${Platform.OS} device`);
     
@@ -91,11 +91,13 @@ const saveToAttendanceRecorder = async (fileUri, fileName) => {
       console.log(`Permission status: ${status}`);
       
       if (status !== 'granted') {
-        Alert.alert(
-          "Permission Required",
-          "We need access to your media library to save files. Please enable this permission in your device settings.",
-          [{ text: "OK" }]
-        );
+        if (!silentMode) {
+          Alert.alert(
+            "Permission Required",
+            "We need access to your media library to save files. Please enable this permission in your device settings.",
+            [{ text: "OK" }]
+          );
+        }
         return { success: false, message: "Permission not granted", shareOnly: true };
       }
       
@@ -123,11 +125,13 @@ const saveToAttendanceRecorder = async (fileUri, fileName) => {
           console.log(`Created "${appFolderName}" album with asset`);
         }
         
-        Alert.alert(
-          "Export Successful",
-          `File saved to "${appFolderName}" folder as "${fileName}"`,
-          [{ text: "OK" }]
-        );
+        if (!silentMode) {
+          Alert.alert(
+            "Export Successful",
+            `File saved to "${appFolderName}" folder as "${fileName}"`,
+            [{ text: "OK" }]
+          );
+        }
         
         return { success: true, message: `File saved successfully`, uri: asset.uri };
       } catch (directSaveError) {
@@ -150,28 +154,30 @@ const saveToAttendanceRecorder = async (fileUri, fileName) => {
           });
           
           // Now use document picker with SAF
-          Alert.alert(
-            "Save Location",
-            "Please select a folder where you'd like to save this file.",
-            [
-              {
-                text: "OK",
-                onPress: async () => {
-                  try {
-                    // We'll use sharing with action "SEND" which uses SAF internally
-                    await Sharing.shareAsync(tempFileUri, {
-                      mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                      dialogTitle: 'Save Excel File',
-                      UTI: 'com.microsoft.excel.xlsx'
-                    });
-                  } catch (shareError) {
-                    console.error("SAF sharing error:", shareError);
-                    // If this fails, we'll continue to the file sharing fallback
+          if (!silentMode) {
+            Alert.alert(
+              "Save Location",
+              "Please select a folder where you'd like to save this file.",
+              [
+                {
+                  text: "OK",
+                  onPress: async () => {
+                    try {
+                      // We'll use sharing with action "SEND" which uses SAF internally
+                      await Sharing.shareAsync(tempFileUri, {
+                        mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                        dialogTitle: 'Save Excel File',
+                        UTI: 'com.microsoft.excel.xlsx'
+                      });
+                    } catch (shareError) {
+                      console.error("SAF sharing error:", shareError);
+                      // If this fails, we'll continue to the file sharing fallback
+                    }
                   }
                 }
-              }
-            ]
-          );
+              ]
+            );
+          }
           
           return { success: true, message: "File available via Storage Access Framework", uri: tempFileUri, shareOnly: false };
         } catch (safError) {
@@ -179,11 +185,13 @@ const saveToAttendanceRecorder = async (fileUri, fileName) => {
           
           // STEP 3: Fall back to file sharing as last resort
           console.log('Falling back to sharing mechanism...');
-          Alert.alert(
-            "Storage Access Limited",
-            "Could not save file directly. Please use the Share screen to save the file to your preferred location.",
-            [{ text: "OK" }]
-          );
+          if (!silentMode) {
+            Alert.alert(
+              "Storage Access Limited",
+              "Could not save file directly. Please use the Share screen to save the file to your preferred location.",
+              [{ text: "OK" }]
+            );
+          }
           
           return { success: true, message: "File available for sharing", uri: fileUri, shareOnly: true };
         }
@@ -200,11 +208,13 @@ const saveToAttendanceRecorder = async (fileUri, fileName) => {
       
       console.log("File saved to documents:", newFileUri);
       
-      Alert.alert(
-        "Export Successful",
-        `File saved. Use the Share button to send it to another app or save it to Files.`,
-        [{ text: "OK" }]
-      );
+      if (!silentMode) {
+        Alert.alert(
+          "Export Successful",
+          `File saved. Use the Share button to send it to another app or save it to Files.`,
+          [{ text: "OK" }]
+        );
+      }
       
       return { success: true, message: `File saved to app documents`, uri: newFileUri };
     }
@@ -219,41 +229,72 @@ const saveToAttendanceRecorder = async (fileUri, fileName) => {
   }
 };
 
-// Export single session to Excel
-export const exportSession = async (session) => {
+// Queue session for backup
+const queueSessionForBackup = async (session, silentMode = false) => {
   try {
-    // Get the current user's email
-    const userEmail = await getCurrentUserEmail();
-    
-    // Create a nice filename
-    const fileName = `${session.location.replace(/[^a-z0-9]/gi, '_')}_${formatDateTimeForFile(new Date(session.dateTime))}.xlsx`;
+    await queueBackupForLater(session);
+    if (!silentMode) {
+      Alert.alert(
+        "Session Saved For Backup", 
+        "Your session data will be backed up automatically when an internet connection is available."
+      );
+    }
+    return { success: true, queued: true };
+  } catch (error) {
+    console.error("Error queueing session for backup:", error);
+    return { success: false, message: error.message };
+  }
+};
 
-    // Prepare data
+// Export single session to Excel
+export const exportSession = async (session, silentMode = false) => {
+  try {
+    console.log("Starting session export for session:", session.id);
+    
+    // Check if session has any scans
+    if (!session.scans || session.scans.length === 0) {
+      console.log("Session has no scans, skipping export");
+      if (!silentMode) {
+        Alert.alert("Empty Session", "There are no entries to export. Export cancelled.");
+      }
+      return { success: false, message: 'Export cancelled: No entries to export' };
+    }
+    
+    // Get current user email
+    let userEmail = await getCurrentUserEmail();
+    
+    const fileName = `Session_${session.location.replace(/[^a-z0-9]/gi, '_')}_${formatDateTimeForFile(new Date(session.dateTime))}.xlsx`;
+    
+    // Prepare data with Type column before User column, matching scanner/checklist format
     const data = [
-      ['Student ID', 'Subject', 'Log Date', 'Log Time', 'User']
+      ['Student ID', 'Subject', 'Log Date', 'Log Time', 'Type', 'User']
     ];
 
     session.scans.forEach((scan, index) => {
       const scanDate = new Date(scan.time || scan.timestamp);
       data.push([
-        scan.content,           // QR code content is now Student ID
-        session.location,
-        formatDate(scanDate),
-        formatTime(scanDate),
-        userEmail               // User email (current logged in user)
+        scan.content,                // Student ID
+        session.location,            // Subject
+        formatDate(scanDate),        // Log Date
+        formatTime(scanDate),        // Log Time
+        scan.isManual ? "Manual" : "Scan",  // Type of entry
+        userEmail                    // User email (current logged in user)
       ]);
     });
+    
+    console.log(`Prepared data with ${session.scans.length} entries and user: ${userEmail}`);
 
     // Create workbook
     const ws = XLSX.utils.aoa_to_sheet(data);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Scans");
+    XLSX.utils.book_append_sheet(wb, ws, "Session");
 
     // Convert workbook to base64 instead of binary string
     const wbout = XLSX.write(wb, { type: 'base64', bookType: 'xlsx' });
 
     // Define file path in app's cache directory (temporary location)
     const fileUri = `${FileSystem.cacheDirectory}${fileName}`;
+    console.log("Temporary file location:", fileUri);
 
     // Write the file
     await FileSystem.writeAsStringAsync(fileUri, wbout, {
@@ -263,80 +304,104 @@ export const exportSession = async (session) => {
     // Verify the file was created
     const fileInfo = await FileSystem.getInfoAsync(fileUri);
     if (!fileInfo.exists) {
+      console.error("File not created at:", fileUri);
       throw new Error("File not created");
     }
-
     console.log("Excel file saved temporarily to:", fileUri);
 
     // Save to Attendance Recorder folder
-    const saveResult = await saveToAttendanceRecorder(fileUri, fileName);
+    const saveResult = await saveToAttendanceRecorder(fileUri, fileName, silentMode);
 
     if (!saveResult.success && !saveResult.shareOnly) {
-      throw new Error(`Failed to save file: ${saveResult.message}`);
+      console.error("Save to downloads failed:", saveResult.message);
+      throw new Error(`Failed to save to Downloads: ${saveResult.message}`);
     }
 
-    // Always share the file, especially if direct save failed
+    // Always share the file
+    console.log("Sharing file");
     await Sharing.shareAsync(fileUri, {
       mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       dialogTitle: 'Export Session Data',
       UTI: 'com.microsoft.excel.xlsx'
     });
 
-    // After successful local save and share, attempt GitHub backup if online
-    try {
-      const isOnline = await checkOnlineStatus();
-      if (isOnline) {
-        await backupToGitHub([session], false, fileName, wb);
-        console.log("GitHub backup of Excel complete");
-      } else {
-        console.log("Offline mode - GitHub backup skipped");
-        await queueBackupForLater(session);
+    // Check connection and handle backup
+    const isOnline = await checkOnlineStatus();
+    console.log("Online status for backup:", isOnline);
+    
+    if (isOnline) {
+      console.log("Online - attempting backup");
+      try {
+        const backupResult = await backupToGitHub([session], false, fileName, wb);
+        console.log("Backup result:", backupResult);
+        if (backupResult && backupResult.success) {
+          console.log("Session backed up successfully");
+          // Only show backup success alert if not in silent mode
+          if (!silentMode) {
+            Alert.alert("Backup Successful", "Session backed up to server successfully!");
+          }
+        } else {
+          throw new Error("Backup failed with error: " + (backupResult?.message || "Unknown error"));
+        }
+      } catch (backupError) {
+        console.error("Error during backup:", backupError);
+        // Queue for later backup
+        await queueSessionForBackup(session, silentMode);
+        if (!silentMode) {
+          Alert.alert("Backup Failed", "Unable to backup to server. The session is saved locally and will be backed up when online.");
+        }
       }
-    } catch (err) {
-      console.error("GitHub backup failed:", err);
-      await queueBackupForLater(session);
+    } else {
+      console.log("Offline - queueing for backup later");
+      // Queue for backup when back online
+      await queueSessionForBackup(session, silentMode);
     }
-
+    
+    console.log("Session export completed successfully");
     return { 
       success: true, 
-      message: saveResult.shareOnly ? 'Export available for sharing' : 'Export successful!', 
+      message: 'Export successful!', 
       filePath: saveResult.uri || fileUri 
     };
   } catch (error) {
-    console.error("Error exporting Excel file:", error);
-    Alert.alert(
-      "Export Failed",
-      `Error: ${error.message}`,
-      [{ text: "OK" }]
-    );
+    console.error("Error exporting session:", error);
+    if (!silentMode) {
+      Alert.alert("Export Error", "Failed to export session: " + error.message);
+    }
+    // Still try to queue for backup even if export failed
+    try {
+      await queueSessionForBackup(session, silentMode);
+    } catch (queueError) {
+      console.error("Error queueing for backup:", queueError);
+    }
     return { success: false, message: `Error exporting file: ${error.message}` };
   }
 };
 
 // Export all sessions to Excel
-export const exportAllSessions = async (sessions) => {
+export const exportAllSessions = async (sessions, silentMode = false) => {
   try {
-    // Get the current user's email
-    const userEmail = await getCurrentUserEmail();
+    console.log("Starting export for all sessions");
     
+    // Check if there are any sessions
     if (sessions.length === 0) {
-      Alert.alert(
-        "No Data",
-        "There are no sessions to export",
-        [{ text: "OK" }]
-      );
+      console.log("No sessions to export");
+      if (!silentMode) {
+        Alert.alert("No Data", "There are no sessions to export");
+      }
       return { success: false, message: "No sessions to export" };
     }
 
-    const fileName = `QR_Scan_All_Sessions_${formatDateTimeForFile(new Date())}.xlsx`;
+    // Get current user email
+    let userEmail = await getCurrentUserEmail();
+    
+    const fileName = `All_Sessions_${formatDateTimeForFile(new Date())}.xlsx`;
     const wb = XLSX.utils.book_new();
 
     // First, create an "AllSessions" sheet with every scan
     const allScansData = [
-      ['Student ID', 'Subject', 'Log Date', 'Log Time', 'User']
+      ['Student ID', 'Subject', 'Log Date', 'Log Time', 'Type', 'User']
     ];
-
-    let globalCounter = 1;
 
     // Iterate through each session and add its scans to the master list
     sessions.forEach(session => {
@@ -349,11 +414,12 @@ export const exportAllSessions = async (sessions) => {
         try {
           const scanDate = new Date(scan.time || scan.timestamp);
           allScansData.push([
-            scan.content || "",
-            session.location || "Unknown",
-            formatDate(scanDate),
-            formatTime(scanDate),
-            userEmail           // User email (current logged in user)
+            scan.content || "",                 // Student ID
+            session.location || "Unknown",      // Subject
+            formatDate(scanDate),               // Log Date
+            formatTime(scanDate),               // Log Time
+            scan.isManual ? "Manual" : "Scan",  // Type of entry
+            userEmail                           // User email
           ]);
         } catch (error) {
           console.error("Error processing scan:", scan, error);
@@ -361,7 +427,7 @@ export const exportAllSessions = async (sessions) => {
       });
     });
 
-    // Create the AllSessions sheet
+    // Create the AllScans sheet
     if (allScansData.length > 1) {
       try {
         const allScansSheet = XLSX.utils.aoa_to_sheet(allScansData);
@@ -380,18 +446,19 @@ export const exportAllSessions = async (sessions) => {
         }
 
         const sessionData = [
-          ['Student ID', 'Subject', 'Log Date', 'Log Time', 'User']
+          ['Student ID', 'Subject', 'Log Date', 'Log Time', 'Type', 'User']
         ];
 
         session.scans.forEach((scan, idx) => {
           try {
             const scanDate = new Date(scan.time || scan.timestamp);
             sessionData.push([
-              scan.content || "",
-              session.location || "Unknown",
-              formatDate(scanDate),
-              formatTime(scanDate),
-              userEmail           // User email (current logged in user)
+              scan.content || "",                  // Student ID
+              session.location || "Unknown",       // Subject
+              formatDate(scanDate),                // Log Date
+              formatTime(scanDate),                // Log Time
+              scan.isManual ? "Manual" : "Scan",   // Type of entry
+              userEmail                            // User email
             ]);
           } catch (error) {
             console.error("Error processing scan for session sheet:", scan, error);
@@ -419,6 +486,7 @@ export const exportAllSessions = async (sessions) => {
 
     // Define file path in app's cache directory (temporary location)
     const fileUri = `${FileSystem.cacheDirectory}${fileName}`;
+    console.log("Temporary file location:", fileUri);
 
     // Write the file with Base64 encoding
     await FileSystem.writeAsStringAsync(fileUri, wbout, {
@@ -428,69 +496,97 @@ export const exportAllSessions = async (sessions) => {
     // Verify the file was created
     const fileInfo = await FileSystem.getInfoAsync(fileUri);
     if (!fileInfo.exists) {
+      console.error("File not created at:", fileUri);
       throw new Error("File not created");
     }
 
     console.log("All sessions exported temporarily to:", fileUri);
     
     // Save to Attendance Recorder
-    const saveResult = await saveToAttendanceRecorder(fileUri, fileName);
+    const saveResult = await saveToAttendanceRecorder(fileUri, fileName, silentMode);
 
     if (!saveResult.success && !saveResult.shareOnly) {
-      throw new Error(`Failed to save file: ${saveResult.message}`);
+      console.error("Save to downloads failed:", saveResult.message);
+      throw new Error(`Failed to save to Downloads: ${saveResult.message}`);
     }
 
     // Always share the file, especially if direct save failed
+    console.log("Sharing file");
     await Sharing.shareAsync(fileUri, {
       mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       dialogTitle: 'Export All Sessions Data',
       UTI: 'com.microsoft.excel.xlsx'
     });
 
+    // Check connection and handle backup
+    const isOnline = await checkOnlineStatus();
+    console.log("Online status for backup:", isOnline);
+    
     // Attempt GitHub backup
-    try {
-      const isOnline = await checkOnlineStatus();
-      if (isOnline) {
-        await backupToGitHub(sessions, false, fileName, wb);
-        console.log("GitHub backup complete");
-      } else {
-        console.log("Offline mode - GitHub backup skipped");
+    if (isOnline) {
+      console.log("Online - attempting GitHub backup");
+      try {
+        const backupResult = await backupToGitHub(sessions, false, fileName, wb);
+        console.log("Backup result:", backupResult);
+        if (backupResult && backupResult.success) {
+          console.log("All sessions backed up successfully");
+          if (!silentMode) {
+            Alert.alert("Backup Successful", "Sessions backed up to server successfully!");
+          }
+        } else {
+          throw new Error("Backup failed with error: " + (backupResult?.message || "Unknown error"));
+        }
+      } catch (backupError) {
+        console.error("Error during backup:", backupError);
+        // Create combined session data for backup
         const backupData = {
           sessions: sessions,
           fileName: fileName,
           timestamp: new Date().toISOString()
         };
         await queueBackupForLater(backupData);
+        if (!silentMode) {
+          Alert.alert("Backup Failed", "Unable to backup to server. The sessions are saved locally and will be backed up when online.");
+        }
       }
-    } catch (e) {
-      console.error("Error during GitHub backup:", e);
+    } else {
+      console.log("Offline - queueing for backup later");
+      // Create combined session data for backup
       const backupData = {
         sessions: sessions,
         fileName: fileName,
         timestamp: new Date().toISOString()
       };
       await queueBackupForLater(backupData);
+      if (!silentMode) {
+        Alert.alert("Offline Backup", "Sessions saved locally and will be backed up when online.");
+      }
     }
     
+    console.log("All sessions export completed successfully");
     return { 
       success: true, 
-      message: saveResult.shareOnly ? 'Export available for sharing' : 'Export successful!', 
+      message: 'Export successful!', 
       filePath: saveResult.uri || fileUri 
     };
   } catch (error) {  
     console.error("Error writing Excel file:", error);
-    Alert.alert(
-      "Export Failed",
-      `Error: ${error.message}`,
-      [{ text: "OK" }]
-    );
+    if (!silentMode) {
+      Alert.alert("Export Failed", "Failed to export sessions: " + error.message);
+    }
     return { success: false, message: `Failed to export sessions: ${error.message}` };
   }
 };
 
 // Make sure these are exported correctly
 export {
+  formatDate,
+  formatTime,
+  formatDateTimeForFile,
+  checkOnlineStatus,
+  queueBackupForLater,
+  saveToAttendanceRecorder,
+  queueSessionForBackup,
   exportSession as exportSessionToExcel,
-  exportAllSessions as exportAllSessionsToExcel,
-  saveToAttendanceRecorder
+  exportAllSessions as exportAllSessionsToExcel
 };

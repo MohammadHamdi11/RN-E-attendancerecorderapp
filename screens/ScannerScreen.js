@@ -1,5 +1,7 @@
 //======IMPORT SECTION======//
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 import { View, StyleSheet, Alert, ScrollView, Platform } from 'react-native';
 import Icon from '@expo/vector-icons/MaterialIcons';
 // Use named imports consistently
@@ -22,6 +24,7 @@ Dialog,
 import { TouchableOpacity } from 'react-native';
 import * as SQLite from 'expo-sqlite';
 import { CameraView, BarcodeScanningResult, useCameraPermissions, BarCodeType } from 'expo-camera';  // Updated import
+import { Audio } from 'expo-av';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import * as MediaLibrary from 'expo-media-library';
@@ -62,6 +65,7 @@ const GITHUB_TOKEN_PREFIX = 'github_pat_';
 const GITHUB_TOKEN_SUFFIX = '11BREVRNQ0LX45XKQZzjkB_TL3KNQxHy4Sms4Fo20IUcxNLUwNAFbfeiXy92idb3mwTVANNZ4EC92cvkof';
 //======COMPONENT DEFINITION SECTION======//
 const ScannerScreen = ({ isOnline, navigation }) => {
+  const isFocused = useIsFocused();
   // State variables
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
@@ -84,6 +88,10 @@ const [subjectSearchQuery, setSubjectSearchQuery] = useState('');
 const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
 const [studentToDelete, setStudentToDelete] = useState({id: '', content: ''});
 const [locationOptions, setLocationOptions] = useState([]);
+  const [successSound, setSuccessSound] = useState(null);  
+  const [errorSound, setErrorSound] = useState(null);
+  const [isCameraActive, setIsCameraActive] = useState(true);
+
 //======EFFECT HOOKS SECTION======//
   //======CONNECTION MONITORING SECTION======//
   // Debug connection status
@@ -153,6 +161,52 @@ const checkOnlineStatus = async () => {
     }
 }, [isOnline]); // Only depend on isOnline, not activeSession
 
+  //======SCANNER FUNCTIONS SECTION======//
+useEffect(() => {
+  const loadSounds = async () => {
+    try {
+      console.log('Loading sound effects...');
+      
+      // Set audio mode and request permissions
+      await Audio.setAudioModeAsync({
+        playsInSilentModeIOS: true,
+        staysActiveInBackground: true,
+      });
+      
+      await Audio.requestPermissionsAsync();
+      
+      // Load the success beep sound from assets
+      const { sound: successBeep } = await Audio.Sound.createAsync(
+        require('../assets/beep.mp3'),
+        { shouldPlay: false, volume: 1.0 }
+      );
+      setSuccessSound(successBeep);
+      
+      console.log('Sound effects loaded successfully');
+    } catch (error) {
+      console.error('Error loading sounds:', error);
+    }
+  };
+  
+  loadSounds();
+  
+  // Cleanup function remains the same
+  return () => {
+    const unloadSounds = async () => {
+      console.log('Unloading sound effects...');
+      if (successSound) {
+        await successSound.unloadAsync();
+      }
+      if (errorSound) {
+        await errorSound.unloadAsync();
+      }
+    };
+    
+    unloadSounds().catch(error => 
+      console.error('Error unloading sounds:', error)
+    );
+  };
+}, []);
 
 // Request camera permission when component mounts
   useEffect(() => {
@@ -185,11 +239,26 @@ const checkOnlineStatus = async () => {
     };
     setupCamera();
   }, [cameraPermission, requestCameraPermission]);
-const handleSetCameraRef = (ref) => {
-  if (ref) {
-    setCameraRef(ref);
-  }
-};
+
+  // Use this effect to handle screen focus/unfocus for camera
+  useEffect(() => {
+    if (isFocused) {
+      // When screen comes into focus, activate camera after a short delay
+      console.log('Screen focused, activating camera...');
+      // Short delay before activating camera to ensure resources are ready
+      const timer = setTimeout(() => {
+        setIsCameraActive(true);
+      }, 300);
+      
+      return () => clearTimeout(timer);
+    } else {
+      // When screen loses focus, deactivate camera immediately
+      console.log('Screen unfocused, deactivating camera...');
+      setIsCameraActive(false);
+      // Also release camera reference when unfocused
+      setCameraRef(null);
+    }
+  }, [isFocused]);
 
 //======INITIALIZATION SECTION======//
 
@@ -425,7 +494,6 @@ const handleDeleteStudent = async () => {
 const loadLocationOptions = async () => {
   try {
     console.log("Loading location options from GitHub...");
-    setScanStatus("Loading location options...");
     
     // Use the same GitHub token approach as with students data
     const token = `${GITHUB_TOKEN_PREFIX}${GITHUB_TOKEN_SUFFIX}`;
@@ -457,7 +525,6 @@ const loadLocationOptions = async () => {
     if (Array.isArray(locationData) && locationData.length > 0) {
       console.log(`Loaded ${locationData.length} subject options`);
       setLocationOptions(locationData);
-      setScanStatus(`Loaded ${locationData.length} subject options`);
       
       // Cache the location options for offline use
       await AsyncStorage.setItem('cachedLocationOptions', JSON.stringify(locationData));
@@ -469,7 +536,6 @@ const loadLocationOptions = async () => {
     }
   } catch (error) {
     console.error("Error loading location options:", error);
-    setScanStatus("Error loading location options");
     
     // Try to load from cache if network request fails
     try {
@@ -530,7 +596,7 @@ const startScannerSession = () => {
   setShowSessionModal(true);
 };
 const onLocationSelected = (selectedLocation) => {
-  console.log("Selected location:", selectedLocation);
+  console.log("Selected subject:", selectedLocation);
   // First set the location in state
   setLocation(selectedLocation);
   // Then close the modal
@@ -538,7 +604,7 @@ const onLocationSelected = (selectedLocation) => {
   // Wait for the state to update before creating the session
   setTimeout(() => {
     if (selectedLocation) {
-      console.log("Creating new session with location:", selectedLocation);
+      console.log("Creating new session with subject:", selectedLocation);
       createNewScannerSession(selectedLocation);
     } else {
       console.log("No location selected");
@@ -547,7 +613,7 @@ const onLocationSelected = (selectedLocation) => {
 };
 // Create a new canner session with a specific location
 const createNewScannerSession = (sessionLocation) => {
-  console.log("Creating session at location:", sessionLocation);
+  console.log("Creating session at subject:", sessionLocation);
   if (!sessionLocation || !sessionLocation.trim()) {
     Alert.alert("Error", "Please enter a location");
     return;
@@ -569,7 +635,6 @@ const createNewScannerSession = (sessionLocation) => {
   // Set active session
   setActiveSession(newSession);
   setScans([]);
-  setScanStatus('Session started - Ready to scan');
   // Add session to sessions array
   AsyncStorage.getItem('sessions').then(savedSessions => {
     const parsedSessions = savedSessions ? JSON.parse(savedSessions) : [];
@@ -630,7 +695,6 @@ const finalizeScannerSession = async () => {
   const sessionToExport = { ...activeSession };
   
   // First, properly mark the session as closed normally in the recovery system
-  // This is the key fix - use the new function from the recovery service
   try {
     await markSessionAsNormallyClosed(activeSession.id, SESSION_TYPE.SCANNER);
     console.log(`Session ${activeSession.id} marked as normally closed`);
@@ -661,7 +725,6 @@ const finalizeScannerSession = async () => {
   });
   
   // Clear active session from AsyncStorage and recovery system
-  // This is redundant with markSessionAsNormallyClosed but kept for safety
   AsyncStorage.removeItem(SCANNER_ACTIVE_SESSION_STORAGE_KEY)
     .catch(error => console.error("Error clearing active scanner session:", error));
   
@@ -676,11 +739,12 @@ const finalizeScannerSession = async () => {
   // Export session to Excel only if there are scans
   if (sessionToExport && sessionToExport.scans && sessionToExport.scans.length > 0) {
     setTimeout(() => {
+      // Always export the Excel file, regardless of online status
+      exportScannerSession(sessionToExport, true); // Pass true to indicate silent export
+      
+      // If offline, also queue for backup for when we're back online
       if (!isOnline) {
-        // If offline, queue for backup instead of immediate export
         queueSessionForBackup(sessionToExport);
-      } else {
-        exportScannerSession(sessionToExport, true); // Pass true to indicate silent export
       }
     }, 500);
   }
@@ -799,12 +863,11 @@ const updateSessionInHistory = (updatedSession) => {
   const recoverScannerSession = async (session) => {
     try {
       // Use the improved recovery service
-      const recoveryResult = await recoverSession(session, SESSION_TYPE.CHECKLIST);
+      const recoveryResult = await recoverSession(session, SESSION_TYPE.SCANNER);
     if (recoveryResult.success) {
       setActiveSession(session);
 
   setScans([]);
-  setScanStatus('Session started - Ready to scan');
 
       // Update sessions list
         const savedSessions = await AsyncStorage.getItem('sessions');
@@ -919,70 +982,105 @@ const saveActiveScannerSession = async (session) => {
 //======SCANNING FUNCTIONS SECTION======//
 // Play success sound
 async function playSuccessSound() { 
-  // Modified to handle haptic feedback instead which is more reliable
   try {
+    // Provide haptic feedback
     await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    
+    // Play the success sound if it's loaded
+    if (successSound) {
+      await successSound.replayAsync();
+    }
+  } catch (e) {
+    console.log("Could not use feedback:", e);
+  }
+}
+
+// Play error sound
+async function playErrorSound() {
+  try {
+    // Provide haptic feedback - use a lighter impact for errors
+    await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+    
+    // Play the error sound if it's loaded
+    if (errorSound) {
+      await errorSound.replayAsync();
+    }
+  } catch (e) {
+    console.log("Could not use feedback:", e);
+  }
+}
+
+// Track last processed barcode to prevent repeated processing
+let lastProcessedCode = null;
+let lastProcessTime = 0;
+const DEBOUNCE_DELAY = 2000; // Wait 2 seconds before allowing the same code to trigger again
+
+// Handle barcode scanning - updated for expo-camera's CameraView
+const handleBarCodeScanned = (scanningResult) => {
+  // Early exit conditions - preserve from original
+  if (!activeSession || scanned) return;
+  
+  // Extract data and type from scanning result
+  const { data, type } = scanningResult;
+  if (!data) {
+    console.log("Scan detected but no data found");
+    return;
+  }
+  
+  const now = Date.now();
+  const cleanData = data.trim();
+  
+  // Debounce same code detection
+  // If this is the same code as last time and we're within the debounce period, ignore it
+  if (lastProcessedCode === cleanData && (now - lastProcessTime) < DEBOUNCE_DELAY) {
+    return;
+  }
+  
+  // Update the tracking variables
+  lastProcessedCode = cleanData;
+  lastProcessTime = now;
+  
+  // Add immediate haptic feedback when something is detected
+  try {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
   } catch (e) {
     console.log("Could not use haptic feedback:", e);
   }
-}
-// Handle barcode scanning - updated for expo-camera's CameraView
-  const handleBarCodeScanned = (scanningResult) => {
-    // Early exit conditions - preserve from original
-    if (!activeSession || scanned) return;
-    // Log for debugging
-    console.log("Barcode detected:", scanningResult);
-    // Extract data and type from scanning result
-    const { data, type } = scanningResult;
-    if (!data) {
-      console.log("Scan detected but no data found");
-      return;
-    }
-  // Instead of setting scanned state, which triggers a re-render,
-  // use a local variable to prevent multiple scans
-  let processingInProgress = true;
-    // Add immediate haptic feedback when something is detected
-    try {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    } catch (e) {
-      console.log("Could not use haptic feedback:", e);
-    }
-    // Process the scanned code
-    console.log("Processing scanned code:", data);
-    processScannedCode(data, false);
-  // Allow scanning again after a short delay using a cleaner approach
-  setTimeout(() => {
-    processingInProgress = false;
-  }, 1000); // Try reducing this delay
+  
+  // Process the scanned code
+  console.log("Processing scanned code:", cleanData);
+  processScannedCode(cleanData, false);
 };
+
 // Process scanned or manually entered code
 const processScannedCode = async (data, isManual = false) => {
   if (!data || !activeSession) {
     console.log("Cannot process scan: No data or no active session");
     return;
   }
+  
   // Trim data to handle extra spaces
   const cleanData = data.trim();
   if (!cleanData) {
     console.log("Cannot process scan: Empty data after trimming");
     return;
   }
+  
   console.log(`Processing ${isManual ? 'manual entry' : 'scan'}: ${cleanData}`);
+  
   // Check if already scanned in this session
   const alreadyScanned = scans.some(scan => scan.content === cleanData);
   if (alreadyScanned) {
     setScanStatus(`Already scanned: ${cleanData.substring(0, 20)}${cleanData.length > 20 ? '...' : ''}`);
-    // Add error haptic feedback for duplicates
-    try {
-      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-    } catch (e) {
-      console.log("Could not use haptic feedback:", e);
-    }
+    // Play error sound and haptic feedback for duplicates - only once per detection
+    await playErrorSound();
     return;
   }
+  
   const now = new Date();
   const timestamp = now.toISOString();
   const formattedTime = formatTime(now);
+  
   // Create new scan
   const newScan = {
     id: Date.now().toString(),
@@ -992,10 +1090,13 @@ const processScannedCode = async (data, isManual = false) => {
     time: now,
     isManual: isManual
   };
+  
   // Create copies of state to work with
   const updatedScans = [...scans, newScan];
+  
   // Update state directly instead of using functional updates
   setScans(updatedScans);
+  
   // Create a new activeSession object with updated scans
   if (activeSession) {
     const updatedSession = {
@@ -1014,16 +1115,15 @@ const processScannedCode = async (data, isManual = false) => {
       console.error('Error updating session in database:', dbError);
     }
   }
-  // Add success haptic feedback
-  try {
-    await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-  } catch (e) {
-    console.log("Could not use haptic feedback:", e);
-  }
+  
+  // Play success sound and haptic feedback
+  await playSuccessSound();
+  
   // Update status
   setScanStatus(`✅ ${isManual ? 'Manual entry' : 'Scanned'}: ${cleanData.substring(0, 20)}${cleanData.length > 20 ? '...' : ''}`);
   console.log(`${isManual ? 'Manual entry' : 'Scan'} processed successfully: ${cleanData}`);
 };
+
 // Process manual entry
 const processManualEntry = () => {
   const studentId = manualId.trim();
@@ -1032,9 +1132,9 @@ const processManualEntry = () => {
     return;
   }
   
-  // Validate that input contains only numbers
-  if (!/^\d+$/.test(studentId)) {
-    Alert.alert('Invalid Input', 'Please enter numbers only');
+  // Updated validation to require exactly 6 digits
+  if (!/^\d{6}$/.test(studentId)) {
+    Alert.alert('Invalid Input', 'Please enter a 6-digit Student ID');
     return;
   }
   
@@ -1044,15 +1144,38 @@ const processManualEntry = () => {
   setShowManualEntryModal(false);
   setManualId('');
   // Update UI with status
-  setScanStatus(`✅ Manual entry added: ${studentId.substring(0, 20)}${studentId.length > 20 ? '...' : ''}`);
+  setScanStatus(`✅ Manual entry added: ${studentId}`);
   console.log(`Manual entry processed: ${studentId}`);
 };
+
+// Add this function to fully reset the camera when needed
+  const resetCamera = () => {
+    console.log('Fully resetting camera');
+    
+    // Disable camera completely
+    setIsCameraActive(false);
+    setCameraRef(null);
+    
+    // Wait a moment before re-enabling
+    setTimeout(() => {
+      setIsCameraActive(true);
+    }, 1000); // Longer timeout for full reset
+  };
 
 //======EXPORT AND FILE MANAGEMENT SECTION======//
 // Export scanner session to Excel
 const exportScannerSession = async (session, silentMode = false) => {
   try {
     console.log("Starting scanner export for session:", session.id);
+    
+    // Check if session has any scans
+    if (!session.scans || session.scans.length === 0) {
+      console.log("Session has no scans, skipping export");
+      if (!silentMode) {
+        Alert.alert("Empty Session", "There are no entries to export. Export cancelled.");
+      }
+      return { success: false, message: 'Export cancelled: No entries to export' };
+    }
     
     // Get current user email
     let userEmail = "unknown";
@@ -1067,12 +1190,12 @@ const exportScannerSession = async (session, silentMode = false) => {
     
     const fileName = `Scanner_${session.location.replace(/[^a-z0-9]/gi, '_')}_${formatDateTimeForFile(new Date(session.dateTime))}.xlsx`;
     
-    // Prepare data with user column
+    // Prepare data with Type column before User column
     const data = [
-      ['Student ID', 'Subject', 'Log Date', 'Log Time', 'User']
+      ['Student ID', 'Subject', 'Log Date', 'Log Time', 'Type', 'User']
     ];
     
-    // Add scans with user email
+    // Add scans with type and user email
     session.scans.forEach((scan, index) => {
       const scanDate = new Date(scan.timestamp);
       data.push([
@@ -1080,6 +1203,7 @@ const exportScannerSession = async (session, silentMode = false) => {
         session.location,            // Subject
         formatDate(scanDate),        // Log Date
         formatTime(scanDate),        // Log Time
+        scan.isManual ? "Manual" : "Scan",  // Type of entry
         userEmail                    // User email (current logged in user)
       ]);
     });
@@ -1183,6 +1307,7 @@ const exportScannerSession = async (session, silentMode = false) => {
     return { success: false, message: `Error exporting file: ${error.message}` };
   }
 };
+
 // Save a file to the "Attendance Recorder" directory with multiple fallback options
 const saveToAttendanceRecorder = async (fileUri, fileName, silentMode = false) => {
   try {
@@ -1315,12 +1440,21 @@ const saveToAttendanceRecorder = async (fileUri, fileName, silentMode = false) =
 const formatDateTime = (date) => {
   return `${formatDate(date)} ${formatTime(date)}`;
 };
+
 const formatDate = (date) => {
   return date.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
 };
+
+// Updated to use 24-hour format with seconds (hh:mm:ss)
 const formatTime = (date) => {
-  return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+  return date.toLocaleTimeString('en-US', { 
+    hour: '2-digit', 
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false // This ensures 24-hour format
+  });
 };
+
 const formatDateTimeForFile = (date) => {
   return date.toISOString().replace(/[:.]/g, '-').slice(0, 19);
 };
@@ -1357,63 +1491,89 @@ return (
       )}
       <Surface style={styles.card}>
         <Title style={styles.title}>QR Code Scanner</Title>
-        <View style={styles.buttonContainer}>
-          <Button 
-            mode="contained" 
-            style={[styles.primaryButton, styles.fullWidthButton]}
-            labelStyle={styles.primaryButtonText}
-            onPress={() => activeSession ? endSession() : setShowSessionModal(true)}
-          >
-            {activeSession ? 'End Session' : 'Start New Session'}
-          </Button>
-          {activeSession && (
-            <Button 
-              mode="outlined" 
-              style={[styles.secondaryButton, styles.fullWidthButton]}
-              labelStyle={styles.secondaryButtonText}
-              onPress={() => setShowManualEntryModal(true)}
-            >
-              Manual Entry
-            </Button>
-          )}
-        </View>
-        {activeSession && (
-          <View style={styles.sessionInfo}>
-            <Text style={styles.locationText}>Location: {activeSession.location}</Text>
-            <Text style={styles.dateTimeText}>Date/Time: {activeSession.formattedDateTime}</Text>
-          </View>
-        )}
+<View style={styles.buttonContainer}>
+  <Button 
+    mode="contained" 
+    style={[styles.primaryButton, styles.fullWidthButton]}
+    labelStyle={styles.primaryButtonText}
+    onPress={() => activeSession ? endSession() : setShowSessionModal(true)}
+  >
+    {activeSession ? 'End Session' : 'Start New Session'}
+  </Button>
+  
+  {activeSession && (
+    <Button 
+      mode="outlined" 
+      style={[styles.secondaryButton, styles.fullWidthButton, {marginTop: 8}]}
+      labelStyle={styles.secondaryButtonText}
+      onPress={() => setShowManualEntryModal(true)}
+    >
+      Manual Entry
+    </Button>
+  )}
+</View>
+
+{activeSession && (
+  <View style={styles.sessionInfo}>
+    <View style={styles.sessionDetails}>
+      <Text style={styles.locationText}>Subject: {activeSession.location}</Text>
+      <Text style={styles.dateTimeText}>Date/Time: {activeSession.formattedDateTime}</Text>
+    </View>
+    <Button 
+      mode="outlined" 
+      style={styles.secondaryButton}
+      labelStyle={styles.secondaryButtonText}
+      onPress={resetCamera}
+      icon="camera"
+    >
+      Reset Camera
+    </Button>
+  </View>
+)}
+        
+ <View style={styles.scannerContainer}>
+    {activeSession && isCameraActive && isFocused ? (
+      <CameraView
+        style={styles.camera}
+        facing="back"
+        barcodeScannerSettings={{
+          barcodeTypes: ["qr", "code128", "code39", "code93", "ean13", "ean8", "upc_e"],
+        }}
+        onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
+        ref={setCameraRef}
+      >
+        {/* Scan status in camera view */}
         {scanStatus ? (
-          <View style={styles.statusContainer}>
-            <Text style={styles.statusText}>{scanStatus}</Text>
+          <View style={styles.inCameraScanStatus}>
+            <Text style={styles.inCameraScanStatusText}>{scanStatus}</Text>
           </View>
         ) : null}
-          <View style={styles.scannerContainer}>
-            {activeSession ? (
-              <CameraView
-                style={styles.camera}
-                facing="back"
-                barcodeScannerSettings={{
-                  barcodeTypes: ["qr", "code128", "code39", "code93", "ean13", "ean8", "upc_e"],
-                }}
-                onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
-                ref={setCameraRef}
-              >
                 {/* Optional overlay for scanning guidance */}
                 <View style={styles.scannerOverlay}>
                   <View style={styles.scannerMarker} />
                 </View>
-              </CameraView>
-            ) : (
-              <View style={styles.placeholderContainer}>
-                <Text style={styles.placeholderText}>
-                  Click "Start New Session" to begin scanning QR codes.
-                </Text>
-              </View>
-            )}
-          </View>
+      </CameraView>
+    ) : activeSession ? (
+      <View style={[styles.camera, {backgroundColor: '#000', justifyContent: 'center', alignItems: 'center'}]}>
+        <Text style={{color: '#fff'}}>Camera initializing...</Text>
+        <Button 
+          mode="contained"
+          onPress={resetCamera}
+          style={{marginTop: 10}}
+        >
+          Restart Camera
+        </Button>
+      </View>
+    ) : (
+      <View style={styles.placeholderContainer}>
+        <Text style={styles.placeholderText}>
+          Click "Start New Session" to begin scanning QR codes.
+        </Text>
+      </View>
+    )}
+  </View>
+
         <Title style={styles.subtitle}>Scanned QR Codes</Title>
-        
         {/* Search bar for DataTable */}
         {activeSession && activeSession.scans && activeSession.scans.length > 0 && (
           <Searchbar
@@ -1593,7 +1753,7 @@ return (
       <Button 
         mode="contained" 
         onPress={handleDeleteStudent}
-        style={styles.confirmdeleteButton}
+        style={styles.dangerButton}
         labelStyle={styles.primaryButtonText}
       >
         Delete
@@ -1605,6 +1765,8 @@ return (
   </Provider>
 );
 };
+
+//======STYLESHEET SECTION======//
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -1702,13 +1864,34 @@ const styles = StyleSheet.create({
     color: '#ffffff',
   },
   sessionInfo: {
-    backgroundColor: '#f0f0f5',
-    padding: 8,
+    backgroundColor: '#f5f5f5',
+  marginTop: 10,
+  marginBottom: 10,
+  padding: 10,
     borderRadius: 4,
-    marginBottom: 8,
     borderWidth: 1,
     borderColor: '#24325f',
+  justifyContent: 'space-between',
+
   },
+sessionDetails: {
+  flex: 1,
+},
+inCameraScanStatus: {
+  position: 'absolute',
+  top: 10,
+  left: 0,
+  right: 0,
+  zIndex: 1,
+  alignItems: 'center',
+  padding: 8,
+  backgroundColor: '#000000',
+},
+inCameraScanStatusText: {
+  color: '#ffffff',
+  fontWeight: 'bold',
+  textAlign: 'center',
+},
   locationText: {
     fontWeight: 'bold',
     color: '#24325f',
@@ -1925,11 +2108,5 @@ deleteButton: {
   borderWidth: 1,
   borderColor: '#FFDDDD',
 },
-confirmdeleteButton: {
-    backgroundColor: '#951d1e',
-    borderColor: '#951d1e',
-    marginBottom: 8,
-    marginRight: 8,
-  },
 });
 export default ScannerScreen;

@@ -246,6 +246,30 @@ const HistoryScreen = ({ navigation }) => {
     return sortSessions(sessions, sortOrder);
   };
   
+//======UTILITY FUNCTIONS SECTION======//
+// Helper functions for date/time formatting
+const formatDateTime = (date) => {
+  return `${formatDate(date)} ${formatTime(date)}`;
+};
+
+const formatDate = (date) => {
+  return date.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+};
+
+// Updated to use 24-hour format with seconds (hh:mm:ss)
+const formatTime = (date) => {
+  return date.toLocaleTimeString('en-US', { 
+    hour: '2-digit', 
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false // This ensures 24-hour format
+  });
+};
+
+const formatDateTimeForFile = (date) => {
+  return date.toISOString().replace(/[:.]/g, '-').slice(0, 19);
+};
+
   // Render session item
   const renderSessionItem = ({ item }) => (
     <TouchableOpacity onPress={() => showSessionDetails(item)}>
@@ -258,7 +282,7 @@ const HistoryScreen = ({ navigation }) => {
               </Text>
               <Text style={styles.dateText}>{item.formattedDateTime}</Text>
             </View>
-            <Text style={styles.countText}>Scans: {Array.isArray(item.scans) ? item.scans.length : 0}</Text>
+            <Text style={styles.countText}>Entries: {Array.isArray(item.scans) ? item.scans.length : 0}</Text>
           </View>
         </Card.Content>
       </Card>
@@ -433,7 +457,7 @@ return (
                 {selectedSession?.formattedDateTime || 'N/A'}
               </Text>
               <Text style={styles.detailText}>
-                <Text style={styles.detailLabel}>Scans: </Text>
+                <Text style={styles.detailLabel}>Entries: </Text>
                 {Array.isArray(selectedSession?.scans) ? selectedSession.scans.length : 0}
               </Text>
             </View>

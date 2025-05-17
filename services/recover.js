@@ -15,7 +15,8 @@ export const SESSION_TYPE = {
 export const SESSION_STATUS = {
   IN_PROGRESS: 'in_progress',
   CLOSED_NORMALLY: 'closed_normally',
-  INTERRUPTED: 'interrupted'
+  INTERRUPTED: 'interrupted',
+  DECLINED_RECOVERY: 'declined_recovery'
 };
 
 // Storage keys
@@ -43,6 +44,13 @@ export const recoverSession = async (session, sessionType) => {
     session.inProgress = true;
     session.sessionType = sessionType;
     session.recoveryStatus = SESSION_STATUS.IN_PROGRESS;
+    
+    // Set the legacy isChecklist flag for backward compatibility
+    if (sessionType === SESSION_TYPE.CHECKLIST) {
+      session.isChecklist = true;
+    } else if (sessionType === SESSION_TYPE.SCANNER) {
+      session.isChecklist = false;
+    }
     
     if (sessionIndex !== -1) {
       // Update existing session
@@ -171,7 +179,7 @@ export const checkForRecoverableSession = async (sessionType) => {
       }
     }
 
-    // First check the direct storage key
+    // First check the direct storage key for the SPECIFIC type
     const storageKey = sessionType === SESSION_TYPE.SCANNER 
       ? SCANNER_ACTIVE_SESSION_STORAGE_KEY 
       : CHECKLIST_ACTIVE_SESSION_STORAGE_KEY;
@@ -195,9 +203,22 @@ export const checkForRecoverableSession = async (sessionType) => {
         }
       }
       
-      // Verify it's the correct type and in progress
+      // Verify it's the correct type
       if (parsedSession && parsedSession.id) {
-        parsedSession.sessionType = sessionType; // Ensure type is set
+        // Make sure the session type matches what we're looking for
+        const sessionTypeMatches = (
+          parsedSession.sessionType === sessionType || 
+          (sessionType === SESSION_TYPE.CHECKLIST && parsedSession.isChecklist === true) ||
+          (sessionType === SESSION_TYPE.SCANNER && parsedSession.isChecklist === false)
+        );
+        
+        if (!sessionTypeMatches) {
+          console.log(`Session ${parsedSession.id} exists but is not a ${sessionType} session, skipping`);
+          return { hasRecoverableSession: false };
+        }
+        
+        // Ensure the session type is properly set
+        parsedSession.sessionType = sessionType;
         
         // Start a timer to auto-close this session if the user doesn't respond
         startSessionRecoveryTimer(parsedSession.id, sessionType);
@@ -214,13 +235,23 @@ export const checkForRecoverableSession = async (sessionType) => {
     const sessions = await loadSessionsFromStorage();
     
     // Find any in-progress sessions of the requested type
-    const inProgressSessions = sessions.filter(session => 
-      session.inProgress && 
-      !closedSessions.includes(session.id) && // Skip closed sessions
-      (session.sessionType === sessionType || 
-       (sessionType === SESSION_TYPE.CHECKLIST && session.isChecklist) ||
-       (sessionType === SESSION_TYPE.SCANNER && !session.isChecklist))
-    );
+    // FIXED: This now has more strict type checking
+    const inProgressSessions = sessions.filter(session => {
+      // Must be in progress
+      if (!session.inProgress) return false;
+      
+      // Must not be in closed sessions
+      if (closedSessions.includes(session.id)) return false;
+      
+      // Must match the session type we're looking for
+      const typeMatches = (
+        session.sessionType === sessionType || 
+        (sessionType === SESSION_TYPE.CHECKLIST && session.isChecklist === true) ||
+        (sessionType === SESSION_TYPE.SCANNER && session.isChecklist === false)
+      );
+      
+      return typeMatches;
+    });
     
     if (inProgressSessions.length > 0) {
       // Get the most recent in-progress session
@@ -288,7 +319,7 @@ const startSessionRecoveryTimer = (sessionId, sessionType) => {
   // Clear any existing timer first
   clearSessionRecoveryTimer(sessionId);
   
-  // Set a new timer for 15 minutes (900000 ms)
+  // Set a new timer for 1 minute (60,000 ms)
   recoveryPromptTimers[sessionId] = setTimeout(() => {
     console.log(`Auto-closing recovery prompt for session ${sessionId} after timeout`);
     clearRecoverableSession(sessionId, sessionType)
@@ -302,7 +333,7 @@ const startSessionRecoveryTimer = (sessionId, sessionType) => {
       .catch(error => {
         console.error(`Error in auto-closing session ${sessionId}:`, error);
       });
-  }, 900000); // 15 minutes
+  }, 60000); // 1 minute
 };
 
 // Clear a timer for a session

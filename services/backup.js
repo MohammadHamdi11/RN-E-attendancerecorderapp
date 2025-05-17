@@ -366,7 +366,7 @@ const prepareDataForBackup = async (sessions) => {
   // For each session, create a separate sheet with proper format
   sessions.forEach(session => {
     const data = [
-      ['Student ID', 'Subject', 'Log Date', 'Log Time', 'User']
+      ['Student ID', 'Subject', 'Log Date', 'Log Time', 'Type', 'User']
     ];
     
     // Add each scan in the proper format
@@ -377,6 +377,7 @@ const prepareDataForBackup = async (sessions) => {
         session.location,       // Subject
         formatDate(scanDate),   // Date
         formatTime(scanDate),   // Time
+        scan.isManual ? "Manual" : "Scan",  // Type of entry
         userEmail               // User email (current logged in user)
       ]);
     });
@@ -412,6 +413,7 @@ const prepareDataForBackup = async (sessions) => {
   
   return workbook;
 };
+
 // Check if backup is needed
 const isBackupNeeded = async (sessions) => {
 // Check if we have more sessions than last time we backed up

@@ -6,6 +6,7 @@ import Icon from '@expo/vector-icons/MaterialIcons';
 import { Text, Button, Surface, Title, Checkbox, Modal, Portal, Provider, Searchbar, List, Divider, DataTable, TextInput } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as FileSystem from 'expo-file-system';
+import * as Haptics from 'expo-haptics';
 import * as Sharing from 'expo-sharing';
 import * as MediaLibrary from 'expo-media-library';
 import * as XLSX from 'xlsx';
@@ -617,6 +618,14 @@ const handleDeleteStudent = async () => {
   // Update the active session state
   setActiveSession(updatedSession);
   
+  // IMPORTANT: Also update the selectedStudents Set to keep it in sync
+  const updatedSelectedStudents = new Set(selectedStudents);
+  updatedSelectedStudents.delete(studentToDelete);
+  setSelectedStudents(updatedSelectedStudents);
+  
+  // Add haptic feedback for deletion
+  await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+  
   // Mark session as needing saving for auto-save mechanism
   window.sessionNeedsSaving = true;
   
@@ -648,6 +657,7 @@ const handleDeleteStudent = async () => {
   setShowDeleteConfirmModal(false);
   setStudentToDelete('');
 };
+
 // Add this function to load location options
 const loadLocationOptions = async () => {
   try {
@@ -757,7 +767,7 @@ const startChecklistSession = () => {
   setShowSessionModal(true);
 };
 const onLocationSelected = (selectedLocation) => {
-  console.log("Selected location:", selectedLocation);
+  console.log("Selected subject:", selectedLocation);
   // First set the location in state
   setLocation(selectedLocation);
   // Then close the modal
@@ -765,7 +775,7 @@ const onLocationSelected = (selectedLocation) => {
   // Wait for the state to update before creating the session
   setTimeout(() => {
     if (selectedLocation) {
-      console.log("Creating new session with location:", selectedLocation);
+      console.log("Creating new session with subject:", selectedLocation);
       createNewChecklistSessionWithLocation(selectedLocation);
     } else {
       console.log("No location selected");
@@ -774,7 +784,7 @@ const onLocationSelected = (selectedLocation) => {
 };
 // Create a new checklist session with a specific location
 const createNewChecklistSessionWithLocation = (sessionLocation) => {
-  console.log("Creating session at location:", sessionLocation);
+  console.log("Creating session at subject:", sessionLocation);
   if (!sessionLocation || !sessionLocation.trim()) {
     Alert.alert("Error", "Please enter a location");
     return;
@@ -802,7 +812,6 @@ const createNewChecklistSessionWithLocation = (sessionLocation) => {
   setActiveSession(newSession);
   // Clear selected students
   setSelectedStudents(new Set());
-  setSelectionStatus(`Session started at ${sessionLocation}`);
   // Add session to sessions array
   AsyncStorage.getItem('sessions').then(savedSessions => {
     const parsedSessions = savedSessions ? JSON.parse(savedSessions) : [];
@@ -909,11 +918,12 @@ const finalizeChecklistSession = async () => {
   // Export session to Excel only if there are scans
   if (sessionToExport && sessionToExport.scans && sessionToExport.scans.length > 0) {
     setTimeout(() => {
+      // Always export the Excel file, regardless of online status
+      exportChecklistSession(sessionToExport, true); // Pass true to indicate silent export
+      
+      // If offline, also queue for backup for when we're back online
       if (!isOnline) {
-        // If offline, queue for backup instead of immediate export
         queueSessionForBackup(sessionToExport);
-      } else {
-        exportChecklistSession(sessionToExport, true); // Pass true to indicate silent export
       }
     }, 500);
   }
@@ -1044,8 +1054,6 @@ const updateSessionInHistory = (updatedSession) => {
           selectedSet.add(scan.id);
         });
         setSelectedStudents(selectedSet);
-        setSelectionStatus('Session recovered - Ready to select students');
-
 
         // Update sessions list
         const savedSessions = await AsyncStorage.getItem('sessions');
@@ -1168,6 +1176,29 @@ const saveActiveChecklistSession = async (session) => {
   }
 };
 //====================STUDENT SELECTION SECTION====================//
+// Play success sound and haptic feedback
+const playSuccessFeedback = async () => { 
+  try {
+    // Provide haptic feedback
+    await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    
+    // You can also add sound here if needed, similar to scanner module
+  } catch (e) {
+    console.error("Could not use haptic feedback:", e);
+  }
+};
+
+// Play error feedback for invalid selections or duplicates
+const playErrorFeedback = async () => {
+  try {
+    // Provide error haptic feedback
+    await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+    
+    // You can also add error sound here if needed
+  } catch (e) {
+    console.error("Could not use haptic feedback:", e);
+  }
+};
 // Handle student selection with optimized performance
 const handleStudentSelection = async (studentId, isChecked) => {
   if (!activeSession) return;
@@ -1178,6 +1209,10 @@ const handleStudentSelection = async (studentId, isChecked) => {
     updatedSelection.add(studentId);
     setSelectedStudents(updatedSelection);
     setSelectionStatus(`✓ Selecting: ${studentId}`);
+    
+    // Add haptic feedback
+    await playSuccessFeedback();
+    
     // Create timestamp
     const now = new Date();
     const timestamp = now.toISOString();
@@ -1217,6 +1252,9 @@ const handleStudentSelection = async (studentId, isChecked) => {
     setSelectedStudents(updatedSelection);
     setSelectionStatus(`✗ Removing: ${studentId}`);
     
+    // Add haptic feedback (different feel for deselection)
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    
     // Filter out scans for this student
     const updatedScans = activeSession.scans.filter(scan => scan.id !== studentId);
     
@@ -1247,6 +1285,9 @@ const addStudentToSelectionTable = async (studentId, isManual = false) => {
   if (!activeSession) return;
   // First update the selection status for immediate feedback
   setSelectionStatus(`✓ ${isManual ? 'Manually added' : 'Selected'}: ${studentId}`);
+  
+  // Add haptic feedback
+  await playSuccessFeedback();
   
   // Create timestamp
   const now = new Date();
@@ -1295,6 +1336,9 @@ const removeStudentFromSelectionTable = async (studentId) => {
   // Update status immediately for feedback
   setSelectionStatus(`✗ Removed: ${studentId}`);
   
+  // Add haptic feedback
+  await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  
   // Filter out scans for this student
   const updatedScans = activeSession.scans.filter(scan => scan.id !== studentId);
   
@@ -1329,18 +1373,24 @@ const processManualEntry = async () => {
   const studentId = manualId.trim();
   if (!studentId) {
     Alert.alert('Error', 'Please enter a Student ID');
+    // Add error haptic feedback
+    await playErrorFeedback();
     return;
   }
   
-  // Validate that input contains only numbers
-  if (!/^\d+$/.test(studentId)) {
-    Alert.alert('Invalid Input', 'Please enter numbers only');
+  // Updated validation to require exactly 6 digits
+  if (!/^\d{6}$/.test(studentId)) {
+    Alert.alert('Invalid Input', 'Please enter a 6-digit Student ID');
+    // Add error haptic feedback
+    await playErrorFeedback();
     return;
   }
   
   // Check if already selected - give immediate feedback
   if (selectedStudents.has(studentId)) {
     Alert.alert('Already Selected', `Student ${studentId} is already in your selection.`);
+    // Add error haptic feedback
+    await playErrorFeedback();
     setManualId(''); // Just clear the input but keep modal open
     return;
   }
@@ -1349,6 +1399,9 @@ const processManualEntry = async () => {
   const updatedSelection = new Set(selectedStudents);
   updatedSelection.add(studentId);
   setSelectedStudents(updatedSelection);
+  
+  // Add success haptic feedback
+  await playSuccessFeedback();
   
   // Set last added ID for feedback - immediate UI update
   setLastAddedId(studentId);
@@ -1407,6 +1460,15 @@ const exportChecklistSession = async (session, silentMode = false) => {
   try {
     console.log("Starting checklist export for session:", session.id);
 
+    // Check if session has any scans
+    if (!session.scans || session.scans.length === 0) {
+      console.log("Session has no scans, skipping export");
+      if (!silentMode) {
+        Alert.alert("Empty Session", "There are no entries to export. Export cancelled.");
+      }
+      return { success: false, message: 'Export cancelled: No entries to export' };
+    }
+
     // Get current user email
     let userEmail = "unknown";
     try {
@@ -1419,37 +1481,45 @@ const exportChecklistSession = async (session, silentMode = false) => {
     }
 
     const fileName = `Checklist_${session.location.replace(/[^a-z0-9]/gi, '_')}_${formatDateTimeForFile(new Date(session.dateTime))}.xlsx`;
-    // Prepare data with user column
+    
+    // Prepare data with Type column before User column
     const data = [
-      ['Student ID', 'Subject', 'Log Date', 'Log Time', 'User']
+      ['Student ID', 'Subject', 'Log Date', 'Log Time', 'Type', 'User']
     ];
-    // Add selections
+    
+    // Add selections with type information
     session.scans.forEach((scan, index) => {
       const scanDate = new Date(scan.time || scan.timestamp);
       data.push([
-        scan.content,         // Student ID
-        session.location,     // Subject
-        formatDate(scanDate), // Log Date
-        formatTime(scanDate), // Log Time
-        userEmail             // User email (current logged in user)
+        scan.content,                // Student ID
+        session.location,            // Subject
+        formatDate(scanDate),        // Log Date
+        formatTime(scanDate),        // Log Time
+        scan.isManual ? "Manual" : "Selection",  // Type of entry (Selection for checklist)
+        userEmail                    // User email (current logged in user)
       ]);
     });
+    
     console.log(`Prepared data with ${session.scans.length} entries and user: ${userEmail}`);
 
     // Create workbook
     const ws = XLSX.utils.aoa_to_sheet(data);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Checklist");
+    
     // Convert to binary
     console.log("Converting workbook to base64");
     const wbout = XLSX.write(wb, { type: 'base64', bookType: 'xlsx' });
+    
     // Define file path in app's cache directory (temporary location)
     const fileUri = `${FileSystem.cacheDirectory}${fileName}`;
     console.log("Temporary file location:", fileUri);
+    
     // Write the file
     await FileSystem.writeAsStringAsync(fileUri, wbout, {
       encoding: FileSystem.EncodingType.Base64
     });
+    
     // Verify the file was created
     const fileInfo = await FileSystem.getInfoAsync(fileUri);
     if (!fileInfo.exists) {
@@ -1457,6 +1527,7 @@ const exportChecklistSession = async (session, silentMode = false) => {
       throw new Error("File not created");
     }
     console.log("Excel file saved temporarily to:", fileUri);
+    
     // Save to downloads using our fixed function
     console.log("Saving to Downloads folder");
     const saveResult = await saveToAttendanceRecorder(fileUri, fileName, silentMode);
@@ -1464,6 +1535,7 @@ const exportChecklistSession = async (session, silentMode = false) => {
       console.error("Save to downloads failed:", saveResult.message);
       throw new Error(`Failed to save to Downloads: ${saveResult.message}`);
     }
+    
     // Also share the file
     console.log("Sharing file");
     await Sharing.shareAsync(fileUri, {
@@ -1471,9 +1543,11 @@ const exportChecklistSession = async (session, silentMode = false) => {
       dialogTitle: 'Export Checklist Session Data',
       UTI: 'com.microsoft.excel.xlsx'
     });
+    
     // Check connection and handle backup
     const isOnline = await checkOnlineStatus();
     console.log("Online status for backup:", isOnline);
+    
     if (isOnline) {
       console.log("Online - attempting backup");
       try {
@@ -1499,6 +1573,7 @@ const exportChecklistSession = async (session, silentMode = false) => {
       // Queue for backup when back online with silent flag (to avoid duplicate alerts)
       await queueSessionForBackup(session, false); // Will show its own alert
     }
+    
     console.log("Checklist export completed successfully");
     return { success: true, message: 'Export successful!', filePath: saveResult.uri };
   } catch (error) {
@@ -1516,6 +1591,7 @@ const exportChecklistSession = async (session, silentMode = false) => {
     return { success: false, message: `Error exporting file: ${error.message}` };
   }
 };
+
 // Save a file to the "Attendance Recorder" directory with multiple fallback options
 const saveToAttendanceRecorder = async (fileUri, fileName, silentMode = false) => {
   try {
@@ -1628,17 +1704,27 @@ const saveToAttendanceRecorder = async (fileUri, fileName, silentMode = false) =
     return { success: false, message: `Error: ${error.message}`, shareOnly: true };
   }
 };
+
 //======UTILITY FUNCTIONS SECTION======//
 // Helper functions for date/time formatting
 const formatDateTime = (date) => {
   return `${formatDate(date)} ${formatTime(date)}`;
 };
+
 const formatDate = (date) => {
   return date.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
 };
+
+// Updated to use 24-hour format with seconds (hh:mm:ss)
 const formatTime = (date) => {
-  return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+  return date.toLocaleTimeString('en-US', { 
+    hour: '2-digit', 
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false // This ensures 24-hour format
+  });
 };
+
 const formatDateTimeForFile = (date) => {
   return date.toISOString().replace(/[:.]/g, '-').slice(0, 19);
 };
@@ -1735,7 +1821,7 @@ return (
         </View>
         {activeSession && (
           <View style={styles.sessionInfo}>
-            <Text style={styles.locationText}>Location: {activeSession.location}</Text>
+            <Text style={styles.locationText}>Subject: {activeSession.location}</Text>
             <Text style={styles.dateTimeText}>Date/Time: {activeSession.formattedDateTime}</Text>
             {/* Streamlined filtering UI directly in main layout */}
             <View style={styles.filterControls}>
@@ -2110,7 +2196,7 @@ return (
             <Button 
               mode="contained" 
               onPress={handleDeleteStudent}
-              style={styles.confirmdeleteButton}
+              style={styles.dangerButton}
               labelStyle={styles.primaryButtonText}
             >
               Delete
@@ -2122,6 +2208,7 @@ return (
   </Provider>
 );
 };
+
 //======STYLESHEET SECTION======//
 const styles = StyleSheet.create({
   container: {
@@ -2202,12 +2289,15 @@ const styles = StyleSheet.create({
     color: '#ffffff',
   },
   sessionInfo: {
-    backgroundColor: '#f0f0f5',
-    padding: 8,
+    backgroundColor: '#f5f5f5',
+  marginTop: 10,
+  marginBottom: 10,
+  padding: 10,
     borderRadius: 4,
-    marginBottom: 8,
     borderWidth: 1,
     borderColor: '#24325f',
+  justifyContent: 'space-between',
+
   },
   locationText: {
     fontWeight: 'bold',
@@ -2520,11 +2610,5 @@ deleteButton: {
   borderWidth: 1,
   borderColor: '#FFDDDD',
 },
-confirmdeleteButton: {
-    backgroundColor: '#951d1e',
-    borderColor: '#951d1e',
-    marginBottom: 8,
-    marginRight: 8,
-  },
 });
 export default ChecklistScreen;
