@@ -1,1 +1,0 @@
-the students_ids, usercredentials and admincredentials are not needed on the local machine since they are dynamically updated from github repository: https://github.com/MohammadHamdi11/RN-E-attendancerecorderapp but they are kept there as a reference for when the app is being built again on another local machine or the same data are used for another repository.
