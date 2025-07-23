@@ -1,0 +1,95 @@
+{
+  "name": "New Schedule",
+  "total_weeks": 1,
+  "current_week": 1,
+  "time_slot_configs": {
+    "Normal Schedule": [
+      "8:00-9:00",
+      "9:00-10:00",
+      "10:00-11:00",
+      "11:00-12:00",
+      "12:00-1:00",
+      "1:00-2:00",
+      "2:00-3:00",
+      "3:00-4:00"
+    ],
+    "Ramadan Schedule": [
+      "9:00-9:45",
+      "9:45-10:30",
+      "10:30-11:15",
+      "11:15-12:00",
+      "12:00-12:45",
+      "12:45-1:30",
+      "1:30-2:15",
+      "2:15-3:00"
+    ]
+  },
+  "current_time_config": "Normal Schedule",
+  "day_structures": {
+    "0": {
+      "start_row": 1,
+      "day_name": "Saturday\n19/7",
+      "day_type": "off"
+    },
+    "1": {
+      "start_row": 2,
+      "day_name": "Sunday\n20/7",
+      "day_type": "school"
+    },
+    "2": {
+      "start_row": 10,
+      "day_name": "Monday\n21/7",
+      "day_type": "school"
+    },
+    "3": {
+      "start_row": 18,
+      "day_name": "Tuesday\n22/7",
+      "day_type": "school"
+    },
+    "4": {
+      "start_row": 26,
+      "day_name": "Wednesday\n23/7",
+      "day_type": "school"
+    },
+    "5": {
+      "start_row": 34,
+      "day_name": "Thursday\n24/7",
+      "day_type": "school"
+    }
+  },
+  "weeks_data": {
+    "1": {
+      "schedule_data": {
+        "1_1_0_8:00-9:00": {
+          "text": "A1: Session 1\nAnatomy",
+          "background": "#fff9e6",
+          "foreground": "#000000"
+        }
+      },
+      "dropdown_states": {
+        "1_1": "Practical Sessions",
+        "1_5": "",
+        "2_1": "",
+        "2_5": "",
+        "3_1": "",
+        "3_5": "",
+        "4_1": "",
+        "4_5": "",
+        "5_1": "",
+        "5_5": ""
+      },
+      "day_dropdown_states": {
+        "0": "Day Off",
+        "1": "School Day",
+        "2": "School Day",
+        "3": "School Day",
+        "4": "School Day",
+        "5": "School Day"
+      },
+      "time_config": "Normal Schedule"
+    }
+  },
+  "is_date_range_set": true,
+  "start_date": "2025-07-23",
+  "end_date": "2025-07-24"
+}
