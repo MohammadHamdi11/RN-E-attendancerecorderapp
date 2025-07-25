@@ -1,0 +1,69 @@
+{
+
+  "access_control": {
+
+    "user_types": {
+
+      "user": {
+
+        "user_type": "user",
+
+        "reference_preparer": true,
+
+        "log_history_preparer": false,
+
+        "schedule_manager": false,
+
+        "appeal_processor": true,
+
+        "attendance_processor": false,
+
+        "attendance_analyzer": false,
+
+        "settings": false
+
+      },
+
+      "admin": {
+
+        "user_type": "admin",
+
+        "reference_preparer": true,
+
+        "log_history_preparer": true,
+
+        "schedule_manager": true,
+
+        "appeal_processor": true,
+
+        "attendance_processor": true,
+
+        "attendance_analyzer": true,
+
+        "settings": true
+
+      },
+
+      "supervisor": {
+
+        "user_type": "supervisor",
+
+        "reference_preparer": true,
+
+        "log_history_preparer": true,
+
+        "schedule_manager": true,
+
+        "appeal_processor": true,
+
+        "attendance_processor": false,
+
+        "settings": false
+
+      }
+
+    }
+
+  }
+
+}
