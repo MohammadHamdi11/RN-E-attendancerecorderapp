@@ -13,7 +13,7 @@
       },
       "supervisor": {
         "user_type": "supervisor",
-        "reference_preparer": false,
+        "reference_preparer": true,
         "log_history_preparer": false,
         "schedule_manager": true,
         "appeal_processor": false,
