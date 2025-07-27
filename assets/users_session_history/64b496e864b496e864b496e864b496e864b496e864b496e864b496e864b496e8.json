@@ -1,10 +1,10 @@
 {
   "user_email": "01399e4d01399e4d01399e4d01399e4d01399e4d01399e4d01399e4d01399e4d",
-  "user_id": "01399e4d01399e4d01399e4d01399e4d01399e4d01399e4d01399e4d01399e4d_1753587945026",
-  "account_created": "2025-07-27T03:45:45.026Z",
-  "last_sync": "2025-07-27T03:45:45.028Z",
-  "total_sessions": 2,
-  "total_scans": 2,
+  "user_id": "01399e4d01399e4d01399e4d01399e4d01399e4d01399e4d01399e4d01399e4d_1753588229064",
+  "account_created": "2025-07-27T03:50:29.064Z",
+  "last_sync": "2025-07-27T03:50:29.065Z",
+  "total_sessions": 3,
+  "total_scans": 3,
   "sessions": [
     {
       "id": "scanner1753587765495",
@@ -65,6 +65,36 @@
       "created_by": "01399e4d01399e4d01399e4d01399e4d01399e4d01399e4d01399e4d01399e4d",
       "created_at": "2025-07-27T03:45:45.017Z",
       "updated_at": "2025-07-27T03:45:45.017Z"
+    },
+    {
+      "id": "scanner1753587985808",
+      "location": "Anatomy",
+      "year": 4,
+      "batch": "2024/2025",
+      "dateTime": "2025-07-27T03:46:25.808Z",
+      "formattedDateTime": "27/07/2025 06:46:25",
+      "scans": [
+        {
+          "id": "1753587988148",
+          "content": "645453",
+          "timestamp": "2025-07-27T03:46:28.146Z",
+          "formattedTime": "06:46:28",
+          "time": "2025-07-27T03:46:28.146Z",
+          "isManual": true,
+          "user_email": "01399e4d01399e4d01399e4d01399e4d01399e4d01399e4d01399e4d01399e4d",
+          "user_id": "01399e4d01399e4d01399e4d01399e4d01399e4d01399e4d01399e4d01399e4d_1753587990007"
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "01399e4d01399e4d01399e4d01399e4d01399e4d01399e4d01399e4d01399e4d",
+      "user_id": "01399e4d01399e4d01399e4d01399e4d01399e4d01399e4d01399e4d01399e4d_1753587990007",
+      "created_by": "01399e4d01399e4d01399e4d01399e4d01399e4d01399e4d01399e4d01399e4d",
+      "created_at": "2025-07-27T03:46:30.007Z",
+      "updated_at": "2025-07-27T03:46:30.007Z"
     }
   ]
 }
