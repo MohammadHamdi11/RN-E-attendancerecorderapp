@@ -1,10 +1,10 @@
 {
   "user_email": "231249@med.asu.edu.eg",
-  "user_id": "231249_med_asu_edu_eg_1753586921422",
-  "account_created": "2025-07-27T03:28:41.422Z",
-  "last_sync": "2025-07-27T03:28:41.423Z",
-  "total_sessions": 16,
-  "total_scans": 15,
+  "user_id": "231249_med_asu_edu_eg_1753589713895",
+  "account_created": "2025-07-27T04:15:13.895Z",
+  "last_sync": "2025-07-27T04:15:13.898Z",
+  "total_sessions": 17,
+  "total_scans": 16,
   "sessions": [
     {
       "id": "scanner_1753558546963",
@@ -503,6 +503,36 @@
       "created_by": "231249@med.asu.edu.eg",
       "created_at": "2025-07-27T00:29:47.994Z",
       "updated_at": "2025-07-27T03:28:41.410Z"
+    },
+    {
+      "id": "scanner1753589707264",
+      "location": "Histology",
+      "year": 5,
+      "batch": "2023/2024",
+      "dateTime": "2025-07-27T04:15:07.264Z",
+      "formattedDateTime": "27/07/2025 07:15:07",
+      "scans": [
+        {
+          "id": "1753589711886",
+          "content": "645534",
+          "timestamp": "2025-07-27T04:15:11.884Z",
+          "formattedTime": "07:15:11",
+          "time": "2025-07-27T04:15:11.884Z",
+          "isManual": true,
+          "user_email": "231249@med.asu.edu.eg",
+          "user_id": "231249_med_asu_edu_eg_1753589713889"
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "231249@med.asu.edu.eg",
+      "user_id": "231249_med_asu_edu_eg_1753589713889",
+      "created_by": "231249@med.asu.edu.eg",
+      "created_at": "2025-07-27T04:15:13.889Z",
+      "updated_at": "2025-07-27T04:15:13.889Z"
     }
   ]
 }
