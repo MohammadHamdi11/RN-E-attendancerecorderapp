@@ -1,10 +1,10 @@
 {
   "user_email": "231249@med.asu.edu.eg",
-  "user_id": "231249_med_asu_edu_eg_1753701903857",
-  "account_created": "2025-07-28T11:25:03.857Z",
-  "last_sync": "2025-07-28T11:25:03.859Z",
-  "total_sessions": 25,
-  "total_scans": 22,
+  "user_id": "231249_med_asu_edu_eg_1753702098326",
+  "account_created": "2025-07-28T11:28:18.326Z",
+  "last_sync": "2025-07-28T11:28:18.327Z",
+  "total_sessions": 26,
+  "total_scans": 23,
   "sessions": [
     {
       "id": "scanner_1753558546963",
@@ -757,6 +757,36 @@
       "created_by": "231249@med.asu.edu.eg",
       "created_at": "2025-07-28T11:25:03.853Z",
       "updated_at": "2025-07-28T11:25:03.853Z"
+    },
+    {
+      "id": "scanner1753702093774",
+      "location": "Biochemistry",
+      "year": 5,
+      "batch": "2024/2025",
+      "dateTime": "2025-07-28T11:28:13.774Z",
+      "formattedDateTime": "28/07/2025 14:28:13",
+      "scans": [
+        {
+          "id": "1753702096526",
+          "content": "646463",
+          "timestamp": "2025-07-28T11:28:16.526Z",
+          "formattedTime": "14:28:16",
+          "time": "2025-07-28T11:28:16.526Z",
+          "isManual": true,
+          "user_email": "231249@med.asu.edu.eg",
+          "user_id": "231249_med_asu_edu_eg_1753702098323"
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "231249@med.asu.edu.eg",
+      "user_id": "231249_med_asu_edu_eg_1753702098322",
+      "created_by": "231249@med.asu.edu.eg",
+      "created_at": "2025-07-28T11:28:18.322Z",
+      "updated_at": "2025-07-28T11:28:18.322Z"
     }
   ]
 }
