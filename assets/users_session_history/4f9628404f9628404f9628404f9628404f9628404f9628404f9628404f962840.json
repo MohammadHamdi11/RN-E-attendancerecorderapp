@@ -1,10 +1,10 @@
 {
   "user_email": "231249@med.asu.edu.eg",
-  "user_id": "231249_med_asu_edu_eg_1753701608006",
-  "account_created": "2025-07-28T11:20:08.006Z",
-  "last_sync": "2025-07-28T11:20:37.338Z",
-  "total_sessions": 24,
-  "total_scans": 21,
+  "user_id": "231249_med_asu_edu_eg_1753701903857",
+  "account_created": "2025-07-28T11:25:03.857Z",
+  "last_sync": "2025-07-28T11:25:03.859Z",
+  "total_sessions": 25,
+  "total_scans": 22,
   "sessions": [
     {
       "id": "scanner_1753558546963",
@@ -727,10 +727,36 @@
       "created_by": "231249@med.asu.edu.eg",
       "created_at": "2025-07-28T11:20:08.003Z",
       "updated_at": "2025-07-28T11:20:08.003Z"
+    },
+    {
+      "id": "scanner1753701899319",
+      "location": "Biochemistry",
+      "year": 4,
+      "batch": "2024/2025",
+      "dateTime": "2025-07-28T11:24:59.319Z",
+      "formattedDateTime": "28/07/2025 14:24:59",
+      "scans": [
+        {
+          "id": "1753701902310",
+          "content": "255222",
+          "timestamp": "2025-07-28T11:25:02.308Z",
+          "formattedTime": "14:25:02",
+          "time": "2025-07-28T11:25:02.308Z",
+          "isManual": true,
+          "user_email": "231249@med.asu.edu.eg",
+          "user_id": "231249_med_asu_edu_eg_1753701903853"
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "231249@med.asu.edu.eg",
+      "user_id": "231249_med_asu_edu_eg_1753701903853",
+      "created_by": "231249@med.asu.edu.eg",
+      "created_at": "2025-07-28T11:25:03.853Z",
+      "updated_at": "2025-07-28T11:25:03.853Z"
     }
-  ],
-  "github_account": {
-    "repository_name": "personal_log_history_backup",
-    "last_linked": "2025-07-28T11:20:37.337Z"
-  }
+  ]
 }
