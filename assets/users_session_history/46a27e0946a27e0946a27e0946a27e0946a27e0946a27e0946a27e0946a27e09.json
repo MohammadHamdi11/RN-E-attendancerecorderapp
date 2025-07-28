@@ -1,10 +1,10 @@
 {
   "user_email": "super@super.com",
-  "user_id": "super_super_com_1753702435851",
-  "account_created": "2025-07-28T11:33:55.851Z",
-  "last_sync": "2025-07-28T11:33:55.852Z",
-  "total_sessions": 4,
-  "total_scans": 4,
+  "user_id": "super_super_com_1753702456359",
+  "account_created": "2025-07-28T11:34:16.359Z",
+  "last_sync": "2025-07-28T11:34:16.359Z",
+  "total_sessions": 5,
+  "total_scans": 5,
   "sessions": [
     {
       "id": "scanner1753702162903",
@@ -131,6 +131,39 @@
       "created_by": "super@super.com",
       "created_at": "2025-07-28T11:33:55.848Z",
       "updated_at": "2025-07-28T11:33:55.848Z"
+    },
+    {
+      "id": "checklist1753702449278",
+      "location": "Anatomy",
+      "year": 5,
+      "batch": "2025/2026",
+      "dateTime": "2025-07-28T11:34:09.278Z",
+      "formattedDateTime": "28/07/2025 14:34:09",
+      "scans": [
+        {
+          "id": "545645",
+          "content": "545645",
+          "timestamp": "2025-07-28T11:34:14.005Z",
+          "formattedTime": "14:34:14",
+          "time": "2025-07-28T11:34:14.005Z",
+          "isManual": true,
+          "user_email": "super@super.com",
+          "user_id": "super_super_com_1753702456356"
+        }
+      ],
+      "inProgress": true,
+      "isChecklist": true,
+      "filters": {
+        "year": "all",
+        "group": "all"
+      },
+      "sessionType": "checklist",
+      "recoveryStatus": "in_progress",
+      "user_email": "super@super.com",
+      "user_id": "super_super_com_1753702456356",
+      "created_by": "super@super.com",
+      "created_at": "2025-07-28T11:34:16.356Z",
+      "updated_at": "2025-07-28T11:34:16.356Z"
     }
   ]
 }
