@@ -34,7 +34,8 @@ jobs:
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "Attendance Bot"
-        git add results/
+        git add attendance_reports/ # Add updated files in attendance_reports
+        git add results/ # Add any results folder if it exists
         git add . # Add any other files your script might create
         git diff --staged --quiet || git commit -m "Daily attendance processing - $(date '+%Y-%m-%d %H:%M:%S')"
         git push
