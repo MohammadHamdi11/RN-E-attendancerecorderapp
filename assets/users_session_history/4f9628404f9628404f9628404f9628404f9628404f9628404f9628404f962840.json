@@ -1,9 +1,9 @@
 {
   "user_email": "231249@med.asu.edu.eg",
-  "user_id": "231249_med_asu_edu_eg_1753699935763",
-  "account_created": "2025-07-28T10:52:15.763Z",
-  "last_sync": "2025-07-28T10:52:30.718Z",
-  "total_sessions": 18,
+  "user_id": "231249_med_asu_edu_eg_1753700008165",
+  "account_created": "2025-07-28T10:53:28.165Z",
+  "last_sync": "2025-07-28T10:53:28.166Z",
+  "total_sessions": 19,
   "total_scans": 16,
   "sessions": [
     {
@@ -555,10 +555,28 @@
       "created_by": "231249@med.asu.edu.eg",
       "created_at": "2025-07-28T10:52:15.760Z",
       "updated_at": "2025-07-28T10:52:15.760Z"
+    },
+    {
+      "id": "checklist1753700003276",
+      "location": "Anatomy",
+      "year": 3,
+      "batch": "2025/2026",
+      "dateTime": "2025-07-28T10:53:23.276Z",
+      "formattedDateTime": "28/07/2025 13:53:23",
+      "scans": [],
+      "inProgress": true,
+      "isChecklist": true,
+      "filters": {
+        "year": "all",
+        "group": "all"
+      },
+      "sessionType": "checklist",
+      "recoveryStatus": "in_progress",
+      "user_email": "231249@med.asu.edu.eg",
+      "user_id": "231249_med_asu_edu_eg_1753700008160",
+      "created_by": "231249@med.asu.edu.eg",
+      "created_at": "2025-07-28T10:53:28.160Z",
+      "updated_at": "2025-07-28T10:53:28.160Z"
     }
-  ],
-  "github_account": {
-    "repository_name": "personal_log_history_backup",
-    "last_linked": "2025-07-28T10:52:30.716Z"
-  }
+  ]
 }
