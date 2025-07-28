@@ -1,10 +1,10 @@
 {
   "user_email": "super@super.com",
-  "user_id": "super_super_com_1753713895917",
-  "account_created": "2025-07-28T14:44:55.917Z",
-  "last_sync": "2025-07-28T14:45:08.353Z",
-  "total_sessions": 11,
-  "total_scans": 11,
+  "user_id": "super_super_com_1753714220101",
+  "account_created": "2025-07-28T14:50:20.101Z",
+  "last_sync": "2025-07-28T14:50:20.104Z",
+  "total_sessions": 12,
+  "total_scans": 12,
   "sessions": [
     {
       "id": "scanner1753702162903",
@@ -347,10 +347,36 @@
       "created_by": "super@super.com",
       "created_at": "2025-07-28T14:44:55.914Z",
       "updated_at": "2025-07-28T14:44:55.914Z"
+    },
+    {
+      "id": "scanner1753714211664",
+      "location": "Histology",
+      "year": 5,
+      "batch": "2023/2024",
+      "dateTime": "2025-07-28T14:50:11.664Z",
+      "formattedDateTime": "28/07/2025 17:50:11",
+      "scans": [
+        {
+          "id": "1753714216235",
+          "content": "676646",
+          "timestamp": "2025-07-28T14:50:16.233Z",
+          "formattedTime": "17:50:16",
+          "time": "2025-07-28T14:50:16.233Z",
+          "isManual": true,
+          "user_email": "super@super.com",
+          "user_id": "super_super_com_1753714218094"
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "super@super.com",
+      "user_id": "super_super_com_1753714218094",
+      "created_by": "super@super.com",
+      "created_at": "2025-07-28T14:50:18.094Z",
+      "updated_at": "2025-07-28T14:50:18.094Z"
     }
-  ],
-  "github_account": {
-    "repository_name": "personal_log_history_backup",
-    "last_linked": "2025-07-28T14:45:08.352Z"
-  }
+  ]
 }
