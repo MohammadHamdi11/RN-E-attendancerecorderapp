@@ -1,10 +1,10 @@
 {
   "user_email": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
-  "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753731618574",
-  "account_created": "2025-07-28T19:40:18.574Z",
-  "last_sync": "2025-07-28T19:40:18.574Z",
-  "total_sessions": 2,
-  "total_scans": 2,
+  "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753734387074",
+  "account_created": "2025-07-28T20:26:27.074Z",
+  "last_sync": "2025-07-28T20:26:27.074Z",
+  "total_sessions": 3,
+  "total_scans": 3,
   "sessions": [
     {
       "id": "scanner1753718675259",
@@ -30,10 +30,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
-      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753731618574",
+      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753734387074",
       "created_by": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
       "created_at": "2025-07-28T16:04:44.792Z",
-      "updated_at": "2025-07-28T19:40:18.574Z"
+      "updated_at": "2025-07-28T20:26:27.074Z"
     },
     {
       "id": "scanner1753731608142",
@@ -59,10 +59,38 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
-      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753731618574",
+      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753734387074",
       "created_by": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
-      "created_at": "2025-07-28T19:40:18.574Z",
-      "updated_at": "2025-07-28T19:40:18.574Z"
+      "created_at": "2025-07-28T20:26:27.074Z",
+      "updated_at": "2025-07-28T20:26:27.074Z"
+    },
+    {
+      "id": "scanner1753734383007",
+      "location": "Anatomy",
+      "year": 4,
+      "batch": "2026/2027",
+      "dateTime": "2025-07-28T20:26:23.007Z",
+      "formattedDateTime": "28/07/2025 23:26:23",
+      "scans": [
+        {
+          "id": "1753734386193",
+          "content": "552274",
+          "timestamp": "2025-07-28T20:26:26.192Z",
+          "formattedTime": "23:26:26",
+          "time": "2025-07-28T20:26:26.192Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
+      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753734387074",
+      "created_by": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
+      "created_at": "2025-07-28T20:26:27.074Z",
+      "updated_at": "2025-07-28T20:26:27.074Z"
     }
   ]
 }
