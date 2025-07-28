@@ -1,10 +1,10 @@
 {
   "user_email": "super@super.com",
-  "user_id": "super_super_com_1753702282384",
-  "account_created": "2025-07-28T11:31:22.384Z",
-  "last_sync": "2025-07-28T11:31:48.199Z",
-  "total_sessions": 2,
-  "total_scans": 2,
+  "user_id": "super_super_com_1753702345416",
+  "account_created": "2025-07-28T11:32:25.416Z",
+  "last_sync": "2025-07-28T11:32:25.416Z",
+  "total_sessions": 3,
+  "total_scans": 3,
   "sessions": [
     {
       "id": "scanner1753702162903",
@@ -65,10 +65,39 @@
       "created_by": "super@super.com",
       "created_at": "2025-07-28T11:31:22.380Z",
       "updated_at": "2025-07-28T11:31:22.380Z"
+    },
+    {
+      "id": "checklist1753702335416",
+      "location": "Anatomy",
+      "year": 4,
+      "batch": "2024/2025",
+      "dateTime": "2025-07-28T11:32:15.416Z",
+      "formattedDateTime": "28/07/2025 14:32:15",
+      "scans": [
+        {
+          "id": "664657",
+          "content": "664657",
+          "timestamp": "2025-07-28T11:32:22.873Z",
+          "formattedTime": "14:32:22",
+          "time": "2025-07-28T11:32:22.873Z",
+          "isManual": true,
+          "user_email": "super@super.com",
+          "user_id": "super_super_com_1753702345413"
+        }
+      ],
+      "inProgress": true,
+      "isChecklist": true,
+      "filters": {
+        "year": "all",
+        "group": "all"
+      },
+      "sessionType": "checklist",
+      "recoveryStatus": "in_progress",
+      "user_email": "super@super.com",
+      "user_id": "super_super_com_1753702345413",
+      "created_by": "super@super.com",
+      "created_at": "2025-07-28T11:32:25.413Z",
+      "updated_at": "2025-07-28T11:32:25.413Z"
     }
-  ],
-  "github_account": {
-    "repository_name": "personal_log_history_backup",
-    "last_linked": "2025-07-28T11:31:48.197Z"
-  }
+  ]
 }
