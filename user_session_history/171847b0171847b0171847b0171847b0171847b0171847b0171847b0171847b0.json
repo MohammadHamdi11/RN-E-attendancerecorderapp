@@ -1,10 +1,10 @@
 {
   "user_email": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
-  "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753718684792",
-  "account_created": "2025-07-28T16:04:44.792Z",
-  "last_sync": "2025-07-28T16:04:44.792Z",
-  "total_sessions": 1,
-  "total_scans": 1,
+  "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753731611858",
+  "account_created": "2025-07-28T19:40:11.858Z",
+  "last_sync": "2025-07-28T19:40:11.858Z",
+  "total_sessions": 2,
+  "total_scans": 2,
   "sessions": [
     {
       "id": "scanner1753718675259",
@@ -30,10 +30,38 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
-      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753718684792",
+      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753731611858",
       "created_by": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
       "created_at": "2025-07-28T16:04:44.792Z",
-      "updated_at": "2025-07-28T16:04:44.792Z"
+      "updated_at": "2025-07-28T19:40:11.858Z"
+    },
+    {
+      "id": "scanner1753731608142",
+      "location": "Anatomy",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-07-28T19:40:08.142Z",
+      "formattedDateTime": "28/07/2025 22:40:08",
+      "scans": [
+        {
+          "id": "1753731610927",
+          "content": "644943",
+          "timestamp": "2025-07-28T19:40:10.927Z",
+          "formattedTime": "22:40:10",
+          "time": "2025-07-28T19:40:10.927Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
+      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753731611858",
+      "created_by": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
+      "created_at": "2025-07-28T19:40:11.858Z",
+      "updated_at": "2025-07-28T19:40:11.858Z"
     }
   ]
 }
