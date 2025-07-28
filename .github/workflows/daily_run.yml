@@ -1,5 +1,8 @@
 name: Daily Attendance Processing
 
+permissions:
+  contents: write  # This grants push access to GITHUB_TOKEN
+
 # When to run the automation
 on:
   schedule:
