@@ -1,17 +1,40 @@
 {
   "user_email": "super@super.com",
-  "user_id": "super_super_com_1753590295711",
-  "account_created": "2025-07-27T04:24:55.711Z",
-  "last_sync": "2025-07-27T04:25:08.377Z",
-  "total_sessions": 0,
-  "total_scans": 0,
-  "sessions": [],
-  "github_account": {
-    "linked": true,
-    "username": "MohammadHamdi11",
-    "repository_name": "personal_log_history_backup",
-    "backup_enabled": false,
-    "last_linked": "2025-07-27T04:25:08.376Z",
-    "last_backup": null
-  }
+  "user_id": "super_super_com_1753702167540",
+  "account_created": "2025-07-28T11:29:27.540Z",
+  "last_sync": "2025-07-28T11:29:27.541Z",
+  "total_sessions": 1,
+  "total_scans": 1,
+  "sessions": [
+    {
+      "id": "scanner1753702162903",
+      "location": "Biochemistry",
+      "year": 4,
+      "batch": "2023/2024",
+      "dateTime": "2025-07-28T11:29:22.903Z",
+      "formattedDateTime": "28/07/2025 14:29:22",
+      "scans": [
+        {
+          "id": "1753702165374",
+          "content": "646493",
+          "timestamp": "2025-07-28T11:29:25.373Z",
+          "formattedTime": "14:29:25",
+          "time": "2025-07-28T11:29:25.373Z",
+          "isManual": true,
+          "user_email": "super@super.com",
+          "user_id": "super_super_com_1753702167536"
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "super@super.com",
+      "user_id": "super_super_com_1753702167536",
+      "created_by": "super@super.com",
+      "created_at": "2025-07-28T11:29:27.536Z",
+      "updated_at": "2025-07-28T11:29:27.536Z"
+    }
+  ]
 }
