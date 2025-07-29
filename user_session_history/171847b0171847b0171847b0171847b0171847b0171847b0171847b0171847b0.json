@@ -1,10 +1,10 @@
 {
   "user_email": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
-  "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753734391023",
-  "account_created": "2025-07-28T20:26:31.023Z",
-  "last_sync": "2025-07-28T20:26:31.023Z",
-  "total_sessions": 3,
-  "total_scans": 3,
+  "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753760051842",
+  "account_created": "2025-07-29T03:34:11.842Z",
+  "last_sync": "2025-07-29T03:34:11.842Z",
+  "total_sessions": 4,
+  "total_scans": 4,
   "sessions": [
     {
       "id": "scanner1753718675259",
@@ -30,10 +30,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
-      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753734391023",
+      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753760051842",
       "created_by": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
       "created_at": "2025-07-28T16:04:44.792Z",
-      "updated_at": "2025-07-28T20:26:31.023Z"
+      "updated_at": "2025-07-29T03:34:11.842Z"
     },
     {
       "id": "scanner1753731608142",
@@ -59,10 +59,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
-      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753734391023",
+      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753760051842",
       "created_by": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
-      "created_at": "2025-07-28T20:26:31.023Z",
-      "updated_at": "2025-07-28T20:26:31.023Z"
+      "created_at": "2025-07-29T03:34:11.842Z",
+      "updated_at": "2025-07-29T03:34:11.842Z"
     },
     {
       "id": "scanner1753734383007",
@@ -87,11 +87,40 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "backedUp": true,
+      "personalBackedUp": true,
       "user_email": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
-      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753734391023",
+      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753760051842",
       "created_by": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
-      "created_at": "2025-07-28T20:26:31.023Z",
-      "updated_at": "2025-07-28T20:26:31.023Z"
+      "created_at": "2025-07-29T03:34:11.842Z",
+      "updated_at": "2025-07-29T03:34:11.842Z"
+    },
+    {
+      "id": "scanner1753760034360",
+      "location": "Anatomy",
+      "year": 3,
+      "batch": "2025/2026",
+      "dateTime": "2025-07-29T03:33:54.360Z",
+      "formattedDateTime": "29/07/2025 06:33:54",
+      "scans": [
+        {
+          "id": "1753760051018",
+          "content": "412512",
+          "timestamp": "2025-07-29T03:34:11.014Z",
+          "formattedTime": "06:34:11",
+          "time": "2025-07-29T03:34:11.014Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
+      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753760051842",
+      "created_by": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
+      "created_at": "2025-07-29T03:34:11.842Z",
+      "updated_at": "2025-07-29T03:34:11.842Z"
     }
   ]
 }
