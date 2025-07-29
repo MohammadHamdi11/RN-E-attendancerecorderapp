@@ -1,9 +1,9 @@
 {
   "user_email": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
-  "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753764743916",
-  "account_created": "2025-07-29T04:52:23.916Z",
-  "last_sync": "2025-07-29T04:52:23.916Z",
-  "total_sessions": 1,
+  "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753764748193",
+  "account_created": "2025-07-29T04:52:28.193Z",
+  "last_sync": "2025-07-29T04:52:28.193Z",
+  "total_sessions": 2,
   "total_scans": 1,
   "sessions": [
     {
@@ -29,11 +29,34 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "backedUp": true,
+      "personalBackedUp": true,
       "user_email": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
-      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753764743916",
+      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753764748193",
       "created_by": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
-      "created_at": "2025-07-29T04:52:23.916Z",
-      "updated_at": "2025-07-29T04:52:23.916Z"
+      "created_at": "2025-07-29T04:52:28.193Z",
+      "updated_at": "2025-07-29T04:52:28.193Z"
+    },
+    {
+      "id": "checklist1753764747783",
+      "location": "Biochemistry",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-07-29T04:52:27.783Z",
+      "formattedDateTime": "29/07/2025 07:52:27",
+      "scans": [],
+      "inProgress": true,
+      "isChecklist": true,
+      "filters": {
+        "year": "all",
+        "group": "all"
+      },
+      "sessionType": "checklist",
+      "recoveryStatus": "in_progress",
+      "user_email": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
+      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753764748194",
+      "created_by": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
+      "created_at": "2025-07-29T04:52:28.193Z",
+      "updated_at": "2025-07-29T04:52:28.193Z"
     }
   ]
 }
