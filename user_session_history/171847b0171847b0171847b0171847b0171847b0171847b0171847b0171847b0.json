@@ -1,10 +1,10 @@
 {
   "user_email": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
-  "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753760055309",
-  "account_created": "2025-07-29T03:34:15.308Z",
-  "last_sync": "2025-07-29T03:34:15.308Z",
-  "total_sessions": 4,
-  "total_scans": 4,
+  "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753760097456",
+  "account_created": "2025-07-29T03:34:57.456Z",
+  "last_sync": "2025-07-29T03:34:57.456Z",
+  "total_sessions": 5,
+  "total_scans": 5,
   "sessions": [
     {
       "id": "scanner1753718675259",
@@ -30,10 +30,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
-      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753760055309",
+      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753760097456",
       "created_by": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
       "created_at": "2025-07-28T16:04:44.792Z",
-      "updated_at": "2025-07-29T03:34:15.308Z"
+      "updated_at": "2025-07-29T03:34:57.456Z"
     },
     {
       "id": "scanner1753731608142",
@@ -59,10 +59,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
-      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753760055309",
+      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753760097456",
       "created_by": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
-      "created_at": "2025-07-29T03:34:15.308Z",
-      "updated_at": "2025-07-29T03:34:15.308Z"
+      "created_at": "2025-07-29T03:34:57.456Z",
+      "updated_at": "2025-07-29T03:34:57.456Z"
     },
     {
       "id": "scanner1753734383007",
@@ -89,10 +89,10 @@
       "backedUp": true,
       "personalBackedUp": true,
       "user_email": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
-      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753760055309",
+      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753760097457",
       "created_by": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
-      "created_at": "2025-07-29T03:34:15.308Z",
-      "updated_at": "2025-07-29T03:34:15.308Z"
+      "created_at": "2025-07-29T03:34:57.456Z",
+      "updated_at": "2025-07-29T03:34:57.456Z"
     },
     {
       "id": "scanner1753760034360",
@@ -117,11 +117,40 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "backedUp": true,
+      "personalBackedUp": true,
       "user_email": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
-      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753760055309",
+      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753760097457",
       "created_by": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
-      "created_at": "2025-07-29T03:34:15.308Z",
-      "updated_at": "2025-07-29T03:34:15.308Z"
+      "created_at": "2025-07-29T03:34:57.456Z",
+      "updated_at": "2025-07-29T03:34:57.456Z"
+    },
+    {
+      "id": "scanner1753760091140",
+      "location": "Histology",
+      "year": 4,
+      "batch": "2026/2027",
+      "dateTime": "2025-07-29T03:34:51.140Z",
+      "formattedDateTime": "29/07/2025 06:34:51",
+      "scans": [
+        {
+          "id": "1753760096524",
+          "content": "225115",
+          "timestamp": "2025-07-29T03:34:56.524Z",
+          "formattedTime": "06:34:56",
+          "time": "2025-07-29T03:34:56.524Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
+      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753760097457",
+      "created_by": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
+      "created_at": "2025-07-29T03:34:57.456Z",
+      "updated_at": "2025-07-29T03:34:57.456Z"
     }
   ]
 }
