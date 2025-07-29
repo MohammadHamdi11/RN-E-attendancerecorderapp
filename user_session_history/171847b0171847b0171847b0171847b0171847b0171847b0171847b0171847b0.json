@@ -1,10 +1,10 @@
 {
   "user_email": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
-  "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753762273277",
-  "account_created": "2025-07-29T04:11:13.277Z",
-  "last_sync": "2025-07-29T04:11:13.277Z",
-  "total_sessions": 1,
-  "total_scans": 1,
+  "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753762792970",
+  "account_created": "2025-07-29T04:19:52.970Z",
+  "last_sync": "2025-07-29T04:19:52.970Z",
+  "total_sessions": 2,
+  "total_scans": 2,
   "sessions": [
     {
       "id": "scanner1753762260311",
@@ -30,10 +30,38 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
-      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753762273277",
+      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753762792970",
       "created_by": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
-      "created_at": "2025-07-29T04:11:13.277Z",
-      "updated_at": "2025-07-29T04:11:13.277Z"
+      "created_at": "2025-07-29T04:19:52.970Z",
+      "updated_at": "2025-07-29T04:19:52.970Z"
+    },
+    {
+      "id": "scanner1753762788854",
+      "location": "Anatomy",
+      "year": 3,
+      "batch": "2026/2027",
+      "dateTime": "2025-07-29T04:19:48.854Z",
+      "formattedDateTime": "29/07/2025 07:19:48",
+      "scans": [
+        {
+          "id": "1753762792559",
+          "content": "555745",
+          "timestamp": "2025-07-29T04:19:52.558Z",
+          "formattedTime": "07:19:52",
+          "time": "2025-07-29T04:19:52.558Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
+      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753762792970",
+      "created_by": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
+      "created_at": "2025-07-29T04:19:52.970Z",
+      "updated_at": "2025-07-29T04:19:52.970Z"
     }
   ]
 }
