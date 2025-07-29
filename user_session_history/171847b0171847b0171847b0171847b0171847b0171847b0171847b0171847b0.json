@@ -1,10 +1,10 @@
 {
   "user_email": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
-  "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753764783197",
-  "account_created": "2025-07-29T04:53:03.197Z",
-  "last_sync": "2025-07-29T04:53:03.197Z",
-  "total_sessions": 2,
-  "total_scans": 2,
+  "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753764834493",
+  "account_created": "2025-07-29T04:53:54.493Z",
+  "last_sync": "2025-07-29T04:53:54.493Z",
+  "total_sessions": 3,
+  "total_scans": 3,
   "sessions": [
     {
       "id": "scanner1753764734883",
@@ -31,10 +31,10 @@
       "backedUp": true,
       "personalBackedUp": true,
       "user_email": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
-      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753764783198",
+      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753764834493",
       "created_by": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
       "created_at": "2025-07-29T04:52:31.650Z",
-      "updated_at": "2025-07-29T04:53:03.197Z"
+      "updated_at": "2025-07-29T04:53:54.493Z"
     },
     {
       "id": "checklist1753764747783",
@@ -62,10 +62,38 @@
       "sessionType": "checklist",
       "recoveryStatus": "in_progress",
       "user_email": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
-      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753764783198",
+      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753764834493",
       "created_by": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
       "created_at": "2025-07-29T04:52:31.650Z",
-      "updated_at": "2025-07-29T04:53:03.197Z"
+      "updated_at": "2025-07-29T04:53:54.493Z"
+    },
+    {
+      "id": "scanner1753764806262",
+      "location": "Biochemistry",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-07-29T04:53:26.262Z",
+      "formattedDateTime": "29/07/2025 07:53:26",
+      "scans": [
+        {
+          "id": "1753764833780",
+          "content": "346467",
+          "timestamp": "2025-07-29T04:53:53.778Z",
+          "formattedTime": "07:53:53",
+          "time": "2025-07-29T04:53:53.778Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
+      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753764834493",
+      "created_by": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
+      "created_at": "2025-07-29T04:53:54.493Z",
+      "updated_at": "2025-07-29T04:53:54.493Z"
     }
   ]
 }
