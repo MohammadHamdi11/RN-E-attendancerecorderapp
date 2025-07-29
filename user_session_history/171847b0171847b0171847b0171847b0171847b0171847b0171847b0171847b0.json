@@ -1,0 +1,38 @@
+{
+  "user_email": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
+  "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753764737733",
+  "account_created": "2025-07-29T04:52:17.733Z",
+  "last_sync": "2025-07-29T04:52:17.733Z",
+  "total_sessions": 1,
+  "total_scans": 1,
+  "sessions": [
+    {
+      "id": "scanner1753764734883",
+      "location": "Biochemistry",
+      "year": 5,
+      "batch": "2024/2025",
+      "dateTime": "2025-07-29T04:52:14.883Z",
+      "formattedDateTime": "29/07/2025 07:52:14",
+      "scans": [
+        {
+          "id": "1753764737037",
+          "content": "645454",
+          "timestamp": "2025-07-29T04:52:17.036Z",
+          "formattedTime": "07:52:17",
+          "time": "2025-07-29T04:52:17.036Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
+      "user_id": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09_1753764737733",
+      "created_by": "46a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e0946a27e09",
+      "created_at": "2025-07-29T04:52:17.733Z",
+      "updated_at": "2025-07-29T04:52:17.733Z"
+    }
+  ]
+}
