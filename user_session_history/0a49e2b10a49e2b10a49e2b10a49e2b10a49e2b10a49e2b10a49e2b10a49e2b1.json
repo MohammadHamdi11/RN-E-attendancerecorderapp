@@ -1,0 +1,85 @@
+{
+  "user_email": "admin@admin.com",
+  "user_id": "admin_admin_com_1753982860168",
+  "account_created": "2025-07-31T17:27:40.168Z",
+  "last_sync": "2025-07-31T17:27:40.168Z",
+  "total_sessions": 3,
+  "total_scans": 2,
+  "sessions": [
+    {
+      "id": "scanner_1751632119457",
+      "location": "Histology",
+      "dateTime": "2025-07-04T12:28:39.457Z",
+      "formattedDateTime": "04/07/2025 15:28:39",
+      "scans": [
+        {
+          "id": "1751632123079",
+          "content": "231249",
+          "timestamp": "2025-07-04T12:28:43.073Z",
+          "formattedTime": "15:28:43",
+          "time": "2025-07-04T12:28:43.073Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "admin@admin.com",
+      "user_id": "admin_admin_com_1753982860168",
+      "created_by": "admin@admin.com",
+      "created_at": "2025-07-31T17:27:40.168Z",
+      "updated_at": "2025-07-31T17:27:40.168Z"
+    },
+    {
+      "id": "checklist_1751632197668",
+      "location": "Physiology",
+      "dateTime": "2025-07-04T12:29:57.668Z",
+      "formattedDateTime": "04/07/2025 15:29:57",
+      "scans": [],
+      "inProgress": true,
+      "isChecklist": true,
+      "filters": {
+        "year": "all",
+        "group": "all"
+      },
+      "sessionType": "checklist",
+      "recoveryStatus": "in_progress",
+      "user_email": "admin@admin.com",
+      "user_id": "admin_admin_com_1753982860168",
+      "created_by": "admin@admin.com",
+      "created_at": "2025-07-31T17:27:40.168Z",
+      "updated_at": "2025-07-31T17:27:40.168Z"
+    },
+    {
+      "id": "scanner1753982851375",
+      "location": "Microbiology",
+      "year": 1,
+      "batch": "2024/2025",
+      "dateTime": "2025-07-31T17:27:31.375Z",
+      "formattedDateTime": "31/07/2025 20:27:31",
+      "scans": [
+        {
+          "id": "1753982858931",
+          "content": "256689",
+          "timestamp": "2025-07-31T17:27:38.926Z",
+          "formattedTime": "20:27:38",
+          "time": "2025-07-31T17:27:38.926Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "admin@admin.com",
+      "user_id": "admin_admin_com_1753982860168",
+      "created_by": "admin@admin.com",
+      "created_at": "2025-07-31T17:27:40.168Z",
+      "updated_at": "2025-07-31T17:27:40.168Z"
+    }
+  ]
+}
