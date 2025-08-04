@@ -1,10 +1,10 @@
 {
   "user_email": "231249@med.asu.edu.eg",
-  "user_id": "231249_med_asu_edu_eg_1754308412411",
-  "account_created": "2025-08-04T11:53:32.411Z",
-  "last_sync": "2025-08-04T11:53:32.411Z",
-  "total_sessions": 3,
-  "total_scans": 2,
+  "user_id": "231249_med_asu_edu_eg_1754335803753",
+  "account_created": "2025-08-04T19:30:03.753Z",
+  "last_sync": "2025-08-04T19:30:03.753Z",
+  "total_sessions": 4,
+  "total_scans": 7,
   "sessions": [
     {
       "id": "scanner1754019836393",
@@ -30,10 +30,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "231249@med.asu.edu.eg",
-      "user_id": "231249_med_asu_edu_eg_1754308412411",
+      "user_id": "231249_med_asu_edu_eg_1754335803753",
       "created_by": "231249@med.asu.edu.eg",
-      "created_at": "2025-08-04T11:53:32.411Z",
-      "updated_at": "2025-08-04T11:53:32.411Z"
+      "created_at": "2025-08-04T19:30:03.753Z",
+      "updated_at": "2025-08-04T19:30:03.753Z"
     },
     {
       "id": "scanner1754308324686",
@@ -60,10 +60,10 @@
       "backedUp": true,
       "personalBackedUp": true,
       "user_email": "231249@med.asu.edu.eg",
-      "user_id": "231249_med_asu_edu_eg_1754308412411",
+      "user_id": "231249_med_asu_edu_eg_1754335803753",
       "created_by": "231249@med.asu.edu.eg",
-      "created_at": "2025-08-04T11:53:32.411Z",
-      "updated_at": "2025-08-04T11:53:32.411Z"
+      "created_at": "2025-08-04T19:30:03.753Z",
+      "updated_at": "2025-08-04T19:30:03.753Z"
     },
     {
       "id": "checklist1754308402195",
@@ -72,20 +72,86 @@
       "batch": "2024/2025",
       "dateTime": "2025-08-04T11:53:22.195Z",
       "formattedDateTime": "04/08/2025 14:53:22",
-      "scans": [],
-      "inProgress": true,
+      "scans": [
+        {
+          "id": "232002",
+          "content": "232002",
+          "timestamp": "2025-08-04T11:53:43.477Z",
+          "formattedTime": "14:53:43",
+          "time": "2025-08-04T11:53:43.477Z",
+          "isManual": false
+        },
+        {
+          "id": "232003",
+          "content": "232003",
+          "timestamp": "2025-08-04T11:53:43.771Z",
+          "formattedTime": "14:53:43",
+          "time": "2025-08-04T11:53:43.771Z",
+          "isManual": false
+        },
+        {
+          "id": "232004",
+          "content": "232004",
+          "timestamp": "2025-08-04T11:53:44.072Z",
+          "formattedTime": "14:53:44",
+          "time": "2025-08-04T11:53:44.072Z",
+          "isManual": false
+        },
+        {
+          "id": "232005",
+          "content": "232005",
+          "timestamp": "2025-08-04T11:53:44.356Z",
+          "formattedTime": "14:53:44",
+          "time": "2025-08-04T11:53:44.356Z",
+          "isManual": false
+        },
+        {
+          "id": "645436",
+          "content": "645436",
+          "timestamp": "2025-08-04T11:53:50.858Z",
+          "formattedTime": "14:53:50",
+          "time": "2025-08-04T11:53:50.858Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": false,
       "isChecklist": true,
       "filters": {
         "year": "2",
         "group": "B1"
       },
       "sessionType": "checklist",
+      "recoveryStatus": "closed_normally",
+      "backedUp": true,
+      "backupTimestamp": "2025-08-04T11:54:15.866Z",
+      "personalBackedUp": true,
+      "user_email": "231249@med.asu.edu.eg",
+      "user_id": "231249_med_asu_edu_eg_1754335803754",
+      "created_by": "231249@med.asu.edu.eg",
+      "created_at": "2025-08-04T19:30:03.753Z",
+      "updated_at": "2025-08-04T19:30:03.753Z"
+    },
+    {
+      "id": "checklist1754335803270",
+      "location": "Anatomy",
+      "year": 5,
+      "batch": "2024/2025",
+      "dateTime": "2025-08-04T19:30:03.270Z",
+      "formattedDateTime": "04/08/2025 22:30:03",
+      "scans": [],
+      "inProgress": true,
+      "isChecklist": true,
+      "filters": {
+        "year": "all",
+        "group": "all"
+      },
+      "sessionType": "checklist",
       "recoveryStatus": "in_progress",
       "user_email": "231249@med.asu.edu.eg",
-      "user_id": "231249_med_asu_edu_eg_1754308412411",
+      "user_id": "231249_med_asu_edu_eg_1754335803754",
       "created_by": "231249@med.asu.edu.eg",
-      "created_at": "2025-08-04T11:53:32.411Z",
-      "updated_at": "2025-08-04T11:53:32.411Z"
+      "created_at": "2025-08-04T19:30:03.753Z",
+      "updated_at": "2025-08-04T19:30:03.753Z"
     }
   ]
 }
