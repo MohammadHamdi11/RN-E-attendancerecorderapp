@@ -1,9 +1,9 @@
 {
   "user_email": "231249@med.asu.edu.eg",
-  "user_id": "231249_med_asu_edu_eg_1754335803753",
-  "account_created": "2025-08-04T19:30:03.753Z",
-  "last_sync": "2025-08-04T19:30:03.753Z",
-  "total_sessions": 4,
+  "user_id": "231249_med_asu_edu_eg_1754335883249",
+  "account_created": "2025-08-04T19:31:23.248Z",
+  "last_sync": "2025-08-04T19:31:23.248Z",
+  "total_sessions": 5,
   "total_scans": 7,
   "sessions": [
     {
@@ -30,10 +30,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "231249@med.asu.edu.eg",
-      "user_id": "231249_med_asu_edu_eg_1754335803753",
+      "user_id": "231249_med_asu_edu_eg_1754335883249",
       "created_by": "231249@med.asu.edu.eg",
-      "created_at": "2025-08-04T19:30:03.753Z",
-      "updated_at": "2025-08-04T19:30:03.753Z"
+      "created_at": "2025-08-04T19:31:23.248Z",
+      "updated_at": "2025-08-04T19:31:23.248Z"
     },
     {
       "id": "scanner1754308324686",
@@ -60,10 +60,10 @@
       "backedUp": true,
       "personalBackedUp": true,
       "user_email": "231249@med.asu.edu.eg",
-      "user_id": "231249_med_asu_edu_eg_1754335803753",
+      "user_id": "231249_med_asu_edu_eg_1754335883249",
       "created_by": "231249@med.asu.edu.eg",
-      "created_at": "2025-08-04T19:30:03.753Z",
-      "updated_at": "2025-08-04T19:30:03.753Z"
+      "created_at": "2025-08-04T19:31:23.248Z",
+      "updated_at": "2025-08-04T19:31:23.248Z"
     },
     {
       "id": "checklist1754308402195",
@@ -126,10 +126,10 @@
       "backupTimestamp": "2025-08-04T11:54:15.866Z",
       "personalBackedUp": true,
       "user_email": "231249@med.asu.edu.eg",
-      "user_id": "231249_med_asu_edu_eg_1754335803754",
+      "user_id": "231249_med_asu_edu_eg_1754335883249",
       "created_by": "231249@med.asu.edu.eg",
-      "created_at": "2025-08-04T19:30:03.753Z",
-      "updated_at": "2025-08-04T19:30:03.753Z"
+      "created_at": "2025-08-04T19:31:23.248Z",
+      "updated_at": "2025-08-04T19:31:23.248Z"
     },
     {
       "id": "checklist1754335803270",
@@ -138,6 +138,29 @@
       "batch": "2024/2025",
       "dateTime": "2025-08-04T19:30:03.270Z",
       "formattedDateTime": "04/08/2025 22:30:03",
+      "scans": [],
+      "inProgress": false,
+      "isChecklist": true,
+      "filters": {
+        "year": "all",
+        "group": "all"
+      },
+      "sessionType": "checklist",
+      "recoveryStatus": "closed_normally",
+      "backedUp": true,
+      "user_email": "231249@med.asu.edu.eg",
+      "user_id": "231249_med_asu_edu_eg_1754335883249",
+      "created_by": "231249@med.asu.edu.eg",
+      "created_at": "2025-08-04T19:31:23.248Z",
+      "updated_at": "2025-08-04T19:31:23.248Z"
+    },
+    {
+      "id": "checklist1754335882732",
+      "location": "Anatomy",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-08-04T19:31:22.732Z",
+      "formattedDateTime": "04/08/2025 22:31:22",
       "scans": [],
       "inProgress": true,
       "isChecklist": true,
@@ -148,10 +171,10 @@
       "sessionType": "checklist",
       "recoveryStatus": "in_progress",
       "user_email": "231249@med.asu.edu.eg",
-      "user_id": "231249_med_asu_edu_eg_1754335803754",
+      "user_id": "231249_med_asu_edu_eg_1754335883249",
       "created_by": "231249@med.asu.edu.eg",
-      "created_at": "2025-08-04T19:30:03.753Z",
-      "updated_at": "2025-08-04T19:30:03.753Z"
+      "created_at": "2025-08-04T19:31:23.248Z",
+      "updated_at": "2025-08-04T19:31:23.248Z"
     }
   ]
 }
