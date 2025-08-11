@@ -1,10 +1,10 @@
 {
   "user_email": "231249@med.asu.edu.eg",
-  "user_id": "231249_med_asu_edu_eg_1754335883249",
-  "account_created": "2025-08-04T19:31:23.248Z",
-  "last_sync": "2025-08-04T19:31:23.248Z",
-  "total_sessions": 5,
-  "total_scans": 7,
+  "user_id": "231249_med_asu_edu_eg_1754920199347",
+  "account_created": "2025-08-11T13:49:59.347Z",
+  "last_sync": "2025-08-11T13:49:59.347Z",
+  "total_sessions": 7,
+  "total_scans": 18,
   "sessions": [
     {
       "id": "scanner1754019836393",
@@ -30,10 +30,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "231249@med.asu.edu.eg",
-      "user_id": "231249_med_asu_edu_eg_1754335883249",
+      "user_id": "231249_med_asu_edu_eg_1754920199347",
       "created_by": "231249@med.asu.edu.eg",
-      "created_at": "2025-08-04T19:31:23.248Z",
-      "updated_at": "2025-08-04T19:31:23.248Z"
+      "created_at": "2025-08-11T13:49:59.347Z",
+      "updated_at": "2025-08-11T13:49:59.347Z"
     },
     {
       "id": "scanner1754308324686",
@@ -60,10 +60,10 @@
       "backedUp": true,
       "personalBackedUp": true,
       "user_email": "231249@med.asu.edu.eg",
-      "user_id": "231249_med_asu_edu_eg_1754335883249",
+      "user_id": "231249_med_asu_edu_eg_1754920199347",
       "created_by": "231249@med.asu.edu.eg",
-      "created_at": "2025-08-04T19:31:23.248Z",
-      "updated_at": "2025-08-04T19:31:23.248Z"
+      "created_at": "2025-08-11T13:49:59.347Z",
+      "updated_at": "2025-08-11T13:49:59.347Z"
     },
     {
       "id": "checklist1754308402195",
@@ -126,10 +126,10 @@
       "backupTimestamp": "2025-08-04T11:54:15.866Z",
       "personalBackedUp": true,
       "user_email": "231249@med.asu.edu.eg",
-      "user_id": "231249_med_asu_edu_eg_1754335883249",
+      "user_id": "231249_med_asu_edu_eg_1754920199347",
       "created_by": "231249@med.asu.edu.eg",
-      "created_at": "2025-08-04T19:31:23.248Z",
-      "updated_at": "2025-08-04T19:31:23.248Z"
+      "created_at": "2025-08-11T13:49:59.347Z",
+      "updated_at": "2025-08-11T13:49:59.347Z"
     },
     {
       "id": "checklist1754335803270",
@@ -149,10 +149,10 @@
       "recoveryStatus": "closed_normally",
       "backedUp": true,
       "user_email": "231249@med.asu.edu.eg",
-      "user_id": "231249_med_asu_edu_eg_1754335883249",
+      "user_id": "231249_med_asu_edu_eg_1754920199347",
       "created_by": "231249@med.asu.edu.eg",
-      "created_at": "2025-08-04T19:31:23.248Z",
-      "updated_at": "2025-08-04T19:31:23.248Z"
+      "created_at": "2025-08-11T13:49:59.347Z",
+      "updated_at": "2025-08-11T13:49:59.347Z"
     },
     {
       "id": "checklist1754335882732",
@@ -161,6 +161,141 @@
       "batch": "2025/2026",
       "dateTime": "2025-08-04T19:31:22.732Z",
       "formattedDateTime": "04/08/2025 22:31:22",
+      "scans": [],
+      "inProgress": false,
+      "isChecklist": true,
+      "filters": {
+        "year": "all",
+        "group": "all"
+      },
+      "sessionType": "checklist",
+      "recoveryStatus": "closed_normally",
+      "backedUp": true,
+      "user_email": "231249@med.asu.edu.eg",
+      "user_id": "231249_med_asu_edu_eg_1754920199347",
+      "created_by": "231249@med.asu.edu.eg",
+      "created_at": "2025-08-11T13:49:59.347Z",
+      "updated_at": "2025-08-11T13:49:59.347Z"
+    },
+    {
+      "id": "checklist1754357659413",
+      "location": "Anatomy",
+      "year": 4,
+      "batch": "2024/2025",
+      "dateTime": "2025-08-05T01:34:19.413Z",
+      "formattedDateTime": "05/08/2025 04:34:19",
+      "scans": [
+        {
+          "id": "231994",
+          "content": "231994",
+          "timestamp": "2025-08-05T01:34:26.232Z",
+          "formattedTime": "04:34:26",
+          "time": "2025-08-05T01:34:26.232Z",
+          "isManual": false
+        },
+        {
+          "id": "231995",
+          "content": "231995",
+          "timestamp": "2025-08-05T01:34:26.407Z",
+          "formattedTime": "04:34:26",
+          "time": "2025-08-05T01:34:26.407Z",
+          "isManual": false
+        },
+        {
+          "id": "231996",
+          "content": "231996",
+          "timestamp": "2025-08-05T01:34:26.738Z",
+          "formattedTime": "04:34:26",
+          "time": "2025-08-05T01:34:26.738Z",
+          "isManual": false
+        },
+        {
+          "id": "231997",
+          "content": "231997",
+          "timestamp": "2025-08-05T01:34:27.008Z",
+          "formattedTime": "04:34:27",
+          "time": "2025-08-05T01:34:27.008Z",
+          "isManual": false
+        },
+        {
+          "id": "231249",
+          "content": "231249",
+          "timestamp": "2025-08-05T01:34:34.383Z",
+          "formattedTime": "04:34:34",
+          "time": "2025-08-05T01:34:34.383Z",
+          "isManual": false
+        },
+        {
+          "id": "231999",
+          "content": "231999",
+          "timestamp": "2025-08-05T01:34:34.557Z",
+          "formattedTime": "04:34:34",
+          "time": "2025-08-05T01:34:34.557Z",
+          "isManual": false
+        },
+        {
+          "id": "232000",
+          "content": "232000",
+          "timestamp": "2025-08-05T01:34:34.849Z",
+          "formattedTime": "04:34:34",
+          "time": "2025-08-05T01:34:34.849Z",
+          "isManual": false
+        },
+        {
+          "id": "232001",
+          "content": "232001",
+          "timestamp": "2025-08-05T01:34:35.325Z",
+          "formattedTime": "04:34:35",
+          "time": "2025-08-05T01:34:35.325Z",
+          "isManual": false
+        },
+        {
+          "id": "235000",
+          "content": "235000",
+          "timestamp": "2025-08-05T01:34:35.574Z",
+          "formattedTime": "04:34:35",
+          "time": "2025-08-05T01:34:35.574Z",
+          "isManual": false
+        },
+        {
+          "id": "235010",
+          "content": "235010",
+          "timestamp": "2025-08-05T01:34:37.102Z",
+          "formattedTime": "04:34:37",
+          "time": "2025-08-05T01:34:37.102Z",
+          "isManual": false
+        },
+        {
+          "id": "235020",
+          "content": "235020",
+          "timestamp": "2025-08-05T01:34:37.402Z",
+          "formattedTime": "04:34:37",
+          "time": "2025-08-05T01:34:37.402Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": false,
+      "isChecklist": true,
+      "filters": {
+        "year": "1",
+        "group": "EMP"
+      },
+      "sessionType": "checklist",
+      "recoveryStatus": "closed_normally",
+      "backedUp": true,
+      "user_email": "231249@med.asu.edu.eg",
+      "user_id": "231249_med_asu_edu_eg_1754920199347",
+      "created_by": "231249@med.asu.edu.eg",
+      "created_at": "2025-08-11T13:49:59.347Z",
+      "updated_at": "2025-08-11T13:49:59.347Z"
+    },
+    {
+      "id": "checklist1754920198597",
+      "location": "Physiology",
+      "year": 4,
+      "batch": "2023/2024",
+      "dateTime": "2025-08-11T13:49:58.597Z",
+      "formattedDateTime": "11/08/2025 16:49:58",
       "scans": [],
       "inProgress": true,
       "isChecklist": true,
@@ -171,10 +306,10 @@
       "sessionType": "checklist",
       "recoveryStatus": "in_progress",
       "user_email": "231249@med.asu.edu.eg",
-      "user_id": "231249_med_asu_edu_eg_1754335883249",
+      "user_id": "231249_med_asu_edu_eg_1754920199347",
       "created_by": "231249@med.asu.edu.eg",
-      "created_at": "2025-08-04T19:31:23.248Z",
-      "updated_at": "2025-08-04T19:31:23.248Z"
+      "created_at": "2025-08-11T13:49:59.347Z",
+      "updated_at": "2025-08-11T13:49:59.347Z"
     }
   ]
 }
