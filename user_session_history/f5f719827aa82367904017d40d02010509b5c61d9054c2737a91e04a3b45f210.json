@@ -1,9 +1,9 @@
 {
   "user_email": "611cbf2375713eebcda1ba54b256f83be7f46861f21310b68387319ae35e68f6",
-  "user_id": "611cbf2375713eebcda1ba54b256f83be7f46861f21310b68387319ae35e68f6_1754984260477",
-  "account_created": "2025-08-12T07:37:40.477Z",
-  "last_sync": "2025-08-12T07:37:40.477Z",
-  "total_sessions": 1,
+  "user_id": "611cbf2375713eebcda1ba54b256f83be7f46861f21310b68387319ae35e68f6_1754984276125",
+  "account_created": "2025-08-12T07:37:56.125Z",
+  "last_sync": "2025-08-12T07:37:56.125Z",
+  "total_sessions": 2,
   "total_scans": 0,
   "sessions": [
     {
@@ -14,6 +14,29 @@
       "dateTime": "2025-08-11T13:49:58.597Z",
       "formattedDateTime": "11/08/2025 16:49:58",
       "scans": [],
+      "inProgress": false,
+      "isChecklist": true,
+      "filters": {
+        "year": "all",
+        "group": "all"
+      },
+      "sessionType": "checklist",
+      "recoveryStatus": "closed_normally",
+      "backedUp": true,
+      "user_email": "611cbf2375713eebcda1ba54b256f83be7f46861f21310b68387319ae35e68f6",
+      "user_id": "611cbf2375713eebcda1ba54b256f83be7f46861f21310b68387319ae35e68f6_1754984276125",
+      "created_by": "611cbf2375713eebcda1ba54b256f83be7f46861f21310b68387319ae35e68f6",
+      "created_at": "2025-08-12T07:37:56.125Z",
+      "updated_at": "2025-08-12T07:37:56.125Z"
+    },
+    {
+      "id": "checklist1754984275691",
+      "location": "Anatomy",
+      "year": 3,
+      "batch": "2026/2027",
+      "dateTime": "2025-08-12T07:37:55.691Z",
+      "formattedDateTime": "12/08/2025 10:37:55",
+      "scans": [],
       "inProgress": true,
       "isChecklist": true,
       "filters": {
@@ -23,10 +46,10 @@
       "sessionType": "checklist",
       "recoveryStatus": "in_progress",
       "user_email": "611cbf2375713eebcda1ba54b256f83be7f46861f21310b68387319ae35e68f6",
-      "user_id": "611cbf2375713eebcda1ba54b256f83be7f46861f21310b68387319ae35e68f6_1754984260477",
+      "user_id": "611cbf2375713eebcda1ba54b256f83be7f46861f21310b68387319ae35e68f6_1754984276126",
       "created_by": "611cbf2375713eebcda1ba54b256f83be7f46861f21310b68387319ae35e68f6",
-      "created_at": "2025-08-12T07:37:40.477Z",
-      "updated_at": "2025-08-12T07:37:40.477Z"
+      "created_at": "2025-08-12T07:37:56.125Z",
+      "updated_at": "2025-08-12T07:37:56.125Z"
     }
   ]
 }
