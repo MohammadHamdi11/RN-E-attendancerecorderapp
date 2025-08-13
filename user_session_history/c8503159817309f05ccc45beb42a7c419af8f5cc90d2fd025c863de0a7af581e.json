@@ -1,9 +1,9 @@
 {
   "user_email": "5edfa2692bdacc5e6ee805c626c50cb44cebb065f092d9a1067d89f74dacd326",
-  "user_id": "5edfa2692bdacc5e6ee805c626c50cb44cebb065f092d9a1067d89f74dacd326_1755075889134",
-  "account_created": "2025-08-13T09:04:49.134Z",
-  "last_sync": "2025-08-13T09:04:49.134Z",
-  "total_sessions": 3,
+  "user_id": "5edfa2692bdacc5e6ee805c626c50cb44cebb065f092d9a1067d89f74dacd326_1755076940568",
+  "account_created": "2025-08-13T09:22:20.568Z",
+  "last_sync": "2025-08-13T09:22:20.568Z",
+  "total_sessions": 4,
   "total_scans": 4,
   "sessions": [
     {
@@ -30,10 +30,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "5edfa2692bdacc5e6ee805c626c50cb44cebb065f092d9a1067d89f74dacd326",
-      "user_id": "5edfa2692bdacc5e6ee805c626c50cb44cebb065f092d9a1067d89f74dacd326_1755075889134",
+      "user_id": "5edfa2692bdacc5e6ee805c626c50cb44cebb065f092d9a1067d89f74dacd326_1755076940568",
       "created_by": "5edfa2692bdacc5e6ee805c626c50cb44cebb065f092d9a1067d89f74dacd326",
-      "created_at": "2025-08-13T09:04:49.134Z",
-      "updated_at": "2025-08-13T09:04:49.134Z"
+      "created_at": "2025-08-13T09:22:20.568Z",
+      "updated_at": "2025-08-13T09:22:20.568Z"
     },
     {
       "id": "scanner1755074001780",
@@ -67,10 +67,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "5edfa2692bdacc5e6ee805c626c50cb44cebb065f092d9a1067d89f74dacd326",
-      "user_id": "5edfa2692bdacc5e6ee805c626c50cb44cebb065f092d9a1067d89f74dacd326_1755075889134",
+      "user_id": "5edfa2692bdacc5e6ee805c626c50cb44cebb065f092d9a1067d89f74dacd326_1755076940568",
       "created_by": "5edfa2692bdacc5e6ee805c626c50cb44cebb065f092d9a1067d89f74dacd326",
-      "created_at": "2025-08-13T09:04:49.134Z",
-      "updated_at": "2025-08-13T09:04:49.134Z"
+      "created_at": "2025-08-13T09:22:20.568Z",
+      "updated_at": "2025-08-13T09:22:20.568Z"
     },
     {
       "id": "scanner1755075883834",
@@ -79,14 +79,34 @@
       "batch": "2024/2025",
       "dateTime": "2025-08-13T09:04:43.834Z",
       "formattedDateTime": "13/08/2025 12:04:43",
+      "scans": [],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "closed_normally",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "5edfa2692bdacc5e6ee805c626c50cb44cebb065f092d9a1067d89f74dacd326",
+      "user_id": "5edfa2692bdacc5e6ee805c626c50cb44cebb065f092d9a1067d89f74dacd326_1755076940568",
+      "created_by": "5edfa2692bdacc5e6ee805c626c50cb44cebb065f092d9a1067d89f74dacd326",
+      "created_at": "2025-08-13T09:22:20.568Z",
+      "updated_at": "2025-08-13T09:22:20.568Z"
+    },
+    {
+      "id": "scanner1755076933769",
+      "location": "Anatomy",
+      "year": 3,
+      "batch": "2025/2026",
+      "dateTime": "2025-08-13T09:22:13.769Z",
+      "formattedDateTime": "13/08/2025 12:22:13",
       "scans": [
         {
-          "id": "1755075888742",
-          "content": "231249",
-          "timestamp": "2025-08-13T09:04:48.742Z",
-          "formattedTime": "12:04:48",
-          "time": "2025-08-13T09:04:48.742Z",
-          "isManual": false
+          "id": "1755076940169",
+          "content": "645454",
+          "timestamp": "2025-08-13T09:22:20.169Z",
+          "formattedTime": "12:22:20",
+          "time": "2025-08-13T09:22:20.169Z",
+          "isManual": true
         }
       ],
       "inProgress": true,
@@ -95,10 +115,10 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "5edfa2692bdacc5e6ee805c626c50cb44cebb065f092d9a1067d89f74dacd326",
-      "user_id": "5edfa2692bdacc5e6ee805c626c50cb44cebb065f092d9a1067d89f74dacd326_1755075889134",
+      "user_id": "5edfa2692bdacc5e6ee805c626c50cb44cebb065f092d9a1067d89f74dacd326_1755076940568",
       "created_by": "5edfa2692bdacc5e6ee805c626c50cb44cebb065f092d9a1067d89f74dacd326",
-      "created_at": "2025-08-13T09:04:49.134Z",
-      "updated_at": "2025-08-13T09:04:49.134Z"
+      "created_at": "2025-08-13T09:22:20.568Z",
+      "updated_at": "2025-08-13T09:22:20.568Z"
     }
   ]
 }
