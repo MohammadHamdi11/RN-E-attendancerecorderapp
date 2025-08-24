@@ -38,6 +38,7 @@ class AutomatedAttendanceProcessor:
         self.ATTENDANCE_THRESHOLD = 0.75  # Hardcoded to 75%
         
         # Time window constants from UpdateAttendance
+        # Note: Time windows are now calculated dynamically based on session duration
         self.STANDARD_BEFORE_MINUTES = 15
         self.STANDARD_AFTER_MINUTES = 120
         self.EXCEPTION_BEFORE_MINUTES = 15
@@ -62,7 +63,7 @@ class AutomatedAttendanceProcessor:
         }
     
     def detect_files(self):
-        """Detect all files in the directory structure and organize them by year-batch"""
+        """Detect all files in the directory structure and organize them by complete module name"""
         print("Detecting files in directory structure...")
         
         # Check if required directories exist
@@ -72,17 +73,19 @@ class AutomatedAttendanceProcessor:
                 print(f"Warning: Directory {dir_path} does not exist")
                 return None
         
-        # Group files by year-batch pattern (Y1_B2425)
-        year_batch_groups = {}
+        # Group files by complete module name (e.g., Y1_B2425_Introduction_to_Anatomy)
+        module_groups = {}
         
         # Scan reference files
         if os.path.exists(self.reference_dir):
             for file in os.listdir(self.reference_dir):
                 if file.endswith('.xlsx') and '_reference_data.xlsx' in file:
-                    year_batch = file.replace('_reference_data.xlsx', '')
-                    if year_batch not in year_batch_groups:
-                        year_batch_groups[year_batch] = {}
-                    year_batch_groups[year_batch]['reference'] = os.path.join(self.reference_dir, file)
+                    # Extract complete module name from reference file
+                    # e.g., Y1_B2425_Introduction_to_Anatomy_reference_data.xlsx -> Y1_B2425_Introduction_to_Anatomy
+                    module_name = file.replace('_reference_data.xlsx', '')
+                    if module_name not in module_groups:
+                        module_groups[module_name] = {}
+                    module_groups[module_name]['reference'] = os.path.join(self.reference_dir, file)
         
         # Scan log history files (merge all)
         all_log_files = []
@@ -91,52 +94,63 @@ class AutomatedAttendanceProcessor:
                 if file.endswith('.xlsx'):
                     all_log_files.append(os.path.join(self.log_history_dir, file))
         
-        # Scan schedule files
+        # Scan schedule files and match with reference files
         if os.path.exists(self.schedules_dir):
             for file in os.listdir(self.schedules_dir):
                 if file.endswith('_schedule.xlsx'):
-                    # Extract year-batch from filename (e.g., Y1_B2425_Introduction_to_Anatomy_schedule.xlsx)
-                    parts = file.replace('_schedule.xlsx', '').split('_')
-                    if len(parts) >= 3:
-                        year_batch = f"{parts[0]}_{parts[1]}"
-                        module = '_'.join(parts[2:])
-                        if year_batch not in year_batch_groups:
-                            year_batch_groups[year_batch] = {}
-                        if 'schedules' not in year_batch_groups[year_batch]:
-                            year_batch_groups[year_batch]['schedules'] = {}
-                        year_batch_groups[year_batch]['schedules'][module] = os.path.join(self.schedules_dir, file)
+                    # Extract complete module name from schedule file
+                    # e.g., Y1_B2425_Introduction_to_Anatomy_schedule.xlsx -> Y1_B2425_Introduction_to_Anatomy
+                    module_name = file.replace('_schedule.xlsx', '')
+                    
+                    # Only add if we have a corresponding reference file
+                    if module_name in module_groups:
+                        module_groups[module_name]['schedule'] = os.path.join(self.schedules_dir, file)
+                    else:
+                        print(f"Warning: Schedule file {file} has no corresponding reference file")
         
-        # Scan attendance report files
+        # Scan attendance report files and match with reference files
         if os.path.exists(self.reports_dir):
             for file in os.listdir(self.reports_dir):
                 if file.endswith('_attendance.xlsx'):
-                    # Extract year-batch and module from filename
-                    parts = file.replace('_attendance.xlsx', '').split('_')
-                    if len(parts) >= 3:
-                        year_batch = f"{parts[0]}_{parts[1]}"
-                        module = '_'.join(parts[2:])
-                        if year_batch not in year_batch_groups:
-                            year_batch_groups[year_batch] = {}
-                        if 'reports' not in year_batch_groups[year_batch]:
-                            year_batch_groups[year_batch]['reports'] = {}
-                        year_batch_groups[year_batch]['reports'][module] = os.path.join(self.reports_dir, file)
+                    # Extract complete module name from attendance file
+                    # e.g., Y1_B2425_Introduction_to_Anatomy_attendance.xlsx -> Y1_B2425_Introduction_to_Anatomy
+                    module_name = file.replace('_attendance.xlsx', '')
+                    
+                    # Only add if we have a corresponding reference file
+                    if module_name in module_groups:
+                        module_groups[module_name]['report'] = os.path.join(self.reports_dir, file)
+                    else:
+                        print(f"Warning: Attendance report {file} has no corresponding reference file")
         
-        # Add merged log files to each year-batch group
-        for year_batch in year_batch_groups:
-            year_batch_groups[year_batch]['log_files'] = all_log_files
+        # Add merged log files to each module group
+        for module_name in module_groups:
+            module_groups[module_name]['log_files'] = all_log_files
         
-        print(f"Detected {len(year_batch_groups)} year-batch groups:")
-        for year_batch, data in year_batch_groups.items():
-            print(f"  {year_batch}:")
+        # Filter out modules that don't have both reference and schedule files
+        valid_module_groups = {}
+        for module_name, data in module_groups.items():
+            if 'reference' in data and 'schedule' in data:
+                valid_module_groups[module_name] = data
+            else:
+                missing_files = []
+                if 'reference' not in data:
+                    missing_files.append('reference')
+                if 'schedule' not in data:
+                    missing_files.append('schedule')
+                print(f"Warning: Module {module_name} is missing required files: {', '.join(missing_files)}")
+        
+        print(f"Detected {len(valid_module_groups)} complete module groups:")
+        for module_name, data in valid_module_groups.items():
+            print(f"  {module_name}:")
             if 'reference' in data:
                 print(f"    Reference: {os.path.basename(data['reference'])}")
-            if 'schedules' in data:
-                print(f"    Schedules: {len(data['schedules'])} files")
-            if 'reports' in data:
-                print(f"    Reports: {len(data['reports'])} files")
+            if 'schedule' in data:
+                print(f"    Schedule: {os.path.basename(data['schedule'])}")
+            if 'report' in data:
+                print(f"    Report: {os.path.basename(data['report'])}")
             print(f"    Log files: {len(data['log_files'])} files")
         
-        return year_batch_groups
+        return valid_module_groups
     
     def extract_data_from_report(self, report_file):
         """Extract required data from an existing attendance report and calculate threshold"""
@@ -384,8 +398,8 @@ class AutomatedAttendanceProcessor:
         sessions_by_group = {}
         
         for row in session_schedule:
-            if len(row) >= 6:  # Ensure we have year, group, subject, session_num, date, time
-                year, group, subject, session_num, date, start_time = row[:6]
+            if len(row) >= 7:  # Ensure we have year, group, subject, session_num, date, time, duration
+                year, group, subject, session_num, date, start_time, duration = row[:7]
                 key = f"{year}-{group}"
                 
                 if key not in sessions_by_group:
@@ -1168,14 +1182,20 @@ class AutomatedAttendanceProcessor:
         session_map = {}
         
         for session in sessions:
-            if len(session) >= 6:  # Ensure we have all needed fields
-                year, group, subject, session_num, date, start_time = session[:6]  # Adjusted indices
+            if len(session) >= 7:  # Ensure we have all needed fields including duration
+                year, group, subject, session_num, date, start_time, duration = session[:7]  # Adjusted indices
                 key = f"{year}-{group}"
                 
                 if key == group_key:
                     session_datetime = self.parse_datetime(date, start_time)
                     if not session_datetime:
                         continue
+                    
+                    # Parse duration (convert to float and handle potential None values)
+                    try:
+                        session_duration = float(duration) if duration is not None else 120.0  # Default to 120 minutes (2 hours) if not specified
+                    except (ValueError, TypeError):
+                        session_duration = 120.0  # Default to 120 minutes (2 hours) if parsing fails
                         
                     session_key = f"{subject}-{date}-{start_time}"  
                     
@@ -1183,7 +1203,8 @@ class AutomatedAttendanceProcessor:
                         "subject": subject,  # Only subject now, no course
                         "session_num": session_num,
                         "start_time": session_datetime,
-                        "date": date
+                        "date": date,
+                        "duration": session_duration
                     }
         
         return session_map
@@ -1196,14 +1217,14 @@ class AutomatedAttendanceProcessor:
             
             # Only match logs from the same location as the session
             if location.lower() == session_subject.lower():  
-                # Determine time window based on session start hour
-                session_hour = session_start.hour
-                if session_hour in self.EXCEPTION_HOURS:
-                    before_window = timedelta(minutes=self.EXCEPTION_BEFORE_MINUTES)
-                    after_window = timedelta(minutes=self.EXCEPTION_AFTER_MINUTES)
-                else:
-                    before_window = timedelta(minutes=self.STANDARD_BEFORE_MINUTES)
-                    after_window = timedelta(minutes=self.STANDARD_AFTER_MINUTES)
+                # Get session duration from the session info
+                session_duration = session_info.get("duration", 120.0)  # Default to 120 minutes if not found
+                
+                # Calculate time window based on session duration
+                # Allow 15 minutes before session starts
+                before_window = timedelta(minutes=15)
+                # Allow attendance until session ends (duration is already in minutes)
+                after_window = timedelta(minutes=int(session_duration))
                 
                 # Check if log time is within the allowed window
                 if session_start - before_window <= log_datetime <= session_start + after_window:
@@ -1261,14 +1282,15 @@ class AutomatedAttendanceProcessor:
     def validate_attendance_with_transfers(self, log_history, session_schedule, student_map, 
                                       transferred_students, transfer_data, target_year):
         """Validate attendance considering student transfers"""
+        # Note: Time windows are now calculated dynamically based on session duration
         valid_attendance = {}
         session_map = {}
         unique_logs = set()  # This tracks unique session attendance to prevent duplicates
 
         # Build session maps for all groups
         for row in session_schedule:
-            if len(row) >= 6:  # Ensure we have all needed fields
-                year, group, subject, session_num, date, start_time = row[:6]  # Adjusted indices
+            if len(row) >= 7:  # Ensure we have all needed fields including duration
+                year, group, subject, session_num, date, start_time, duration = row[:7]  # Adjusted indices
                 key = f"{year}-{group}"
                 
                 session_datetime = self.parse_datetime(date, start_time)
@@ -1277,6 +1299,12 @@ class AutomatedAttendanceProcessor:
     
                 # Convert session_num to string for consistent handling
                 session_num = str(session_num)
+                
+                # Parse duration (convert to float and handle potential None values)
+                try:
+                    session_duration = float(duration) if duration is not None else 120.0  # Default to 120 minutes (2 hours) if not specified
+                except (ValueError, TypeError):
+                    session_duration = 120.0  # Default to 120 minutes (2 hours) if parsing fails
     
                 # Create a unique key for each session that combines all relevant info
                 session_key = f"{subject}-{date}-{start_time}"  
@@ -1284,12 +1312,13 @@ class AutomatedAttendanceProcessor:
                 if key not in session_map:
                     session_map[key] = {}
     
-                # Store complete session information
+                # Store complete session information including duration
                 session_map[key][session_key] = {
                     "subject": subject,  # Only subject now, no course
                     "session_num": session_num,
                     "start_time": session_datetime,
-                    "date": date
+                    "date": date,
+                    "duration": session_duration
                 }
 
         # Process attendance logs
@@ -1356,14 +1385,14 @@ class AutomatedAttendanceProcessor:
                         
                                 # Only match logs from the same location as the session
                                 if location.lower() == session_subject.lower():  
-                                    # Determine time window based on session start hour
-                                    session_hour = session_start.hour
-                                    if session_hour in self.EXCEPTION_HOURS:
-                                        before_window = timedelta(minutes=self.EXCEPTION_BEFORE_MINUTES)
-                                        after_window = timedelta(minutes=self.EXCEPTION_AFTER_MINUTES)
-                                    else:
-                                        before_window = timedelta(minutes=self.STANDARD_BEFORE_MINUTES)
-                                        after_window = timedelta(minutes=self.STANDARD_AFTER_MINUTES)
+                                    # Get session duration from the session info
+                                    session_duration = session_info.get("duration", 120.0)  # Default to 120 minutes if not found
+                                    
+                                    # Calculate time window based on session duration
+                                    # Allow 15 minutes before session starts
+                                    before_window = timedelta(minutes=15)
+                                    # Allow attendance until session ends (duration is already in minutes)
+                                    after_window = timedelta(minutes=int(session_duration))
                             
                                     # Check if log time is within the allowed window
                                     if session_start - before_window <= log_datetime <= session_start + after_window:
@@ -1461,14 +1490,14 @@ class AutomatedAttendanceProcessor:
         print("Starting automated attendance processing...")
         
         # Step 1: Detect all files
-        year_batch_groups = self.detect_files()
-        if not year_batch_groups:
+        module_groups = self.detect_files()
+        if not module_groups:
             print("No files detected or required directories missing. Exiting.")
             return
         
         # Step 2: Merge all log files
         all_log_files = []
-        for year_batch, data in year_batch_groups.items():
+        for module_name, data in module_groups.items():
             all_log_files.extend(data.get('log_files', []))
         
         # Remove duplicates while preserving order
@@ -1479,18 +1508,23 @@ class AutomatedAttendanceProcessor:
             print("No log data found. Exiting.")
             return
         
-        # Step 3: Process each year-batch group
-        for year_batch, data in year_batch_groups.items():
-            print(f"\nProcessing {year_batch}...")
+        # Step 3: Process each module group
+        for module_name, data in module_groups.items():
+            print(f"\nProcessing {module_name}...")
             
-            # Extract year and batch from year_batch (e.g., "Y1_B2425" -> year="1", batch="2425")
-            year = year_batch.split('_')[0].replace('Y', '')
-            batch = year_batch.split('_')[1]
+            # Extract year and batch from module_name (e.g., "Y1_B2425_Introduction_to_Anatomy" -> year="1", batch="2425")
+            parts = module_name.split('_')
+            if len(parts) >= 2:
+                year = parts[0].replace('Y', '')
+                batch = parts[1]
+            else:
+                print(f"Invalid module name format: {module_name}. Skipping.")
+                continue
             
             # Get reference file
             reference_file = data.get('reference')
             if not reference_file:
-                print(f"No reference file found for {year_batch}. Skipping.")
+                print(f"No reference file found for {module_name}. Skipping.")
                 continue
             
             # Load reference data
@@ -1503,42 +1537,45 @@ class AutomatedAttendanceProcessor:
                 print(f"Error loading reference file {reference_file}: {str(e)}")
                 continue
             
-            # Process each report for this year-batch
-            reports = data.get('reports', {})
-            for module, report_file in reports.items():
-                print(f"  Processing {module}...")
-                
-                # Extract data from the report
+            # Get schedule file
+            schedule_file = data.get('schedule')
+            if not schedule_file:
+                print(f"No schedule file found for {module_name}. Skipping.")
+                continue
+            
+            # Load schedule data
+            try:
+                sched_wb = openpyxl.load_workbook(schedule_file)
+                sched_ws = sched_wb.active  # Assume first sheet
+                session_schedule = list(sched_ws.values)
+            except Exception as e:
+                print(f"Error loading schedule file {schedule_file}: {str(e)}")
+                continue
+            
+            # Get report file (if exists)
+            report_file = data.get('report')
+            if report_file:
+                # Extract data from the existing report
                 report_data = self.extract_data_from_report(report_file)
-                if not report_data:
-                    print(f"  Could not extract data from {report_file}. Skipping.")
-                    continue
-                
-                total_required = report_data['total_required']
-                calculated_threshold = report_data['threshold']
-                
-                # Update the threshold for this processing session
-                self.ATTENDANCE_THRESHOLD = calculated_threshold
-                
-                # Get corresponding schedule file
-                schedule_file = data.get('schedules', {}).get(module)
-                if not schedule_file:
-                    print(f"  No schedule file found for {module}. Skipping.")
-                    continue
-                
-                # Load schedule data
-                try:
-                    sched_wb = openpyxl.load_workbook(schedule_file)
-                    sched_ws = sched_wb.active  # Assume first sheet
-                    session_schedule = list(sched_ws.values)
-                except Exception as e:
-                    print(f"  Error loading schedule file {schedule_file}: {str(e)}")
-                    continue
-                
-                # Load previous report data
-                prev_student_map = {}
-                prev_attendance_data = {}
-                
+                if report_data:
+                    total_required = report_data['total_required']
+                    calculated_threshold = report_data['threshold']
+                    # Update the threshold for this processing session
+                    self.ATTENDANCE_THRESHOLD = calculated_threshold
+                else:
+                    print(f"Could not extract data from {report_file}. Using default threshold.")
+                    total_required = 100  # Default value
+                    self.ATTENDANCE_THRESHOLD = 0.75  # Default threshold
+            else:
+                print(f"No existing report found for {module_name}. Using default values.")
+                total_required = 100  # Default value
+                self.ATTENDANCE_THRESHOLD = 0.75  # Default threshold
+            
+            # Load previous report data (if exists)
+            prev_student_map = {}
+            prev_attendance_data = {}
+            
+            if report_file:
                 try:
                     prev_report_wb = openpyxl.load_workbook(report_file)
                     prev_summary_sheet = None
@@ -1558,87 +1595,87 @@ class AutomatedAttendanceProcessor:
                         prev_attendance_data = self.extract_attendance_data(prev_attendance_sheet)
                 
                 except Exception as e:
-                    print(f"  Error loading previous report data: {str(e)}")
-                
-                # Identify transferred students
-                transferred_students = self.identify_transferred_students(prev_student_map, current_student_map)
-                
-                # Get current datetime for completed sessions calculation
-                current_datetime = datetime.now()
-                
-                # Calculate sessions based on the current date
-                completed_sessions, sessions_left = self.calculate_completed_sessions(
-                    session_schedule[1:], current_datetime)
-                
-                required_attendance = self.calculate_required_attendance(session_schedule[1:], total_required)
-                
-                # Track transfer dates and patterns for transferred students
-                transfer_data = self.analyze_transfer_patterns(transferred_students, merged_log_data, 
-                                                              session_schedule[1:], current_student_map)
-                
-                # Process attendance logs considering transfers
-                new_valid_attendance = self.validate_attendance_with_transfers(
-                    merged_log_data, session_schedule[1:], current_student_map, 
-                    transferred_students, transfer_data, f"Year {year}")
-                
-                # Combine previous and new attendance data
-                combined_attendance = self.combine_attendance_data(
-                    prev_attendance_data, new_valid_attendance, transferred_students, transfer_data)
-                
-                # Create output workbook and sheets
-                output_wb = openpyxl.Workbook()
-                output_wb.remove(output_wb.active)
-                
-                # Add date to sheet names
-                summary_sheet_name = f"Summary_updated"
-                attendance_sheet_name = f"Attendance_updated"
-                transfer_sheet_name = f"Transfers_updated"
-                
-                # Create Summary sheet first, then Attendance sheet with combined data
-                self.create_summary_sheet(output_wb, summary_sheet_name, combined_attendance, 
-                                         required_attendance, current_student_map, transferred_students,
-                                         transfer_data, f"Year {year}", completed_sessions, sessions_left, total_required, batch)
-                
-                self.create_valid_logs_sheet(output_wb, attendance_sheet_name, combined_attendance)
-                
-                # Create the transfer log sheet
-                self.create_transfer_log_sheet(output_wb, transfer_sheet_name, transferred_students, transfer_data)
-                
-                # Save output workbook (without timestamp to replace existing file)
-                output_filename = f"{year_batch}_{module}_attendance.xlsx"
-                output_path = os.path.join(self.reports_dir, output_filename)
-                output_wb.save(output_path)
-                
-                # Set Excel file metadata (title, subject, author)
-                try:
-                    wb = openpyxl.load_workbook(output_path)
-                    props = wb.properties
-                    props.title = "attendance_reports"
-                    props.subject = f"{module}_attendance"
-                    props.authors = f"{year_batch}"
-                    wb.save(output_path)
-                except Exception as meta_exc:
-                    print(f"Warning: Could not set Excel metadata: {meta_exc}")
-                
-                # Convert to JSON and save in the same directory (without timestamp)
-                try:
-                    df = pd.read_excel(output_path)
-                    json_path = os.path.splitext(output_path)[0] + '.json'
-                    metadata = {
-                        "title": "attendance_reports",
-                        "subject": f"{module}_attendance",
-                        "authors": f"{year_batch}"
-                    }
-                    json_obj = {
-                        "metadata": metadata,
-                        "attendance_data": df.to_dict(orient='records')
-                    }
-                    import json as _json
-                    with open(json_path, 'w', encoding='utf-8') as f:
-                        _json.dump(json_obj, f, ensure_ascii=False, indent=2)
-                    print(f"  Successfully updated {output_filename} and {os.path.basename(json_path)}")
-                except Exception as e:
-                    print(f"  Error converting to JSON: {str(e)}")
+                    print(f"Error loading previous report data: {str(e)}")
+            
+            # Identify transferred students
+            transferred_students = self.identify_transferred_students(prev_student_map, current_student_map)
+            
+            # Get current datetime for completed sessions calculation
+            current_datetime = datetime.now()
+            
+            # Calculate sessions based on the current date
+            completed_sessions, sessions_left = self.calculate_completed_sessions(
+                session_schedule[1:], current_datetime)
+            
+            required_attendance = self.calculate_required_attendance(session_schedule[1:], total_required)
+            
+            # Track transfer dates and patterns for transferred students
+            transfer_data = self.analyze_transfer_patterns(transferred_students, merged_log_data, 
+                                                          session_schedule[1:], current_student_map)
+            
+            # Process attendance logs considering transfers
+            new_valid_attendance = self.validate_attendance_with_transfers(
+                merged_log_data, session_schedule[1:], current_student_map, 
+                transferred_students, transfer_data, f"Year {year}")
+            
+            # Combine previous and new attendance data
+            combined_attendance = self.combine_attendance_data(
+                prev_attendance_data, new_valid_attendance, transferred_students, transfer_data)
+            
+            # Create output workbook and sheets
+            output_wb = openpyxl.Workbook()
+            output_wb.remove(output_wb.active)
+            
+            # Add date to sheet names
+            summary_sheet_name = f"Summary_updated"
+            attendance_sheet_name = f"Attendance_updated"
+            transfer_sheet_name = f"Transfers_updated"
+            
+            # Create Summary sheet first, then Attendance sheet with combined data
+            self.create_summary_sheet(output_wb, summary_sheet_name, combined_attendance, 
+                                     required_attendance, current_student_map, transferred_students,
+                                     transfer_data, f"Year {year}", completed_sessions, sessions_left, total_required, batch)
+            
+            self.create_valid_logs_sheet(output_wb, attendance_sheet_name, combined_attendance)
+            
+            # Create the transfer log sheet
+            self.create_transfer_log_sheet(output_wb, transfer_sheet_name, transferred_students, transfer_data)
+            
+            # Save output workbook (without timestamp to replace existing file)
+            output_filename = f"{module_name}_attendance.xlsx"
+            output_path = os.path.join(self.reports_dir, output_filename)
+            output_wb.save(output_path)
+            
+            # Set Excel file metadata (title, subject, author)
+            try:
+                wb = openpyxl.load_workbook(output_path)
+                props = wb.properties
+                props.title = "attendance_reports"
+                props.subject = f"{module_name}_attendance"
+                props.authors = f"{module_name}"
+                wb.save(output_path)
+            except Exception as meta_exc:
+                print(f"Warning: Could not set Excel metadata: {meta_exc}")
+            
+            # Convert to JSON and save in the same directory (without timestamp)
+            try:
+                df = pd.read_excel(output_path)
+                json_path = os.path.splitext(output_path)[0] + '.json'
+                metadata = {
+                    "title": "attendance_reports",
+                    "subject": f"{module_name}_attendance",
+                    "authors": f"{module_name}"
+                }
+                json_obj = {
+                    "metadata": metadata,
+                    "attendance_data": df.to_dict(orient='records')
+                }
+                import json as _json
+                with open(json_path, 'w', encoding='utf-8') as f:
+                    _json.dump(json_obj, f, ensure_ascii=False, indent=2)
+                print(f"  Successfully updated {output_filename} and {os.path.basename(json_path)}")
+            except Exception as e:
+                print(f"  Error converting to JSON: {str(e)}")
         
         print("\nAutomated attendance processing completed!")
 
