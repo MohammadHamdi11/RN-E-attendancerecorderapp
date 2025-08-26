@@ -10,7 +10,8 @@
         "appeal_processor": false,
         "attendance_processor": false,
         "attendance_analyzer": false,
-        "settings": false
+        "settings": false,
+        "account": true
       },
       "supervisor": {
         "user_type": "supervisor",
@@ -21,7 +22,8 @@
         "appeal_processor": false,
         "attendance_processor": false,
         "attendance_analyzer": false,
-        "settings": false
+        "settings": false,
+        "account": true
       },
       "admin": {
         "user_type": "admin",
@@ -32,7 +34,8 @@
         "appeal_processor": true,
         "attendance_processor": true,
         "attendance_analyzer": true,
-        "settings": true
+        "settings": true,
+        "account": true
       }
     }
   }
