@@ -1,352 +1,591 @@
 {
   "user_email": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
-  "user_id": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba_1757145557230",
-  "account_created": "2025-09-06T07:59:17.230Z",
-  "last_sync": "2025-09-06T07:59:17.230Z",
-  "total_sessions": 2,
-  "total_scans": 39,
+  "user_id": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba_1757153015565",
+  "account_created": "2025-09-06T10:03:35.565Z",
+  "last_sync": "2025-09-06T10:03:35.565Z",
+  "total_sessions": 19,
+  "total_scans": 23,
   "sessions": [
     {
-      "id": "checklist1756542480557",
-      "location": "Pediatrics",
+      "id": "scanner1756197207714",
+      "location": "Histology",
       "year": 5,
-      "batch": "2024/2025",
-      "dateTime": "2025-08-30T08:28:00.557Z",
-      "formattedDateTime": "30/08/2025 10:28:00",
+      "batch": "2026/2027",
+      "dateTime": "2025-08-26T08:33:27.714Z",
+      "formattedDateTime": "26/08/2025 11:33:27",
       "scans": [
         {
-          "id": "201689",
-          "content": "201689",
-          "timestamp": "2025-08-30T08:28:37.495Z",
-          "formattedTime": "10:28:37",
-          "time": "2025-08-30T08:28:37.495Z",
-          "isManual": true
-        },
-        {
-          "id": "201696",
-          "content": "201696",
-          "timestamp": "2025-08-30T08:28:59.582Z",
-          "formattedTime": "10:28:59",
-          "time": "2025-08-30T08:28:59.582Z",
-          "isManual": true
-        },
-        {
-          "id": "201791",
-          "content": "201791",
-          "timestamp": "2025-08-30T08:29:13.318Z",
-          "formattedTime": "10:29:13",
-          "time": "2025-08-30T08:29:13.318Z",
-          "isManual": true
-        },
-        {
-          "id": "201799",
-          "content": "201799",
-          "timestamp": "2025-08-30T08:29:33.270Z",
-          "formattedTime": "10:29:33",
-          "time": "2025-08-30T08:29:33.270Z",
-          "isManual": true
-        },
-        {
-          "id": "201800",
-          "content": "201800",
-          "timestamp": "2025-08-30T08:29:41.371Z",
-          "formattedTime": "10:29:41",
-          "time": "2025-08-30T08:29:41.371Z",
-          "isManual": true
-        },
-        {
-          "id": "201801",
-          "content": "201801",
-          "timestamp": "2025-08-30T08:29:51.862Z",
-          "formattedTime": "10:29:51",
-          "time": "2025-08-30T08:29:51.862Z",
-          "isManual": true
-        },
-        {
-          "id": "201802",
-          "content": "201802",
-          "timestamp": "2025-08-30T08:29:59.519Z",
-          "formattedTime": "10:29:59",
-          "time": "2025-08-30T08:29:59.519Z",
-          "isManual": true
-        },
-        {
-          "id": "201883",
-          "content": "201883",
-          "timestamp": "2025-08-30T08:30:18.992Z",
-          "formattedTime": "10:30:18",
-          "time": "2025-08-30T08:30:18.992Z",
-          "isManual": true
-        },
-        {
-          "id": "201889",
-          "content": "201889",
-          "timestamp": "2025-08-30T08:30:31.273Z",
-          "formattedTime": "10:30:31",
-          "time": "2025-08-30T08:30:31.273Z",
-          "isManual": true
-        },
-        {
-          "id": "201926",
-          "content": "201926",
-          "timestamp": "2025-08-30T08:30:45.137Z",
-          "formattedTime": "10:30:45",
-          "time": "2025-08-30T08:30:45.137Z",
-          "isManual": true
-        },
-        {
-          "id": "201929",
-          "content": "201929",
-          "timestamp": "2025-08-30T08:31:00.238Z",
-          "formattedTime": "10:31:00",
-          "time": "2025-08-30T08:31:00.238Z",
-          "isManual": true
-        },
-        {
-          "id": "201933",
-          "content": "201933",
-          "timestamp": "2025-08-30T08:31:11.433Z",
-          "formattedTime": "10:31:11",
-          "time": "2025-08-30T08:31:11.433Z",
-          "isManual": true
-        },
-        {
-          "id": "201945",
-          "content": "201945",
-          "timestamp": "2025-08-30T08:31:28.126Z",
-          "formattedTime": "10:31:28",
-          "time": "2025-08-30T08:31:28.126Z",
-          "isManual": true
-        },
-        {
-          "id": "202012",
-          "content": "202012",
-          "timestamp": "2025-08-30T08:31:41.810Z",
-          "formattedTime": "10:31:41",
-          "time": "2025-08-30T08:31:41.810Z",
-          "isManual": true
-        },
-        {
-          "id": "202034",
-          "content": "202034",
-          "timestamp": "2025-08-30T08:32:01.008Z",
-          "formattedTime": "10:32:01",
-          "time": "2025-08-30T08:32:01.008Z",
-          "isManual": true
-        },
-        {
-          "id": "202168",
-          "content": "202168",
-          "timestamp": "2025-08-30T08:32:14.237Z",
-          "formattedTime": "10:32:14",
-          "time": "2025-08-30T08:32:14.237Z",
-          "isManual": true
-        },
-        {
-          "id": "203001",
-          "content": "203001",
-          "timestamp": "2025-08-30T08:32:27.600Z",
-          "formattedTime": "10:32:27",
-          "time": "2025-08-30T08:32:27.600Z",
-          "isManual": true
-        },
-        {
-          "id": "190014",
-          "content": "190014",
-          "timestamp": "2025-08-30T08:32:35.716Z",
-          "formattedTime": "10:32:35",
-          "time": "2025-08-30T08:32:35.716Z",
+          "id": "1756197211537",
+          "content": "665649",
+          "timestamp": "2025-08-26T08:33:31.534Z",
+          "formattedTime": "11:33:31",
+          "time": "2025-08-26T08:33:31.534Z",
           "isManual": true
         }
       ],
-      "inProgress": true,
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "interrupted",
+      "isChecklist": false,
+      "backedUp": true,
+      "updated_at": "2025-09-06T10:03:35.565Z",
+      "user_email": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "user_id": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba_1757153015565",
+      "created_by": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "created_at": "2025-08-26T09:10:21.414Z"
+    },
+    {
+      "id": "scanner1756198723241",
+      "location": "Pediatrics",
+      "year": 5,
+      "batch": "2024/2025",
+      "dateTime": "2025-08-26T08:58:43.241Z",
+      "formattedDateTime": "26/08/2025 11:58:43",
+      "scans": [],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "closed_normally",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "user_id": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba_1757153015565",
+      "created_by": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "created_at": "2025-08-26T09:10:21.414Z",
+      "updated_at": "2025-09-06T10:03:35.565Z"
+    },
+    {
+      "id": "checklist1756198787106",
+      "location": "Pediatrics",
+      "year": 5,
+      "batch": "2024/2025",
+      "dateTime": "2025-08-26T08:59:47.106Z",
+      "formattedDateTime": "26/08/2025 11:59:47",
+      "scans": [],
+      "inProgress": false,
+      "isChecklist": true,
+      "filters": {
+        "year": "5",
+        "group": "PED-B2-6"
+      },
+      "sessionType": "checklist",
+      "recoveryStatus": "closed_normally",
+      "backedUp": true,
+      "user_email": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "user_id": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba_1757153015565",
+      "created_by": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "created_at": "2025-08-26T09:10:21.414Z",
+      "updated_at": "2025-09-06T10:03:35.565Z"
+    },
+    {
+      "id": "scanner1756198873152",
+      "location": "Pathology",
+      "year": 5,
+      "batch": "2024/2025",
+      "dateTime": "2025-08-26T09:01:13.152Z",
+      "formattedDateTime": "26/08/2025 12:01:13",
+      "scans": [],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "closed_normally",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "user_id": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba_1757153015565",
+      "created_by": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "created_at": "2025-08-26T09:10:21.414Z",
+      "updated_at": "2025-09-06T10:03:35.565Z"
+    },
+    {
+      "id": "checklist1756199090371",
+      "location": "Pediatrics",
+      "year": 5,
+      "batch": "2024/2025",
+      "dateTime": "2025-08-26T09:04:50.371Z",
+      "formattedDateTime": "26/08/2025 12:04:50",
+      "scans": [],
+      "inProgress": false,
+      "isChecklist": true,
+      "filters": {
+        "year": "5",
+        "group": "PED-B2-6"
+      },
+      "sessionType": "checklist",
+      "recoveryStatus": "closed_normally",
+      "backedUp": true,
+      "user_email": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "user_id": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba_1757153015565",
+      "created_by": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "created_at": "2025-08-26T09:10:21.414Z",
+      "updated_at": "2025-09-06T10:03:35.565Z"
+    },
+    {
+      "id": "checklist1756199366312",
+      "location": "Pediatrics",
+      "year": 5,
+      "batch": "2024/2025",
+      "dateTime": "2025-08-26T09:09:26.312Z",
+      "formattedDateTime": "26/08/2025 12:09:26",
+      "scans": [],
+      "inProgress": false,
       "isChecklist": true,
       "filters": {
         "year": "all",
         "group": "all"
       },
       "sessionType": "checklist",
-      "recoveryStatus": "in_progress",
+      "recoveryStatus": "interrupted",
       "user_email": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
-      "user_id": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba_1757145557231",
+      "user_id": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba_1757153015565",
       "created_by": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
-      "created_at": "2025-09-06T07:59:17.230Z",
-      "updated_at": "2025-09-06T07:59:17.230Z"
+      "created_at": "2025-08-26T09:10:21.414Z",
+      "updated_at": "2025-09-06T10:03:35.565Z",
+      "backedUp": false
     },
     {
-      "id": "scanner1756548433439",
+      "id": "scanner1756201153307",
       "location": "Pediatrics",
       "year": 5,
       "batch": "2024/2025",
-      "dateTime": "2025-08-30T10:07:13.439Z",
-      "formattedDateTime": "30/08/2025 12:07:13",
+      "dateTime": "2025-08-26T09:39:13.307Z",
+      "formattedDateTime": "26/08/2025 12:39:13",
       "scans": [
         {
-          "id": "1756548453570",
-          "content": "190054",
-          "timestamp": "2025-08-30T10:07:33.565Z",
-          "formattedTime": "12:07:33",
-          "time": "2025-08-30T10:07:33.565Z",
+          "id": "1756201206428",
+          "content": "231249",
+          "timestamp": "2025-08-26T09:40:06.408Z",
+          "formattedTime": "12:40:06",
+          "time": "2025-08-26T09:40:06.408Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "closed_normally",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "user_id": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba_1757153015565",
+      "created_by": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "created_at": "2025-08-26T09:46:19.491Z",
+      "updated_at": "2025-09-06T10:03:35.565Z"
+    },
+    {
+      "id": "checklist1756201334491",
+      "location": "Pediatrics",
+      "year": 5,
+      "batch": "2024/2025",
+      "dateTime": "2025-08-26T09:42:14.491Z",
+      "formattedDateTime": "26/08/2025 12:42:14",
+      "scans": [],
+      "inProgress": false,
+      "isChecklist": true,
+      "filters": {
+        "year": "all",
+        "group": "all"
+      },
+      "sessionType": "checklist",
+      "recoveryStatus": "closed_normally",
+      "backedUp": false,
+      "user_email": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "user_id": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba_1757153015565",
+      "created_by": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "created_at": "2025-08-26T09:46:19.491Z",
+      "updated_at": "2025-09-06T10:03:35.565Z"
+    },
+    {
+      "id": "checklist1756201397261",
+      "location": "Pediatrics",
+      "year": 5,
+      "batch": "2024/2025",
+      "dateTime": "2025-08-26T09:43:17.261Z",
+      "formattedDateTime": "26/08/2025 12:43:17",
+      "scans": [
+        {
+          "id": "180584",
+          "content": "180584",
+          "timestamp": "2025-08-26T09:44:05.060Z",
+          "formattedTime": "12:44:05",
+          "time": "2025-08-26T09:44:05.060Z",
+          "isManual": false
+        },
+        {
+          "id": "201319",
+          "content": "201319",
+          "timestamp": "2025-08-26T09:44:08.011Z",
+          "formattedTime": "12:44:08",
+          "time": "2025-08-26T09:44:08.011Z",
+          "isManual": false
+        },
+        {
+          "id": "201325",
+          "content": "201325",
+          "timestamp": "2025-08-26T09:44:10.361Z",
+          "formattedTime": "12:44:10",
+          "time": "2025-08-26T09:44:10.361Z",
+          "isManual": false
+        },
+        {
+          "id": "201339",
+          "content": "201339",
+          "timestamp": "2025-08-26T09:44:11.932Z",
+          "formattedTime": "12:44:11",
+          "time": "2025-08-26T09:44:11.932Z",
+          "isManual": false
+        },
+        {
+          "id": "555585",
+          "content": "555585",
+          "timestamp": "2025-08-26T09:44:47.722Z",
+          "formattedTime": "12:44:47",
+          "time": "2025-08-26T09:44:47.722Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": false,
+      "isChecklist": true,
+      "filters": {
+        "year": "5",
+        "group": "PED-B2-2"
+      },
+      "sessionType": "checklist",
+      "recoveryStatus": "closed_normally",
+      "backedUp": true,
+      "backupTimestamp": "2025-08-26T09:45:13.846Z",
+      "updated_at": "2025-09-06T10:03:35.565Z",
+      "user_email": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "user_id": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba_1757153015565",
+      "created_by": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "created_at": "2025-08-26T09:46:19.491Z"
+    },
+    {
+      "id": "scanner1756201798897",
+      "location": "Pediatrics",
+      "year": 5,
+      "batch": "2024/2025",
+      "dateTime": "2025-08-26T09:49:58.897Z",
+      "formattedDateTime": "26/08/2025 12:49:58",
+      "scans": [
+        {
+          "id": "1756201845924",
+          "content": "231249",
+          "timestamp": "2025-08-26T09:50:45.910Z",
+          "formattedTime": "12:50:45",
+          "time": "2025-08-26T09:50:45.910Z",
+          "isManual": false
+        },
+        {
+          "id": "1756201873236",
+          "content": "124578",
+          "timestamp": "2025-08-26T09:51:13.189Z",
+          "formattedTime": "12:51:13",
+          "time": "2025-08-26T09:51:13.189Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "closed_normally",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "user_id": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba_1757153015565",
+      "created_by": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "created_at": "2025-08-26T09:54:49.399Z",
+      "updated_at": "2025-09-06T10:03:35.565Z"
+    },
+    {
+      "id": "checklist1756201928427",
+      "location": "Pediatrics",
+      "year": 5,
+      "batch": "2024/2025",
+      "dateTime": "2025-08-26T09:52:08.427Z",
+      "formattedDateTime": "26/08/2025 12:52:08",
+      "scans": [
+        {
+          "id": "145789",
+          "content": "145789",
+          "timestamp": "2025-08-26T09:52:29.866Z",
+          "formattedTime": "12:52:29",
+          "time": "2025-08-26T09:52:29.866Z",
           "isManual": true
         },
         {
-          "id": "1756548464769",
-          "content": "190055",
-          "timestamp": "2025-08-30T10:07:44.766Z",
-          "formattedTime": "12:07:44",
-          "time": "2025-08-30T10:07:44.766Z",
+          "id": "180483",
+          "content": "180483",
+          "timestamp": "2025-08-26T09:53:42.203Z",
+          "formattedTime": "12:53:42",
+          "time": "2025-08-26T09:53:42.203Z",
+          "isManual": false
+        },
+        {
+          "id": "201559",
+          "content": "201559",
+          "timestamp": "2025-08-26T09:53:44.646Z",
+          "formattedTime": "12:53:44",
+          "time": "2025-08-26T09:53:44.646Z",
+          "isManual": false
+        },
+        {
+          "id": "201579",
+          "content": "201579",
+          "timestamp": "2025-08-26T09:53:46.229Z",
+          "formattedTime": "12:53:46",
+          "time": "2025-08-26T09:53:46.229Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": false,
+      "isChecklist": true,
+      "filters": {
+        "year": "5",
+        "group": "PED-B2-3"
+      },
+      "sessionType": "checklist",
+      "recoveryStatus": "closed_normally",
+      "backedUp": true,
+      "backupTimestamp": "2025-08-26T09:54:04.041Z",
+      "updated_at": "2025-09-06T10:03:35.565Z",
+      "user_email": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "user_id": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba_1757153015565",
+      "created_by": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "created_at": "2025-08-26T09:54:49.399Z"
+    },
+    {
+      "id": "checklist1756202487631",
+      "location": "Pediatrics",
+      "year": 5,
+      "batch": "2024/2025",
+      "dateTime": "2025-08-26T10:01:27.631Z",
+      "formattedDateTime": "26/08/2025 13:01:27",
+      "scans": [
+        {
+          "id": "201176",
+          "content": "201176",
+          "timestamp": "2025-08-26T10:01:52.271Z",
+          "formattedTime": "13:01:52",
+          "time": "2025-08-26T10:01:52.271Z",
+          "isManual": false
+        },
+        {
+          "id": "180688",
+          "content": "180688",
+          "timestamp": "2025-08-26T10:02:00.064Z",
+          "formattedTime": "13:02:00",
+          "time": "2025-08-26T10:02:00.064Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": false,
+      "isChecklist": true,
+      "filters": {
+        "year": "5",
+        "group": "PED-B2-2"
+      },
+      "sessionType": "checklist",
+      "recoveryStatus": "closed_normally",
+      "backedUp": true,
+      "user_email": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "user_id": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba_1757153015565",
+      "created_by": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "created_at": "2025-09-06T10:03:35.565Z",
+      "updated_at": "2025-09-06T10:03:35.565Z"
+    },
+    {
+      "id": "scanner1756202633378",
+      "location": "Pediatrics",
+      "year": 5,
+      "batch": "2024/2025",
+      "dateTime": "2025-08-26T10:03:53.378Z",
+      "formattedDateTime": "26/08/2025 13:03:53",
+      "scans": [],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "closed_normally",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "user_id": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba_1757153015565",
+      "created_by": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "created_at": "2025-09-06T10:03:35.565Z",
+      "updated_at": "2025-09-06T10:03:35.565Z"
+    },
+    {
+      "id": "scanner1756205148012",
+      "location": "Pediatrics",
+      "year": 5,
+      "batch": "2024/2025",
+      "dateTime": "2025-08-26T10:45:48.012Z",
+      "formattedDateTime": "26/08/2025 13:45:48",
+      "scans": [],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "interrupted",
+      "isChecklist": false,
+      "user_email": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "user_id": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba_1757153015565",
+      "created_by": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "created_at": "2025-09-06T10:03:35.565Z",
+      "updated_at": "2025-09-06T10:03:35.565Z"
+    },
+    {
+      "id": "scanner1756276258155",
+      "location": "Pediatrics",
+      "year": 5,
+      "batch": "2024/2025",
+      "dateTime": "2025-08-27T06:30:58.155Z",
+      "formattedDateTime": "27/08/2025 09:30:58",
+      "scans": [],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "closed_normally",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "user_id": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba_1757153015565",
+      "created_by": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "created_at": "2025-09-06T10:03:35.565Z",
+      "updated_at": "2025-09-06T10:03:35.565Z"
+    },
+    {
+      "id": "scanner1756284791475",
+      "location": "Pediatrics",
+      "year": 5,
+      "batch": "2024/2025",
+      "dateTime": "2025-08-27T08:53:11.475Z",
+      "formattedDateTime": "27/08/2025 11:53:11",
+      "scans": [],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "interrupted",
+      "isChecklist": false,
+      "backedUp": false,
+      "user_email": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "user_id": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba_1757153015565",
+      "created_by": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "created_at": "2025-09-06T10:03:35.565Z",
+      "updated_at": "2025-09-06T10:03:35.565Z"
+    },
+    {
+      "id": "scanner1756538237443",
+      "location": "Pediatrics",
+      "year": 5,
+      "batch": "2024/2025",
+      "dateTime": "2025-08-30T07:17:17.443Z",
+      "formattedDateTime": "30/08/2025 10:17:17",
+      "scans": [
+        {
+          "id": "1756538319772",
+          "content": "190809",
+          "timestamp": "2025-08-30T07:18:39.760Z",
+          "formattedTime": "10:18:39",
+          "time": "2025-08-30T07:18:39.760Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "interrupted",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "user_id": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba_1757153015565",
+      "created_by": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "created_at": "2025-09-06T10:03:35.565Z",
+      "updated_at": "2025-09-06T10:03:35.565Z"
+    },
+    {
+      "id": "scanner1756544103074",
+      "location": "Pediatrics",
+      "year": 5,
+      "batch": "2024/2025",
+      "dateTime": "2025-08-30T08:55:03.074Z",
+      "formattedDateTime": "30/08/2025 11:55:03",
+      "scans": [
+        {
+          "id": "1756544131194",
+          "content": "190720",
+          "timestamp": "2025-08-30T08:55:31.175Z",
+          "formattedTime": "11:55:31",
+          "time": "2025-08-30T08:55:31.175Z",
           "isManual": true
         },
         {
-          "id": "1756548475766",
-          "content": "190060",
-          "timestamp": "2025-08-30T10:07:55.762Z",
-          "formattedTime": "12:07:55",
-          "time": "2025-08-30T10:07:55.762Z",
+          "id": "1756544146010",
+          "content": "190804",
+          "timestamp": "2025-08-30T08:55:45.993Z",
+          "formattedTime": "11:55:45",
+          "time": "2025-08-30T08:55:45.993Z",
           "isManual": true
         },
         {
-          "id": "1756548494147",
-          "content": "190094",
-          "timestamp": "2025-08-30T10:08:14.142Z",
-          "formattedTime": "12:08:14",
-          "time": "2025-08-30T10:08:14.142Z",
+          "id": "1756544163853",
+          "content": "190811",
+          "timestamp": "2025-08-30T08:56:03.835Z",
+          "formattedTime": "11:56:03",
+          "time": "2025-08-30T08:56:03.835Z",
           "isManual": true
         },
         {
-          "id": "1756548511711",
-          "content": "190110",
-          "timestamp": "2025-08-30T10:08:31.706Z",
-          "formattedTime": "12:08:31",
-          "time": "2025-08-30T10:08:31.706Z",
+          "id": "1756544179737",
+          "content": "190831",
+          "timestamp": "2025-08-30T08:56:19.723Z",
+          "formattedTime": "11:56:19",
+          "time": "2025-08-30T08:56:19.723Z",
           "isManual": true
         },
         {
-          "id": "1756548520979",
-          "content": "190222",
-          "timestamp": "2025-08-30T10:08:40.972Z",
-          "formattedTime": "12:08:40",
-          "time": "2025-08-30T10:08:40.972Z",
+          "id": "1756544194792",
+          "content": "190847",
+          "timestamp": "2025-08-30T08:56:34.775Z",
+          "formattedTime": "11:56:34",
+          "time": "2025-08-30T08:56:34.775Z",
           "isManual": true
         },
         {
-          "id": "1756548539217",
-          "content": "190235",
-          "timestamp": "2025-08-30T10:08:59.213Z",
-          "formattedTime": "12:08:59",
-          "time": "2025-08-30T10:08:59.213Z",
+          "id": "1756544210231",
+          "content": "190852",
+          "timestamp": "2025-08-30T08:56:50.212Z",
+          "formattedTime": "11:56:50",
+          "time": "2025-08-30T08:56:50.212Z",
           "isManual": true
-        },
+        }
+      ],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "interrupted",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "user_id": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba_1757153015566",
+      "created_by": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
+      "created_at": "2025-09-06T10:03:35.565Z",
+      "updated_at": "2025-09-06T10:03:35.565Z"
+    },
+    {
+      "id": "scanner1756551440969",
+      "location": "Pediatrics",
+      "year": 5,
+      "batch": "2024/2025",
+      "dateTime": "2025-08-30T10:57:20.969Z",
+      "formattedDateTime": "30/08/2025 13:57:20",
+      "scans": [
         {
-          "id": "1756548549921",
-          "content": "190236",
-          "timestamp": "2025-08-30T10:09:09.913Z",
-          "formattedTime": "12:09:09",
-          "time": "2025-08-30T10:09:09.913Z",
-          "isManual": true
-        },
-        {
-          "id": "1756548564547",
-          "content": "190240",
-          "timestamp": "2025-08-30T10:09:24.542Z",
-          "formattedTime": "12:09:24",
-          "time": "2025-08-30T10:09:24.542Z",
-          "isManual": true
-        },
-        {
-          "id": "1756548574409",
-          "content": "190248",
-          "timestamp": "2025-08-30T10:09:34.404Z",
-          "formattedTime": "12:09:34",
-          "time": "2025-08-30T10:09:34.404Z",
-          "isManual": true
-        },
-        {
-          "id": "1756548913881",
-          "content": "190263",
-          "timestamp": "2025-08-30T10:15:13.857Z",
-          "formattedTime": "12:15:13",
-          "time": "2025-08-30T10:15:13.857Z",
-          "isManual": true
-        },
-        {
-          "id": "1756548925158",
-          "content": "190343",
-          "timestamp": "2025-08-30T10:15:25.153Z",
-          "formattedTime": "12:15:25",
-          "time": "2025-08-30T10:15:25.153Z",
-          "isManual": true
-        },
-        {
-          "id": "1756548934863",
-          "content": "190353",
-          "timestamp": "2025-08-30T10:15:34.857Z",
-          "formattedTime": "12:15:34",
-          "time": "2025-08-30T10:15:34.857Z",
-          "isManual": true
-        },
-        {
-          "id": "1756548947239",
-          "content": "190429",
-          "timestamp": "2025-08-30T10:15:47.233Z",
-          "formattedTime": "12:15:47",
-          "time": "2025-08-30T10:15:47.233Z",
-          "isManual": true
-        },
-        {
-          "id": "1756548966835",
-          "content": "190436",
-          "timestamp": "2025-08-30T10:16:06.824Z",
-          "formattedTime": "12:16:06",
-          "time": "2025-08-30T10:16:06.824Z",
-          "isManual": true
-        },
-        {
-          "id": "1756548984167",
-          "content": "190468",
-          "timestamp": "2025-08-30T10:16:24.162Z",
-          "formattedTime": "12:16:24",
-          "time": "2025-08-30T10:16:24.162Z",
-          "isManual": true
-        },
-        {
-          "id": "1756548995615",
-          "content": "190475",
-          "timestamp": "2025-08-30T10:16:35.610Z",
-          "formattedTime": "12:16:35",
-          "time": "2025-08-30T10:16:35.610Z",
-          "isManual": true
-        },
-        {
-          "id": "1756549020090",
-          "content": "190550",
-          "timestamp": "2025-08-30T10:17:00.086Z",
-          "formattedTime": "12:17:00",
-          "time": "2025-08-30T10:17:00.086Z",
-          "isManual": true
-        },
-        {
-          "id": "1756549032842",
-          "content": "190559",
-          "timestamp": "2025-08-30T10:17:12.839Z",
-          "formattedTime": "12:17:12",
-          "time": "2025-08-30T10:17:12.839Z",
-          "isManual": true
-        },
-        {
-          "id": "1756549045058",
-          "content": "190564",
-          "timestamp": "2025-08-30T10:17:25.054Z",
-          "formattedTime": "12:17:25",
-          "time": "2025-08-30T10:17:25.054Z",
-          "isManual": true
-        },
-        {
-          "id": "1756549107697",
-          "content": "190571",
-          "timestamp": "2025-08-30T10:18:27.692Z",
-          "formattedTime": "12:18:27",
-          "time": "2025-08-30T10:18:27.692Z",
+          "id": "1756551455172",
+          "content": "123456",
+          "timestamp": "2025-08-30T10:57:35.154Z",
+          "formattedTime": "13:57:35",
+          "time": "2025-08-30T10:57:35.154Z",
           "isManual": true
         }
       ],
@@ -357,10 +596,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
-      "user_id": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba_1757145557231",
+      "user_id": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba_1757153015566",
       "created_by": "b238c595b84321b35b8e57610c49523d4e3b9b5b5d090923e9e54f4b929bedba",
-      "created_at": "2025-09-06T07:59:17.230Z",
-      "updated_at": "2025-09-06T07:59:17.230Z"
+      "created_at": "2025-09-06T10:03:35.565Z",
+      "updated_at": "2025-09-06T10:03:35.565Z"
     }
   ]
 }
