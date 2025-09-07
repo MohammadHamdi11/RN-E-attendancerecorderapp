@@ -1,9 +1,9 @@
 {
   "user_email": "backup@backdoor.com",
-  "user_id": "backup_backdoor_com_1757255714090",
-  "account_created": "2025-09-07T14:35:14.090Z",
-  "last_sync": "2025-09-07T14:35:14.090Z",
-  "total_sessions": 1,
+  "user_id": "backup_backdoor_com_1757256927969",
+  "account_created": "2025-09-07T14:55:27.969Z",
+  "last_sync": "2025-09-07T14:55:27.969Z",
+  "total_sessions": 2,
   "total_scans": 1,
   "sessions": [
     {
@@ -30,10 +30,32 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1757255714090",
+      "user_id": "backup_backdoor_com_1757256927970",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-09-07T14:35:14.090Z",
-      "updated_at": "2025-09-07T14:35:14.090Z"
+      "created_at": "2025-09-07T14:55:27.969Z",
+      "updated_at": "2025-09-07T14:55:27.969Z"
+    },
+    {
+      "id": "checklist1757256927314",
+      "location": "Pediatrics",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-09-07T14:55:27.314Z",
+      "formattedDateTime": "07/09/2025 17:55:27",
+      "scans": [],
+      "inProgress": true,
+      "isChecklist": true,
+      "filters": {
+        "year": "all",
+        "group": "all"
+      },
+      "sessionType": "checklist",
+      "recoveryStatus": "in_progress",
+      "user_email": "backup@backdoor.com",
+      "user_id": "backup_backdoor_com_1757256927970",
+      "created_by": "backup@backdoor.com",
+      "created_at": "2025-09-07T14:55:27.969Z",
+      "updated_at": "2025-09-07T14:55:27.969Z"
     }
   ]
 }
