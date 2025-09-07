@@ -1,0 +1,132 @@
+{
+  "user_email": "d00cfd5e70ceccca002dc2270b48d57750b4810fb0e2d7436582e39586577055",
+  "user_id": "d00cfd5e70ceccca002dc2270b48d57750b4810fb0e2d7436582e39586577055_1757232838967",
+  "account_created": "2025-09-07T08:13:58.967Z",
+  "last_sync": "2025-09-07T08:13:58.967Z",
+  "total_sessions": 3,
+  "total_scans": 7,
+  "sessions": [
+    {
+      "id": "scanner1757149601072",
+      "location": "Internal Medicine 1",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-09-06T09:06:41.072Z",
+      "formattedDateTime": "06/09/2025 11:06:41",
+      "scans": [
+        {
+          "id": "1757149648674",
+          "content": "231249",
+          "timestamp": "2025-09-06T09:07:28.672Z",
+          "formattedTime": "11:07:28",
+          "time": "2025-09-06T09:07:28.672Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "d00cfd5e70ceccca002dc2270b48d57750b4810fb0e2d7436582e39586577055",
+      "user_id": "d00cfd5e70ceccca002dc2270b48d57750b4810fb0e2d7436582e39586577055_1757232838967",
+      "created_by": "d00cfd5e70ceccca002dc2270b48d57750b4810fb0e2d7436582e39586577055",
+      "created_at": "2025-09-07T08:13:58.967Z",
+      "updated_at": "2025-09-07T08:13:58.967Z"
+    },
+    {
+      "id": "checklist1757149705587",
+      "location": "Biochemistry",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-09-06T09:08:25.587Z",
+      "formattedDateTime": "06/09/2025 11:08:25",
+      "scans": [
+        {
+          "id": "201176",
+          "content": "201176",
+          "timestamp": "2025-09-06T09:09:34.233Z",
+          "formattedTime": "11:09:34",
+          "time": "2025-09-06T09:09:34.233Z",
+          "isManual": false
+        },
+        {
+          "id": "201180",
+          "content": "201180",
+          "timestamp": "2025-09-06T09:09:34.972Z",
+          "formattedTime": "11:09:34",
+          "time": "2025-09-06T09:09:34.972Z",
+          "isManual": false
+        },
+        {
+          "id": "201182",
+          "content": "201182",
+          "timestamp": "2025-09-06T09:09:35.700Z",
+          "formattedTime": "11:09:35",
+          "time": "2025-09-06T09:09:35.700Z",
+          "isManual": false
+        },
+        {
+          "id": "201186",
+          "content": "201186",
+          "timestamp": "2025-09-06T09:09:37.119Z",
+          "formattedTime": "11:09:37",
+          "time": "2025-09-06T09:09:37.119Z",
+          "isManual": false
+        },
+        {
+          "id": "565888",
+          "content": "565888",
+          "timestamp": "2025-09-06T09:09:43.950Z",
+          "formattedTime": "11:09:43",
+          "time": "2025-09-06T09:09:43.950Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": false,
+      "isChecklist": true,
+      "filters": {
+        "year": "5",
+        "group": "PED-B2-1"
+      },
+      "sessionType": "checklist",
+      "recoveryStatus": "closed_normally",
+      "backedUp": true,
+      "backupTimestamp": "2025-09-06T09:09:58.585Z",
+      "user_email": "d00cfd5e70ceccca002dc2270b48d57750b4810fb0e2d7436582e39586577055",
+      "user_id": "d00cfd5e70ceccca002dc2270b48d57750b4810fb0e2d7436582e39586577055_1757232838967",
+      "created_by": "d00cfd5e70ceccca002dc2270b48d57750b4810fb0e2d7436582e39586577055",
+      "created_at": "2025-09-07T08:13:58.967Z",
+      "updated_at": "2025-09-07T08:13:58.967Z"
+    },
+    {
+      "id": "scanner1757232812780",
+      "location": "Internal Medicine 1",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-09-07T08:13:32.780Z",
+      "formattedDateTime": "07/09/2025 10:13:32",
+      "scans": [
+        {
+          "id": "1757232837955",
+          "content": "221453",
+          "timestamp": "2025-09-07T08:13:57.954Z",
+          "formattedTime": "10:13:57",
+          "time": "2025-09-07T08:13:57.954Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "d00cfd5e70ceccca002dc2270b48d57750b4810fb0e2d7436582e39586577055",
+      "user_id": "d00cfd5e70ceccca002dc2270b48d57750b4810fb0e2d7436582e39586577055_1757232838967",
+      "created_by": "d00cfd5e70ceccca002dc2270b48d57750b4810fb0e2d7436582e39586577055",
+      "created_at": "2025-09-07T08:13:58.967Z",
+      "updated_at": "2025-09-07T08:13:58.967Z"
+    }
+  ]
+}
