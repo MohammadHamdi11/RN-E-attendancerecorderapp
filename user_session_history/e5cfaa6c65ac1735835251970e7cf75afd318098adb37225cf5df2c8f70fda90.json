@@ -1,10 +1,10 @@
 {
   "user_email": "73928832271521cdfdf507553e45fae327d3396d861b0856aa8628981ff30f1d",
-  "user_id": "73928832271521cdfdf507553e45fae327d3396d861b0856aa8628981ff30f1d_1757322738396",
-  "account_created": "2025-09-08T09:12:18.396Z",
-  "last_sync": "2025-09-08T09:12:18.396Z",
-  "total_sessions": 2,
-  "total_scans": 25,
+  "user_id": "73928832271521cdfdf507553e45fae327d3396d861b0856aa8628981ff30f1d_1757323820529",
+  "account_created": "2025-09-08T09:30:20.529Z",
+  "last_sync": "2025-09-08T09:30:20.529Z",
+  "total_sessions": 3,
+  "total_scans": 26,
   "sessions": [
     {
       "id": "scanner1757232513047",
@@ -30,10 +30,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "73928832271521cdfdf507553e45fae327d3396d861b0856aa8628981ff30f1d",
-      "user_id": "73928832271521cdfdf507553e45fae327d3396d861b0856aa8628981ff30f1d_1757322738396",
+      "user_id": "73928832271521cdfdf507553e45fae327d3396d861b0856aa8628981ff30f1d_1757323820529",
       "created_by": "73928832271521cdfdf507553e45fae327d3396d861b0856aa8628981ff30f1d",
-      "created_at": "2025-09-07T10:40:45.875Z",
-      "updated_at": "2025-09-08T09:12:18.396Z"
+      "created_at": "2025-09-08T09:30:20.529Z",
+      "updated_at": "2025-09-08T09:30:20.529Z"
     },
     {
       "id": "scanner1757241117694",
@@ -243,10 +243,38 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "73928832271521cdfdf507553e45fae327d3396d861b0856aa8628981ff30f1d",
-      "user_id": "73928832271521cdfdf507553e45fae327d3396d861b0856aa8628981ff30f1d_1757322738396",
+      "user_id": "73928832271521cdfdf507553e45fae327d3396d861b0856aa8628981ff30f1d_1757323820529",
       "created_by": "73928832271521cdfdf507553e45fae327d3396d861b0856aa8628981ff30f1d",
-      "created_at": "2025-09-07T10:40:45.875Z",
-      "updated_at": "2025-09-08T09:12:18.396Z"
+      "created_at": "2025-09-08T09:30:20.529Z",
+      "updated_at": "2025-09-08T09:30:20.529Z"
+    },
+    {
+      "id": "scanner1757323818112",
+      "location": "Immuno&hema",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-09-08T09:30:18.112Z",
+      "formattedDateTime": "08/09/2025 12:30:18",
+      "scans": [
+        {
+          "id": "1757323820125",
+          "content": "221353",
+          "timestamp": "2025-09-08T09:30:20.125Z",
+          "formattedTime": "12:30:20",
+          "time": "2025-09-08T09:30:20.125Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "73928832271521cdfdf507553e45fae327d3396d861b0856aa8628981ff30f1d",
+      "user_id": "73928832271521cdfdf507553e45fae327d3396d861b0856aa8628981ff30f1d_1757323820529",
+      "created_by": "73928832271521cdfdf507553e45fae327d3396d861b0856aa8628981ff30f1d",
+      "created_at": "2025-09-08T09:30:20.529Z",
+      "updated_at": "2025-09-08T09:30:20.529Z"
     }
   ]
 }
