@@ -1,9 +1,9 @@
 {
   "user_email": "backup@backdoor.com",
-  "user_id": "backup_backdoor_com_1757421696176",
-  "account_created": "2025-09-09T12:41:36.176Z",
-  "last_sync": "2025-09-09T12:41:36.176Z",
-  "total_sessions": 5,
+  "user_id": "backup_backdoor_com_1757422140357",
+  "account_created": "2025-09-09T12:49:00.357Z",
+  "last_sync": "2025-09-09T12:49:00.357Z",
+  "total_sessions": 6,
   "total_scans": 2,
   "sessions": [
     {
@@ -30,10 +30,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1757421696176",
+      "user_id": "backup_backdoor_com_1757422140357",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-09-09T12:41:36.176Z",
-      "updated_at": "2025-09-09T12:41:36.176Z"
+      "created_at": "2025-09-09T12:49:00.357Z",
+      "updated_at": "2025-09-09T12:49:00.357Z"
     },
     {
       "id": "checklist1757256927314",
@@ -53,10 +53,10 @@
       "recoveryStatus": "closed_normally",
       "backedUp": true,
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1757421696176",
+      "user_id": "backup_backdoor_com_1757422140357",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-09-09T12:41:36.176Z",
-      "updated_at": "2025-09-09T12:41:36.176Z"
+      "created_at": "2025-09-09T12:49:00.357Z",
+      "updated_at": "2025-09-09T12:49:00.357Z"
     },
     {
       "id": "checklist1757331472003",
@@ -76,10 +76,10 @@
       "recoveryStatus": "closed_normally",
       "backedUp": true,
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1757421696176",
+      "user_id": "backup_backdoor_com_1757422140357",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-09-09T12:41:36.176Z",
-      "updated_at": "2025-09-09T12:41:36.176Z"
+      "created_at": "2025-09-09T12:49:00.357Z",
+      "updated_at": "2025-09-09T12:49:00.357Z"
     },
     {
       "id": "checklist1757331711185",
@@ -99,10 +99,10 @@
       "recoveryStatus": "closed_normally",
       "backedUp": true,
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1757421696176",
+      "user_id": "backup_backdoor_com_1757422140357",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-09-09T12:41:36.176Z",
-      "updated_at": "2025-09-09T12:41:36.176Z"
+      "created_at": "2025-09-09T12:49:00.357Z",
+      "updated_at": "2025-09-09T12:49:00.357Z"
     },
     {
       "id": "scanner1757421672794",
@@ -121,16 +121,39 @@
           "isManual": false
         }
       ],
-      "inProgress": true,
+      "inProgress": false,
       "isScanner": true,
       "sessionType": "scanner",
-      "recoveryStatus": "in_progress",
+      "recoveryStatus": "closed_normally",
       "isChecklist": false,
+      "backedUp": true,
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1757421696176",
+      "user_id": "backup_backdoor_com_1757422140357",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-09-09T12:41:36.176Z",
-      "updated_at": "2025-09-09T12:41:36.176Z"
+      "created_at": "2025-09-09T12:49:00.357Z",
+      "updated_at": "2025-09-09T12:49:00.357Z"
+    },
+    {
+      "id": "checklist1757422139875",
+      "location": "Clinical",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-09-09T12:48:59.875Z",
+      "formattedDateTime": "09/09/2025 15:48:59",
+      "scans": [],
+      "inProgress": true,
+      "isChecklist": true,
+      "filters": {
+        "year": "all",
+        "group": "all"
+      },
+      "sessionType": "checklist",
+      "recoveryStatus": "in_progress",
+      "user_email": "backup@backdoor.com",
+      "user_id": "backup_backdoor_com_1757422140357",
+      "created_by": "backup@backdoor.com",
+      "created_at": "2025-09-09T12:49:00.357Z",
+      "updated_at": "2025-09-09T12:49:00.357Z"
     }
   ]
 }
