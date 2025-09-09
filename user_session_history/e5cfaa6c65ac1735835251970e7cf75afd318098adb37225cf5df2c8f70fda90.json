@@ -1,10 +1,10 @@
 {
   "user_email": "73928832271521cdfdf507553e45fae327d3396d861b0856aa8628981ff30f1d",
-  "user_id": "73928832271521cdfdf507553e45fae327d3396d861b0856aa8628981ff30f1d_1757416429487",
-  "account_created": "2025-09-09T11:13:49.487Z",
-  "last_sync": "2025-09-09T11:13:49.487Z",
-  "total_sessions": 3,
-  "total_scans": 25,
+  "user_id": "73928832271521cdfdf507553e45fae327d3396d861b0856aa8628981ff30f1d_1757416490112",
+  "account_created": "2025-09-09T11:14:50.112Z",
+  "last_sync": "2025-09-09T11:14:50.112Z",
+  "total_sessions": 4,
+  "total_scans": 26,
   "sessions": [
     {
       "id": "scanner1757232513047",
@@ -26,14 +26,14 @@
       "inProgress": false,
       "isScanner": true,
       "sessionType": "scanner",
-      "recoveryStatus": "declined_recovery",
+      "recoveryStatus": "interrupted",
       "isChecklist": false,
       "backedUp": true,
       "user_email": "73928832271521cdfdf507553e45fae327d3396d861b0856aa8628981ff30f1d",
-      "user_id": "73928832271521cdfdf507553e45fae327d3396d861b0856aa8628981ff30f1d_1757416429488",
+      "user_id": "73928832271521cdfdf507553e45fae327d3396d861b0856aa8628981ff30f1d_1757416490112",
       "created_by": "73928832271521cdfdf507553e45fae327d3396d861b0856aa8628981ff30f1d",
       "created_at": "2025-09-07T10:40:45.875Z",
-      "updated_at": "2025-09-09T11:13:49.487Z"
+      "updated_at": "2025-09-09T11:14:50.112Z"
     },
     {
       "id": "scanner1757241117694",
@@ -243,10 +243,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "73928832271521cdfdf507553e45fae327d3396d861b0856aa8628981ff30f1d",
-      "user_id": "73928832271521cdfdf507553e45fae327d3396d861b0856aa8628981ff30f1d_1757416429488",
+      "user_id": "73928832271521cdfdf507553e45fae327d3396d861b0856aa8628981ff30f1d_1757416490112",
       "created_by": "73928832271521cdfdf507553e45fae327d3396d861b0856aa8628981ff30f1d",
       "created_at": "2025-09-07T10:40:45.875Z",
-      "updated_at": "2025-09-09T11:13:49.487Z"
+      "updated_at": "2025-09-09T11:14:50.112Z"
     },
     {
       "id": "scanner1757322759560",
@@ -263,10 +263,38 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "73928832271521cdfdf507553e45fae327d3396d861b0856aa8628981ff30f1d",
-      "user_id": "73928832271521cdfdf507553e45fae327d3396d861b0856aa8628981ff30f1d_1757416429488",
+      "user_id": "73928832271521cdfdf507553e45fae327d3396d861b0856aa8628981ff30f1d_1757416490112",
       "created_by": "73928832271521cdfdf507553e45fae327d3396d861b0856aa8628981ff30f1d",
-      "created_at": "2025-09-09T11:13:49.487Z",
-      "updated_at": "2025-09-09T11:13:49.487Z"
+      "created_at": "2025-09-09T11:14:50.112Z",
+      "updated_at": "2025-09-09T11:14:50.112Z"
+    },
+    {
+      "id": "scanner1757416485190",
+      "location": "Immuno&hema",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-09-09T11:14:45.190Z",
+      "formattedDateTime": "09/09/2025 14:14:45",
+      "scans": [
+        {
+          "id": "1757416489187",
+          "content": "221353",
+          "timestamp": "2025-09-09T11:14:49.170Z",
+          "formattedTime": "14:14:49",
+          "time": "2025-09-09T11:14:49.170Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "73928832271521cdfdf507553e45fae327d3396d861b0856aa8628981ff30f1d",
+      "user_id": "73928832271521cdfdf507553e45fae327d3396d861b0856aa8628981ff30f1d_1757416490112",
+      "created_by": "73928832271521cdfdf507553e45fae327d3396d861b0856aa8628981ff30f1d",
+      "created_at": "2025-09-09T11:14:50.112Z",
+      "updated_at": "2025-09-09T11:14:50.112Z"
     }
   ]
 }
