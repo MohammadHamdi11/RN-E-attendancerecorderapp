@@ -1,0 +1,38 @@
+{
+  "user_email": "39d4a9e1547f20386380147cc23dd8b9ac4d1fd0a316cf9f113cbf96db86dc46",
+  "user_id": "39d4a9e1547f20386380147cc23dd8b9ac4d1fd0a316cf9f113cbf96db86dc46_1757444553818",
+  "account_created": "2025-09-09T19:02:33.818Z",
+  "last_sync": "2025-09-09T19:02:33.818Z",
+  "total_sessions": 1,
+  "total_scans": 1,
+  "sessions": [
+    {
+      "id": "scanner1757444550499",
+      "location": "Anatomy",
+      "year": 1,
+      "batch": "2022/2023",
+      "dateTime": "2025-09-09T19:02:30.499Z",
+      "formattedDateTime": "09/09/2025 22:02:30",
+      "scans": [
+        {
+          "id": "1757444553106",
+          "content": "555566",
+          "timestamp": "2025-09-09T19:02:33.105Z",
+          "formattedTime": "22:02:33",
+          "time": "2025-09-09T19:02:33.105Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "39d4a9e1547f20386380147cc23dd8b9ac4d1fd0a316cf9f113cbf96db86dc46",
+      "user_id": "39d4a9e1547f20386380147cc23dd8b9ac4d1fd0a316cf9f113cbf96db86dc46_1757444553818",
+      "created_by": "39d4a9e1547f20386380147cc23dd8b9ac4d1fd0a316cf9f113cbf96db86dc46",
+      "created_at": "2025-09-09T19:02:33.818Z",
+      "updated_at": "2025-09-09T19:02:33.818Z"
+    }
+  ]
+}
