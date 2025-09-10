@@ -1,10 +1,10 @@
 {
   "user_email": "f28859aa2958bcbf402fd224d3edb4e8231481b90b375c071e6778de216685fb",
-  "user_id": "f28859aa2958bcbf402fd224d3edb4e8231481b90b375c071e6778de216685fb_1757485983790",
-  "account_created": "2025-09-10T06:33:03.790Z",
-  "last_sync": "2025-09-10T06:33:03.790Z",
+  "user_id": "f28859aa2958bcbf402fd224d3edb4e8231481b90b375c071e6778de216685fb_1757486057721",
+  "account_created": "2025-09-10T06:34:17.721Z",
+  "last_sync": "2025-09-10T06:34:17.721Z",
   "total_sessions": 3,
-  "total_scans": 2,
+  "total_scans": 12,
   "sessions": [
     {
       "id": "scanner1757450003478",
@@ -21,10 +21,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "f28859aa2958bcbf402fd224d3edb4e8231481b90b375c071e6778de216685fb",
-      "user_id": "f28859aa2958bcbf402fd224d3edb4e8231481b90b375c071e6778de216685fb_1757485983790",
+      "user_id": "f28859aa2958bcbf402fd224d3edb4e8231481b90b375c071e6778de216685fb_1757486057721",
       "created_by": "f28859aa2958bcbf402fd224d3edb4e8231481b90b375c071e6778de216685fb",
-      "created_at": "2025-09-10T06:33:03.790Z",
-      "updated_at": "2025-09-10T06:33:03.790Z"
+      "created_at": "2025-09-10T06:34:17.721Z",
+      "updated_at": "2025-09-10T06:34:17.721Z"
     },
     {
       "id": "scanner1757481828744",
@@ -40,10 +40,10 @@
       "recoveryStatus": "interrupted",
       "isChecklist": false,
       "user_email": "f28859aa2958bcbf402fd224d3edb4e8231481b90b375c071e6778de216685fb",
-      "user_id": "f28859aa2958bcbf402fd224d3edb4e8231481b90b375c071e6778de216685fb_1757485983790",
+      "user_id": "f28859aa2958bcbf402fd224d3edb4e8231481b90b375c071e6778de216685fb_1757486057721",
       "created_by": "f28859aa2958bcbf402fd224d3edb4e8231481b90b375c071e6778de216685fb",
-      "created_at": "2025-09-10T06:33:03.790Z",
-      "updated_at": "2025-09-10T06:33:03.790Z"
+      "created_at": "2025-09-10T06:34:17.721Z",
+      "updated_at": "2025-09-10T06:34:17.721Z"
     },
     {
       "id": "scanner1757485907777",
@@ -68,6 +68,86 @@
           "formattedTime": "09:33:03",
           "time": "2025-09-10T06:33:03.711Z",
           "isManual": false
+        },
+        {
+          "id": "1757485987234",
+          "content": "221419",
+          "timestamp": "2025-09-10T06:33:07.233Z",
+          "formattedTime": "09:33:07",
+          "time": "2025-09-10T06:33:07.233Z",
+          "isManual": false
+        },
+        {
+          "id": "1757485991514",
+          "content": "221451",
+          "timestamp": "2025-09-10T06:33:11.514Z",
+          "formattedTime": "09:33:11",
+          "time": "2025-09-10T06:33:11.514Z",
+          "isManual": false
+        },
+        {
+          "id": "1757485995063",
+          "content": "221455",
+          "timestamp": "2025-09-10T06:33:15.062Z",
+          "formattedTime": "09:33:15",
+          "time": "2025-09-10T06:33:15.062Z",
+          "isManual": false
+        },
+        {
+          "id": "1757485999012",
+          "content": "221463",
+          "timestamp": "2025-09-10T06:33:19.011Z",
+          "formattedTime": "09:33:19",
+          "time": "2025-09-10T06:33:19.011Z",
+          "isManual": false
+        },
+        {
+          "id": "1757486002708",
+          "content": "221309",
+          "timestamp": "2025-09-10T06:33:22.708Z",
+          "formattedTime": "09:33:22",
+          "time": "2025-09-10T06:33:22.708Z",
+          "isManual": false
+        },
+        {
+          "id": "1757486028772",
+          "content": "221315",
+          "timestamp": "2025-09-10T06:33:48.772Z",
+          "formattedTime": "09:33:48",
+          "time": "2025-09-10T06:33:48.772Z",
+          "isManual": false
+        },
+        {
+          "id": "1757486033993",
+          "content": "221269",
+          "timestamp": "2025-09-10T06:33:53.993Z",
+          "formattedTime": "09:33:53",
+          "time": "2025-09-10T06:33:53.993Z",
+          "isManual": false
+        },
+        {
+          "id": "1757486037274",
+          "content": "221456",
+          "timestamp": "2025-09-10T06:33:57.273Z",
+          "formattedTime": "09:33:57",
+          "time": "2025-09-10T06:33:57.273Z",
+          "isManual": false
+        },
+        {
+          "id": "1757486040296",
+          "content": "221457",
+          "timestamp": "2025-09-10T06:34:00.295Z",
+          "formattedTime": "09:34:00",
+          "time": "2025-09-10T06:34:00.295Z",
+          "isManual": false
+        },
+        {
+          "id": "1757486057539",
+          "content": "221306",
+          "timestamp": "2025-09-10T06:34:17.539Z",
+          "formattedTime": "09:34:17",
+          "time": "2025-09-10T06:34:17.539Z",
+          "isManual": false
         }
       ],
       "inProgress": true,
@@ -76,10 +156,10 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "f28859aa2958bcbf402fd224d3edb4e8231481b90b375c071e6778de216685fb",
-      "user_id": "f28859aa2958bcbf402fd224d3edb4e8231481b90b375c071e6778de216685fb_1757485983790",
+      "user_id": "f28859aa2958bcbf402fd224d3edb4e8231481b90b375c071e6778de216685fb_1757486057721",
       "created_by": "f28859aa2958bcbf402fd224d3edb4e8231481b90b375c071e6778de216685fb",
-      "created_at": "2025-09-10T06:33:03.790Z",
-      "updated_at": "2025-09-10T06:33:03.790Z"
+      "created_at": "2025-09-10T06:34:17.721Z",
+      "updated_at": "2025-09-10T06:34:17.721Z"
     }
   ]
 }
