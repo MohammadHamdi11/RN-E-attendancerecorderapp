@@ -1,9 +1,9 @@
 {
   "user_email": "39d4a9e1547f20386380147cc23dd8b9ac4d1fd0a316cf9f113cbf96db86dc46",
-  "user_id": "39d4a9e1547f20386380147cc23dd8b9ac4d1fd0a316cf9f113cbf96db86dc46_1757446685776",
-  "account_created": "2025-09-09T19:38:05.776Z",
-  "last_sync": "2025-09-09T19:38:05.776Z",
-  "total_sessions": 2,
+  "user_id": "39d4a9e1547f20386380147cc23dd8b9ac4d1fd0a316cf9f113cbf96db86dc46_1757512867239",
+  "account_created": "2025-09-10T14:01:07.239Z",
+  "last_sync": "2025-09-10T14:01:07.239Z",
+  "total_sessions": 3,
   "total_scans": 1,
   "sessions": [
     {
@@ -30,10 +30,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "39d4a9e1547f20386380147cc23dd8b9ac4d1fd0a316cf9f113cbf96db86dc46",
-      "user_id": "39d4a9e1547f20386380147cc23dd8b9ac4d1fd0a316cf9f113cbf96db86dc46_1757446685776",
+      "user_id": "39d4a9e1547f20386380147cc23dd8b9ac4d1fd0a316cf9f113cbf96db86dc46_1757512867239",
       "created_by": "39d4a9e1547f20386380147cc23dd8b9ac4d1fd0a316cf9f113cbf96db86dc46",
       "created_at": "2025-09-09T19:02:40.750Z",
-      "updated_at": "2025-09-09T19:38:05.776Z"
+      "updated_at": "2025-09-10T14:01:07.239Z"
     },
     {
       "id": "checklist1757446668526",
@@ -52,10 +52,32 @@
       "sessionType": "checklist",
       "recoveryStatus": "in_progress",
       "user_email": "39d4a9e1547f20386380147cc23dd8b9ac4d1fd0a316cf9f113cbf96db86dc46",
-      "user_id": "39d4a9e1547f20386380147cc23dd8b9ac4d1fd0a316cf9f113cbf96db86dc46_1757446685776",
+      "user_id": "39d4a9e1547f20386380147cc23dd8b9ac4d1fd0a316cf9f113cbf96db86dc46_1757512867239",
       "created_by": "39d4a9e1547f20386380147cc23dd8b9ac4d1fd0a316cf9f113cbf96db86dc46",
       "created_at": "2025-09-09T19:38:05.776Z",
-      "updated_at": "2025-09-09T19:38:05.776Z"
+      "updated_at": "2025-09-10T14:01:07.239Z"
+    },
+    {
+      "id": "checklist1757512866755",
+      "location": "Histology",
+      "year": 4,
+      "batch": "2022/2023",
+      "dateTime": "2025-09-10T14:01:06.755Z",
+      "formattedDateTime": "10/09/2025 17:01:06",
+      "scans": [],
+      "inProgress": true,
+      "isChecklist": true,
+      "filters": {
+        "year": "all",
+        "group": "all"
+      },
+      "sessionType": "checklist",
+      "recoveryStatus": "in_progress",
+      "user_email": "39d4a9e1547f20386380147cc23dd8b9ac4d1fd0a316cf9f113cbf96db86dc46",
+      "user_id": "39d4a9e1547f20386380147cc23dd8b9ac4d1fd0a316cf9f113cbf96db86dc46_1757512867239",
+      "created_by": "39d4a9e1547f20386380147cc23dd8b9ac4d1fd0a316cf9f113cbf96db86dc46",
+      "created_at": "2025-09-10T14:01:07.239Z",
+      "updated_at": "2025-09-10T14:01:07.239Z"
     }
   ]
 }
