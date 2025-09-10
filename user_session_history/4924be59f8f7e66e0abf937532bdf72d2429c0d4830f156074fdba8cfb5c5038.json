@@ -1,10 +1,10 @@
 {
   "user_email": "272efcfda7bd3208e090f05a24198cc42a8b7c15230d58e6534a6eec0a74da5a",
-  "user_id": "272efcfda7bd3208e090f05a24198cc42a8b7c15230d58e6534a6eec0a74da5a_1757329341419",
-  "account_created": "2025-09-08T11:02:21.419Z",
-  "last_sync": "2025-09-08T11:02:21.419Z",
-  "total_sessions": 2,
-  "total_scans": 0,
+  "user_id": "272efcfda7bd3208e090f05a24198cc42a8b7c15230d58e6534a6eec0a74da5a_1757486575527",
+  "account_created": "2025-09-10T06:42:55.527Z",
+  "last_sync": "2025-09-10T06:42:55.527Z",
+  "total_sessions": 3,
+  "total_scans": 1,
   "sessions": [
     {
       "id": "scanner1757329307521",
@@ -14,16 +14,16 @@
       "dateTime": "2025-09-08T11:01:47.521Z",
       "formattedDateTime": "08/09/2025 14:01:47",
       "scans": [],
-      "inProgress": true,
+      "inProgress": false,
       "isScanner": true,
       "sessionType": "scanner",
-      "recoveryStatus": "in_progress",
+      "recoveryStatus": "interrupted",
       "isChecklist": false,
       "user_email": "272efcfda7bd3208e090f05a24198cc42a8b7c15230d58e6534a6eec0a74da5a",
-      "user_id": "272efcfda7bd3208e090f05a24198cc42a8b7c15230d58e6534a6eec0a74da5a_1757329341420",
+      "user_id": "272efcfda7bd3208e090f05a24198cc42a8b7c15230d58e6534a6eec0a74da5a_1757486575527",
       "created_by": "272efcfda7bd3208e090f05a24198cc42a8b7c15230d58e6534a6eec0a74da5a",
       "created_at": "2025-09-08T11:02:21.419Z",
-      "updated_at": "2025-09-08T11:02:21.419Z"
+      "updated_at": "2025-09-10T06:42:55.527Z"
     },
     {
       "id": "checklist1757329340833",
@@ -42,10 +42,38 @@
       "sessionType": "checklist",
       "recoveryStatus": "in_progress",
       "user_email": "272efcfda7bd3208e090f05a24198cc42a8b7c15230d58e6534a6eec0a74da5a",
-      "user_id": "272efcfda7bd3208e090f05a24198cc42a8b7c15230d58e6534a6eec0a74da5a_1757329341420",
+      "user_id": "272efcfda7bd3208e090f05a24198cc42a8b7c15230d58e6534a6eec0a74da5a_1757486575527",
       "created_by": "272efcfda7bd3208e090f05a24198cc42a8b7c15230d58e6534a6eec0a74da5a",
       "created_at": "2025-09-08T11:02:21.419Z",
-      "updated_at": "2025-09-08T11:02:21.419Z"
+      "updated_at": "2025-09-10T06:42:55.527Z"
+    },
+    {
+      "id": "scanner1757486563607",
+      "location": "Psychiatry",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-09-10T06:42:43.607Z",
+      "formattedDateTime": "10/09/2025 09:42:43",
+      "scans": [
+        {
+          "id": "1757486574632",
+          "content": "221203",
+          "timestamp": "2025-09-10T06:42:54.632Z",
+          "formattedTime": "09:42:54",
+          "time": "2025-09-10T06:42:54.632Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "272efcfda7bd3208e090f05a24198cc42a8b7c15230d58e6534a6eec0a74da5a",
+      "user_id": "272efcfda7bd3208e090f05a24198cc42a8b7c15230d58e6534a6eec0a74da5a_1757486575527",
+      "created_by": "272efcfda7bd3208e090f05a24198cc42a8b7c15230d58e6534a6eec0a74da5a",
+      "created_at": "2025-09-10T06:42:55.527Z",
+      "updated_at": "2025-09-10T06:42:55.527Z"
     }
   ]
 }
