@@ -1,10 +1,10 @@
 {
   "user_email": "backup@backdoor.com",
-  "user_id": "backup_backdoor_com_1757615684901",
-  "account_created": "2025-09-11T18:34:44.901Z",
-  "last_sync": "2025-09-11T18:34:44.901Z",
-  "total_sessions": 1,
-  "total_scans": 0,
+  "user_id": "backup_backdoor_com_1757615977641",
+  "account_created": "2025-09-11T18:39:37.641Z",
+  "last_sync": "2025-09-11T18:39:37.641Z",
+  "total_sessions": 2,
+  "total_scans": 1,
   "sessions": [
     {
       "id": "scanner1757615672468",
@@ -14,16 +14,45 @@
       "dateTime": "2025-09-11T18:34:32.468Z",
       "formattedDateTime": "11/09/2025 21:34:32",
       "scans": [],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "closed_normally",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "backup@backdoor.com",
+      "user_id": "backup_backdoor_com_1757615977641",
+      "created_by": "backup@backdoor.com",
+      "created_at": "2025-09-11T18:39:37.641Z",
+      "updated_at": "2025-09-11T18:39:37.641Z"
+    },
+    {
+      "id": "scanner1757615974324",
+      "location": "Anatomy",
+      "year": 1,
+      "batch": "2022/2023",
+      "dateTime": "2025-09-11T18:39:34.324Z",
+      "formattedDateTime": "11/09/2025 21:39:34",
+      "scans": [
+        {
+          "id": "1757615976909",
+          "content": "464596",
+          "timestamp": "2025-09-11T18:39:36.909Z",
+          "formattedTime": "21:39:36",
+          "time": "2025-09-11T18:39:36.909Z",
+          "isManual": true
+        }
+      ],
       "inProgress": true,
       "isScanner": true,
       "sessionType": "scanner",
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1757615684901",
+      "user_id": "backup_backdoor_com_1757615977641",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-09-11T18:34:44.901Z",
-      "updated_at": "2025-09-11T18:34:44.901Z"
+      "created_at": "2025-09-11T18:39:37.641Z",
+      "updated_at": "2025-09-11T18:39:37.641Z"
     }
   ]
 }
