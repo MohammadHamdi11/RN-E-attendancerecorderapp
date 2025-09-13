@@ -1,0 +1,51 @@
+{
+  "user_email": "6644c489854295b0ed9da3bfb9c9cc2afd597d3ae162ac467d86c93bb7c02214",
+  "user_id": "6644c489854295b0ed9da3bfb9c9cc2afd597d3ae162ac467d86c93bb7c02214_1757792285387",
+  "account_created": "2025-09-13T19:38:05.387Z",
+  "last_sync": "2025-09-13T19:38:05.387Z",
+  "total_sessions": 2,
+  "total_scans": 0,
+  "sessions": [
+    {
+      "id": "scanner1757788545275",
+      "location": "Microbiology",
+      "year": 3,
+      "batch": "2025/2026",
+      "dateTime": "2025-09-13T18:35:45.275Z",
+      "formattedDateTime": "13/09/2025 21:35:45",
+      "scans": [],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "6644c489854295b0ed9da3bfb9c9cc2afd597d3ae162ac467d86c93bb7c02214",
+      "user_id": "6644c489854295b0ed9da3bfb9c9cc2afd597d3ae162ac467d86c93bb7c02214_1757792285387",
+      "created_by": "6644c489854295b0ed9da3bfb9c9cc2afd597d3ae162ac467d86c93bb7c02214",
+      "created_at": "2025-09-13T19:38:05.387Z",
+      "updated_at": "2025-09-13T19:38:05.387Z"
+    },
+    {
+      "id": "checklist1757792284528",
+      "location": "Anatomy",
+      "year": 2,
+      "batch": "2025/2026",
+      "dateTime": "2025-09-13T19:38:04.528Z",
+      "formattedDateTime": "13/09/2025 22:38:04",
+      "scans": [],
+      "inProgress": true,
+      "isChecklist": true,
+      "filters": {
+        "year": "all",
+        "group": "all"
+      },
+      "sessionType": "checklist",
+      "recoveryStatus": "in_progress",
+      "user_email": "6644c489854295b0ed9da3bfb9c9cc2afd597d3ae162ac467d86c93bb7c02214",
+      "user_id": "6644c489854295b0ed9da3bfb9c9cc2afd597d3ae162ac467d86c93bb7c02214_1757792285387",
+      "created_by": "6644c489854295b0ed9da3bfb9c9cc2afd597d3ae162ac467d86c93bb7c02214",
+      "created_at": "2025-09-13T19:38:05.387Z",
+      "updated_at": "2025-09-13T19:38:05.387Z"
+    }
+  ]
+}
