@@ -1,10 +1,10 @@
 {
   "user_email": "backup@backdoor.com",
-  "user_id": "backup_backdoor_com_1757789783637",
-  "account_created": "2025-09-13T18:56:23.637Z",
-  "last_sync": "2025-09-13T18:56:23.637Z",
+  "user_id": "backup_backdoor_com_1757790133947",
+  "account_created": "2025-09-13T19:02:13.946Z",
+  "last_sync": "2025-09-13T19:02:13.946Z",
   "total_sessions": 2,
-  "total_scans": 7,
+  "total_scans": 6,
   "sessions": [
     {
       "id": "scanner1757788557334",
@@ -38,10 +38,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1757789783637",
+      "user_id": "backup_backdoor_com_1757790133947",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-09-13T18:56:23.637Z",
-      "updated_at": "2025-09-13T18:56:23.637Z"
+      "created_at": "2025-09-13T19:02:13.946Z",
+      "updated_at": "2025-09-13T19:02:13.946Z"
     },
     {
       "id": "checklist1757789488840",
@@ -82,29 +82,23 @@
           "formattedTime": "21:53:09",
           "time": "2025-09-13T18:53:09.685Z",
           "isManual": false
-        },
-        {
-          "id": "220936",
-          "content": "220936",
-          "timestamp": "2025-09-13T18:53:10.831Z",
-          "formattedTime": "21:53:10",
-          "time": "2025-09-13T18:53:10.831Z",
-          "isManual": false
         }
       ],
-      "inProgress": true,
+      "inProgress": false,
       "isChecklist": true,
       "filters": {
         "year": 4,
         "group": "PED-A1-3"
       },
       "sessionType": "checklist",
-      "recoveryStatus": "in_progress",
+      "recoveryStatus": "closed_normally",
+      "backedUp": true,
+      "backupTimestamp": "2025-09-13T18:56:33.977Z",
+      "updated_at": "2025-09-13T19:02:13.946Z",
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1757789783637",
+      "user_id": "backup_backdoor_com_1757790133947",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-09-13T18:56:23.637Z",
-      "updated_at": "2025-09-13T18:56:23.637Z"
+      "created_at": "2025-09-13T19:02:13.946Z"
     }
   ]
 }
