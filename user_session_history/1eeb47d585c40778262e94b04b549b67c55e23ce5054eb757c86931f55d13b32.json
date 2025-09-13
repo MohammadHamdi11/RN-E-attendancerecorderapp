@@ -1,9 +1,9 @@
 {
   "user_email": "backup@backdoor.com",
-  "user_id": "backup_backdoor_com_1757790133947",
-  "account_created": "2025-09-13T19:02:13.946Z",
-  "last_sync": "2025-09-13T19:02:13.946Z",
-  "total_sessions": 2,
+  "user_id": "backup_backdoor_com_1757792313578",
+  "account_created": "2025-09-13T19:38:33.577Z",
+  "last_sync": "2025-09-13T19:38:33.577Z",
+  "total_sessions": 3,
   "total_scans": 6,
   "sessions": [
     {
@@ -38,10 +38,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1757790133947",
+      "user_id": "backup_backdoor_com_1757792313578",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-09-13T19:02:13.946Z",
-      "updated_at": "2025-09-13T19:02:13.946Z"
+      "created_at": "2025-09-13T19:38:33.577Z",
+      "updated_at": "2025-09-13T19:38:33.577Z"
     },
     {
       "id": "checklist1757789488840",
@@ -94,11 +94,33 @@
       "recoveryStatus": "closed_normally",
       "backedUp": true,
       "backupTimestamp": "2025-09-13T18:56:33.977Z",
-      "updated_at": "2025-09-13T19:02:13.946Z",
+      "updated_at": "2025-09-13T19:38:33.577Z",
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1757790133947",
+      "user_id": "backup_backdoor_com_1757792313578",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-09-13T19:02:13.946Z"
+      "created_at": "2025-09-13T19:38:33.577Z"
+    },
+    {
+      "id": "checklist1757792312988",
+      "location": "Pediatrics",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-09-13T19:38:32.988Z",
+      "formattedDateTime": "13/09/2025 22:38:32",
+      "scans": [],
+      "inProgress": true,
+      "isChecklist": true,
+      "filters": {
+        "year": "all",
+        "group": "all"
+      },
+      "sessionType": "checklist",
+      "recoveryStatus": "in_progress",
+      "user_email": "backup@backdoor.com",
+      "user_id": "backup_backdoor_com_1757792313578",
+      "created_by": "backup@backdoor.com",
+      "created_at": "2025-09-13T19:38:33.577Z",
+      "updated_at": "2025-09-13T19:38:33.577Z"
     }
   ]
 }
