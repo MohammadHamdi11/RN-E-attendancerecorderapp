@@ -1,112 +1,18 @@
 {
   "user_email": "backup@backdoor.com",
-  "user_id": "backup_backdoor_com_1757792313578",
-  "account_created": "2025-09-13T19:38:33.577Z",
-  "last_sync": "2025-09-13T19:38:33.577Z",
-  "total_sessions": 3,
-  "total_scans": 6,
+  "user_id": "backup_backdoor_com_1758020116152",
+  "account_created": "2025-09-16T10:55:16.152Z",
+  "last_sync": "2025-09-16T10:55:16.152Z",
+  "total_sessions": 1,
+  "total_scans": 0,
   "sessions": [
     {
-      "id": "scanner1757788557334",
-      "location": "Pediatrics",
+      "id": "checklist1758020115618",
+      "location": "Biochemistry",
       "year": 4,
       "batch": "2025/2026",
-      "dateTime": "2025-09-13T18:35:57.334Z",
-      "formattedDateTime": "13/09/2025 21:35:57",
-      "scans": [
-        {
-          "id": "1757788725419",
-          "content": "231249",
-          "timestamp": "2025-09-13T18:38:45.417Z",
-          "formattedTime": "21:38:45",
-          "time": "2025-09-13T18:38:45.417Z",
-          "isManual": false
-        },
-        {
-          "id": "1757788796102",
-          "content": "123456",
-          "timestamp": "2025-09-13T18:39:56.101Z",
-          "formattedTime": "21:39:56",
-          "time": "2025-09-13T18:39:56.101Z",
-          "isManual": true
-        }
-      ],
-      "inProgress": true,
-      "isScanner": true,
-      "sessionType": "scanner",
-      "recoveryStatus": "in_progress",
-      "isChecklist": false,
-      "backedUp": true,
-      "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1757792313578",
-      "created_by": "backup@backdoor.com",
-      "created_at": "2025-09-13T19:38:33.577Z",
-      "updated_at": "2025-09-13T19:38:33.577Z"
-    },
-    {
-      "id": "checklist1757789488840",
-      "location": "Dermatology",
-      "year": 4,
-      "batch": "2025/2026",
-      "dateTime": "2025-09-13T18:51:28.840Z",
-      "formattedDateTime": "13/09/2025 21:51:28",
-      "scans": [
-        {
-          "id": "220642",
-          "content": "220642",
-          "timestamp": "2025-09-13T18:53:07.262Z",
-          "formattedTime": "21:53:07",
-          "time": "2025-09-13T18:53:07.262Z",
-          "isManual": false
-        },
-        {
-          "id": "220882",
-          "content": "220882",
-          "timestamp": "2025-09-13T18:53:08.377Z",
-          "formattedTime": "21:53:08",
-          "time": "2025-09-13T18:53:08.377Z",
-          "isManual": false
-        },
-        {
-          "id": "220884",
-          "content": "220884",
-          "timestamp": "2025-09-13T18:53:09.340Z",
-          "formattedTime": "21:53:09",
-          "time": "2025-09-13T18:53:09.340Z",
-          "isManual": false
-        },
-        {
-          "id": "220904",
-          "content": "220904",
-          "timestamp": "2025-09-13T18:53:09.685Z",
-          "formattedTime": "21:53:09",
-          "time": "2025-09-13T18:53:09.685Z",
-          "isManual": false
-        }
-      ],
-      "inProgress": false,
-      "isChecklist": true,
-      "filters": {
-        "year": 4,
-        "group": "PED-A1-3"
-      },
-      "sessionType": "checklist",
-      "recoveryStatus": "closed_normally",
-      "backedUp": true,
-      "backupTimestamp": "2025-09-13T18:56:33.977Z",
-      "updated_at": "2025-09-13T19:38:33.577Z",
-      "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1757792313578",
-      "created_by": "backup@backdoor.com",
-      "created_at": "2025-09-13T19:38:33.577Z"
-    },
-    {
-      "id": "checklist1757792312988",
-      "location": "Pediatrics",
-      "year": 4,
-      "batch": "2025/2026",
-      "dateTime": "2025-09-13T19:38:32.988Z",
-      "formattedDateTime": "13/09/2025 22:38:32",
+      "dateTime": "2025-09-16T10:55:15.618Z",
+      "formattedDateTime": "16/09/2025 13:55:15",
       "scans": [],
       "inProgress": true,
       "isChecklist": true,
@@ -117,10 +23,10 @@
       "sessionType": "checklist",
       "recoveryStatus": "in_progress",
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1757792313578",
+      "user_id": "backup_backdoor_com_1758020116152",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-09-13T19:38:33.577Z",
-      "updated_at": "2025-09-13T19:38:33.577Z"
+      "created_at": "2025-09-16T10:55:16.152Z",
+      "updated_at": "2025-09-16T10:55:16.152Z"
     }
   ]
 }
