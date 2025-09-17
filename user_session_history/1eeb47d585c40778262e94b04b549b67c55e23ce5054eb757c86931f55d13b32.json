@@ -1,10 +1,10 @@
 {
   "user_email": "backup@backdoor.com",
-  "user_id": "backup_backdoor_com_1758105777716",
-  "account_created": "2025-09-17T10:42:57.716Z",
-  "last_sync": "2025-09-17T10:42:57.716Z",
+  "user_id": "backup_backdoor_com_1758105891607",
+  "account_created": "2025-09-17T10:44:51.607Z",
+  "last_sync": "2025-09-17T10:44:51.607Z",
   "total_sessions": 2,
-  "total_scans": 27,
+  "total_scans": 30,
   "sessions": [
     {
       "id": "checklist1758020115618",
@@ -24,10 +24,10 @@
       "recoveryStatus": "closed_normally",
       "backedUp": true,
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1758105777716",
+      "user_id": "backup_backdoor_com_1758105891608",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-09-17T10:42:57.716Z",
-      "updated_at": "2025-09-17T10:42:57.716Z"
+      "created_at": "2025-09-17T10:44:51.607Z",
+      "updated_at": "2025-09-17T10:44:51.607Z"
     },
     {
       "id": "checklist1758105464464",
@@ -252,21 +252,45 @@
           "formattedTime": "13:42:57",
           "time": "2025-09-17T10:42:57.187Z",
           "isManual": false
+        },
+        {
+          "id": "200228",
+          "content": "200228",
+          "timestamp": "2025-09-17T10:43:01.105Z",
+          "formattedTime": "13:43:01",
+          "time": "2025-09-17T10:43:01.105Z",
+          "isManual": false
+        },
+        {
+          "id": "191480",
+          "content": "191480",
+          "timestamp": "2025-09-17T10:43:45.564Z",
+          "formattedTime": "13:43:45",
+          "time": "2025-09-17T10:43:45.564Z",
+          "isManual": false
+        },
+        {
+          "id": "191375",
+          "content": "191375",
+          "timestamp": "2025-09-17T10:43:54.767Z",
+          "formattedTime": "13:43:54",
+          "time": "2025-09-17T10:43:54.767Z",
+          "isManual": false
         }
       ],
       "inProgress": true,
       "isChecklist": true,
       "filters": {
         "year": 4,
-        "group": "B2A"
+        "group": "B2B"
       },
       "sessionType": "checklist",
       "recoveryStatus": "in_progress",
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1758105777716",
+      "user_id": "backup_backdoor_com_1758105891608",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-09-17T10:42:57.716Z",
-      "updated_at": "2025-09-17T10:42:57.716Z"
+      "created_at": "2025-09-17T10:44:51.607Z",
+      "updated_at": "2025-09-17T10:44:51.607Z"
     }
   ]
 }
