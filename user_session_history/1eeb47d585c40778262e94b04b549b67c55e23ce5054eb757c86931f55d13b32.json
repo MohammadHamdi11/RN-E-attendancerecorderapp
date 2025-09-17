@@ -1,10 +1,10 @@
 {
   "user_email": "backup@backdoor.com",
-  "user_id": "backup_backdoor_com_1758106846339",
-  "account_created": "2025-09-17T11:00:46.339Z",
-  "last_sync": "2025-09-17T11:00:46.339Z",
-  "total_sessions": 3,
-  "total_scans": 138,
+  "user_id": "backup_backdoor_com_1758106969930",
+  "account_created": "2025-09-17T11:02:49.930Z",
+  "last_sync": "2025-09-17T11:02:49.930Z",
+  "total_sessions": 4,
+  "total_scans": 141,
   "sessions": [
     {
       "id": "checklist1758020115618",
@@ -24,10 +24,10 @@
       "recoveryStatus": "closed_normally",
       "backedUp": true,
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1758106846339",
+      "user_id": "backup_backdoor_com_1758106969931",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-09-17T11:00:46.339Z",
-      "updated_at": "2025-09-17T11:00:46.339Z"
+      "created_at": "2025-09-17T11:02:49.930Z",
+      "updated_at": "2025-09-17T11:02:49.930Z"
     },
     {
       "id": "checklist1758105464464",
@@ -593,10 +593,10 @@
       "backedUp": true,
       "backupTimestamp": "2025-09-17T10:51:43.300Z",
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1758106846339",
+      "user_id": "backup_backdoor_com_1758106969931",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-09-17T11:00:46.339Z",
-      "updated_at": "2025-09-17T11:00:46.339Z"
+      "created_at": "2025-09-17T11:02:49.930Z",
+      "updated_at": "2025-09-17T11:02:49.930Z"
     },
     {
       "id": "checklist1758106406277",
@@ -1165,21 +1165,69 @@
           "formattedTime": "14:00:45",
           "time": "2025-09-17T11:00:45.726Z",
           "isManual": false
+        },
+        {
+          "id": "201840",
+          "content": "201840",
+          "timestamp": "2025-09-17T11:00:51.311Z",
+          "formattedTime": "14:00:51",
+          "time": "2025-09-17T11:00:51.311Z",
+          "isManual": false
+        },
+        {
+          "id": "211217",
+          "content": "211217",
+          "timestamp": "2025-09-17T11:00:55.448Z",
+          "formattedTime": "14:00:55",
+          "time": "2025-09-17T11:00:55.448Z",
+          "isManual": false
+        },
+        {
+          "id": "211713",
+          "content": "211713",
+          "timestamp": "2025-09-17T11:01:07.418Z",
+          "formattedTime": "14:01:07",
+          "time": "2025-09-17T11:01:07.418Z",
+          "isManual": false
         }
       ],
-      "inProgress": true,
+      "inProgress": false,
       "isChecklist": true,
       "filters": {
         "year": 4,
-        "group": "B2C"
+        "group": "B2D"
+      },
+      "sessionType": "checklist",
+      "recoveryStatus": "closed_normally",
+      "backedUp": true,
+      "backupTimestamp": "2025-09-17T11:01:16.627Z",
+      "user_email": "backup@backdoor.com",
+      "user_id": "backup_backdoor_com_1758106969931",
+      "created_by": "backup@backdoor.com",
+      "created_at": "2025-09-17T11:02:49.930Z",
+      "updated_at": "2025-09-17T11:02:49.930Z"
+    },
+    {
+      "id": "checklist1758106968695",
+      "location": "General Surgery",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-09-17T11:02:48.695Z",
+      "formattedDateTime": "17/09/2025 14:02:48",
+      "scans": [],
+      "inProgress": true,
+      "isChecklist": true,
+      "filters": {
+        "year": "all",
+        "group": "all"
       },
       "sessionType": "checklist",
       "recoveryStatus": "in_progress",
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1758106846339",
+      "user_id": "backup_backdoor_com_1758106969931",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-09-17T11:00:46.339Z",
-      "updated_at": "2025-09-17T11:00:46.339Z"
+      "created_at": "2025-09-17T11:02:49.930Z",
+      "updated_at": "2025-09-17T11:02:49.930Z"
     }
   ]
 }
