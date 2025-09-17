@@ -846,7 +846,8 @@ class AutomatedAttendanceProcessor:
                 min_sessions_needed = max(
                     required_sessions - total_attended, 0)
 
-                if group_completed + group_sessions_left >= total_required_sessions:
+                # Consider the module finished only when there are truly no sessions left
+                if group_sessions_left == 0:
                     if total_attended >= required_sessions:
                         status, color = "Pass", COLOR_PASS
                     else:
