@@ -1,10 +1,10 @@
 {
   "user_email": "backup@backdoor.com",
-  "user_id": "backup_backdoor_com_1758105952702",
-  "account_created": "2025-09-17T10:45:52.702Z",
-  "last_sync": "2025-09-17T10:45:52.702Z",
+  "user_id": "backup_backdoor_com_1758106016098",
+  "account_created": "2025-09-17T10:46:56.098Z",
+  "last_sync": "2025-09-17T10:46:56.098Z",
   "total_sessions": 2,
-  "total_scans": 36,
+  "total_scans": 37,
   "sessions": [
     {
       "id": "checklist1758020115618",
@@ -24,10 +24,10 @@
       "recoveryStatus": "closed_normally",
       "backedUp": true,
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1758105952702",
+      "user_id": "backup_backdoor_com_1758106016098",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-09-17T10:45:52.702Z",
-      "updated_at": "2025-09-17T10:45:52.702Z"
+      "created_at": "2025-09-17T10:46:56.098Z",
+      "updated_at": "2025-09-17T10:46:56.098Z"
     },
     {
       "id": "checklist1758105464464",
@@ -324,21 +324,29 @@
           "formattedTime": "13:45:38",
           "time": "2025-09-17T10:45:38.940Z",
           "isManual": false
+        },
+        {
+          "id": "201059",
+          "content": "201059",
+          "timestamp": "2025-09-17T10:46:54.866Z",
+          "formattedTime": "13:46:54",
+          "time": "2025-09-17T10:46:54.866Z",
+          "isManual": true
         }
       ],
       "inProgress": true,
       "isChecklist": true,
       "filters": {
         "year": 4,
-        "group": "B2C"
+        "group": "B2F"
       },
       "sessionType": "checklist",
       "recoveryStatus": "in_progress",
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1758105952702",
+      "user_id": "backup_backdoor_com_1758106016098",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-09-17T10:45:52.702Z",
-      "updated_at": "2025-09-17T10:45:52.702Z"
+      "created_at": "2025-09-17T10:46:56.098Z",
+      "updated_at": "2025-09-17T10:46:56.098Z"
     }
   ]
 }
