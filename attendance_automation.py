@@ -293,7 +293,7 @@ class AutomatedAttendanceProcessor:
                 student_map[student_id] = {
                     "name": row[1],
                     "year": row[2],
-                    "group": row[3],
+                    "group": str(row[3]).upper() if row[3] else "",
                     "email": email
                 }
         return student_map
