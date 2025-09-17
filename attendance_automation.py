@@ -400,6 +400,10 @@ class AutomatedAttendanceProcessor:
         for row in session_schedule:
             if len(row) >= 7:  # Ensure we have year, group, subject, session_num, date, time, duration
                 year, group, subject, session_num, date, start_time, duration = row[:7]
+                
+                # CONVERT TO UPPERCASE FOR CASE-INSENSITIVE MATCHING
+                group = str(group).upper() if group else ""
+                subject = str(subject).upper() if subject else ""
                 key = f"{year}-{group}"
                 
                 if key not in sessions_by_group:
@@ -436,8 +440,12 @@ class AutomatedAttendanceProcessor:
         for row in session_schedule:
             if len(row) >= 4:  # Ensure we have at least year, group, subject, session_num
                 year, group, subject, session_num = row[:4]  # Note: Now subject is in column 3 
-                key = f"{year}-{group}"
-            
+
+                # CONVERT TO UPPERCASE FOR CASE-INSENSITIVE MATCHING
+                group = str(group).upper() if group else ""                
+                subject = str(subject).upper() if subject else ""
+                key = f"{year}-{group}"            
+
                 # Initialize dictionaries if they don't exist
                 if key not in required_attendance:
                     required_attendance[key] = {}
@@ -1185,8 +1193,12 @@ class AutomatedAttendanceProcessor:
         for session in sessions:
             if len(session) >= 7:  # Ensure we have all needed fields including duration
                 year, group, subject, session_num, date, start_time, duration = session[:7]  # Adjusted indices
-                key = f"{year}-{group}"
-                
+
+                # CONVERT TO UPPERCASE FOR CASE-INSENSITIVE MATCHING
+                group = str(group).upper() if group else ""                
+                subject = str(subject).upper() if subject else ""
+                key = f"{year}-{group}"         
+
                 if key == group_key:
                     session_datetime = self.parse_datetime(date, start_time)
                     if not session_datetime:
@@ -1292,8 +1304,12 @@ class AutomatedAttendanceProcessor:
         for row in session_schedule:
             if len(row) >= 7:  # Ensure we have all needed fields including duration
                 year, group, subject, session_num, date, start_time, duration = row[:7]  # Adjusted indices
-                key = f"{year}-{group}"
-                
+
+                # CONVERT TO UPPERCASE FOR CASE-INSENSITIVE MATCHING
+                group = str(group).upper() if group else ""                
+                subject = str(subject).upper() if subject else ""
+                key = f"{year}-{group}"       
+                         
                 session_datetime = self.parse_datetime(date, start_time)
                 if not session_datetime:
                     continue
@@ -1327,6 +1343,8 @@ class AutomatedAttendanceProcessor:
             if len(row) >= 4:
                 student_id, location, date, time = row[:4]
                 student_id = str(student_id)
+                # CONVERT LOCATION TO UPPERCASE FOR CASE-INSENSITIVE MATCHING
+                location = str(location).upper() if location else ""
     
                 if student_id in student_map:
                     student = student_map[student_id]
