@@ -1,10 +1,10 @@
 {
   "user_email": "backup@backdoor.com",
-  "user_id": "backup_backdoor_com_1758106969930",
-  "account_created": "2025-09-17T11:02:49.930Z",
-  "last_sync": "2025-09-17T11:02:49.930Z",
+  "user_id": "backup_backdoor_com_1758107051072",
+  "account_created": "2025-09-17T11:04:11.072Z",
+  "last_sync": "2025-09-17T11:04:11.072Z",
   "total_sessions": 4,
-  "total_scans": 141,
+  "total_scans": 147,
   "sessions": [
     {
       "id": "checklist1758020115618",
@@ -24,10 +24,10 @@
       "recoveryStatus": "closed_normally",
       "backedUp": true,
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1758106969931",
+      "user_id": "backup_backdoor_com_1758107051072",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-09-17T11:02:49.930Z",
-      "updated_at": "2025-09-17T11:02:49.930Z"
+      "created_at": "2025-09-17T11:04:11.072Z",
+      "updated_at": "2025-09-17T11:04:11.072Z"
     },
     {
       "id": "checklist1758105464464",
@@ -593,10 +593,10 @@
       "backedUp": true,
       "backupTimestamp": "2025-09-17T10:51:43.300Z",
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1758106969931",
+      "user_id": "backup_backdoor_com_1758107051072",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-09-17T11:02:49.930Z",
-      "updated_at": "2025-09-17T11:02:49.930Z"
+      "created_at": "2025-09-17T11:04:11.072Z",
+      "updated_at": "2025-09-17T11:04:11.072Z"
     },
     {
       "id": "checklist1758106406277",
@@ -1202,10 +1202,10 @@
       "backedUp": true,
       "backupTimestamp": "2025-09-17T11:01:16.627Z",
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1758106969931",
+      "user_id": "backup_backdoor_com_1758107051072",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-09-17T11:02:49.930Z",
-      "updated_at": "2025-09-17T11:02:49.930Z"
+      "created_at": "2025-09-17T11:04:11.072Z",
+      "updated_at": "2025-09-17T11:04:11.072Z"
     },
     {
       "id": "checklist1758106968695",
@@ -1214,20 +1214,69 @@
       "batch": "2025/2026",
       "dateTime": "2025-09-17T11:02:48.695Z",
       "formattedDateTime": "17/09/2025 14:02:48",
-      "scans": [],
+      "scans": [
+        {
+          "id": "211553",
+          "content": "211553",
+          "timestamp": "2025-09-17T11:03:15.069Z",
+          "formattedTime": "14:03:15",
+          "time": "2025-09-17T11:03:15.069Z",
+          "isManual": true
+        },
+        {
+          "id": "211399",
+          "content": "211399",
+          "timestamp": "2025-09-17T11:03:21.062Z",
+          "formattedTime": "14:03:21",
+          "time": "2025-09-17T11:03:21.062Z",
+          "isManual": false
+        },
+        {
+          "id": "211662",
+          "content": "211662",
+          "timestamp": "2025-09-17T11:03:24.277Z",
+          "formattedTime": "14:03:24",
+          "time": "2025-09-17T11:03:24.277Z",
+          "isManual": false
+        },
+        {
+          "id": "211710",
+          "content": "211710",
+          "timestamp": "2025-09-17T11:03:28.228Z",
+          "formattedTime": "14:03:28",
+          "time": "2025-09-17T11:03:28.228Z",
+          "isManual": false
+        },
+        {
+          "id": "211725",
+          "content": "211725",
+          "timestamp": "2025-09-17T11:03:41.582Z",
+          "formattedTime": "14:03:41",
+          "time": "2025-09-17T11:03:41.582Z",
+          "isManual": false
+        },
+        {
+          "id": "211635",
+          "content": "211635",
+          "timestamp": "2025-09-17T11:04:10.634Z",
+          "formattedTime": "14:04:10",
+          "time": "2025-09-17T11:04:10.634Z",
+          "isManual": false
+        }
+      ],
       "inProgress": true,
       "isChecklist": true,
       "filters": {
-        "year": "all",
-        "group": "all"
+        "year": 4,
+        "group": "B2D"
       },
       "sessionType": "checklist",
       "recoveryStatus": "in_progress",
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1758106969931",
+      "user_id": "backup_backdoor_com_1758107051072",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-09-17T11:02:49.930Z",
-      "updated_at": "2025-09-17T11:02:49.930Z"
+      "created_at": "2025-09-17T11:04:11.072Z",
+      "updated_at": "2025-09-17T11:04:11.072Z"
     }
   ]
 }
