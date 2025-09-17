@@ -1,10 +1,10 @@
 {
   "user_email": "412de898fa38de7e284b58047ef9f3c3397f8d8f5931e4595a3fdbe4844ec332",
-  "user_id": "412de898fa38de7e284b58047ef9f3c3397f8d8f5931e4595a3fdbe4844ec332_1758100893149",
-  "account_created": "2025-09-17T09:21:33.149Z",
-  "last_sync": "2025-09-17T09:21:33.149Z",
-  "total_sessions": 3,
-  "total_scans": 80,
+  "user_id": "412de898fa38de7e284b58047ef9f3c3397f8d8f5931e4595a3fdbe4844ec332_1758104151865",
+  "account_created": "2025-09-17T10:15:51.865Z",
+  "last_sync": "2025-09-17T10:15:51.865Z",
+  "total_sessions": 5,
+  "total_scans": 81,
   "sessions": [
     {
       "id": "scanner1758021164113",
@@ -30,10 +30,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "412de898fa38de7e284b58047ef9f3c3397f8d8f5931e4595a3fdbe4844ec332",
-      "user_id": "412de898fa38de7e284b58047ef9f3c3397f8d8f5931e4595a3fdbe4844ec332_1758100893149",
+      "user_id": "412de898fa38de7e284b58047ef9f3c3397f8d8f5931e4595a3fdbe4844ec332_1758104151865",
       "created_by": "412de898fa38de7e284b58047ef9f3c3397f8d8f5931e4595a3fdbe4844ec332",
-      "created_at": "2025-09-17T09:21:33.149Z",
-      "updated_at": "2025-09-17T09:21:33.149Z"
+      "created_at": "2025-09-17T10:15:51.865Z",
+      "updated_at": "2025-09-17T10:15:51.865Z"
     },
     {
       "id": "scanner1758097007622",
@@ -675,10 +675,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "412de898fa38de7e284b58047ef9f3c3397f8d8f5931e4595a3fdbe4844ec332",
-      "user_id": "412de898fa38de7e284b58047ef9f3c3397f8d8f5931e4595a3fdbe4844ec332_1758100893149",
+      "user_id": "412de898fa38de7e284b58047ef9f3c3397f8d8f5931e4595a3fdbe4844ec332_1758104151865",
       "created_by": "412de898fa38de7e284b58047ef9f3c3397f8d8f5931e4595a3fdbe4844ec332",
-      "created_at": "2025-09-17T09:21:33.149Z",
-      "updated_at": "2025-09-17T09:21:33.149Z"
+      "created_at": "2025-09-17T10:15:51.865Z",
+      "updated_at": "2025-09-17T10:15:51.865Z"
     },
     {
       "id": "scanner1758100773168",
@@ -704,10 +704,60 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "412de898fa38de7e284b58047ef9f3c3397f8d8f5931e4595a3fdbe4844ec332",
-      "user_id": "412de898fa38de7e284b58047ef9f3c3397f8d8f5931e4595a3fdbe4844ec332_1758100893149",
+      "user_id": "412de898fa38de7e284b58047ef9f3c3397f8d8f5931e4595a3fdbe4844ec332_1758104151866",
       "created_by": "412de898fa38de7e284b58047ef9f3c3397f8d8f5931e4595a3fdbe4844ec332",
-      "created_at": "2025-09-17T09:21:33.149Z",
-      "updated_at": "2025-09-17T09:21:33.149Z"
+      "created_at": "2025-09-17T10:15:51.865Z",
+      "updated_at": "2025-09-17T10:15:51.865Z"
+    },
+    {
+      "id": "scanner1758100908635",
+      "location": "Histology",
+      "year": 3,
+      "batch": "2024/2025",
+      "dateTime": "2025-09-17T09:21:48.635Z",
+      "formattedDateTime": "17/09/2025 12:21:48",
+      "scans": [
+        {
+          "id": "1758100913565",
+          "content": "555555",
+          "timestamp": "2025-09-17T09:21:53.556Z",
+          "formattedTime": "12:21:53",
+          "time": "2025-09-17T09:21:53.556Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "412de898fa38de7e284b58047ef9f3c3397f8d8f5931e4595a3fdbe4844ec332",
+      "user_id": "412de898fa38de7e284b58047ef9f3c3397f8d8f5931e4595a3fdbe4844ec332_1758104151866",
+      "created_by": "412de898fa38de7e284b58047ef9f3c3397f8d8f5931e4595a3fdbe4844ec332",
+      "created_at": "2025-09-17T10:15:51.865Z",
+      "updated_at": "2025-09-17T10:15:51.865Z"
+    },
+    {
+      "id": "checklist1758104150727",
+      "location": "General Surgery",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-09-17T10:15:50.727Z",
+      "formattedDateTime": "17/09/2025 13:15:50",
+      "scans": [],
+      "inProgress": true,
+      "isChecklist": true,
+      "filters": {
+        "year": "all",
+        "group": "all"
+      },
+      "sessionType": "checklist",
+      "recoveryStatus": "in_progress",
+      "user_email": "412de898fa38de7e284b58047ef9f3c3397f8d8f5931e4595a3fdbe4844ec332",
+      "user_id": "412de898fa38de7e284b58047ef9f3c3397f8d8f5931e4595a3fdbe4844ec332_1758104151866",
+      "created_by": "412de898fa38de7e284b58047ef9f3c3397f8d8f5931e4595a3fdbe4844ec332",
+      "created_at": "2025-09-17T10:15:51.865Z",
+      "updated_at": "2025-09-17T10:15:51.865Z"
     }
   ]
 }
