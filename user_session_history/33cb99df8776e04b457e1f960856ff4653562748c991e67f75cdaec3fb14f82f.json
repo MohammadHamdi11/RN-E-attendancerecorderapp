@@ -1,0 +1,77 @@
+{
+  "user_email": "3ff15c73a2d1efe6a602566fb9a1e4afdb355d21408d74ab71983e8561e56a9b",
+  "user_id": "3ff15c73a2d1efe6a602566fb9a1e4afdb355d21408d74ab71983e8561e56a9b_1758176204649",
+  "account_created": "2025-09-18T06:16:44.649Z",
+  "last_sync": "2025-09-18T06:16:44.649Z",
+  "total_sessions": 3,
+  "total_scans": 1,
+  "sessions": [
+    {
+      "id": "scanner1758093219148",
+      "location": "Clin.patho",
+      "year": 4,
+      "batch": "2024/2025",
+      "dateTime": "2025-09-17T07:13:39.148Z",
+      "formattedDateTime": "17/09/2025 10:13:39",
+      "scans": [],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "closed_normally",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "3ff15c73a2d1efe6a602566fb9a1e4afdb355d21408d74ab71983e8561e56a9b",
+      "user_id": "3ff15c73a2d1efe6a602566fb9a1e4afdb355d21408d74ab71983e8561e56a9b_1758176204649",
+      "created_by": "3ff15c73a2d1efe6a602566fb9a1e4afdb355d21408d74ab71983e8561e56a9b",
+      "created_at": "2025-09-18T06:16:44.649Z",
+      "updated_at": "2025-09-18T06:16:44.649Z"
+    },
+    {
+      "id": "scanner1758096489011",
+      "location": "Clin.patho",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-09-17T08:08:09.011Z",
+      "formattedDateTime": "17/09/2025 11:08:09",
+      "scans": [],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "interrupted",
+      "isChecklist": false,
+      "user_email": "3ff15c73a2d1efe6a602566fb9a1e4afdb355d21408d74ab71983e8561e56a9b",
+      "user_id": "3ff15c73a2d1efe6a602566fb9a1e4afdb355d21408d74ab71983e8561e56a9b_1758176204649",
+      "created_by": "3ff15c73a2d1efe6a602566fb9a1e4afdb355d21408d74ab71983e8561e56a9b",
+      "created_at": "2025-09-18T06:16:44.649Z",
+      "updated_at": "2025-09-18T06:16:44.649Z"
+    },
+    {
+      "id": "scanner1758176175461",
+      "location": "Clin.patho",
+      "year": 4,
+      "batch": "2024/2025",
+      "dateTime": "2025-09-18T06:16:15.461Z",
+      "formattedDateTime": "18/09/2025 09:16:15",
+      "scans": [
+        {
+          "id": "1758176203811",
+          "content": "221301",
+          "timestamp": "2025-09-18T06:16:43.806Z",
+          "formattedTime": "09:16:43",
+          "time": "2025-09-18T06:16:43.806Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "3ff15c73a2d1efe6a602566fb9a1e4afdb355d21408d74ab71983e8561e56a9b",
+      "user_id": "3ff15c73a2d1efe6a602566fb9a1e4afdb355d21408d74ab71983e8561e56a9b_1758176204649",
+      "created_by": "3ff15c73a2d1efe6a602566fb9a1e4afdb355d21408d74ab71983e8561e56a9b",
+      "created_at": "2025-09-18T06:16:44.649Z",
+      "updated_at": "2025-09-18T06:16:44.649Z"
+    }
+  ]
+}
