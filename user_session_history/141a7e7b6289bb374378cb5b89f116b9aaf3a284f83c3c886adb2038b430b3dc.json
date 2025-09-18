@@ -1,0 +1,57 @@
+{
+  "user_email": "08d8a653bec8cea6d369ec91345a0700ef109c09ff74e4a7475d684083459158",
+  "user_id": "08d8a653bec8cea6d369ec91345a0700ef109c09ff74e4a7475d684083459158_1758231610657",
+  "account_created": "2025-09-18T21:40:10.657Z",
+  "last_sync": "2025-09-18T21:40:10.657Z",
+  "total_sessions": 2,
+  "total_scans": 1,
+  "sessions": [
+    {
+      "id": "scanner1757325825541",
+      "location": "Clinical",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-09-08T10:03:45.541Z",
+      "formattedDateTime": "08/09/2025 13:03:45",
+      "scans": [],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "interrupted",
+      "isChecklist": false,
+      "user_email": "08d8a653bec8cea6d369ec91345a0700ef109c09ff74e4a7475d684083459158",
+      "user_id": "08d8a653bec8cea6d369ec91345a0700ef109c09ff74e4a7475d684083459158_1758231610657",
+      "created_by": "08d8a653bec8cea6d369ec91345a0700ef109c09ff74e4a7475d684083459158",
+      "created_at": "2025-09-18T21:40:10.657Z",
+      "updated_at": "2025-09-18T21:40:10.657Z"
+    },
+    {
+      "id": "scanner1758231508092",
+      "location": "Cardiology",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-09-18T21:38:28.092Z",
+      "formattedDateTime": "19/09/2025 00:38:28",
+      "scans": [
+        {
+          "id": "1758231609911",
+          "content": "221694",
+          "timestamp": "2025-09-18T21:40:09.911Z",
+          "formattedTime": "00:40:09",
+          "time": "2025-09-18T21:40:09.911Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "08d8a653bec8cea6d369ec91345a0700ef109c09ff74e4a7475d684083459158",
+      "user_id": "08d8a653bec8cea6d369ec91345a0700ef109c09ff74e4a7475d684083459158_1758231610657",
+      "created_by": "08d8a653bec8cea6d369ec91345a0700ef109c09ff74e4a7475d684083459158",
+      "created_at": "2025-09-18T21:40:10.657Z",
+      "updated_at": "2025-09-18T21:40:10.657Z"
+    }
+  ]
+}
