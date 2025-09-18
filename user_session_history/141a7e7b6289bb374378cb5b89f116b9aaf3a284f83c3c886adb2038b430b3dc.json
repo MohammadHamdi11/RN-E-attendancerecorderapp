@@ -1,9 +1,9 @@
 {
   "user_email": "08d8a653bec8cea6d369ec91345a0700ef109c09ff74e4a7475d684083459158",
-  "user_id": "08d8a653bec8cea6d369ec91345a0700ef109c09ff74e4a7475d684083459158_1758232148601",
-  "account_created": "2025-09-18T21:49:08.601Z",
-  "last_sync": "2025-09-18T21:49:08.601Z",
-  "total_sessions": 2,
+  "user_id": "08d8a653bec8cea6d369ec91345a0700ef109c09ff74e4a7475d684083459158_1758232313564",
+  "account_created": "2025-09-18T21:51:53.564Z",
+  "last_sync": "2025-09-18T21:51:53.564Z",
+  "total_sessions": 3,
   "total_scans": 52,
   "sessions": [
     {
@@ -20,10 +20,10 @@
       "recoveryStatus": "interrupted",
       "isChecklist": false,
       "user_email": "08d8a653bec8cea6d369ec91345a0700ef109c09ff74e4a7475d684083459158",
-      "user_id": "08d8a653bec8cea6d369ec91345a0700ef109c09ff74e4a7475d684083459158_1758232148601",
+      "user_id": "08d8a653bec8cea6d369ec91345a0700ef109c09ff74e4a7475d684083459158_1758232313564",
       "created_by": "08d8a653bec8cea6d369ec91345a0700ef109c09ff74e4a7475d684083459158",
-      "created_at": "2025-09-18T21:49:08.601Z",
-      "updated_at": "2025-09-18T21:49:08.601Z"
+      "created_at": "2025-09-18T21:51:53.564Z",
+      "updated_at": "2025-09-18T21:51:53.564Z"
     },
     {
       "id": "scanner1758231508092",
@@ -457,10 +457,32 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "08d8a653bec8cea6d369ec91345a0700ef109c09ff74e4a7475d684083459158",
-      "user_id": "08d8a653bec8cea6d369ec91345a0700ef109c09ff74e4a7475d684083459158_1758232148601",
+      "user_id": "08d8a653bec8cea6d369ec91345a0700ef109c09ff74e4a7475d684083459158_1758232313564",
       "created_by": "08d8a653bec8cea6d369ec91345a0700ef109c09ff74e4a7475d684083459158",
-      "created_at": "2025-09-18T21:49:08.601Z",
-      "updated_at": "2025-09-18T21:49:08.601Z"
+      "created_at": "2025-09-18T21:51:53.564Z",
+      "updated_at": "2025-09-18T21:51:53.564Z"
+    },
+    {
+      "id": "checklist1758232313172",
+      "location": "Cardiology",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-09-18T21:51:53.172Z",
+      "formattedDateTime": "19/09/2025 00:51:53",
+      "scans": [],
+      "inProgress": true,
+      "isChecklist": true,
+      "filters": {
+        "year": "all",
+        "group": "all"
+      },
+      "sessionType": "checklist",
+      "recoveryStatus": "in_progress",
+      "user_email": "08d8a653bec8cea6d369ec91345a0700ef109c09ff74e4a7475d684083459158",
+      "user_id": "08d8a653bec8cea6d369ec91345a0700ef109c09ff74e4a7475d684083459158_1758232313564",
+      "created_by": "08d8a653bec8cea6d369ec91345a0700ef109c09ff74e4a7475d684083459158",
+      "created_at": "2025-09-18T21:51:53.564Z",
+      "updated_at": "2025-09-18T21:51:53.564Z"
     }
   ]
 }
