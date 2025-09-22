@@ -1,10 +1,10 @@
 {
   "user_email": "54b2b1006b82f4d4c7920634089fdf7acd2751234b27c077bba4b761f4b62b53",
-  "user_id": "54b2b1006b82f4d4c7920634089fdf7acd2751234b27c077bba4b761f4b62b53_1758521469346",
-  "account_created": "2025-09-22T06:11:09.346Z",
-  "last_sync": "2025-09-22T06:11:09.346Z",
-  "total_sessions": 2,
-  "total_scans": 1,
+  "user_id": "54b2b1006b82f4d4c7920634089fdf7acd2751234b27c077bba4b761f4b62b53_1758532246366",
+  "account_created": "2025-09-22T09:10:46.366Z",
+  "last_sync": "2025-09-22T09:10:46.366Z",
+  "total_sessions": 3,
+  "total_scans": 2,
   "sessions": [
     {
       "id": "scanner1758517945261",
@@ -20,10 +20,10 @@
       "recoveryStatus": "interrupted",
       "isChecklist": false,
       "user_email": "54b2b1006b82f4d4c7920634089fdf7acd2751234b27c077bba4b761f4b62b53",
-      "user_id": "54b2b1006b82f4d4c7920634089fdf7acd2751234b27c077bba4b761f4b62b53_1758521469346",
+      "user_id": "54b2b1006b82f4d4c7920634089fdf7acd2751234b27c077bba4b761f4b62b53_1758532246366",
       "created_by": "54b2b1006b82f4d4c7920634089fdf7acd2751234b27c077bba4b761f4b62b53",
-      "created_at": "2025-09-22T06:11:09.346Z",
-      "updated_at": "2025-09-22T06:11:09.346Z"
+      "created_at": "2025-09-22T09:10:46.366Z",
+      "updated_at": "2025-09-22T09:10:46.366Z"
     },
     {
       "id": "scanner1758521148959",
@@ -47,11 +47,40 @@
       "sessionType": "scanner",
       "recoveryStatus": "in_progress",
       "isChecklist": false,
+      "backedUp": true,
       "user_email": "54b2b1006b82f4d4c7920634089fdf7acd2751234b27c077bba4b761f4b62b53",
-      "user_id": "54b2b1006b82f4d4c7920634089fdf7acd2751234b27c077bba4b761f4b62b53_1758521469346",
+      "user_id": "54b2b1006b82f4d4c7920634089fdf7acd2751234b27c077bba4b761f4b62b53_1758532246366",
       "created_by": "54b2b1006b82f4d4c7920634089fdf7acd2751234b27c077bba4b761f4b62b53",
-      "created_at": "2025-09-22T06:11:09.346Z",
-      "updated_at": "2025-09-22T06:11:09.346Z"
+      "created_at": "2025-09-22T09:10:46.366Z",
+      "updated_at": "2025-09-22T09:10:46.366Z"
+    },
+    {
+      "id": "scanner1758532241965",
+      "location": "Physiology",
+      "year": 2,
+      "batch": "2025/2026",
+      "dateTime": "2025-09-22T09:10:41.965Z",
+      "formattedDateTime": "22/09/2025 12:10:41",
+      "scans": [
+        {
+          "id": "1758532243864",
+          "content": "244748",
+          "timestamp": "2025-09-22T09:10:43.858Z",
+          "formattedTime": "12:10:43",
+          "time": "2025-09-22T09:10:43.858Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "54b2b1006b82f4d4c7920634089fdf7acd2751234b27c077bba4b761f4b62b53",
+      "user_id": "54b2b1006b82f4d4c7920634089fdf7acd2751234b27c077bba4b761f4b62b53_1758532246366",
+      "created_by": "54b2b1006b82f4d4c7920634089fdf7acd2751234b27c077bba4b761f4b62b53",
+      "created_at": "2025-09-22T09:10:46.366Z",
+      "updated_at": "2025-09-22T09:10:46.366Z"
     }
   ]
 }
