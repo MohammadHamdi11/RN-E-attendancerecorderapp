@@ -1,0 +1,38 @@
+{
+  "user_email": "230ae40cdfa1a1feefd4906ee1ad63fbba027936afa8be1dfb8369b2a7094883",
+  "user_id": "230ae40cdfa1a1feefd4906ee1ad63fbba027936afa8be1dfb8369b2a7094883_1758520135873",
+  "account_created": "2025-09-22T05:48:55.873Z",
+  "last_sync": "2025-09-22T05:48:55.873Z",
+  "total_sessions": 1,
+  "total_scans": 1,
+  "sessions": [
+    {
+      "id": "scanner1758519286097",
+      "location": "Histology",
+      "year": 2,
+      "batch": "2025/2026",
+      "dateTime": "2025-09-22T05:34:46.097Z",
+      "formattedDateTime": "22/09/2025 08:34:46",
+      "scans": [
+        {
+          "id": "1758520135347",
+          "content": "221579",
+          "timestamp": "2025-09-22T05:48:55.346Z",
+          "formattedTime": "08:48:55",
+          "time": "2025-09-22T05:48:55.346Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "230ae40cdfa1a1feefd4906ee1ad63fbba027936afa8be1dfb8369b2a7094883",
+      "user_id": "230ae40cdfa1a1feefd4906ee1ad63fbba027936afa8be1dfb8369b2a7094883_1758520135873",
+      "created_by": "230ae40cdfa1a1feefd4906ee1ad63fbba027936afa8be1dfb8369b2a7094883",
+      "created_at": "2025-09-22T05:48:55.873Z",
+      "updated_at": "2025-09-22T05:48:55.873Z"
+    }
+  ]
+}
