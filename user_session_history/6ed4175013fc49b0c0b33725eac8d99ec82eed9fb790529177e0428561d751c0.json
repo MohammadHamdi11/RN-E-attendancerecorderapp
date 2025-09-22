@@ -1,0 +1,57 @@
+{
+  "user_email": "53c82239733b57e6412362ed660e12a411ae9f1d175d185e0715a25a48c0e4b7",
+  "user_id": "53c82239733b57e6412362ed660e12a411ae9f1d175d185e0715a25a48c0e4b7_1758530527518",
+  "account_created": "2025-09-22T08:42:07.518Z",
+  "last_sync": "2025-09-22T08:42:07.518Z",
+  "total_sessions": 2,
+  "total_scans": 1,
+  "sessions": [
+    {
+      "id": "scanner1758521272055",
+      "location": "Physiology",
+      "year": 2,
+      "batch": "2025/2026",
+      "dateTime": "2025-09-22T06:07:52.055Z",
+      "formattedDateTime": "22/09/2025 09:07:52",
+      "scans": [],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "53c82239733b57e6412362ed660e12a411ae9f1d175d185e0715a25a48c0e4b7",
+      "user_id": "53c82239733b57e6412362ed660e12a411ae9f1d175d185e0715a25a48c0e4b7_1758530527519",
+      "created_by": "53c82239733b57e6412362ed660e12a411ae9f1d175d185e0715a25a48c0e4b7",
+      "created_at": "2025-09-22T08:42:07.518Z",
+      "updated_at": "2025-09-22T08:42:07.518Z"
+    },
+    {
+      "id": "scanner1758530517598",
+      "location": "Physiology",
+      "year": 2,
+      "batch": "2025/2026",
+      "dateTime": "2025-09-22T08:41:57.598Z",
+      "formattedDateTime": "22/09/2025 11:41:57",
+      "scans": [
+        {
+          "id": "1758530525478",
+          "content": "244711",
+          "timestamp": "2025-09-22T08:42:05.473Z",
+          "formattedTime": "11:42:05",
+          "time": "2025-09-22T08:42:05.473Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "53c82239733b57e6412362ed660e12a411ae9f1d175d185e0715a25a48c0e4b7",
+      "user_id": "53c82239733b57e6412362ed660e12a411ae9f1d175d185e0715a25a48c0e4b7_1758530527519",
+      "created_by": "53c82239733b57e6412362ed660e12a411ae9f1d175d185e0715a25a48c0e4b7",
+      "created_at": "2025-09-22T08:42:07.518Z",
+      "updated_at": "2025-09-22T08:42:07.518Z"
+    }
+  ]
+}
