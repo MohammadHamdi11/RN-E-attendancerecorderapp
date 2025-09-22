@@ -1,0 +1,38 @@
+{
+  "user_email": "41725f211e7c005843ab971410fc0444ac6e2060ca12cf85a1d34fa2c1efe349",
+  "user_id": "41725f211e7c005843ab971410fc0444ac6e2060ca12cf85a1d34fa2c1efe349_1758520753416",
+  "account_created": "2025-09-22T05:59:13.416Z",
+  "last_sync": "2025-09-22T05:59:13.416Z",
+  "total_sessions": 1,
+  "total_scans": 1,
+  "sessions": [
+    {
+      "id": "scanner1758520744813",
+      "location": "Physiology",
+      "year": 2,
+      "batch": "2025/2026",
+      "dateTime": "2025-09-22T05:59:04.813Z",
+      "formattedDateTime": "22/09/2025 08:59:04",
+      "scans": [
+        {
+          "id": "1758520752063",
+          "content": "234446",
+          "timestamp": "2025-09-22T05:59:12.031Z",
+          "formattedTime": "08:59:12",
+          "time": "2025-09-22T05:59:12.031Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "41725f211e7c005843ab971410fc0444ac6e2060ca12cf85a1d34fa2c1efe349",
+      "user_id": "41725f211e7c005843ab971410fc0444ac6e2060ca12cf85a1d34fa2c1efe349_1758520753416",
+      "created_by": "41725f211e7c005843ab971410fc0444ac6e2060ca12cf85a1d34fa2c1efe349",
+      "created_at": "2025-09-22T05:59:13.416Z",
+      "updated_at": "2025-09-22T05:59:13.416Z"
+    }
+  ]
+}
