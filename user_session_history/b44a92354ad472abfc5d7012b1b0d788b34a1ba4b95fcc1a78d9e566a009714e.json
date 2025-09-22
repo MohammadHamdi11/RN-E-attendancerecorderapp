@@ -1,10 +1,10 @@
 {
   "user_email": "0f800f99fcc71bfa76e6b1ca4c15dde4b21df8ea3be7d5ddb345a674a6d48708",
-  "user_id": "0f800f99fcc71bfa76e6b1ca4c15dde4b21df8ea3be7d5ddb345a674a6d48708_1758488109778",
-  "account_created": "2025-09-21T20:55:09.778Z",
-  "last_sync": "2025-09-21T20:55:09.778Z",
-  "total_sessions": 2,
-  "total_scans": 33,
+  "user_id": "0f800f99fcc71bfa76e6b1ca4c15dde4b21df8ea3be7d5ddb345a674a6d48708_1758517588179",
+  "account_created": "2025-09-22T05:06:28.179Z",
+  "last_sync": "2025-09-22T05:06:28.179Z",
+  "total_sessions": 3,
+  "total_scans": 34,
   "sessions": [
     {
       "id": "scanner1758445584776",
@@ -158,10 +158,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "0f800f99fcc71bfa76e6b1ca4c15dde4b21df8ea3be7d5ddb345a674a6d48708",
-      "user_id": "0f800f99fcc71bfa76e6b1ca4c15dde4b21df8ea3be7d5ddb345a674a6d48708_1758488109778",
+      "user_id": "0f800f99fcc71bfa76e6b1ca4c15dde4b21df8ea3be7d5ddb345a674a6d48708_1758517588179",
       "created_by": "0f800f99fcc71bfa76e6b1ca4c15dde4b21df8ea3be7d5ddb345a674a6d48708",
       "created_at": "2025-09-21T11:40:34.524Z",
-      "updated_at": "2025-09-21T20:55:09.778Z"
+      "updated_at": "2025-09-22T05:06:28.179Z"
     },
     {
       "id": "scanner1758454768146",
@@ -306,10 +306,39 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "0f800f99fcc71bfa76e6b1ca4c15dde4b21df8ea3be7d5ddb345a674a6d48708",
-      "user_id": "0f800f99fcc71bfa76e6b1ca4c15dde4b21df8ea3be7d5ddb345a674a6d48708_1758488109778",
+      "user_id": "0f800f99fcc71bfa76e6b1ca4c15dde4b21df8ea3be7d5ddb345a674a6d48708_1758517588179",
       "created_by": "0f800f99fcc71bfa76e6b1ca4c15dde4b21df8ea3be7d5ddb345a674a6d48708",
       "created_at": "2025-09-21T11:40:34.524Z",
-      "updated_at": "2025-09-21T20:55:09.778Z"
+      "updated_at": "2025-09-22T05:06:28.179Z",
+      "backedUp": true
+    },
+    {
+      "id": "scanner1758517581536",
+      "location": "Physiology",
+      "year": 2,
+      "batch": "2025/2026",
+      "dateTime": "2025-09-22T05:06:21.536Z",
+      "formattedDateTime": "22/09/2025 08:06:21",
+      "scans": [
+        {
+          "id": "1758517587596",
+          "content": "234567",
+          "timestamp": "2025-09-22T05:06:27.595Z",
+          "formattedTime": "08:06:27",
+          "time": "2025-09-22T05:06:27.595Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "0f800f99fcc71bfa76e6b1ca4c15dde4b21df8ea3be7d5ddb345a674a6d48708",
+      "user_id": "0f800f99fcc71bfa76e6b1ca4c15dde4b21df8ea3be7d5ddb345a674a6d48708_1758517588179",
+      "created_by": "0f800f99fcc71bfa76e6b1ca4c15dde4b21df8ea3be7d5ddb345a674a6d48708",
+      "created_at": "2025-09-22T05:06:28.179Z",
+      "updated_at": "2025-09-22T05:06:28.179Z"
     }
   ]
 }
