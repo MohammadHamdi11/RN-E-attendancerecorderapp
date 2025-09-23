@@ -1,0 +1,57 @@
+{
+  "user_email": "7eeeb6616c68fe3e263bddf61eaa4abbecca0b8f22d3a3e4d26a1d812beb9cc0",
+  "user_id": "7eeeb6616c68fe3e263bddf61eaa4abbecca0b8f22d3a3e4d26a1d812beb9cc0_1758605474307",
+  "account_created": "2025-09-23T05:31:14.307Z",
+  "last_sync": "2025-09-23T05:31:14.307Z",
+  "total_sessions": 2,
+  "total_scans": 1,
+  "sessions": [
+    {
+      "id": "scanner1758560389138",
+      "location": "Anatomy",
+      "year": 2,
+      "batch": "2022/2023",
+      "dateTime": "2025-09-22T16:59:49.138Z",
+      "formattedDateTime": "22/09/2025 19:59:49",
+      "scans": [],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "interrupted",
+      "isChecklist": false,
+      "user_email": "7eeeb6616c68fe3e263bddf61eaa4abbecca0b8f22d3a3e4d26a1d812beb9cc0",
+      "user_id": "7eeeb6616c68fe3e263bddf61eaa4abbecca0b8f22d3a3e4d26a1d812beb9cc0_1758605474307",
+      "created_by": "7eeeb6616c68fe3e263bddf61eaa4abbecca0b8f22d3a3e4d26a1d812beb9cc0",
+      "created_at": "2025-09-23T05:31:14.307Z",
+      "updated_at": "2025-09-23T05:31:14.307Z"
+    },
+    {
+      "id": "scanner1758605471356",
+      "location": "Anatomy",
+      "year": 2,
+      "batch": "2025/2026",
+      "dateTime": "2025-09-23T05:31:11.356Z",
+      "formattedDateTime": "23/09/2025 08:31:11",
+      "scans": [
+        {
+          "id": "1758605473576",
+          "content": "234876",
+          "timestamp": "2025-09-23T05:31:13.574Z",
+          "formattedTime": "08:31:13",
+          "time": "2025-09-23T05:31:13.574Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "7eeeb6616c68fe3e263bddf61eaa4abbecca0b8f22d3a3e4d26a1d812beb9cc0",
+      "user_id": "7eeeb6616c68fe3e263bddf61eaa4abbecca0b8f22d3a3e4d26a1d812beb9cc0_1758605474307",
+      "created_by": "7eeeb6616c68fe3e263bddf61eaa4abbecca0b8f22d3a3e4d26a1d812beb9cc0",
+      "created_at": "2025-09-23T05:31:14.307Z",
+      "updated_at": "2025-09-23T05:31:14.307Z"
+    }
+  ]
+}
