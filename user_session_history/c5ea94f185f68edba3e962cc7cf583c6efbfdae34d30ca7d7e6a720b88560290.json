@@ -1,10 +1,10 @@
 {
   "user_email": "f8ac944d25c51bea0599e756527a9af7dc35109d5b79c815cc93896fabf99461",
-  "user_id": "f8ac944d25c51bea0599e756527a9af7dc35109d5b79c815cc93896fabf99461_1758604345229",
-  "account_created": "2025-09-23T05:12:25.228Z",
-  "last_sync": "2025-09-23T05:12:25.228Z",
+  "user_id": "f8ac944d25c51bea0599e756527a9af7dc35109d5b79c815cc93896fabf99461_1758604354717",
+  "account_created": "2025-09-23T05:12:34.717Z",
+  "last_sync": "2025-09-23T05:12:34.717Z",
   "total_sessions": 2,
-  "total_scans": 2,
+  "total_scans": 3,
   "sessions": [
     {
       "id": "scanner1758537813565",
@@ -21,10 +21,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "f8ac944d25c51bea0599e756527a9af7dc35109d5b79c815cc93896fabf99461",
-      "user_id": "f8ac944d25c51bea0599e756527a9af7dc35109d5b79c815cc93896fabf99461_1758604345229",
+      "user_id": "f8ac944d25c51bea0599e756527a9af7dc35109d5b79c815cc93896fabf99461_1758604354717",
       "created_by": "f8ac944d25c51bea0599e756527a9af7dc35109d5b79c815cc93896fabf99461",
-      "created_at": "2025-09-23T05:12:25.228Z",
-      "updated_at": "2025-09-23T05:12:25.228Z"
+      "created_at": "2025-09-23T05:12:34.717Z",
+      "updated_at": "2025-09-23T05:12:34.717Z"
     },
     {
       "id": "scanner1758604228014",
@@ -49,6 +49,14 @@
           "formattedTime": "08:12:24",
           "time": "2025-09-23T05:12:24.375Z",
           "isManual": false
+        },
+        {
+          "id": "1758604354218",
+          "content": "231454",
+          "timestamp": "2025-09-23T05:12:34.216Z",
+          "formattedTime": "08:12:34",
+          "time": "2025-09-23T05:12:34.216Z",
+          "isManual": false
         }
       ],
       "inProgress": true,
@@ -57,10 +65,10 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "f8ac944d25c51bea0599e756527a9af7dc35109d5b79c815cc93896fabf99461",
-      "user_id": "f8ac944d25c51bea0599e756527a9af7dc35109d5b79c815cc93896fabf99461_1758604345229",
+      "user_id": "f8ac944d25c51bea0599e756527a9af7dc35109d5b79c815cc93896fabf99461_1758604354717",
       "created_by": "f8ac944d25c51bea0599e756527a9af7dc35109d5b79c815cc93896fabf99461",
-      "created_at": "2025-09-23T05:12:25.228Z",
-      "updated_at": "2025-09-23T05:12:25.228Z"
+      "created_at": "2025-09-23T05:12:34.717Z",
+      "updated_at": "2025-09-23T05:12:34.717Z"
     }
   ]
 }
