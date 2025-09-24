@@ -1,10 +1,10 @@
 {
   "user_email": "backup@backdoor.com",
-  "user_id": "backup_backdoor_com_1758724278122",
-  "account_created": "2025-09-24T14:31:18.122Z",
-  "last_sync": "2025-09-24T14:31:18.122Z",
-  "total_sessions": 3,
-  "total_scans": 121,
+  "user_id": "backup_backdoor_com_1758724749380",
+  "account_created": "2025-09-24T14:39:09.380Z",
+  "last_sync": "2025-09-24T14:39:09.380Z",
+  "total_sessions": 5,
+  "total_scans": 122,
   "sessions": [
     {
       "id": "checklist1758703663545",
@@ -986,10 +986,10 @@
       "backedUp": true,
       "backupTimestamp": "2025-09-24T09:25:17.931Z",
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1758724278122",
+      "user_id": "backup_backdoor_com_1758724749380",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-09-24T14:31:18.122Z",
-      "updated_at": "2025-09-24T14:31:18.122Z"
+      "created_at": "2025-09-24T14:39:09.380Z",
+      "updated_at": "2025-09-24T14:39:09.380Z"
     },
     {
       "id": "scanner1758724032048",
@@ -1006,10 +1006,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1758724278122",
+      "user_id": "backup_backdoor_com_1758724749380",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-09-24T14:31:18.122Z",
-      "updated_at": "2025-09-24T14:31:18.122Z"
+      "created_at": "2025-09-24T14:39:09.380Z",
+      "updated_at": "2025-09-24T14:39:09.380Z"
     },
     {
       "id": "scanner1758724104073",
@@ -1018,13 +1018,62 @@
       "batch": "2022/2023",
       "dateTime": "2025-09-24T14:28:24.073Z",
       "formattedDateTime": "24/09/2025 17:28:24",
+      "scans": [],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "closed_normally",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "backup@backdoor.com",
+      "user_id": "backup_backdoor_com_1758724749380",
+      "created_by": "backup@backdoor.com",
+      "created_at": "2025-09-24T14:39:09.380Z",
+      "updated_at": "2025-09-24T14:39:09.380Z"
+    },
+    {
+      "id": "scanner1758724293870",
+      "location": "Anatomy",
+      "year": 1,
+      "batch": "2022/2023",
+      "dateTime": "2025-09-24T14:31:33.870Z",
+      "formattedDateTime": "24/09/2025 17:31:33",
       "scans": [
         {
-          "id": "1758724277574",
+          "id": "1758724295070",
           "content": "231246",
-          "timestamp": "2025-09-24T14:31:17.570Z",
-          "formattedTime": "17:31:17",
-          "time": "2025-09-24T14:31:17.570Z",
+          "timestamp": "2025-09-24T14:31:35.070Z",
+          "formattedTime": "17:31:35",
+          "time": "2025-09-24T14:31:35.070Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "interrupted",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "backup@backdoor.com",
+      "user_id": "backup_backdoor_com_1758724749380",
+      "created_by": "backup@backdoor.com",
+      "created_at": "2025-09-24T14:39:09.380Z",
+      "updated_at": "2025-09-24T14:39:09.380Z"
+    },
+    {
+      "id": "scanner1758724747980",
+      "location": "Anatomy",
+      "year": 1,
+      "batch": "2022/2023",
+      "dateTime": "2025-09-24T14:39:07.980Z",
+      "formattedDateTime": "24/09/2025 17:39:07",
+      "scans": [
+        {
+          "id": "1758724749026",
+          "content": "231246",
+          "timestamp": "2025-09-24T14:39:09.025Z",
+          "formattedTime": "17:39:09",
+          "time": "2025-09-24T14:39:09.025Z",
           "isManual": false
         }
       ],
@@ -1034,10 +1083,10 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1758724278122",
+      "user_id": "backup_backdoor_com_1758724749380",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-09-24T14:31:18.122Z",
-      "updated_at": "2025-09-24T14:31:18.122Z"
+      "created_at": "2025-09-24T14:39:09.380Z",
+      "updated_at": "2025-09-24T14:39:09.380Z"
     }
   ]
 }
