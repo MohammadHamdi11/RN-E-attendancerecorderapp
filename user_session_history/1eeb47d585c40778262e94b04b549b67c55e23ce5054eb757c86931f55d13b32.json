@@ -1,10 +1,10 @@
 {
   "user_email": "backup@backdoor.com",
-  "user_id": "backup_backdoor_com_1758705821459",
-  "account_created": "2025-09-24T09:23:41.459Z",
-  "last_sync": "2025-09-24T09:23:41.459Z",
+  "user_id": "backup_backdoor_com_1758705910088",
+  "account_created": "2025-09-24T09:25:10.088Z",
+  "last_sync": "2025-09-24T09:25:10.088Z",
   "total_sessions": 1,
-  "total_scans": 118,
+  "total_scans": 120,
   "sessions": [
     {
       "id": "checklist1758703663545",
@@ -957,6 +957,22 @@
           "formattedTime": "12:23:40",
           "time": "2025-09-24T09:23:40.614Z",
           "isManual": true
+        },
+        {
+          "id": "201632",
+          "content": "201632",
+          "timestamp": "2025-09-24T09:23:46.451Z",
+          "formattedTime": "12:23:46",
+          "time": "2025-09-24T09:23:46.451Z",
+          "isManual": true
+        },
+        {
+          "id": "201823",
+          "content": "201823",
+          "timestamp": "2025-09-24T09:24:07.978Z",
+          "formattedTime": "12:24:07",
+          "time": "2025-09-24T09:24:07.978Z",
+          "isManual": true
         }
       ],
       "inProgress": true,
@@ -968,10 +984,10 @@
       "sessionType": "checklist",
       "recoveryStatus": "in_progress",
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1758705821459",
+      "user_id": "backup_backdoor_com_1758705910088",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-09-24T09:23:41.459Z",
-      "updated_at": "2025-09-24T09:23:41.459Z"
+      "created_at": "2025-09-24T09:25:10.088Z",
+      "updated_at": "2025-09-24T09:25:10.088Z"
     }
   ]
 }
