@@ -1,10 +1,10 @@
 {
   "user_email": "backup@backdoor.com",
-  "user_id": "backup_backdoor_com_1758704315839",
-  "account_created": "2025-09-24T08:58:35.839Z",
-  "last_sync": "2025-09-24T08:58:35.839Z",
+  "user_id": "backup_backdoor_com_1758704452298",
+  "account_created": "2025-09-24T09:00:52.298Z",
+  "last_sync": "2025-09-24T09:00:52.298Z",
   "total_sessions": 1,
-  "total_scans": 36,
+  "total_scans": 40,
   "sessions": [
     {
       "id": "checklist1758703663545",
@@ -68,14 +68,6 @@
           "timestamp": "2025-09-24T08:52:16.325Z",
           "formattedTime": "11:52:16",
           "time": "2025-09-24T08:52:16.325Z",
-          "isManual": false
-        },
-        {
-          "id": "200869",
-          "content": "200869",
-          "timestamp": "2025-09-24T08:52:21.110Z",
-          "formattedTime": "11:52:21",
-          "time": "2025-09-24T08:52:21.110Z",
           "isManual": false
         },
         {
@@ -301,6 +293,46 @@
           "formattedTime": "11:56:10",
           "time": "2025-09-24T08:56:10.970Z",
           "isManual": true
+        },
+        {
+          "id": "201465",
+          "content": "201465",
+          "timestamp": "2025-09-24T08:58:41.502Z",
+          "formattedTime": "11:58:41",
+          "time": "2025-09-24T08:58:41.502Z",
+          "isManual": false
+        },
+        {
+          "id": "201572",
+          "content": "201572",
+          "timestamp": "2025-09-24T08:58:45.652Z",
+          "formattedTime": "11:58:45",
+          "time": "2025-09-24T08:58:45.652Z",
+          "isManual": false
+        },
+        {
+          "id": "201026",
+          "content": "201026",
+          "timestamp": "2025-09-24T08:59:09.595Z",
+          "formattedTime": "11:59:09",
+          "time": "2025-09-24T08:59:09.595Z",
+          "isManual": false
+        },
+        {
+          "id": "200997",
+          "content": "200997",
+          "timestamp": "2025-09-24T08:59:13.081Z",
+          "formattedTime": "11:59:13",
+          "time": "2025-09-24T08:59:13.081Z",
+          "isManual": false
+        },
+        {
+          "id": "191052",
+          "content": "191052",
+          "timestamp": "2025-09-24T09:00:51.620Z",
+          "formattedTime": "12:00:51",
+          "time": "2025-09-24T09:00:51.620Z",
+          "isManual": true
         }
       ],
       "inProgress": true,
@@ -312,10 +344,10 @@
       "sessionType": "checklist",
       "recoveryStatus": "in_progress",
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1758704315839",
+      "user_id": "backup_backdoor_com_1758704452298",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-09-24T08:58:35.839Z",
-      "updated_at": "2025-09-24T08:58:35.839Z"
+      "created_at": "2025-09-24T09:00:52.298Z",
+      "updated_at": "2025-09-24T09:00:52.298Z"
     }
   ]
 }
