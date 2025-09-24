@@ -1,0 +1,38 @@
+{
+  "user_email": "8d691a9d5d5ce63cea406ccf3970e405a396d020a7381d3b3a5176a1dcd94536",
+  "user_id": "8d691a9d5d5ce63cea406ccf3970e405a396d020a7381d3b3a5176a1dcd94536_1758713391701",
+  "account_created": "2025-09-24T11:29:51.701Z",
+  "last_sync": "2025-09-24T11:29:51.701Z",
+  "total_sessions": 1,
+  "total_scans": 1,
+  "sessions": [
+    {
+      "id": "scanner1758713382605",
+      "location": "Pharmacology",
+      "year": 2,
+      "batch": "2022/2023",
+      "dateTime": "2025-09-24T11:29:42.605Z",
+      "formattedDateTime": "24/09/2025 14:29:42",
+      "scans": [
+        {
+          "id": "1758713390650",
+          "content": "244421",
+          "timestamp": "2025-09-24T11:29:50.646Z",
+          "formattedTime": "14:29:50",
+          "time": "2025-09-24T11:29:50.646Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "8d691a9d5d5ce63cea406ccf3970e405a396d020a7381d3b3a5176a1dcd94536",
+      "user_id": "8d691a9d5d5ce63cea406ccf3970e405a396d020a7381d3b3a5176a1dcd94536_1758713391701",
+      "created_by": "8d691a9d5d5ce63cea406ccf3970e405a396d020a7381d3b3a5176a1dcd94536",
+      "created_at": "2025-09-24T11:29:51.701Z",
+      "updated_at": "2025-09-24T11:29:51.701Z"
+    }
+  ]
+}
