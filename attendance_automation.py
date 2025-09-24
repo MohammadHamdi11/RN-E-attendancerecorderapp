@@ -46,7 +46,7 @@ class AutomatedAttendanceProcessor:
         self.EXCEPTION_HOURS = [12, 1, 13, 3, 15]
         
         # Minimum number of consecutive sessions to consider a group transfer confirmed
-        self.TRANSFER_CONFIRMATION_THRESHOLD = 3
+        self.TRANSFER_CONFIRMATION_THRESHOLD = 2
         
         # Define subject colors (copied from UpdateAttendance)
         self.SUBJECT_COLORS = {
@@ -622,88 +622,62 @@ class AutomatedAttendanceProcessor:
         return min_total_needed - total_attended
 
     def create_summary_sheet(self, workbook, sheet_name, combined_attendance, required_attendance,
-                             current_student_map, transferred_students, transfer_data, target_year, 
-                             completed_sessions, sessions_left, total_required_sessions, batch):
+                         current_student_map, transferred_students, transfer_data, target_year, 
+                         completed_sessions, sessions_left, total_required_sessions, batch):
         """
         Create a summary sheet that shows attendance statistics for each student,
         handling transferred students by validating their attendance against appropriate group schedules.
-    
         Now includes Sessions Left and Sessions Completed columns based on date calculations.
         """
         sheet = workbook.create_sheet(sheet_name)
 
         # Collect all subjects and their sessions
-        subjects = {} 
-        for key, subject_data in required_attendance.items():  
-            for subject, data in subject_data.items():  
-                if subject not in subjects:  
-                    subjects[subject] = {"sessions": set(), "locations": set()}  
+        subjects = {}
+        for key, subject_data in required_attendance.items():
+            for subject, data in subject_data.items():
+                if subject not in subjects:
+                    subjects[subject] = {"sessions": set(), "locations": set()}
                 for session_num, session_data in data["sessions"].items():
-                    # Convert session number to string for consistent handling
                     subjects[subject]["sessions"].add(str(session_num))
-                    subjects[subject]["locations"].update(
-                        session_data["locations"].keys())
+                    subjects[subject]["locations"].update(session_data["locations"].keys())
 
         # Create header
         header = ["Student ID", "Name", "Year", "Group", "Email", "Status", "Percentage",
                   "Sessions Needed", "Sessions Left", "Sessions Completed", "Total Required", "Total Attended"]
 
-        # Track column indices for subject coloring
-        subject_column_ranges = {}  
-        current_col = len(header) + 1  
+        subject_column_ranges = {}
+        current_col = len(header) + 1
 
         # Add subject totals and session details to header
-        for subject in sorted(subjects.keys()):  
-            # Mark the start column for this subject
+        for subject in sorted(subjects.keys()):
             start_col = current_col
-
-            header.extend(
-                [f"Required {subject} (Total)", f"Attended {subject} (Total)"])  
+            header.extend([f"Required {subject} (Total)", f"Attended {subject} (Total)"])
             current_col += 2
-
-            # Sort sessions numerically if possible, otherwise alphabetically
-            for session in sorted(subjects[subject]["sessions"], 
-                                key=lambda x: int(x) if x.isdigit() else x):  
-                for location in sorted(subjects[subject]["locations"]):  
-                    header.extend([
-                        f"{subject} S{session} (Req)",  
-                        f"{subject} S{session} (Att)"  
-                    ])
+            for session in sorted(subjects[subject]["sessions"], key=lambda x: int(x) if x.isdigit() else x):
+                for location in sorted(subjects[subject]["locations"]):
+                    header.extend([f"{subject} S{session} (Req)", f"{subject} S{session} (Att)"])
                     current_col += 2
-
-            # Record the column range for this subject
-            subject_column_ranges[subject] = (start_col, current_col - 1)  
+            subject_column_ranges[subject] = (start_col, current_col - 1)
 
         sheet.append(header)
 
         # Apply header formatting and colors
         for i, cell in enumerate(sheet[1], 1):
             cell.font = Font(bold=True)
-            cell.alignment = Alignment(
-                horizontal='center', vertical='center', wrap_text=True)
-
-            # Apply subject-specific coloring to subject headers
-            for subject, (start_idx, end_idx) in subject_column_ranges.items():  
+            cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+            for subject, (start_idx, end_idx) in subject_column_ranges.items():
                 if start_idx <= i <= end_idx:
-                    subject_color = self.get_subject_color(subject)  
-                    cell.fill = PatternFill(
-                        "solid", fgColor=subject_color["bg"])
+                    subject_color = self.get_subject_color(subject)
+                    cell.fill = PatternFill("solid", fgColor=subject_color["bg"])
                     cell.font = Font(bold=True, color=subject_color["text"])
                     break
-
-            # Apply gray background to basic columns
-            if i <= len(header) - len(subject_column_ranges):  
-                if not cell.fill.fgColor.rgb:  
-                    cell.fill = PatternFill(
-                        "solid", fgColor="D3D3D3")  
-
-        # Make the header row taller to accommodate wrapped text
+            if i <= len(header) - len(subject_column_ranges):
+                if not cell.fill.fgColor.rgb:
+                    cell.fill = PatternFill("solid", fgColor="D3D3D3")
         sheet.row_dimensions[1].height = 40
-
-        # Add freeze panes to keep headers visible when scrolling
         sheet.freeze_panes = 'C2'
 
-        # Define status colors
+        # Status colors
         COLOR_PASS = "66E4A6"
         COLOR_FAIL = "FF4C4C"
         COLOR_HIGH_RISK = "FF7C7C"
@@ -714,139 +688,98 @@ class AutomatedAttendanceProcessor:
         # Process each student in the target year
         for student_id, student in current_student_map.items():
             if target_year in str(student['year']):
-                # Get the current year-group key
                 current_key = f"{student['year']}-{student['group']}"
                 group_completed = completed_sessions.get(current_key, 0)
                 group_sessions_left = sessions_left.get(current_key, 0)
                 total_attended = 0
-                attendance_by_subject = {}  
+                attendance_by_subject = {}
 
-                # Check if this student has transferred between groups
                 is_transferred = student_id in transferred_students
-
-                # For transferred students, we need to consider both previous and current group attendance
                 previous_key = None
                 transfer_point = None
-
                 if is_transferred:
                     previous_group = transferred_students[student_id]["previous_group"]
                     previous_key = f"{student['year']}-{previous_group}"
                     transfer_point = transfer_data.get(student_id, {}).get("transfer_date")
 
-                # FIXED: Use a set to track unique attendance entries for this student to prevent double counting
                 unique_attendance_set = set()
-
-                # Build a list of all attendance entries for this student from all relevant groups
                 student_attendance = []
-
-                # Get attendance from current group
                 if current_key in combined_attendance:
                     for entry in combined_attendance[current_key]:
-                        if str(entry[0]) == str(student_id):  # Ensure string comparison
+                        if str(entry[0]) == str(student_id):
                             student_attendance.append(entry)
-
-                # Get attendance from previous group if transferred
                 if is_transferred and previous_key in combined_attendance:
                     for entry in combined_attendance[previous_key]:
-                        if str(entry[0]) == str(student_id):  # Ensure string comparison
+                        if str(entry[0]) == str(student_id):
                             student_attendance.append(entry)
 
                 # Process attendance data
                 for entry in student_attendance:
-                    subject = entry[5]  
-                    session_num = str(entry[6])  # Convert to string for consistent comparison
-                    location = entry[7]  
-
-                    # Determine date of this attendance
+                    subject = entry[5]
+                    session_num = str(entry[6])
+                    location = entry[7]
                     entry_date = None
-                    if len(entry) > 8 and entry[8]:  
+                    normalized_date_str = ""
+                    if len(entry) > 8 and entry[8]:
                         try:
                             if isinstance(entry[8], str):
                                 entry_date = datetime.strptime(entry[8], '%d/%m/%Y')
+                                normalized_date_str = entry[8]
                             elif isinstance(entry[8], datetime):
                                 entry_date = entry[8]
+                                normalized_date_str = entry_date.strftime('%d/%m/%Y')
                             elif hasattr(entry[8], 'year') and hasattr(entry[8], 'month') and hasattr(entry[8], 'day'):
-                                # It's a date object
                                 if hasattr(entry[8], 'hour'):
-                                    # It's a datetime object
                                     entry_date = entry[8]
+                                    normalized_date_str = entry_date.strftime('%d/%m/%Y')
                                 else:
-                                    # It's a date object, convert to datetime
                                     entry_date = datetime.combine(entry[8], datetime.min.time())
+                                    normalized_date_str = entry_date.strftime('%d/%m/%Y')
                             else:
-                                # Try to use the parse_datetime method
                                 temp_dt = self.parse_datetime(entry[8], time(0, 0))
                                 if temp_dt:
                                     entry_date = temp_dt
+                                    normalized_date_str = temp_dt.strftime('%d/%m/%Y')
                         except Exception as e:
                             print(f"Error parsing entry date: {entry[8]} - {str(e)}")
                             pass
-
                     validation_group = entry[10] if len(entry) > 10 else None
-        
-                    # FIXED: Create a unique identifier for this specific attendance record
-                    attendance_unique_id = f"{student_id}-{subject}-{session_num}-{location}-{entry[8]}"
+                    attendance_unique_id = f"{student_id}-{subject}-{session_num}-{normalized_date_str}"
 
-                    # Determine if this attendance should be counted based on validation group and transfer status
                     should_count = False
-
                     if not is_transferred:
-                        # For non-transferred students, count everything
                         should_count = True
                     elif not validation_group:
-                        # No validation group specified, follow standard rules based on date
                         if transfer_point and entry_date:
-                            # Check if attendance is before or after transfer
                             if entry_date < transfer_point:
-                                # Before transfer - should be validated against previous group (which is already done)
                                 should_count = True
                             else:
-                                # After transfer - should be validated against current group (which is already done)
                                 should_count = True
                         else:
-                            # No clear transfer point or date - count it
                             should_count = True
                     else:
-                        # For entries with explicit validation group
                         previous_group = transferred_students[student_id]["previous_group"]
                         current_group = student["group"]
-
                         if transfer_point and entry_date:
                             if entry_date < transfer_point:
-                                # Before transfer - only count if validated against previous group
                                 should_count = (validation_group == previous_group)
                             else:
-                                # After transfer - only count if validated against current group
                                 should_count = (validation_group == current_group)
                         else:
-                            # No clear transfer point or date - apply standard rules
                             should_count = (validation_group == previous_group or validation_group == current_group)
 
-                    # FIXED: Only process this attendance record if it should be counted AND hasn't been seen before
                     if should_count and attendance_unique_id not in unique_attendance_set:
                         unique_attendance_set.add(attendance_unique_id)
-            
-                        # Initialize attendance tracking structures
-                        if subject not in attendance_by_subject:  
-                            attendance_by_subject[subject] = {  
-                                "total": 0,
-                                "sessions": {}
-                            }
-                        if session_num not in attendance_by_subject[subject]["sessions"]:  
-                            attendance_by_subject[subject]["sessions"][session_num] = {  
-                                "locations": {}
-                            }
-
-                        # FIXED: Use subject as the location key to match with requirements
-                        # The location in the log is actually the subject name, so we use subject as the key
-                        location_key = subject.lower()  # Use subject as location key, make lowercase for consistency
-                    
-                        # Update attendance counts
-                        attendance_by_subject[subject]["total"] += 1  
-                        if location_key not in attendance_by_subject[subject]["sessions"][session_num]["locations"]:  
-                            attendance_by_subject[subject]["sessions"][session_num]["locations"][location_key] = 0  
-                        attendance_by_subject[subject]["sessions"][session_num]["locations"][location_key] += 1  
-                        total_attended += 1
+                        if subject not in attendance_by_subject:
+                            attendance_by_subject[subject] = {"total": 0, "sessions": {}}
+                        if session_num not in attendance_by_subject[subject]["sessions"]:
+                            attendance_by_subject[subject]["sessions"][session_num] = {"locations": {}}
+                        location_key = subject.lower()
+                        session_location_key = f"{session_num}-{location_key}"
+                        if session_location_key not in attendance_by_subject[subject]["sessions"][session_num]["locations"]:
+                            attendance_by_subject[subject]["sessions"][session_num]["locations"][location_key] = 1
+                            attendance_by_subject[subject]["total"] += 1
+                            total_attended += 1
 
                 # Calculate status and color
                 required_sessions = math.ceil(
@@ -1504,34 +1437,198 @@ class AutomatedAttendanceProcessor:
 
         return combined_attendance
 
+    def extract_existing_transfers(self, transfer_sheet):
+        """Extract existing transfer records from the transfer sheet"""
+        existing_transfers = {}
+        header_row = None
+
+        # Find the header row
+        for row_idx, row in enumerate(transfer_sheet.iter_rows(values_only=True)):
+            if row and "Student ID" in row:
+                header_row = row_idx + 1
+                break
+
+        if not header_row:
+            return existing_transfers
+
+        # Find column indices
+        col_indices = {}
+        for col_idx, cell_value in enumerate(transfer_sheet.iter_rows(min_row=header_row, max_row=header_row, values_only=True).__next__()):
+            if cell_value == "Student ID":
+                col_indices["id"] = col_idx
+            elif cell_value == "Name":
+                col_indices["name"] = col_idx
+            elif cell_value == "Year":
+                col_indices["year"] = col_idx
+            elif cell_value == "Group Before":
+                col_indices["group_before"] = col_idx
+            elif cell_value == "Group After":
+                col_indices["group_after"] = col_idx
+            elif cell_value == "Transfer Date":
+                col_indices["transfer_date"] = col_idx
+
+        # Extract existing transfer data
+        for row in transfer_sheet.iter_rows(min_row=header_row+1, values_only=True):
+            if row and row[col_indices["id"]]:
+                student_id = str(row[col_indices["id"]])
+                transfer_date = None
+                if len(row) > col_indices["transfer_date"] and row[col_indices["transfer_date"]]:
+                    try:
+                        date_val = row[col_indices["transfer_date"]]
+                        if isinstance(date_val, str):
+                            transfer_date = datetime.strptime(date_val, '%d/%m/%Y %H:%M')
+                        elif isinstance(date_val, datetime):
+                            transfer_date = date_val
+                        elif hasattr(date_val, 'year'):
+                            transfer_date = date_val
+                    except Exception as e:
+                        print(f"Error parsing existing transfer date for {student_id}: {e}")
+
+                existing_transfers[student_id] = {
+                    "previous_group": row[col_indices["group_before"]],
+                    "current_group": row[col_indices["group_after"]],
+                    "name": row[col_indices["name"]],
+                    "year": row[col_indices["year"]],
+                    "email": f"{student_id}@med.asu.edu.eg",
+                    "transfer_date": transfer_date,
+                    "is_from_previous_report": True
+                }
+
+        return existing_transfers
+
+    def combine_transfer_data(self, existing_transfers, new_transfers, current_student_map):
+        """Combine existing and new transfer data, avoiding duplicates"""
+        all_transfers = {}
+
+        # Add all existing transfers
+        for student_id, transfer_info in existing_transfers.items():
+            if student_id in current_student_map:
+                current_info = current_student_map[student_id]
+                all_transfers[student_id] = {
+                    "previous_group": transfer_info["previous_group"],
+                    "current_group": current_info["group"],
+                    "name": current_info["name"],
+                    "year": current_info["year"],
+                    "email": current_info["email"],
+                    "transfer_date": transfer_info["transfer_date"],
+                    "is_from_previous_report": True
+                }
+            else:
+                all_transfers[student_id] = transfer_info.copy()
+
+        # Add new transfers not already tracked
+        for student_id, transfer_info in new_transfers.items():
+            if student_id not in all_transfers:
+                all_transfers[student_id] = {
+                    **transfer_info,
+                    "transfer_date": None,
+                    "is_from_previous_report": False
+                }
+            else:
+                existing_info = all_transfers[student_id]
+                if existing_info["current_group"] != transfer_info["current_group"]:
+                    all_transfers[student_id]["current_group"] = transfer_info["current_group"]
+
+        return all_transfers
+
+    def create_comprehensive_transfer_log_sheet(self, workbook, sheet_name, existing_transfers,
+                                               new_transfers, transfer_data):
+        """Create transfer sheet with both existing and new transfers"""
+        sheet = workbook.create_sheet(sheet_name)
+        header = ["Student ID", "Name", "Year", "Group Before", "Group After", "Transfer Date", "Status"]
+        sheet.append(header)
+
+        for i, cell in enumerate(sheet[1]):
+            cell.font = Font(bold=True)
+            cell.fill = PatternFill("solid", fgColor="D3D3D3")
+            cell.alignment = Alignment(horizontal='center', vertical='center')
+
+        sheet.row_dimensions[1].height = 22
+        sheet.freeze_panes = 'C2'
+
+        processed_students = set()
+
+        # Add existing transfers
+        for student_id, transfer_info in existing_transfers.items():
+            if student_id not in processed_students:
+                transfer_date = transfer_info.get("transfer_date")
+                formatted_date = ""
+                if transfer_date:
+                    formatted_date = transfer_date.strftime('%d/%m/%Y %H:%M')
+                row = [
+                    student_id,
+                    transfer_info["name"],
+                    transfer_info["year"],
+                    transfer_info["previous_group"],
+                    transfer_info["current_group"],
+                    formatted_date,
+                    "Previous Transfer"
+                ]
+                sheet.append(row)
+                processed_students.add(student_id)
+
+        # Add new transfers
+        for student_id, transfer_info in new_transfers.items():
+            if student_id not in processed_students:
+                transfer_date = transfer_data.get(student_id, {}).get("transfer_date")
+                formatted_date = ""
+                if transfer_date:
+                    formatted_date = transfer_date.strftime('%d/%m/%Y %H:%M')
+                row = [
+                    student_id,
+                    transfer_info["name"],
+                    transfer_info["year"],
+                    transfer_info["previous_group"],
+                    transfer_info["current_group"],
+                    formatted_date,
+                    "New Transfer"
+                ]
+                sheet.append(row)
+                processed_students.add(student_id)
+
+        for cell in sheet["F"][1:]:
+            if isinstance(cell.value, datetime):
+                cell.number_format = 'DD/MM/YYYY HH:MM'
+
+        for col_idx, column in enumerate(sheet.columns, 1):
+            max_length = 0
+            for cell in column:
+                try:
+                    if cell.value:
+                        max_length = max(max_length, len(str(cell.value)))
+                except:
+                    pass
+            if max_length > 0:
+                adjusted_width = min(max(max_length + 2, 12), 50)
+                if col_idx == 2:
+                    adjusted_width = max(adjusted_width, 25)
+                sheet.column_dimensions[openpyxl.utils.get_column_letter(col_idx)].width = adjusted_width
+
+        sheet.auto_filter.ref = f"A1:{openpyxl.utils.get_column_letter(sheet.max_column)}{sheet.max_row}"
+
     def process_all_reports(self):
         """Main method to process all attendance reports automatically"""
         print("Starting automated attendance processing...")
-        
-        # Step 1: Detect all files
+
         module_groups = self.detect_files()
         if not module_groups:
             print("No files detected or required directories missing. Exiting.")
             return
-        
-        # Step 2: Merge all log files
+
         all_log_files = []
         for module_name, data in module_groups.items():
             all_log_files.extend(data.get('log_files', []))
-        
-        # Remove duplicates while preserving order
+
         all_log_files = list(dict.fromkeys(all_log_files))
         merged_log_data = self.merge_log_files(all_log_files)
-        
+
         if not merged_log_data:
             print("No log data found. Exiting.")
             return
-        
-        # Step 3: Process each module group
+
         for module_name, data in module_groups.items():
             print(f"\nProcessing {module_name}...")
-            
-            # Extract year and batch from module_name (e.g., "Y1_B2425_Introduction_to_Anatomy" -> year="1", batch="2425")
+
             parts = module_name.split('_')
             if len(parts) >= 2:
                 year = parts[0].replace('Y', '')
@@ -1539,133 +1636,117 @@ class AutomatedAttendanceProcessor:
             else:
                 print(f"Invalid module name format: {module_name}. Skipping.")
                 continue
-            
-            # Get reference file
+
             reference_file = data.get('reference')
             if not reference_file:
                 print(f"No reference file found for {module_name}. Skipping.")
                 continue
-            
-            # Load reference data
+
             try:
                 ref_wb = openpyxl.load_workbook(reference_file)
-                ref_ws = ref_wb.active  # Assume first sheet
+                ref_ws = ref_wb.active
                 student_db = list(ref_ws.values)
                 current_student_map = self.create_student_map(student_db)
             except Exception as e:
                 print(f"Error loading reference file {reference_file}: {str(e)}")
                 continue
-            
-            # Get schedule file
+
             schedule_file = data.get('schedule')
             if not schedule_file:
                 print(f"No schedule file found for {module_name}. Skipping.")
                 continue
-            
-            # Load schedule data
+
             try:
                 sched_wb = openpyxl.load_workbook(schedule_file)
-                sched_ws = sched_wb.active  # Assume first sheet
+                sched_ws = sched_wb.active
                 session_schedule = list(sched_ws.values)
             except Exception as e:
                 print(f"Error loading schedule file {schedule_file}: {str(e)}")
                 continue
-            
-            # Get report file (if exists)
+
             report_file = data.get('report')
             if report_file:
-                # Extract data from the existing report
                 report_data = self.extract_data_from_report(report_file)
                 if report_data:
                     total_required = report_data['total_required']
                     calculated_threshold = report_data['threshold']
-                    # Update the threshold for this processing session
                     self.ATTENDANCE_THRESHOLD = calculated_threshold
                 else:
                     print(f"Could not extract data from {report_file}. Using default threshold.")
-                    total_required = 100  # Default value
-                    self.ATTENDANCE_THRESHOLD = 0.75  # Default threshold
+                    total_required = 100
+                    self.ATTENDANCE_THRESHOLD = 0.75
             else:
                 print(f"No existing report found for {module_name}. Using default values.")
-                total_required = 100  # Default value
-                self.ATTENDANCE_THRESHOLD = 0.75  # Default threshold
-            
-            # Load previous report data (if exists)
+                total_required = 100
+                self.ATTENDANCE_THRESHOLD = 0.75
+
             prev_student_map = {}
             prev_attendance_data = {}
-            
+            existing_transfers = {}
+
             if report_file:
                 try:
                     prev_report_wb = openpyxl.load_workbook(report_file)
                     prev_summary_sheet = None
                     prev_attendance_sheet = None
-                
-                    # Find the summary and attendance sheets
+                    prev_transfer_sheet = None
+
                     for sheet_name in prev_report_wb.sheetnames:
                         if "Summary" in sheet_name:
                             prev_summary_sheet = prev_report_wb[sheet_name]
                         elif "Attendance" in sheet_name:
                             prev_attendance_sheet = prev_report_wb[sheet_name]
-                
+                        elif "Transfer" in sheet_name:
+                            prev_transfer_sheet = prev_report_wb[sheet_name]
+
                     if prev_summary_sheet:
                         prev_student_map = self.extract_student_map_from_summary(prev_summary_sheet)
-                    
                     if prev_attendance_sheet:
                         prev_attendance_data = self.extract_attendance_data(prev_attendance_sheet)
-                
+                    if prev_transfer_sheet:
+                        existing_transfers = self.extract_existing_transfers(prev_transfer_sheet)
                 except Exception as e:
                     print(f"Error loading previous report data: {str(e)}")
-            
-            # Identify transferred students
-            transferred_students = self.identify_transferred_students(prev_student_map, current_student_map)
-            
-            # Get current datetime for completed sessions calculation
+
+            new_transferred_students = self.identify_transferred_students(prev_student_map, current_student_map)
+            all_transferred_students = self.combine_transfer_data(existing_transfers, new_transferred_students, current_student_map)
+
             current_datetime = datetime.now()
-            
-            # Calculate sessions based on the current date
             completed_sessions, sessions_left = self.calculate_completed_sessions(
                 session_schedule[1:], current_datetime)
-            
             required_attendance = self.calculate_required_attendance(session_schedule[1:], total_required)
-            
-            # Track transfer dates and patterns for transferred students
-            transfer_data = self.analyze_transfer_patterns(transferred_students, merged_log_data, 
+
+            transfer_data = self.analyze_transfer_patterns(all_transferred_students, merged_log_data,
                                                           session_schedule[1:], current_student_map)
-            
-            # Process attendance logs considering transfers
+
             new_valid_attendance = self.validate_attendance_with_transfers(
-                merged_log_data, session_schedule[1:], current_student_map, 
-                transferred_students, transfer_data, f"Year {year}")
-            
-            # Combine previous and new attendance data
+                merged_log_data, session_schedule[1:], current_student_map,
+                all_transferred_students, transfer_data, f"Year {year}")
+
             combined_attendance = self.combine_attendance_data(
-                prev_attendance_data, new_valid_attendance, transferred_students, transfer_data)
-            
-            # Create output workbook and sheets
+                prev_attendance_data, new_valid_attendance, all_transferred_students, transfer_data)
+
             output_wb = openpyxl.Workbook()
             output_wb.remove(output_wb.active)
-            
-            # Add date to sheet names
-            summary_sheet_name = f"Summary_updated"
-            attendance_sheet_name = f"Attendance_updated"
-            transfer_sheet_name = f"Transfers_updated"
-            
-            # Create Summary sheet first, then Attendance sheet with combined data
-            self.create_summary_sheet(output_wb, summary_sheet_name, combined_attendance, 
-                                     required_attendance, current_student_map, transferred_students,
+
+            summary_sheet_name = f"Summary"
+            attendance_sheet_name = f"Attendance"
+            transfer_sheet_name = f"Transfers"
+
+            self.create_summary_sheet(output_wb, summary_sheet_name, combined_attendance,
+                                     required_attendance, current_student_map, all_transferred_students,
                                      transfer_data, f"Year {year}", completed_sessions, sessions_left, total_required, batch)
-            
+
             self.create_valid_logs_sheet(output_wb, attendance_sheet_name, combined_attendance)
-            
-            # Create the transfer log sheet
-            self.create_transfer_log_sheet(output_wb, transfer_sheet_name, transferred_students, transfer_data)
-            
-            # Save output workbook (without timestamp to replace existing file)
+
+            self.create_comprehensive_transfer_log_sheet(output_wb, transfer_sheet_name,
+                                                        existing_transfers, new_transferred_students,
+                                                        transfer_data)
+
             output_filename = f"{module_name}_attendance.xlsx"
             output_path = os.path.join(self.reports_dir, output_filename)
             output_wb.save(output_path)
-            
-            # Set Excel file metadata (title, subject, author)
+
             try:
                 wb = openpyxl.load_workbook(output_path)
                 props = wb.properties
@@ -1675,8 +1756,7 @@ class AutomatedAttendanceProcessor:
                 wb.save(output_path)
             except Exception as meta_exc:
                 print(f"Warning: Could not set Excel metadata: {meta_exc}")
-            
-            # Convert to JSON and save in the same directory (without timestamp)
+
             try:
                 df = pd.read_excel(output_path)
                 json_path = os.path.splitext(output_path)[0] + '.json'
@@ -1695,7 +1775,7 @@ class AutomatedAttendanceProcessor:
                 print(f"  Successfully updated {output_filename} and {os.path.basename(json_path)}")
             except Exception as e:
                 print(f"  Error converting to JSON: {str(e)}")
-        
+
         print("\nAutomated attendance processing completed!")
 
 if __name__ == "__main__":
@@ -1709,4 +1789,4 @@ if __name__ == "__main__":
         # For now, just run the automated processor
         print("Running automated attendance processor...")
         processor = AutomatedAttendanceProcessor()
-        processor.process_all_reports() 
+        processor.process_all_reports()
