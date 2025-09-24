@@ -1,10 +1,10 @@
 {
   "user_email": "backup@backdoor.com",
-  "user_id": "backup_backdoor_com_1758704991888",
-  "account_created": "2025-09-24T09:09:51.888Z",
-  "last_sync": "2025-09-24T09:09:51.888Z",
+  "user_id": "backup_backdoor_com_1758705055185",
+  "account_created": "2025-09-24T09:10:55.185Z",
+  "last_sync": "2025-09-24T09:10:55.185Z",
   "total_sessions": 1,
-  "total_scans": 46,
+  "total_scans": 50,
   "sessions": [
     {
       "id": "checklist1758703663545",
@@ -381,21 +381,53 @@
           "formattedTime": "12:01:44",
           "time": "2025-09-24T09:01:44.180Z",
           "isManual": true
+        },
+        {
+          "id": "200727",
+          "content": "200727",
+          "timestamp": "2025-09-24T09:10:02.435Z",
+          "formattedTime": "12:10:02",
+          "time": "2025-09-24T09:10:02.435Z",
+          "isManual": true
+        },
+        {
+          "id": "200163",
+          "content": "200163",
+          "timestamp": "2025-09-24T09:10:17.442Z",
+          "formattedTime": "12:10:17",
+          "time": "2025-09-24T09:10:17.442Z",
+          "isManual": true
+        },
+        {
+          "id": "200116",
+          "content": "200116",
+          "timestamp": "2025-09-24T09:10:27.218Z",
+          "formattedTime": "12:10:27",
+          "time": "2025-09-24T09:10:27.218Z",
+          "isManual": true
+        },
+        {
+          "id": "200228",
+          "content": "200228",
+          "timestamp": "2025-09-24T09:10:39.391Z",
+          "formattedTime": "12:10:39",
+          "time": "2025-09-24T09:10:39.391Z",
+          "isManual": true
         }
       ],
       "inProgress": true,
       "isChecklist": true,
       "filters": {
         "year": 4,
-        "group": "B2B"
+        "group": "B2A"
       },
       "sessionType": "checklist",
       "recoveryStatus": "in_progress",
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1758704991888",
+      "user_id": "backup_backdoor_com_1758705055185",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-09-24T09:09:51.888Z",
-      "updated_at": "2025-09-24T09:09:51.888Z"
+      "created_at": "2025-09-24T09:10:55.185Z",
+      "updated_at": "2025-09-24T09:10:55.185Z"
     }
   ]
 }
