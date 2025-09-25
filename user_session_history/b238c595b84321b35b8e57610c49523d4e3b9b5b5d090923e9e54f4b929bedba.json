@@ -1,10 +1,10 @@
 {
   "user_email": "user@user.com",
-  "user_id": "user_user_com_1758794274953",
-  "account_created": "2025-09-25T09:57:54.953Z",
-  "last_sync": "2025-09-25T09:57:54.953Z",
+  "user_id": "user_user_com_1758794341826",
+  "account_created": "2025-09-25T09:59:01.826Z",
+  "last_sync": "2025-09-25T09:59:01.826Z",
   "total_sessions": 3,
-  "total_scans": 84,
+  "total_scans": 93,
   "sessions": [
     {
       "id": "scanner1758786318372",
@@ -118,10 +118,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "user@user.com",
-      "user_id": "user_user_com_1758794274953",
+      "user_id": "user_user_com_1758794341826",
       "created_by": "user@user.com",
-      "created_at": "2025-09-25T09:57:54.953Z",
-      "updated_at": "2025-09-25T09:57:54.953Z"
+      "created_at": "2025-09-25T09:59:01.826Z",
+      "updated_at": "2025-09-25T09:59:01.826Z"
     },
     {
       "id": "checklist1758792746503",
@@ -140,10 +140,10 @@
       "sessionType": "checklist",
       "recoveryStatus": "in_progress",
       "user_email": "user@user.com",
-      "user_id": "user_user_com_1758794274953",
+      "user_id": "user_user_com_1758794341826",
       "created_by": "user@user.com",
-      "created_at": "2025-09-25T09:57:54.953Z",
-      "updated_at": "2025-09-25T09:57:54.953Z"
+      "created_at": "2025-09-25T09:59:01.826Z",
+      "updated_at": "2025-09-25T09:59:01.826Z"
     },
     {
       "id": "scanner1758792840236",
@@ -728,6 +728,78 @@
           "formattedTime": "12:57:53",
           "time": "2025-09-25T09:57:53.806Z",
           "isManual": false
+        },
+        {
+          "id": "1758794279989",
+          "content": "244571",
+          "timestamp": "2025-09-25T09:57:59.989Z",
+          "formattedTime": "12:57:59",
+          "time": "2025-09-25T09:57:59.989Z",
+          "isManual": true
+        },
+        {
+          "id": "1758794289914",
+          "content": "244388",
+          "timestamp": "2025-09-25T09:58:09.914Z",
+          "formattedTime": "12:58:09",
+          "time": "2025-09-25T09:58:09.914Z",
+          "isManual": false
+        },
+        {
+          "id": "1758794297230",
+          "content": "244420",
+          "timestamp": "2025-09-25T09:58:17.230Z",
+          "formattedTime": "12:58:17",
+          "time": "2025-09-25T09:58:17.230Z",
+          "isManual": false
+        },
+        {
+          "id": "1758794306933",
+          "content": "244460",
+          "timestamp": "2025-09-25T09:58:26.932Z",
+          "formattedTime": "12:58:26",
+          "time": "2025-09-25T09:58:26.932Z",
+          "isManual": false
+        },
+        {
+          "id": "1758794312402",
+          "content": "244573",
+          "timestamp": "2025-09-25T09:58:32.401Z",
+          "formattedTime": "12:58:32",
+          "time": "2025-09-25T09:58:32.401Z",
+          "isManual": false
+        },
+        {
+          "id": "1758794315442",
+          "content": "244384",
+          "timestamp": "2025-09-25T09:58:35.442Z",
+          "formattedTime": "12:58:35",
+          "time": "2025-09-25T09:58:35.442Z",
+          "isManual": false
+        },
+        {
+          "id": "1758794320328",
+          "content": "244379",
+          "timestamp": "2025-09-25T09:58:40.327Z",
+          "formattedTime": "12:58:40",
+          "time": "2025-09-25T09:58:40.327Z",
+          "isManual": false
+        },
+        {
+          "id": "1758794327277",
+          "content": "244364",
+          "timestamp": "2025-09-25T09:58:47.277Z",
+          "formattedTime": "12:58:47",
+          "time": "2025-09-25T09:58:47.277Z",
+          "isManual": false
+        },
+        {
+          "id": "1758794340727",
+          "content": "244378",
+          "timestamp": "2025-09-25T09:59:00.727Z",
+          "formattedTime": "12:59:00",
+          "time": "2025-09-25T09:59:00.727Z",
+          "isManual": true
         }
       ],
       "inProgress": true,
@@ -736,10 +808,10 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "user@user.com",
-      "user_id": "user_user_com_1758794274953",
+      "user_id": "user_user_com_1758794341826",
       "created_by": "user@user.com",
-      "created_at": "2025-09-25T09:57:54.953Z",
-      "updated_at": "2025-09-25T09:57:54.953Z"
+      "created_at": "2025-09-25T09:59:01.826Z",
+      "updated_at": "2025-09-25T09:59:01.826Z"
     }
   ]
 }
