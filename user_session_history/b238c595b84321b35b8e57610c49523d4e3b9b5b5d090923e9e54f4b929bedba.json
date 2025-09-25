@@ -1,10 +1,10 @@
 {
   "user_email": "user@user.com",
-  "user_id": "user_user_com_1758786710955",
-  "account_created": "2025-09-25T07:51:50.955Z",
-  "last_sync": "2025-09-25T07:51:50.955Z",
+  "user_id": "user_user_com_1758786965436",
+  "account_created": "2025-09-25T07:56:05.436Z",
+  "last_sync": "2025-09-25T07:56:05.436Z",
   "total_sessions": 1,
-  "total_scans": 9,
+  "total_scans": 12,
   "sessions": [
     {
       "id": "scanner1758786318372",
@@ -85,6 +85,30 @@
           "formattedTime": "10:51:49",
           "time": "2025-09-25T07:51:49.861Z",
           "isManual": true
+        },
+        {
+          "id": "1758786727455",
+          "content": "221826",
+          "timestamp": "2025-09-25T07:52:07.455Z",
+          "formattedTime": "10:52:07",
+          "time": "2025-09-25T07:52:07.455Z",
+          "isManual": true
+        },
+        {
+          "id": "1758786739719",
+          "content": "221866",
+          "timestamp": "2025-09-25T07:52:19.718Z",
+          "formattedTime": "10:52:19",
+          "time": "2025-09-25T07:52:19.718Z",
+          "isManual": true
+        },
+        {
+          "id": "1758786751391",
+          "content": "221822",
+          "timestamp": "2025-09-25T07:52:31.390Z",
+          "formattedTime": "10:52:31",
+          "time": "2025-09-25T07:52:31.390Z",
+          "isManual": true
         }
       ],
       "inProgress": true,
@@ -92,11 +116,12 @@
       "sessionType": "scanner",
       "recoveryStatus": "in_progress",
       "isChecklist": false,
+      "backedUp": true,
       "user_email": "user@user.com",
-      "user_id": "user_user_com_1758786710955",
+      "user_id": "user_user_com_1758786965436",
       "created_by": "user@user.com",
-      "created_at": "2025-09-25T07:51:50.955Z",
-      "updated_at": "2025-09-25T07:51:50.955Z"
+      "created_at": "2025-09-25T07:56:05.436Z",
+      "updated_at": "2025-09-25T07:56:05.436Z"
     }
   ]
 }
