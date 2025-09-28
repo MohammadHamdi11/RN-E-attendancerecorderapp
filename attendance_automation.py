@@ -37,6 +37,117 @@ class SessionAnalyzer:
         self.missing_sessions = []
         self.recorded_sessions = []
     
+    def analyze_sessions_with_merged_logs(self, ref_file_path, ref_sheet, merged_log_data, 
+                           schedule_file_path, schedule_sheet, year, batch, module):
+        """Analyze sessions using already merged log data and identify missing/recorded ones with group-specific attendance calculation"""
+        try:
+            # Load reference data
+            if not self.load_reference_data(ref_file_path, ref_sheet):
+                return False, "Failed to load reference data", []
+            
+            # Load schedule data
+            schedule_wb = openpyxl.load_workbook(schedule_file_path, read_only=True)
+            schedule_ws = schedule_wb[schedule_sheet]
+            schedule_data = list(schedule_ws.values)
+            
+            # Use merged log data directly instead of loading from file
+            log_data = merged_log_data
+            
+            # Parse schedule data (skip header row)
+            self.schedule_data = []
+            for row in schedule_data[1:]:
+                if len(row) >= 6:  # Ensure we have required fields
+                    year_val, group, subject, session_num, date_val, start_time = row[:6]
+                    if year_val and group and subject and session_num and date_val:
+                        # CONVERT TO UPPERCASE FOR CASE-INSENSITIVE MATCHING
+                        group = str(group).upper() if group else ""
+                        subject = str(subject).upper() if subject else ""
+                        
+                        self.schedule_data.append({
+                            'year': str(year_val),
+                            'group': group,
+                            'subject': subject,
+                            'session': str(session_num),
+                            'date': self.normalize_date(date_val),
+                            'start_time': self.normalize_time(start_time),
+                            'raw_date': date_val,
+                            'raw_time': start_time
+                        })
+            
+            # Parse log data (skip header row if it exists)
+            self.log_data = []
+            start_idx = 1 if log_data and len(log_data) > 0 and log_data[0] and any(isinstance(cell, str) and 'Student' in str(cell) for cell in log_data[0][:2]) else 0
+            
+            for row in log_data[start_idx:]:
+                if len(row) >= 6:  # Ensure we have required fields
+                    student_id, location, log_date, log_time, type_field, user = row[:6]
+                    if location and log_date:  # Use location instead of subject for log data
+                        # CONVERT TO UPPERCASE FOR CASE-INSENSITIVE MATCHING
+                        location = str(location).upper() if location else ""
+                        
+                        self.log_data.append({
+                            'student_id': str(student_id) if student_id else '',
+                            'subject': location,  # Map location to subject for matching
+                            'log_date': self.normalize_date(log_date),
+                            'log_time': self.normalize_time(log_time),
+                            'type': str(type_field) if type_field else '',
+                            'user': str(user) if user else '',
+                            'raw_date': log_date,
+                            'raw_time': log_time
+                        })
+            
+            # Find missing and recorded sessions with GROUP-SPECIFIC attendance
+            self.missing_sessions = []
+            self.recorded_sessions = []
+            
+            for scheduled_session in self.schedule_data:
+                # Look for matching log entries (same subject and date)
+                matching_logs = []
+                unique_users = set()        # Track unique users who recorded this session
+                
+                for log_entry in self.log_data:
+                    if (log_entry['subject'] == scheduled_session['subject'] and
+                        log_entry['log_date'] == scheduled_session['date']):
+                        matching_logs.append(log_entry)
+                        
+                        # Add to unique users set
+                        if log_entry['user']:
+                            unique_users.add(log_entry['user'])
+                
+                if matching_logs:
+                    # Session was recorded - calculate GROUP-SPECIFIC attendance
+                    group_attendance = self.get_group_specific_attendance(scheduled_session, matching_logs)
+                    
+                    self.recorded_sessions.append({
+                        **scheduled_session,
+                        'recorded_by': list(unique_users),
+                        'unique_student_count': group_attendance['unique_student_count'],
+                        'expected_student_count': group_attendance['expected_student_count'],
+                        'attendance_rate': group_attendance['attendance_rate'],
+                        'total_entry_count': len(matching_logs),  # Keep total for reference
+                        'group_specific_entry_count': len(group_attendance['group_specific_logs']),
+                        'attending_student_ids': group_attendance['attending_student_ids']
+                    })
+                else:
+                    # Session is missing
+                    expected_students = self.get_expected_students_for_group(
+                        scheduled_session['year'], 
+                        scheduled_session['group']
+                    )
+                    expected_count = len(expected_students)
+                    
+                    session_copy = scheduled_session.copy()
+                    session_copy['expected_student_count'] = expected_count
+                    self.missing_sessions.append(session_copy)
+            
+            # Export results and return generated file paths (xlsx and json)
+            generated_files = self.export_results(year, batch, module)
+            
+            return True, "Analysis completed successfully.", generated_files
+            
+        except Exception as e:
+            return False, f"Error during analysis: {str(e)}", []
+    
     def analyze_sessions(self, ref_file_path, ref_sheet, log_file_path, log_sheet, 
                        schedule_file_path, schedule_sheet, year, batch, module):
         """Analyze sessions and identify missing/recorded ones with group-specific attendance calculation"""
@@ -2276,16 +2387,23 @@ class AutomatedAttendanceProcessor:
             print("No files detected or required directories missing. Exiting.")
             return
 
+        # Merge all log files once at the beginning to avoid redundant processing
         all_log_files = []
         for module_name, data in module_groups.items():
             all_log_files.extend(data.get('log_files', []))
 
+        # Remove duplicates while preserving order
         all_log_files = list(dict.fromkeys(all_log_files))
+        print(f"Found {len(all_log_files)} unique log files to process")
+        
+        # Merge log data once for all modules
         merged_log_data = self.merge_log_files(all_log_files)
 
         if not merged_log_data:
             print("No log data found. Exiting.")
             return
+
+        print(f"Successfully merged {len(merged_log_data)} rows of log data")
 
         for module_name, data in module_groups.items():
             print(f"\nProcessing {module_name}...")
@@ -2320,7 +2438,7 @@ class AutomatedAttendanceProcessor:
                 print(f"Error loading schedule file {schedule_file}: {str(e)}")
                 continue
 
-            # *** ADD SESSION ANALYSIS HERE ***
+            # *** UPDATED SESSION ANALYSIS - Now uses merged log data ***
             session_analysis_files = self.run_session_analysis(
                 module_name, reference_file, schedule_file, all_log_files, year, batch
             )
@@ -2333,6 +2451,7 @@ class AutomatedAttendanceProcessor:
                     total_required = report_data['total_required']
                     calculated_threshold = report_data['threshold']
                     self.ATTENDANCE_THRESHOLD = calculated_threshold
+                    print(f"  Using calculated threshold: {calculated_threshold:.1%}")
                 else:
                     print(f"Could not extract data from {report_file}. Using default threshold.")
                     total_required = 100
@@ -2342,7 +2461,7 @@ class AutomatedAttendanceProcessor:
                 total_required = 100
                 self.ATTENDANCE_THRESHOLD = 0.75
 
-            # ... rest of existing processing code remains the same ...
+            # Extract previous data from existing report if available
             prev_student_map = {}
             prev_attendance_data = {}
             existing_transfers = {}
@@ -2368,27 +2487,42 @@ class AutomatedAttendanceProcessor:
                         prev_attendance_data = self.extract_attendance_data(prev_attendance_sheet)
                     if prev_transfer_sheet:
                         existing_transfers = self.extract_existing_transfers(prev_transfer_sheet)
+                        
+                    print(f"  Loaded previous data: {len(prev_student_map)} students, {len(existing_transfers)} transfers")
                 except Exception as e:
                     print(f"Error loading previous report data: {str(e)}")
 
+            # Identify transferred students
             new_transferred_students = self.identify_transferred_students(prev_student_map, current_student_map)
             all_transferred_students = self.combine_transfer_data(existing_transfers, new_transferred_students, current_student_map)
+            
+            if new_transferred_students:
+                print(f"  Found {len(new_transferred_students)} new transferred students")
+            if all_transferred_students:
+                print(f"  Total transferred students: {len(all_transferred_students)}")
 
+            # Calculate session completion status
             current_datetime = datetime.now()
             completed_sessions, sessions_left = self.calculate_completed_sessions(
                 session_schedule[1:], current_datetime)
             required_attendance = self.calculate_required_attendance(session_schedule[1:], total_required)
 
+            # Analyze transfer patterns using the merged log data
             transfer_data = self.analyze_transfer_patterns(all_transferred_students, merged_log_data,
                                                         session_schedule[1:], current_student_map)
 
+            # Validate attendance using the merged log data
             new_valid_attendance = self.validate_attendance_with_transfers(
                 merged_log_data, session_schedule[1:], current_student_map,
                 all_transferred_students, transfer_data, f"Year {year}")
 
+            # Combine with previous attendance data
             combined_attendance = self.combine_attendance_data(
                 prev_attendance_data, new_valid_attendance, all_transferred_students, transfer_data)
 
+            print(f"  Processed attendance for {sum(len(entries) for entries in combined_attendance.values())} records")
+
+            # Create new workbook and sheets
             output_wb = openpyxl.Workbook()
             output_wb.remove(output_wb.active)
 
@@ -2396,20 +2530,24 @@ class AutomatedAttendanceProcessor:
             attendance_sheet_name = f"Attendance"
             transfer_sheet_name = f"Transfers"
 
+            # Create sheets
             self.create_summary_sheet(output_wb, summary_sheet_name, combined_attendance,
                                     required_attendance, current_student_map, all_transferred_students,
                                     transfer_data, f"Year {year}", completed_sessions, sessions_left, total_required, batch)
 
             self.create_valid_logs_sheet(output_wb, attendance_sheet_name, combined_attendance)
 
-            self.create_comprehensive_transfer_log_sheet(output_wb, transfer_sheet_name,
-                                                        existing_transfers, new_transferred_students,
-                                                        transfer_data)
+            if all_transferred_students:
+                self.create_comprehensive_transfer_log_sheet(output_wb, transfer_sheet_name,
+                                                            existing_transfers, new_transferred_students,
+                                                            transfer_data)
 
+            # Save the workbook
             output_filename = f"{module_name}_attendance.xlsx"
             output_path = os.path.join(self.reports_dir, output_filename)
             output_wb.save(output_path)
 
+            # Set Excel metadata
             try:
                 wb = openpyxl.load_workbook(output_path)
                 props = wb.properties
@@ -2420,13 +2558,17 @@ class AutomatedAttendanceProcessor:
             except Exception as meta_exc:
                 print(f"Warning: Could not set Excel metadata: {meta_exc}")
 
+            # Create JSON version
             try:
                 df = pd.read_excel(output_path)
                 json_path = os.path.splitext(output_path)[0] + '.json'
                 metadata = {
                     "title": "attendance_reports",
                     "subject": f"{module_name}_attendance",
-                    "authors": f"{module_name}"
+                    "authors": f"{module_name}",
+                    "processing_timestamp": datetime.now().isoformat(),
+                    "total_log_files_processed": len(all_log_files),
+                    "session_analysis_files": [os.path.basename(f) for f in session_analysis_files] if session_analysis_files else []
                 }
                 json_obj = {
                     "metadata": metadata,
@@ -2435,11 +2577,18 @@ class AutomatedAttendanceProcessor:
                 import json as _json
                 with open(json_path, 'w', encoding='utf-8') as f:
                     _json.dump(json_obj, f, ensure_ascii=False, indent=2)
-                print(f"  Successfully updated {output_filename} and {os.path.basename(json_path)}")
+                print(f"  Successfully created {output_filename} and {os.path.basename(json_path)}")
+                
+                # Report session analysis results
+                if session_analysis_files:
+                    print(f"  Session analysis files: {[os.path.basename(f) for f in session_analysis_files]}")
+                    
             except Exception as e:
                 print(f"  Error converting to JSON: {str(e)}")
 
-        print("\nAutomated attendance processing completed!")
+        print(f"\nAutomated attendance processing completed!")
+        print(f"Processed {len(module_groups)} modules using {len(all_log_files)} log files")
+        print(f"All reports saved to: {self.reports_dir}")
         
     def parse_module_info(self, module_name):
         """Parse module name to extract year, batch, and module components"""
@@ -2463,13 +2612,11 @@ class AutomatedAttendanceProcessor:
             return "Unknown", "Unknown", "Unknown_Module"
         
     def run_session_analysis(self, module_name, reference_file, schedule_file, all_log_files, year, batch):
-        """Run session analysis for a specific module"""
+        """Run session analysis for a specific module using merged log data"""
         try:
             print(f"  Running session analysis for {module_name}...")
             
-            # Get the first log file as primary (you may want to modify this logic)
-            primary_log_file = all_log_files[0] if all_log_files else None
-            if not primary_log_file:
+            if not all_log_files:
                 print(f"  No log files available for session analysis")
                 return []
             
@@ -2487,17 +2634,23 @@ class AutomatedAttendanceProcessor:
             
             # Get actual sheet names
             ref_sheet_name = get_first_sheet_name(reference_file)
-            log_sheet_name = get_first_sheet_name(primary_log_file)
             schedule_sheet_name = get_first_sheet_name(schedule_file)
             
-            print(f"    Using sheets - Reference: '{ref_sheet_name}', Log: '{log_sheet_name}', Schedule: '{schedule_sheet_name}'")
+            print(f"    Using sheets - Reference: '{ref_sheet_name}', Schedule: '{schedule_sheet_name}'")
+            print(f"    Using merged log data from {len(all_log_files)} files")
             
-            # Run the analysis using the SessionAnalyzer with actual sheet names
-            success, message, generated_files = self.session_analyzer.analyze_sessions(
+            # Merge log files to get the combined data
+            merged_log_data = self.merge_log_files(all_log_files)
+            
+            if not merged_log_data:
+                print(f"  No merged log data available for session analysis")
+                return []
+            
+            # Run the analysis using the SessionAnalyzer with merged log data
+            success, message, generated_files = self.session_analyzer.analyze_sessions_with_merged_logs(
                 ref_file_path=reference_file,
                 ref_sheet=ref_sheet_name,
-                log_file_path=primary_log_file,
-                log_sheet=log_sheet_name,
+                merged_log_data=merged_log_data,  # Pass the merged data directly
                 schedule_file_path=schedule_file,
                 schedule_sheet=schedule_sheet_name,
                 year=year_parsed,
