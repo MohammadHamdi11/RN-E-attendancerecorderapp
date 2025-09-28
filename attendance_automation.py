@@ -21,6 +21,664 @@ from openpyxl.utils import get_column_letter
 from collections import defaultdict
 import glob
 
+
+
+
+#==========================================================Session Analyzer==========================================================#
+
+class SessionAnalyzer:
+    """Independent session analyzer class that can be used by the processor"""
+    
+    def __init__(self, parent_widget=None):
+        self.parent_widget = parent_widget  # Store parent widget for message boxes
+        self.schedule_data = []
+        self.log_data = []
+        self.reference_data = []
+        self.missing_sessions = []
+        self.recorded_sessions = []
+    
+    def analyze_sessions(self, ref_file_path, ref_sheet, log_file_path, log_sheet, 
+                       schedule_file_path, schedule_sheet, year, batch, module):
+        """Analyze sessions and identify missing/recorded ones with group-specific attendance calculation"""
+        try:
+            # Load reference data
+            if not self.load_reference_data(ref_file_path, ref_sheet):
+                return False, "Failed to load reference data", []
+            
+            # Load schedule data
+            schedule_wb = openpyxl.load_workbook(schedule_file_path, read_only=True)
+            schedule_ws = schedule_wb[schedule_sheet]
+            schedule_data = list(schedule_ws.values)
+            
+            # Load log data
+            log_wb = openpyxl.load_workbook(log_file_path, read_only=True)
+            log_ws = log_wb[log_sheet]
+            log_data = list(log_ws.values)
+            
+            # Parse schedule data (skip header row)
+            self.schedule_data = []
+            for row in schedule_data[1:]:
+                if len(row) >= 6:  # Ensure we have required fields
+                    year_val, group, subject, session_num, date_val, start_time = row[:6]
+                    if year_val and group and subject and session_num and date_val:
+                        # CONVERT TO UPPERCASE FOR CASE-INSENSITIVE MATCHING
+                        group = str(group).upper() if group else ""
+                        subject = str(subject).upper() if subject else ""
+                        
+                        self.schedule_data.append({
+                            'year': str(year_val),
+                            'group': group,
+                            'subject': subject,
+                            'session': str(session_num),
+                            'date': self.normalize_date(date_val),
+                            'start_time': self.normalize_time(start_time),
+                            'raw_date': date_val,
+                            'raw_time': start_time
+                        })
+            
+            # Parse log data (skip header row)
+            self.log_data = []
+            for row in log_data[1:]:
+                if len(row) >= 6:  # Ensure we have required fields
+                    student_id, subject, log_date, log_time, type_field, user = row[:6]
+                    if subject and log_date:
+                        # CONVERT TO UPPERCASE FOR CASE-INSENSITIVE MATCHING
+                        subject = str(subject).upper() if subject else ""
+                        
+                        self.log_data.append({
+                            'student_id': str(student_id) if student_id else '',
+                            'subject': subject,
+                            'log_date': self.normalize_date(log_date),
+                            'log_time': self.normalize_time(log_time),
+                            'type': str(type_field) if type_field else '',
+                            'user': str(user) if user else '',
+                            'raw_date': log_date,
+                            'raw_time': log_time
+                        })
+            
+            # Find missing and recorded sessions with GROUP-SPECIFIC attendance
+            self.missing_sessions = []
+            self.recorded_sessions = []
+            
+            for scheduled_session in self.schedule_data:
+                # Look for matching log entries (same subject and date)
+                matching_logs = []
+                unique_users = set()        # Track unique users who recorded this session
+                
+                for log_entry in self.log_data:
+                    if (log_entry['subject'] == scheduled_session['subject'] and
+                        log_entry['log_date'] == scheduled_session['date']):
+                        matching_logs.append(log_entry)
+                        
+                        # Add to unique users set
+                        if log_entry['user']:
+                            unique_users.add(log_entry['user'])
+                
+                if matching_logs:
+                    # Session was recorded - calculate GROUP-SPECIFIC attendance
+                    group_attendance = self.get_group_specific_attendance(scheduled_session, matching_logs)
+                    
+                    self.recorded_sessions.append({
+                        **scheduled_session,
+                        'recorded_by': list(unique_users),
+                        'unique_student_count': group_attendance['unique_student_count'],
+                        'expected_student_count': group_attendance['expected_student_count'],
+                        'attendance_rate': group_attendance['attendance_rate'],
+                        'total_entry_count': len(matching_logs),  # Keep total for reference
+                        'group_specific_entry_count': len(group_attendance['group_specific_logs']),
+                        'attending_student_ids': group_attendance['attending_student_ids']
+                    })
+                else:
+                    # Session is missing
+                    expected_students = self.get_expected_students_for_group(
+                        scheduled_session['year'], 
+                        scheduled_session['group']
+                    )
+                    expected_count = len(expected_students)
+                    
+                    session_copy = scheduled_session.copy()
+                    session_copy['expected_student_count'] = expected_count
+                    self.missing_sessions.append(session_copy)
+            
+            # Export results and return generated file paths (xlsx and json)
+            generated_files = self.export_results(year, batch, module)
+            
+            return True, "Analysis completed successfully.", generated_files
+            
+        except Exception as e:
+            return False, f"Error during analysis: {str(e)}", []
+    
+    def load_reference_data(self, ref_file_path, ref_sheet):
+        """Load reference data containing student enrollment information"""
+        try:
+            # Load reference data
+            reference_wb = openpyxl.load_workbook(ref_file_path, read_only=True)
+            reference_ws = reference_wb[ref_sheet]
+            reference_data = list(reference_ws.values)
+            
+            # Parse reference data (skip header row)
+            self.reference_data = []
+            for row in reference_data[1:]:
+                if len(row) >= 4:  # Ensure we have required fields: Student ID, Name, Year, Group
+                    student_id, name, year, group = row[:4]
+                    if student_id and group:  # At minimum we need Student ID and Group
+                        # Convert to uppercase for case-insensitive matching
+                        group = str(group).upper() if group else ""
+                        
+                        self.reference_data.append({
+                            'student_id': str(student_id),
+                            'name': str(name) if name else "",
+                            'year': str(year) if year else "",
+                            'group': group
+                        })
+            
+            return True
+        except Exception as e:
+            return False
+    
+    def get_expected_students_for_group(self, year, group):
+        """Get the list of expected students for a specific year and group from reference data"""
+        expected_students = []
+        for student in self.reference_data:
+            if (str(student['year']) == str(year) and 
+                student['group'] == str(group).upper()):
+                expected_students.append(student)
+        return expected_students
+    
+    def get_group_specific_attendance(self, session, matching_logs):
+        """Calculate attendance specifically for the session's group"""
+        # Get expected students for this group
+        expected_students = self.get_expected_students_for_group(session['year'], session['group'])
+        expected_student_ids = {student['student_id'] for student in expected_students}
+        
+        # Filter logs to only include students from the expected group
+        group_specific_logs = []
+        for log in matching_logs:
+            if log['student_id'] in expected_student_ids:
+                group_specific_logs.append(log)
+        
+        # Get unique student IDs from group-specific logs
+        attending_student_ids = set()
+        for log in group_specific_logs:
+            if log['student_id']:
+                attending_student_ids.add(log['student_id'])
+        
+        unique_student_count = len(attending_student_ids)
+        expected_student_count = len(expected_student_ids)
+        attendance_rate = (unique_student_count / expected_student_count * 100) if expected_student_count > 0 else 0
+        
+        return {
+            'unique_student_count': unique_student_count,
+            'expected_student_count': expected_student_count,
+            'attendance_rate': attendance_rate,
+            'group_specific_logs': group_specific_logs,
+            'attending_student_ids': list(attending_student_ids),
+            'total_logs_for_session': len(matching_logs)
+        }
+    
+    def normalize_date(self, date_value):
+        """Normalize date to datetime object"""
+        if isinstance(date_value, datetime):
+            return date_value.date()
+        elif isinstance(date_value, date):
+            return date_value
+        elif isinstance(date_value, str):
+            try:
+                # Try parsing common date formats
+                for fmt in ['%Y-%m-%d', '%d/%m/%Y', '%m/%d/%Y', '%d-%m-%Y']:
+                    try:
+                        return datetime.strptime(date_value, fmt).date()
+                    except ValueError:
+                        continue
+            except:
+                pass
+        return None
+    
+    def normalize_time(self, time_value):
+        """Normalize time to time object"""
+        if isinstance(time_value, time):
+            return time_value
+        elif isinstance(time_value, datetime):
+            return time_value.time()
+        elif isinstance(time_value, str):
+            try:
+                # Try parsing common time formats
+                for fmt in ['%H:%M:%S', '%H:%M', '%I:%M %p', '%I:%M:%S %p']:
+                    try:
+                        return datetime.strptime(time_value, fmt).time()
+                    except ValueError:
+                        continue
+            except:
+                pass
+        return None
+    
+    def export_results(self, year, batch, module):
+        """Export analysis results to both Excel and JSON files with consistent naming"""
+        if not hasattr(self, 'missing_sessions') or not hasattr(self, 'recorded_sessions'):
+            return []
+
+        try:
+            # Use the same directory structure as the main processor
+            base_dir = os.getcwd()
+            output_dir = os.path.join(base_dir, "attendance_reports")
+            os.makedirs(output_dir, exist_ok=True)
+
+            # Generate filename using the same pattern as attendance reports
+            # Format: Y{year}_B{batch}_{module}_session_analysis
+            now = datetime.now()
+            
+            # Build filename components
+            filename_parts = []
+            if year and year != "Unknown":
+                filename_parts.append(f"Y{year}")
+            if batch and batch != "Unknown":
+                # Handle batch formatting (e.g., "2425" -> "B2425")
+                if not batch.startswith('B'):
+                    filename_parts.append(f"B{batch}")
+                else:
+                    filename_parts.append(batch)
+            if module and module != "Unknown_Module":
+                filename_parts.append(module)
+            
+            # Add session analysis suffix
+            filename_parts.append("session_analysis")
+            
+            if filename_parts:
+                base_filename = '_'.join(filename_parts)
+            else:
+                # Fallback naming
+                date_str = now.strftime('%d%m%Y')
+                time_str = now.strftime('%H%M%S')
+                base_filename = f"Session_Analysis_Results_D{date_str}T{time_str}"
+            
+            # File paths for both Excel and JSON
+            excel_filepath = os.path.join(output_dir, base_filename + ".xlsx")
+            json_filepath = os.path.join(output_dir, base_filename + ".json")
+
+            # Get current date and time for pending status determination
+            current_datetime = datetime.now()
+            current_date = current_datetime.date()
+            current_time = current_datetime.time()
+            
+            # Combine all sessions with their status (this data will be in both Excel and JSON)
+            all_sessions = []
+            
+            # Add recorded sessions
+            for session in self.recorded_sessions:
+                session_copy = session.copy()
+                session_copy['status'] = 'Recorded'
+                session_copy['unique_student_count'] = session.get('unique_student_count', 0)
+                session_copy['expected_student_count'] = session.get('expected_student_count', 0)
+                session_copy['attendance_rate'] = session.get('attendance_rate', 0)
+                session_copy['recorded_by'] = ', '.join(session.get('recorded_by', ['Unknown']))
+                session_copy['total_entry_count'] = session.get('total_entry_count', 0)
+                all_sessions.append(session_copy)
+            
+            # Add missing sessions and determine if they are "Not Recorded" or "Pending"
+            for session in self.missing_sessions:
+                session_copy = session.copy()
+                session_copy['unique_student_count'] = 0
+                session_copy['expected_student_count'] = session.get('expected_student_count', 0)
+                session_copy['attendance_rate'] = 0
+                session_copy['recorded_by'] = ''
+                session_copy['total_entry_count'] = 0
+                
+                # Determine status based on current date/time
+                session_date = session['date']
+                session_time = session.get('start_time')
+                
+                # Convert session_date to date object if it's not already
+                if isinstance(session_date, str):
+                    try:
+                        parsed_date = datetime.strptime(session_date, '%Y-%m-%d')
+                        session_date = parsed_date.date()
+                    except:
+                        try:
+                            parsed_date = datetime.strptime(session_date, '%d/%m/%Y')
+                            session_date = parsed_date.date()
+                        except:
+                            session_date = current_date  # Fallback
+                
+                # Determine if session is pending or not recorded
+                if session_date > current_date:
+                    session_copy['status'] = 'Pending'
+                elif session_date == current_date:
+                    if session_time and hasattr(session_time, 'hour'):
+                        if session_time > current_time:
+                            session_copy['status'] = 'Pending'
+                        else:
+                            session_copy['status'] = 'Not Recorded'
+                    else:
+                        session_copy['status'] = 'Not Recorded'
+                else:
+                    session_copy['status'] = 'Not Recorded'
+                
+                all_sessions.append(session_copy)
+            
+            # Sort sessions by year, group, subject, session, date, time
+            def sort_key(session):
+                try:
+                    session_num = int(session.get('session', 0))
+                except (ValueError, TypeError):
+                    session_num = 0
+                
+                return (
+                    str(session.get('year', '')),
+                    str(session.get('group', '')),
+                    str(session.get('subject', '')),
+                    session_num,
+                    session.get('date', datetime.min.date()),
+                    session.get('start_time', datetime.min.time()),
+                    str(session.get('recorded_by', ''))
+                )
+            
+            all_sessions.sort(key=sort_key)
+            
+            # === JSON EXPORT (Main session data only) ===
+            # Prepare JSON data (convert non-serializable objects to strings)
+            json_sessions = []
+            for session in all_sessions:
+                json_session = {}
+                for key, value in session.items():
+                    if hasattr(value, 'strftime'):  # datetime, date, time objects
+                        if key in ['raw_date', 'date']:
+                            json_session[key] = value.strftime('%d/%m/%Y') if hasattr(value, 'strftime') else str(value)
+                        elif key in ['raw_time', 'start_time']:
+                            json_session[key] = value.strftime('%H:%M:%S') if hasattr(value, 'strftime') else str(value)
+                        else:
+                            json_session[key] = str(value)
+                    elif isinstance(value, list):
+                        json_session[key] = value  # Lists are JSON serializable
+                    else:
+                        json_session[key] = value
+                json_sessions.append(json_session)
+            
+            # Create JSON data structure (sessions only, no statistics tables)
+            json_data = {
+                'metadata': {
+                    'export_timestamp': now.isoformat(),
+                    'year': year,
+                    'batch': batch,
+                    'module': module,
+                    'export_note': 'Contains main session data only, without statistics tables'
+                },
+                'sessions': json_sessions
+            }
+            
+            # Save JSON file
+            with open(json_filepath, 'w', encoding='utf-8') as json_file:
+                json.dump(json_data, json_file, indent=2, ensure_ascii=False)
+            
+            # === EXCEL EXPORT (With all tables and statistics) ===
+            # Create Excel file
+            wb = openpyxl.Workbook()
+            
+            # Remove default sheet
+            wb.remove(wb.active)
+            
+            # Create main results sheet
+            main_ws = wb.create_sheet("Session Analysis Results")
+            
+            # Headers with group-specific columns
+            headers = [
+                'Year', 'Group', 'Subject', 'Session', 'Date', 'Time', 
+                'Recorded By', 'Students', 'Status'
+            ]
+            main_ws.append(headers)
+            
+            # Style headers
+            header_font = Font(bold=True, color='FFFFFF')
+            header_fill = PatternFill(start_color='366092', end_color='366092', fill_type='solid')
+            header_alignment = Alignment(horizontal='center', vertical='center')
+            
+            for col_num, cell in enumerate(main_ws[1], 1):
+                cell.font = header_font
+                cell.fill = header_fill
+                cell.alignment = header_alignment
+            
+            # Define colors for status
+            recorded_fill = PatternFill(start_color='90EE90', end_color='90EE90', fill_type='solid')
+            not_recorded_fill = PatternFill(start_color='FFB6C1', end_color='FFB6C1', fill_type='solid')
+            pending_fill = PatternFill(start_color='FFFFE0', end_color='FFFFE0', fill_type='solid')
+            
+            # Add data rows
+            for row_num, session in enumerate(all_sessions, 2):
+                # Format date and time for display
+                date_str = str(session.get('raw_date', session.get('date', '')))
+                time_str = str(session.get('raw_time', session.get('start_time', '')))
+                
+                if hasattr(session.get('raw_date'), 'strftime'):
+                    date_str = session['raw_date'].strftime('%d/%m/%Y')
+                elif hasattr(session.get('date'), 'strftime'):
+                    date_str = session['date'].strftime('%d/%m/%Y')
+                
+                if hasattr(session.get('raw_time'), 'strftime'):
+                    time_str = session['raw_time'].strftime('%H:%M:%S')
+                elif hasattr(session.get('start_time'), 'strftime'):
+                    time_str = session['start_time'].strftime('%H:%M:%S')
+                
+                # Prepare row data with attending/total format
+                row_data = [
+                    str(session.get('year', '')),
+                    str(session.get('group', '')),
+                    str(session.get('subject', '')),
+                    str(session.get('session', '')),
+                    date_str,
+                    time_str,
+                    str(session.get('recorded_by', '')),
+                    f"{session.get('unique_student_count', 0)}/{session.get('expected_student_count', 0)}",
+                    session.get('status', '')
+                ]
+                
+                main_ws.append(row_data)
+                
+                # Apply color coding based on status with black font
+                status = session.get('status', '')
+                
+                for col_num in range(1, len(headers) + 1):
+                    cell = main_ws.cell(row=row_num, column=col_num)
+                    cell.alignment = Alignment(horizontal='center', vertical='center')
+                    
+                    # Set font to black for better readability
+                    cell.font = Font(color='000000')
+                    
+                    # Apply status-based coloring to entire row
+                    if status == 'Recorded':
+                        cell.fill = recorded_fill
+                    elif status == 'Not Recorded':
+                        cell.fill = not_recorded_fill
+                    elif status == 'Pending':
+                        cell.fill = pending_fill
+            
+            # Auto-size columns for main data
+            for column in main_ws.columns:
+                max_length = 0
+                column_letter = get_column_letter(column[0].column)
+                
+                for cell in column:
+                    try:
+                        if len(str(cell.value)) > max_length:
+                            max_length = len(str(cell.value))
+                    except:
+                        pass
+                
+                adjusted_width = min(max_length + 2, 50)
+                main_ws.column_dimensions[column_letter].width = adjusted_width
+            
+            # Calculate overall class statistics
+            total_sessions = len(all_sessions)
+            recorded_sessions = len([s for s in all_sessions if s.get('status') == 'Recorded'])
+            missing_sessions = len([s for s in all_sessions if s.get('status') == 'Not Recorded'])
+            pending_sessions = len([s for s in all_sessions if s.get('status') == 'Pending'])
+            coverage_percentage = (recorded_sessions / total_sessions * 100) if total_sessions > 0 else 0
+            
+            # Calculate total students across all groups
+            total_students = len(self.reference_data)
+            
+            # Calculate average attendance for recorded sessions
+            recorded_only = [s for s in all_sessions if s.get('status') == 'Recorded']
+            avg_attendance = sum(s.get('attendance_rate', 0) for s in recorded_only) / len(recorded_only) if recorded_only else 0
+            
+            # Calculate statistics by group
+            group_stats = {}
+            for session in all_sessions:
+                group_key = f"{session.get('year', '')} - {session.get('group', '')}"
+                if group_key not in group_stats:
+                    group_stats[group_key] = {
+                        'year': session.get('year', ''),
+                        'group': session.get('group', ''),
+                        'total_sessions': 0,
+                        'recorded_sessions': 0,
+                        'missing_sessions': 0,
+                        'pending_sessions': 0,
+                        'total_expected_students': 0,
+                        'total_attending_students': 0,
+                        'expected_students_count': session.get('expected_student_count', 0)
+                    }
+                
+                stats = group_stats[group_key]
+                stats['total_sessions'] += 1
+                
+                status = session.get('status', '')
+                if status == 'Recorded':
+                    stats['recorded_sessions'] += 1
+                    stats['total_expected_students'] += session.get('expected_student_count', 0)
+                    stats['total_attending_students'] += session.get('unique_student_count', 0)
+                elif status == 'Not Recorded':
+                    stats['missing_sessions'] += 1
+                elif status == 'Pending':
+                    stats['pending_sessions'] += 1
+            
+            # Add overall class statistics table starting at column K
+            stats_start_row = 2
+            stats_start_col = 11  # Column K
+            
+            main_ws.cell(row=stats_start_row, column=stats_start_col, value="Class Statistics")
+            main_ws.cell(row=stats_start_row, column=stats_start_col).font = Font(bold=True, size=14)
+            
+            class_stats_data = [
+                ['Metric', 'Value'],
+                ['Total Students', total_students],
+                ['Total Sessions', total_sessions],
+                ['Recorded Sessions', recorded_sessions],
+                ['Missing Sessions', missing_sessions],
+                ['Pending Sessions', pending_sessions],
+                ['Coverage %', f"{coverage_percentage:.1f}%"],
+                ['Average Attendance %', f"{avg_attendance:.1f}%"]
+            ]
+            
+            for row_offset, row_data in enumerate(class_stats_data):
+                current_row = stats_start_row + 1 + row_offset
+                for col_offset, value in enumerate(row_data):
+                    cell = main_ws.cell(row=current_row, column=stats_start_col + col_offset, value=value)
+                    cell.alignment = Alignment(horizontal='center', vertical='center')
+                    
+                    if row_offset == 0:  # Header row
+                        cell.font = header_font
+                        cell.fill = header_fill
+            
+            # Add group statistics table below class statistics
+            group_stats_start_row = stats_start_row + len(class_stats_data) + 3  # Add spacing
+            
+            main_ws.cell(row=group_stats_start_row, column=stats_start_col, value="Group Statistics")
+            main_ws.cell(row=group_stats_start_row, column=stats_start_col).font = Font(bold=True, size=14)
+            
+            # Add group stats headers
+            group_stats_headers = [
+                'Year', 'Group', 'Students', 'Total Sessions', 'Recorded', 
+                'Missing', 'Pending', 'Coverage %', 'Avg Attendance %'
+            ]
+            
+            current_row = group_stats_start_row + 1
+            for col_offset, header in enumerate(group_stats_headers):
+                cell = main_ws.cell(row=current_row, column=stats_start_col + col_offset, value=header)
+                cell.font = header_font
+                cell.fill = header_fill
+                cell.alignment = header_alignment
+            
+            # Add group stats data
+            for group_key in sorted(group_stats.keys()):
+                current_row += 1
+                stats = group_stats[group_key]
+                coverage = (stats['recorded_sessions'] / stats['total_sessions'] * 100) if stats['total_sessions'] > 0 else 0
+                avg_attendance = (stats['total_attending_students'] / stats['total_expected_students'] * 100) if stats['total_expected_students'] > 0 else 0
+                
+                group_stats_row = [
+                    stats['year'],
+                    stats['group'],
+                    stats['expected_students_count'],
+                    stats['total_sessions'],
+                    stats['recorded_sessions'],
+                    stats['missing_sessions'],
+                    stats['pending_sessions'],
+                    f"{coverage:.1f}%",
+                    f"{avg_attendance:.1f}%"
+                ]
+                
+                for col_offset, value in enumerate(group_stats_row):
+                    cell = main_ws.cell(row=current_row, column=stats_start_col + col_offset, value=value)
+                    cell.alignment = Alignment(horizontal='center', vertical='center')
+            
+            # Add Legend below group statistics
+            legend_start_row = current_row + 3  # Add spacing after group stats
+            
+            main_ws.cell(row=legend_start_row, column=stats_start_col, value="Legend")
+            main_ws.cell(row=legend_start_row, column=stats_start_col).font = Font(bold=True, size=14)
+            
+            legend_data = [
+                ['Status', 'Color', 'Description'],
+                ['Recorded', 'Green', 'Session recorded'],
+                ['Not Recorded', 'Red', 'Session missed'],
+                ['Pending', 'Yellow', 'Future session']
+            ]
+            
+            for row_offset, row_data in enumerate(legend_data):
+                current_row = legend_start_row + 1 + row_offset
+                for col_offset, value in enumerate(row_data):
+                    cell = main_ws.cell(row=current_row, column=stats_start_col + col_offset, value=value)
+                    cell.alignment = Alignment(horizontal='center', vertical='center')
+                    
+                    if row_offset == 0:  # Header row
+                        cell.font = header_font
+                        cell.fill = header_fill
+                    elif row_offset == 1:  # Green row
+                        if col_offset == 1:
+                            cell.fill = recorded_fill
+                    elif row_offset == 2:  # Red row
+                        if col_offset == 1:
+                            cell.fill = not_recorded_fill
+                    elif row_offset == 3:  # Yellow row
+                        if col_offset == 1:
+                            cell.fill = pending_fill
+            
+            # Auto-size columns for statistics and legend tables
+            for col_num in range(stats_start_col, stats_start_col + 9):  # K to S
+                max_length = 0
+                column_letter = get_column_letter(col_num)
+                
+                for row in main_ws.iter_rows(min_col=col_num, max_col=col_num):
+                    for cell in row:
+                        try:
+                            if cell.value and len(str(cell.value)) > max_length:
+                                max_length = len(str(cell.value))
+                        except:
+                            pass
+                
+                adjusted_width = min(max_length + 2, 25)
+                main_ws.column_dimensions[column_letter].width = adjusted_width
+            
+            # Save Excel file
+            wb.save(excel_filepath)
+            
+            # Return both file paths
+            return [excel_filepath, json_filepath]
+                
+        except Exception as e:
+            print(f"Error exporting session analysis results: {str(e)}")
+            return []
+        
+#==========================================================Automation Coder==========================================================#
+    
 class AutomatedAttendanceProcessor:
     """
     Automated attendance processor that detects files and processes all attendance reports
@@ -33,6 +691,9 @@ class AutomatedAttendanceProcessor:
         self.log_history_dir = os.path.join(self.base_dir, "log_history")
         self.schedules_dir = os.path.join(self.base_dir, "modules_schedules")
         self.reports_dir = os.path.join(self.base_dir, "attendance_reports")
+        
+        # Initialize SessionAnalyzer
+        self.session_analyzer = SessionAnalyzer()
         
         # Constants
         self.ATTENDANCE_THRESHOLD = 0.75  # Hardcoded to 75%
@@ -1629,13 +2290,8 @@ class AutomatedAttendanceProcessor:
         for module_name, data in module_groups.items():
             print(f"\nProcessing {module_name}...")
 
-            parts = module_name.split('_')
-            if len(parts) >= 2:
-                year = parts[0].replace('Y', '')
-                batch = parts[1]
-            else:
-                print(f"Invalid module name format: {module_name}. Skipping.")
-                continue
+            # Parse module information
+            year, batch, module_parsed = self.parse_module_info(module_name)
 
             reference_file = data.get('reference')
             if not reference_file:
@@ -1664,6 +2320,12 @@ class AutomatedAttendanceProcessor:
                 print(f"Error loading schedule file {schedule_file}: {str(e)}")
                 continue
 
+            # *** ADD SESSION ANALYSIS HERE ***
+            session_analysis_files = self.run_session_analysis(
+                module_name, reference_file, schedule_file, all_log_files, year, batch
+            )
+
+            # Rest of existing attendance processing code...
             report_file = data.get('report')
             if report_file:
                 report_data = self.extract_data_from_report(report_file)
@@ -1680,6 +2342,7 @@ class AutomatedAttendanceProcessor:
                 total_required = 100
                 self.ATTENDANCE_THRESHOLD = 0.75
 
+            # ... rest of existing processing code remains the same ...
             prev_student_map = {}
             prev_attendance_data = {}
             existing_transfers = {}
@@ -1717,7 +2380,7 @@ class AutomatedAttendanceProcessor:
             required_attendance = self.calculate_required_attendance(session_schedule[1:], total_required)
 
             transfer_data = self.analyze_transfer_patterns(all_transferred_students, merged_log_data,
-                                                          session_schedule[1:], current_student_map)
+                                                        session_schedule[1:], current_student_map)
 
             new_valid_attendance = self.validate_attendance_with_transfers(
                 merged_log_data, session_schedule[1:], current_student_map,
@@ -1734,8 +2397,8 @@ class AutomatedAttendanceProcessor:
             transfer_sheet_name = f"Transfers"
 
             self.create_summary_sheet(output_wb, summary_sheet_name, combined_attendance,
-                                     required_attendance, current_student_map, all_transferred_students,
-                                     transfer_data, f"Year {year}", completed_sessions, sessions_left, total_required, batch)
+                                    required_attendance, current_student_map, all_transferred_students,
+                                    transfer_data, f"Year {year}", completed_sessions, sessions_left, total_required, batch)
 
             self.create_valid_logs_sheet(output_wb, attendance_sheet_name, combined_attendance)
 
@@ -1777,6 +2440,85 @@ class AutomatedAttendanceProcessor:
                 print(f"  Error converting to JSON: {str(e)}")
 
         print("\nAutomated attendance processing completed!")
+        
+    def parse_module_info(self, module_name):
+        """Parse module name to extract year, batch, and module components"""
+        try:
+            parts = module_name.split('_')
+            if len(parts) >= 2:
+                year_part = parts[0].replace('Y', '')  # Remove Y prefix
+                batch_part = parts[1].replace('B', '')  # Remove B prefix
+                
+                # Join remaining parts as module name (everything after Y and B parts)
+                if len(parts) > 2:
+                    module_part = '_'.join(parts[2:])
+                else:
+                    module_part = "Unknown_Module"
+                    
+                return year_part, batch_part, module_part
+            else:
+                return "Unknown", "Unknown", "Unknown_Module"
+        except Exception as e:
+            print(f"Error parsing module name {module_name}: {str(e)}")
+            return "Unknown", "Unknown", "Unknown_Module"
+        
+    def run_session_analysis(self, module_name, reference_file, schedule_file, all_log_files, year, batch):
+        """Run session analysis for a specific module"""
+        try:
+            print(f"  Running session analysis for {module_name}...")
+            
+            # Get the first log file as primary (you may want to modify this logic)
+            primary_log_file = all_log_files[0] if all_log_files else None
+            if not primary_log_file:
+                print(f"  No log files available for session analysis")
+                return []
+            
+            # Parse module info for consistent naming
+            year_parsed, batch_parsed, module_parsed = self.parse_module_info(module_name)
+            
+            # Get the actual sheet names from each file
+            def get_first_sheet_name(file_path):
+                try:
+                    wb = openpyxl.load_workbook(file_path, read_only=True)
+                    return wb.sheetnames[0] if wb.sheetnames else 'Sheet1'
+                except Exception as e:
+                    print(f"    Warning: Could not read sheet names from {file_path}: {e}")
+                    return 'Sheet1'  # Fallback
+            
+            # Get actual sheet names
+            ref_sheet_name = get_first_sheet_name(reference_file)
+            log_sheet_name = get_first_sheet_name(primary_log_file)
+            schedule_sheet_name = get_first_sheet_name(schedule_file)
+            
+            print(f"    Using sheets - Reference: '{ref_sheet_name}', Log: '{log_sheet_name}', Schedule: '{schedule_sheet_name}'")
+            
+            # Run the analysis using the SessionAnalyzer with actual sheet names
+            success, message, generated_files = self.session_analyzer.analyze_sessions(
+                ref_file_path=reference_file,
+                ref_sheet=ref_sheet_name,
+                log_file_path=primary_log_file,
+                log_sheet=log_sheet_name,
+                schedule_file_path=schedule_file,
+                schedule_sheet=schedule_sheet_name,
+                year=year_parsed,
+                batch=batch_parsed,
+                module=module_parsed
+            )
+            
+            if success:
+                print(f"  Session analysis completed: {message}")
+                if generated_files:
+                    for file in generated_files:
+                        print(f"    Generated: {os.path.basename(file)}")
+                return generated_files
+            else:
+                print(f"  Session analysis failed: {message}")
+                return []
+                
+        except Exception as e:
+            print(f"  Error during session analysis: {str(e)}")
+            return []
+
 
 if __name__ == "__main__":
     # Check if we should run the automated processor
@@ -1790,3 +2532,5 @@ if __name__ == "__main__":
         print("Running automated attendance processor...")
         processor = AutomatedAttendanceProcessor()
         processor.process_all_reports()
+        
+    
