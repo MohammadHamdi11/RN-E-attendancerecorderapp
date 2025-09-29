@@ -1394,8 +1394,8 @@ class AutomatedAttendanceProcessor:
         return min_total_needed - total_attended
 
     def create_summary_sheet(self, workbook, sheet_name, combined_attendance, required_attendance,
-                         current_student_map, transferred_students, transfer_data, target_year, 
-                         completed_sessions, sessions_left, total_required_sessions, batch):
+                            current_student_map, transferred_students, transfer_data, target_year, 
+                            completed_sessions, sessions_left, total_required_sessions, batch, session_schedule):
         """
         Create a summary sheet that shows attendance statistics for each student,
         handling transferred students by validating their attendance against appropriate group schedules.
@@ -1415,20 +1415,78 @@ class AutomatedAttendanceProcessor:
 
         # Create header
         header = ["Student ID", "Name", "Year", "Group", "Email", "Status", "Percentage",
-                  "Sessions Needed", "Sessions Left", "Sessions Completed", "Total Required", "Total Attended"]
+                "Sessions Needed", "Sessions Left", "Sessions Completed", "Total Required", "Total Attended"]
 
+        # Track column indices for subject coloring
         subject_column_ranges = {}
         current_col = len(header) + 1
+
+        # Build a map of session dates and times from the schedule
+        session_datetime_map = {}
+        for row in session_schedule:
+            if len(row) >= 7:
+                year, group, subject, session_num, date, start_time, duration = row[:7]
+                group = str(group).upper() if group else ""
+                subject = str(subject).upper() if subject else ""
+                key = f"{year}-{group}"
+                
+                if key not in session_datetime_map:
+                    session_datetime_map[key] = {}
+                if subject not in session_datetime_map[key]:
+                    session_datetime_map[key][subject] = {}
+                
+                session_num_str = str(session_num)
+                if session_num_str not in session_datetime_map[key][subject]:
+                    # Format the date and time
+                    date_str = ""
+                    time_str = ""
+                    try:
+                        if hasattr(date, 'strftime'):
+                            date_str = date.strftime('%d/%m/%Y')
+                        else:
+                            date_str = str(date)
+                            
+                        if hasattr(start_time, 'strftime'):
+                            time_str = start_time.strftime('%H:%M:%S')
+                        else:
+                            time_str = str(start_time)
+                    except:
+                        date_str = str(date)
+                        time_str = str(start_time)
+                    
+                    session_datetime_map[key][subject][session_num_str] = {
+                        'date': date_str,
+                        'time': time_str
+                    }
 
         # Add subject totals and session details to header
         for subject in sorted(subjects.keys()):
             start_col = current_col
-            header.extend([f"Required {subject} (Total)", f"Attended {subject} (Total)"])
+            
+            header.extend(
+                [f"Required {subject} (Total)", f"Attended {subject} (Total)"])
             current_col += 2
-            for session in sorted(subjects[subject]["sessions"], key=lambda x: int(x) if x.isdigit() else x):
+            
+            for session in sorted(subjects[subject]["sessions"], 
+                                key=lambda x: int(x) if x.isdigit() else x):
                 for location in sorted(subjects[subject]["locations"]):
-                    header.extend([f"{subject} S{session} (Req)", f"{subject} S{session} (Att)"])
+                    # Get date and time for this session from any matching group
+                    date_time_info = ""
+                    for group_key in session_datetime_map:
+                        if subject in session_datetime_map[group_key]:
+                            if session in session_datetime_map[group_key][subject]:
+                                info = session_datetime_map[group_key][subject][session]
+                                date_time_info = f" on {info['date']} at {info['time']}"
+                                break
+                        if date_time_info:
+                            break
+                    
+                    header.extend([
+                        f"{subject} S{session}{date_time_info} (Req)",
+                        f"{subject} S{session}{date_time_info} (Att)"
+                    ])
                     current_col += 2
+            
             subject_column_ranges[subject] = (start_col, current_col - 1)
 
         sheet.append(header)
@@ -2531,9 +2589,10 @@ class AutomatedAttendanceProcessor:
             transfer_sheet_name = f"Transfers"
 
             # Create sheets
-            self.create_summary_sheet(output_wb, summary_sheet_name, combined_attendance,
+            self.create_summary_sheet(output_wb, summary_sheet_name, combined_attendance, 
                                     required_attendance, current_student_map, all_transferred_students,
-                                    transfer_data, f"Year {year}", completed_sessions, sessions_left, total_required, batch)
+                                    transfer_data, f"Year {year}", completed_sessions, sessions_left, 
+                                    total_required, batch, session_schedule[1:])  # Add session_schedule parameter
 
             self.create_valid_logs_sheet(output_wb, attendance_sheet_name, combined_attendance)
 
