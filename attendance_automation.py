@@ -118,18 +118,33 @@ class SessionAnalyzer:
                     # Session was recorded - calculate GROUP-SPECIFIC attendance
                     group_attendance = self.get_group_specific_attendance(scheduled_session, matching_logs)
                     
-                    self.recorded_sessions.append({
-                        **scheduled_session,
-                        'recorded_by': list(unique_users),
-                        'unique_student_count': group_attendance['unique_student_count'],
-                        'expected_student_count': group_attendance['expected_student_count'],
-                        'attendance_rate': group_attendance['attendance_rate'],
-                        'total_entry_count': len(matching_logs),  # Keep total for reference
-                        'group_specific_entry_count': len(group_attendance['group_specific_logs']),
-                        'attending_student_ids': group_attendance['attending_student_ids']
-                    })
+                    # Only mark as "Recorded" if at least one valid student attended
+                    if group_attendance['unique_student_count'] > 0:
+                        self.recorded_sessions.append({
+                            **scheduled_session,
+                            'recorded_by': list(unique_users),
+                            'unique_student_count': group_attendance['unique_student_count'],
+                            'expected_student_count': group_attendance['expected_student_count'],
+                            'attendance_rate': group_attendance['attendance_rate'],
+                            'total_entry_count': len(matching_logs),
+                            'group_specific_entry_count': len(group_attendance['group_specific_logs']),
+                            'attending_student_ids': group_attendance['attending_student_ids']
+                        })
+                    else:
+                        # Logs exist but no valid students - treat as missing
+                        expected_students = self.get_expected_students_for_group(
+                            scheduled_session['year'], 
+                            scheduled_session['group']
+                        )
+                        expected_count = len(expected_students)
+                        
+                        session_copy = scheduled_session.copy()
+                        session_copy['expected_student_count'] = expected_count
+                        session_copy['warning'] = f"Logs found ({len(matching_logs)}) but no valid students from this group"
+                        self.missing_sessions.append(session_copy)
                 else:
-                    # Session is missing
+                    # ← ADD THIS ELSE BLOCK
+                    # Session is completely missing (no logs at all)
                     expected_students = self.get_expected_students_for_group(
                         scheduled_session['year'], 
                         scheduled_session['group']
@@ -229,18 +244,33 @@ class SessionAnalyzer:
                     # Session was recorded - calculate GROUP-SPECIFIC attendance
                     group_attendance = self.get_group_specific_attendance(scheduled_session, matching_logs)
                     
-                    self.recorded_sessions.append({
-                        **scheduled_session,
-                        'recorded_by': list(unique_users),
-                        'unique_student_count': group_attendance['unique_student_count'],
-                        'expected_student_count': group_attendance['expected_student_count'],
-                        'attendance_rate': group_attendance['attendance_rate'],
-                        'total_entry_count': len(matching_logs),  # Keep total for reference
-                        'group_specific_entry_count': len(group_attendance['group_specific_logs']),
-                        'attending_student_ids': group_attendance['attending_student_ids']
-                    })
+                    # Only mark as "Recorded" if at least one valid student attended
+                    if group_attendance['unique_student_count'] > 0:
+                        self.recorded_sessions.append({
+                            **scheduled_session,
+                            'recorded_by': list(unique_users),
+                            'unique_student_count': group_attendance['unique_student_count'],
+                            'expected_student_count': group_attendance['expected_student_count'],
+                            'attendance_rate': group_attendance['attendance_rate'],
+                            'total_entry_count': len(matching_logs),
+                            'group_specific_entry_count': len(group_attendance['group_specific_logs']),
+                            'attending_student_ids': group_attendance['attending_student_ids']
+                        })
+                    else:
+                        # Logs exist but no valid students - treat as missing
+                        expected_students = self.get_expected_students_for_group(
+                            scheduled_session['year'], 
+                            scheduled_session['group']
+                        )
+                        expected_count = len(expected_students)
+                        
+                        session_copy = scheduled_session.copy()
+                        session_copy['expected_student_count'] = expected_count
+                        session_copy['warning'] = f"Logs found ({len(matching_logs)}) but no valid students from this group"
+                        self.missing_sessions.append(session_copy)
                 else:
-                    # Session is missing
+                    # ← ADD THIS ELSE BLOCK
+                    # Session is completely missing (no logs at all)
                     expected_students = self.get_expected_students_for_group(
                         scheduled_session['year'], 
                         scheduled_session['group']
