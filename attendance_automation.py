@@ -1021,7 +1021,7 @@ class AutomatedAttendanceProcessor:
             return None
     
     def merge_log_files(self, log_files):
-        """Merge all log files into a single dataset"""
+        """Merge all log files into a single dataset, reading ALL sheets from each workbook"""
         print(f"Merging {len(log_files)} log files...")
         
         all_log_data = []
@@ -1030,24 +1030,27 @@ class AutomatedAttendanceProcessor:
         for log_file in log_files:
             try:
                 wb = openpyxl.load_workbook(log_file)
-                ws = wb.active
-                log_data = list(ws.values)
                 
-                if not log_data:
-                    continue
-                
-                # Use the first file's header, skip headers from other files
-                if header_row is None:
-                    header_row = log_data[0]
-                    all_log_data.append(header_row)
-                
-                # Add data rows (skip header if it's not the first file)
-                start_idx = 1 if len(all_log_data) > 0 else 0
-                for row in log_data[start_idx:]:
-                    if row and any(cell is not None for cell in row):  # Skip empty rows
-                        all_log_data.append(row)
-                
-                print(f"  Added {len(log_data) - 1} rows from {os.path.basename(log_file)}")
+                # Iterate through ALL sheets in the workbook
+                for sheet_name in wb.sheetnames:
+                    ws = wb[sheet_name]
+                    log_data = list(ws.values)
+                    
+                    if not log_data:
+                        continue
+                    
+                    # Use the first file's first sheet's header
+                    if header_row is None:
+                        header_row = log_data[0]
+                        all_log_data.append(header_row)
+                    
+                    # Add data rows (skip header for subsequent sheets/files)
+                    start_idx = 1 if len(all_log_data) > 0 else 0
+                    for row in log_data[start_idx:]:
+                        if row and any(cell is not None for cell in row):  # Skip empty rows
+                            all_log_data.append(row)
+                    
+                    print(f"  Added {len(log_data) - 1} rows from {os.path.basename(log_file)} - Sheet: {sheet_name}")
                 
             except Exception as e:
                 print(f"Error reading log file {log_file}: {str(e)}")
