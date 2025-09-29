@@ -1,8 +1,8 @@
 {
   "metadata": {
-    "export_timestamp": "2025-09-29T11:41:59.403604",
+    "export_timestamp": "2025-09-29T12:17:56.176876",
     "year": "2",
-    "batch": "2025/2026",
+    "batch": "2526",
     "module": "Blood_&_lymphatics",
     "export_note": "Contains main session data only, without statistics tables"
   },
@@ -36,7 +36,7 @@
       "unique_student_count": 0,
       "expected_student_count": 217,
       "attendance_rate": 0.0,
-      "total_entry_count": 253,
+      "total_entry_count": 387,
       "group_specific_entry_count": 0,
       "attending_student_ids": [],
       "status": "Recorded"
@@ -68,15 +68,13 @@
       "start_time": "14:00:00",
       "raw_date": "28/09/2025",
       "raw_time": "14:00:00",
-      "recorded_by": "",
-      "unique_student_count": 1,
+      "recorded_by": "youstina.magdy@med.asu.edu.eg, ola.m.abdelfattah@med.asu.edu.eg, Monica.Eshak@med.asu.edu.eg, nardine.alfonse@med.asu.edu.eg",
+      "unique_student_count": 0,
       "expected_student_count": 217,
-      "attendance_rate": 0.4608294930875576,
-      "total_entry_count": 1,
-      "group_specific_entry_count": 1,
-      "attending_student_ids": [
-        "2410060"
-      ],
+      "attendance_rate": 0.0,
+      "total_entry_count": 214,
+      "group_specific_entry_count": 0,
+      "attending_student_ids": [],
       "status": "Recorded"
     },
     {
@@ -88,16 +86,12 @@
       "start_time": "14:00:00",
       "raw_date": "30/09/2025",
       "raw_time": "14:00:00",
-      "recorded_by": "",
-      "unique_student_count": 1,
       "expected_student_count": 217,
-      "attendance_rate": 0.4608294930875576,
-      "total_entry_count": 1,
-      "group_specific_entry_count": 1,
-      "attending_student_ids": [
-        "2410050"
-      ],
-      "status": "Recorded"
+      "unique_student_count": 0,
+      "attendance_rate": 0,
+      "recorded_by": "",
+      "total_entry_count": 0,
+      "status": "Pending"
     },
     {
       "year": "Year 2",
@@ -128,7 +122,7 @@
       "unique_student_count": 0,
       "expected_student_count": 216,
       "attendance_rate": 0.0,
-      "total_entry_count": 253,
+      "total_entry_count": 387,
       "group_specific_entry_count": 0,
       "attending_student_ids": [],
       "status": "Recorded"
@@ -160,11 +154,11 @@
       "start_time": "12:00:00",
       "raw_date": "28/09/2025",
       "raw_time": "12:00:00",
-      "recorded_by": "",
+      "recorded_by": "youstina.magdy@med.asu.edu.eg, ola.m.abdelfattah@med.asu.edu.eg, Monica.Eshak@med.asu.edu.eg, nardine.alfonse@med.asu.edu.eg",
       "unique_student_count": 0,
       "expected_student_count": 216,
       "attendance_rate": 0.0,
-      "total_entry_count": 1,
+      "total_entry_count": 214,
       "group_specific_entry_count": 0,
       "attending_student_ids": [],
       "status": "Recorded"
@@ -194,14 +188,12 @@
       "start_time": "12:00:00",
       "raw_date": "30/09/2025",
       "raw_time": "12:00:00",
-      "recorded_by": "",
-      "unique_student_count": 0,
       "expected_student_count": 216,
-      "attendance_rate": 0.0,
-      "total_entry_count": 1,
-      "group_specific_entry_count": 0,
-      "attending_student_ids": [],
-      "status": "Recorded"
+      "unique_student_count": 0,
+      "attendance_rate": 0,
+      "recorded_by": "",
+      "total_entry_count": 0,
+      "status": "Pending"
     },
     {
       "year": "Year 2",
@@ -436,11 +428,11 @@
       "start_time": "12:00:00",
       "raw_date": "28/09/2025",
       "raw_time": "12:00:00",
-      "recorded_by": "wessam.atef@med.asu.edu.eg, mariam.noureldin@med.asu.edu.eg, Safa.hany@med.asu.edu.eg",
+      "recorded_by": "wessam.atef@med.asu.edu.eg, mariam.noureldin@med.asu.edu.eg, Safa.hany@med.asu.edu.eg, Omnia.Mohammed@med.asu.edu.eg",
       "unique_student_count": 0,
       "expected_student_count": 154,
       "attendance_rate": 0.0,
-      "total_entry_count": 162,
+      "total_entry_count": 301,
       "group_specific_entry_count": 0,
       "attending_student_ids": [],
       "status": "Recorded"
@@ -518,11 +510,11 @@
       "start_time": "14:00:00",
       "raw_date": "28/09/2025",
       "raw_time": "14:00:00",
-      "recorded_by": "wessam.atef@med.asu.edu.eg, mariam.noureldin@med.asu.edu.eg, Safa.hany@med.asu.edu.eg",
+      "recorded_by": "wessam.atef@med.asu.edu.eg, mariam.noureldin@med.asu.edu.eg, Safa.hany@med.asu.edu.eg, Omnia.Mohammed@med.asu.edu.eg",
       "unique_student_count": 0,
       "expected_student_count": 224,
       "attendance_rate": 0.0,
-      "total_entry_count": 162,
+      "total_entry_count": 301,
       "group_specific_entry_count": 0,
       "attending_student_ids": [],
       "status": "Recorded"
@@ -568,14 +560,12 @@
       "start_time": "15:00:00",
       "raw_date": "30/09/2025",
       "raw_time": "15:00:00",
-      "recorded_by": "",
-      "unique_student_count": 0,
       "expected_student_count": 224,
-      "attendance_rate": 0.0,
-      "total_entry_count": 1,
-      "group_specific_entry_count": 0,
-      "attending_student_ids": [],
-      "status": "Recorded"
+      "unique_student_count": 0,
+      "attendance_rate": 0,
+      "recorded_by": "",
+      "total_entry_count": 0,
+      "status": "Pending"
     },
     {
       "year": "Year 2",
@@ -622,7 +612,7 @@
       "unique_student_count": 0,
       "expected_student_count": 224,
       "attendance_rate": 0.0,
-      "total_entry_count": 314,
+      "total_entry_count": 345,
       "group_specific_entry_count": 0,
       "attending_student_ids": [],
       "status": "Recorded"
@@ -636,12 +626,14 @@
       "start_time": "10:00:00",
       "raw_date": "29/09/2025",
       "raw_time": "10:00:00",
-      "expected_student_count": 224,
+      "recorded_by": "aya.hanafy@med.asu.edu.eg, marinasorial@med.asu.edu.eg, yasmin.m.senosy@med.asu.edu.eg, shorokmohamed@med.asu.edu.eg, neveen.nashaat@med.asu.edu.eg, ola.m.abdelfattah@med.asu.edu.eg, Remon.Matta@med.asu.edu.eg, nardine.alfonse@med.asu.edu.eg",
       "unique_student_count": 0,
-      "attendance_rate": 0,
-      "recorded_by": "",
-      "total_entry_count": 0,
-      "status": "Not Recorded"
+      "expected_student_count": 224,
+      "attendance_rate": 0.0,
+      "total_entry_count": 451,
+      "group_specific_entry_count": 0,
+      "attending_student_ids": [],
+      "status": "Recorded"
     },
     {
       "year": "Year 2",
@@ -652,14 +644,12 @@
       "start_time": "13:00:00",
       "raw_date": "30/09/2025",
       "raw_time": "13:00:00",
-      "recorded_by": "",
-      "unique_student_count": 0,
       "expected_student_count": 224,
-      "attendance_rate": 0.0,
-      "total_entry_count": 1,
-      "group_specific_entry_count": 0,
-      "attending_student_ids": [],
-      "status": "Recorded"
+      "unique_student_count": 0,
+      "attendance_rate": 0,
+      "recorded_by": "",
+      "total_entry_count": 0,
+      "status": "Pending"
     },
     {
       "year": "Year 2",
@@ -706,7 +696,7 @@
       "unique_student_count": 0,
       "expected_student_count": 226,
       "attendance_rate": 0.0,
-      "total_entry_count": 314,
+      "total_entry_count": 345,
       "group_specific_entry_count": 0,
       "attending_student_ids": [],
       "status": "Recorded"
@@ -720,12 +710,14 @@
       "start_time": "08:00:00",
       "raw_date": "29/09/2025",
       "raw_time": "08:00:00",
-      "expected_student_count": 226,
+      "recorded_by": "aya.hanafy@med.asu.edu.eg, marinasorial@med.asu.edu.eg, yasmin.m.senosy@med.asu.edu.eg, shorokmohamed@med.asu.edu.eg, neveen.nashaat@med.asu.edu.eg, ola.m.abdelfattah@med.asu.edu.eg, Remon.Matta@med.asu.edu.eg, nardine.alfonse@med.asu.edu.eg",
       "unique_student_count": 0,
-      "attendance_rate": 0,
-      "recorded_by": "",
-      "total_entry_count": 0,
-      "status": "Not Recorded"
+      "expected_student_count": 226,
+      "attendance_rate": 0.0,
+      "total_entry_count": 451,
+      "group_specific_entry_count": 0,
+      "attending_student_ids": [],
+      "status": "Recorded"
     },
     {
       "year": "Year 2",
