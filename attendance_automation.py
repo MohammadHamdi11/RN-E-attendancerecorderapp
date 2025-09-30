@@ -1535,8 +1535,8 @@ class AutomatedAttendanceProcessor:
                             break
                     
                     header.extend([
-                        f"{subject} S{session}{date_time_info} (Req)",
-                        f"{subject} S{session}{date_time_info} (Att)"
+                        f"{subject} S{session} (Req)",
+                        f"{subject} S{session} (Att)"
                     ])
                     current_col += 2
             
