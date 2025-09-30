@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "export_timestamp": "2025-09-30T07:14:00.094321",
+    "export_timestamp": "2025-09-30T14:56:53.668578",
     "year": "2",
     "batch": "2526",
     "module": "Blood_&_lymphatics",
@@ -264,7 +264,7 @@
       "attendance_rate": 0,
       "recorded_by": "",
       "total_entry_count": 0,
-      "status": "Pending"
+      "status": "Not Recorded"
     },
     {
       "year": "Year 2",
@@ -539,7 +539,7 @@
       "attendance_rate": 0,
       "recorded_by": "",
       "total_entry_count": 0,
-      "status": "Pending"
+      "status": "Not Recorded"
     },
     {
       "year": "Year 2",
@@ -727,11 +727,12 @@
       "raw_date": "30/09/2025",
       "raw_time": "12:00:00",
       "expected_student_count": 220,
+      "warning": "Logs found (82) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
       "total_entry_count": 0,
-      "status": "Pending"
+      "status": "Not Recorded"
     },
     {
       "year": "Year 2",
@@ -775,12 +776,12 @@
       "raw_date": "30/09/2025",
       "raw_time": "14:00:00",
       "expected_student_count": 220,
-      "warning": "Logs found (96) but no valid students from this group",
+      "warning": "Logs found (414) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
       "total_entry_count": 0,
-      "status": "Pending"
+      "status": "Not Recorded"
     },
     {
       "year": "Year 2",
@@ -1032,11 +1033,12 @@
       "raw_date": "30/09/2025",
       "raw_time": "14:00:00",
       "expected_student_count": 225,
+      "warning": "Logs found (82) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
       "total_entry_count": 0,
-      "status": "Pending"
+      "status": "Not Recorded"
     },
     {
       "year": "Year 2",
@@ -1048,12 +1050,12 @@
       "raw_date": "30/09/2025",
       "raw_time": "12:00:00",
       "expected_student_count": 225,
-      "warning": "Logs found (96) but no valid students from this group",
+      "warning": "Logs found (414) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
       "total_entry_count": 0,
-      "status": "Pending"
+      "status": "Not Recorded"
     },
     {
       "year": "Year 2",
@@ -1226,11 +1228,12 @@
       "raw_date": "30/09/2025",
       "raw_time": "14:00:00",
       "expected_student_count": 154,
+      "warning": "Logs found (1187) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
       "total_entry_count": 0,
-      "status": "Pending"
+      "status": "Not Recorded"
     },
     {
       "year": "Year 2",
@@ -1835,7 +1838,7 @@
       "raw_date": "29/09/2025",
       "raw_time": "10:00:00",
       "expected_student_count": 224,
-      "warning": "Logs found (492) but no valid students from this group",
+      "warning": "Logs found (529) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
@@ -1872,7 +1875,7 @@
       "attendance_rate": 0,
       "recorded_by": "",
       "total_entry_count": 0,
-      "status": "Pending"
+      "status": "Not Recorded"
     },
     {
       "year": "Year 2",
@@ -2109,7 +2112,7 @@
       "raw_date": "29/09/2025",
       "raw_time": "08:00:00",
       "expected_student_count": 226,
-      "warning": "Logs found (492) but no valid students from this group",
+      "warning": "Logs found (529) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
@@ -2194,7 +2197,7 @@
       "attendance_rate": 0,
       "recorded_by": "",
       "total_entry_count": 0,
-      "status": "Pending"
+      "status": "Not Recorded"
     },
     {
       "year": "Year 2",
