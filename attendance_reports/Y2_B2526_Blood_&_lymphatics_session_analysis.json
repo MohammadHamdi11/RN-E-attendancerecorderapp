@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "export_timestamp": "2025-09-30T14:56:53.668578",
+    "export_timestamp": "2025-09-30T20:19:15.705086",
     "year": "2",
     "batch": "2526",
     "module": "Blood_&_lymphatics",
@@ -647,6 +647,7 @@
       "raw_date": "28/09/2025",
       "raw_time": "12:00:00",
       "expected_student_count": 220,
+      "warning": "Logs found (328) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
@@ -921,6 +922,7 @@
       "raw_date": "28/09/2025",
       "raw_time": "14:00:00",
       "expected_student_count": 225,
+      "warning": "Logs found (328) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
@@ -1601,7 +1603,7 @@
       "attendance_rate": 0,
       "recorded_by": "",
       "total_entry_count": 0,
-      "status": "Pending"
+      "status": "Not Recorded"
     },
     {
       "year": "Year 2",
