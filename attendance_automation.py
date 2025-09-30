@@ -863,6 +863,26 @@ class AutomatedAttendanceProcessor:
             "clinical": {"bg": "333333", "text": "FFFFFF"},
             "other": {"bg": "000000", "text": "FFFFFF"}
         }
+        
+    def normalize_date_str(self, date_val):
+        """Normalize date strings to consistent DD/MM/YYYY format"""
+        try:
+            if isinstance(date_val, datetime):
+                return date_val.strftime('%d/%m/%Y')
+            elif isinstance(date_val, date):
+                return date_val.strftime('%d/%m/%Y')
+            elif isinstance(date_val, str):
+                # Try to parse and reformat
+                date_val = date_val.strip()  # Remove extra spaces
+                for fmt in ['%d/%m/%Y', '%d/%#m/%Y', '%#d/%m/%Y', '%#d/%#m/%Y']:
+                    try:
+                        parsed = datetime.strptime(date_val, fmt)
+                        return parsed.strftime('%d/%m/%Y')
+                    except:
+                        continue
+            return str(date_val)
+        except:
+            return str(date_val)
     
     def detect_files(self):
         """Detect all files in the directory structure and organize them by complete module name"""
@@ -2089,9 +2109,8 @@ class AutomatedAttendanceProcessor:
         return None
 
     def validate_attendance_with_transfers(self, log_history, session_schedule, student_map, 
-                                      transferred_students, transfer_data, target_year):
+                                    transferred_students, transfer_data, target_year):
         """Validate attendance considering student transfers"""
-        # Note: Time windows are now calculated dynamically based on session duration
         valid_attendance = {}
         session_map = {}
         unique_logs = set()  # This tracks unique session attendance to prevent duplicates
@@ -2099,55 +2118,57 @@ class AutomatedAttendanceProcessor:
         # Build session maps for all groups
         for row in session_schedule:
             if len(row) >= 7:  # Ensure we have all needed fields including duration
-                year, group, subject, session_num, date, start_time, duration = row[:7]  # Adjusted indices
+                year, group, subject, session_num, date, start_time, duration = row[:7]
 
                 # CONVERT TO UPPERCASE FOR CASE-INSENSITIVE MATCHING
                 group = str(group).upper() if group else ""                
                 subject = str(subject).upper() if subject else ""
-                key = f"{year}-{group}"       
-                         
+                key = f"{year}-{group}"
+                
                 session_datetime = self.parse_datetime(date, start_time)
                 if not session_datetime:
                     continue
-    
+
                 # Convert session_num to string for consistent handling
                 session_num = str(session_num)
                 
                 # Parse duration (convert to float and handle potential None values)
                 try:
-                    session_duration = float(duration) if duration is not None else 120.0  # Default to 120 minutes (2 hours) if not specified
+                    session_duration = float(duration) if duration is not None else 120.0
                 except (ValueError, TypeError):
-                    session_duration = 120.0  # Default to 120 minutes (2 hours) if parsing fails
-    
+                    session_duration = 120.0
+
                 # Create a unique key for each session that combines all relevant info
                 session_key = f"{subject}-{date}-{start_time}"  
-    
+
                 if key not in session_map:
                     session_map[key] = {}
-    
+
                 # Store complete session information including duration
                 session_map[key][session_key] = {
-                    "subject": subject,  # Only subject now, no course
+                    "subject": subject,
                     "session_num": session_num,
                     "start_time": session_datetime,
                     "date": date,
                     "duration": session_duration
                 }
 
-        # Process attendance logs
         for row in log_history[1:]:
             if len(row) >= 4:
                 student_id, location, date, time = row[:4]
                 student_id = str(student_id)
                 # CONVERT LOCATION TO UPPERCASE FOR CASE-INSENSITIVE MATCHING
                 location = str(location).upper() if location else ""
-    
+
                 if student_id in student_map:
                     student = student_map[student_id]
                     log_datetime = self.parse_datetime(date, time)
                     if not log_datetime:
                         continue
-        
+                    
+                    # FIX: Use consistent date normalization
+                    normalized_date = self.normalize_date_str(date)
+                    
                     # Only validate against the correct group based on transfer status and date
                     if student_id in transferred_students:
                         transfer_info = transfer_data.get(student_id, {})
@@ -2201,20 +2222,16 @@ class AutomatedAttendanceProcessor:
                                 # Only match logs from the same location as the session
                                 if location.lower() == session_subject.lower():  
                                     # Get session duration from the session info
-                                    session_duration = session_info.get("duration", 120.0)  # Default to 120 minutes if not found
+                                    session_duration = session_info.get("duration", 120.0)
                                     
                                     # Calculate time window based on session duration
-                                    # Allow 15 minutes before session starts
                                     before_window = timedelta(minutes=15)
-                                    # Allow attendance until session ends (duration is already in minutes)
                                     after_window = timedelta(minutes=int(session_duration))
                             
                                     # Check if log time is within the allowed window
                                     if session_start - before_window <= log_datetime <= session_start + after_window:
-                                        # Create a more specific unique_log_key that accounts for the validation group
-                                        # This prevents the same session from being counted twice if validated against
-                                        # both previous and current groups
-                                        unique_log_key = f"{student_id}-{session_info['subject']}-{session_info['session_num']}-{location}-{date}"
+                                        # FIX: Use normalized date in the unique key
+                                        unique_log_key = f"{student_id}-{session_info['subject']}-{session_info['session_num']}-{location}-{normalized_date}"
                                 
                                         # Only count each unique session attendance once
                                         if unique_log_key not in unique_logs:
@@ -2224,12 +2241,11 @@ class AutomatedAttendanceProcessor:
                                             if actual_key not in valid_attendance:
                                                 valid_attendance[actual_key] = []
                                         
-                                            # Store attendance record with information about which group was used for validation
                                             valid_attendance[actual_key].append([
                                                 student_id, student['name'], student['year'],
                                                 student['group'], student['email'], session_info['subject'],  
-                                                session_info['session_num'], location, date, time,
-                                                validation_group_name  # Add which group's schedule was used for validation
+                                                session_info['session_num'], location, normalized_date, time,
+                                                validation_group_name
                                             ])
                                     
                                             # Found a match, no need to check other sessions
@@ -2256,26 +2272,22 @@ class AutomatedAttendanceProcessor:
                     location = entry[7]
                     date = entry[8]
                 
-                    # Create a unique identifier for this attendance record
-                    unique_id = f"{student_id}-{subject}-{session_num}-{location}-{date}"
+                    # FIX: Use normalized date for uniqueness checking
+                    normalized_date = self.normalize_date_str(date)
+                    unique_id = f"{student_id}-{subject}-{session_num}-{location}-{normalized_date}"
                 
                     if unique_id not in unique_attendance_entries:
                         unique_attendance_entries.add(unique_id)
                     
                         # Add entries from previous attendance data
-                        # If the student transferred, we need to retain the original validation group
                         if student_id and student_id in transferred_students:
-                            # Copy the entry and add the previous group as validation group if not present
                             new_entry = list(entry)
-                            # Ensure we have space for the validation group
                             while len(new_entry) < 11:
                                 new_entry.append(None)
-                            # Set validation group to previous group if not already set
                             if new_entry[10] is None:
                                 new_entry[10] = transferred_students[student_id]["previous_group"]
                             combined_attendance[key].append(new_entry)
                         else:
-                            # For non-transferred students, just add the entry as is
                             combined_attendance[key].append(list(entry))
 
         # Add new attendance data, avoiding duplicates
@@ -2292,7 +2304,9 @@ class AutomatedAttendanceProcessor:
                     location = entry[7]
                     date = entry[8]
                 
-                    unique_id = f"{student_id}-{subject}-{session_num}-{location}-{date}"
+                    # FIX: Use normalized date for uniqueness checking
+                    normalized_date = self.normalize_date_str(date)
+                    unique_id = f"{student_id}-{subject}-{session_num}-{location}-{normalized_date}"
                 
                     if unique_id not in unique_attendance_entries:
                         unique_attendance_entries.add(unique_id)
