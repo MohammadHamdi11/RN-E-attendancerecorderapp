@@ -1,10 +1,10 @@
 {
   "user_email": "62c5762a867739099175c7291d4ccd1749b93539906817655bec002698bf932a",
-  "user_id": "62c5762a867739099175c7291d4ccd1749b93539906817655bec002698bf932a_1759296343561",
-  "account_created": "2025-10-01T05:25:43.561Z",
-  "last_sync": "2025-10-01T05:25:43.561Z",
+  "user_id": "62c5762a867739099175c7291d4ccd1749b93539906817655bec002698bf932a_1759296346443",
+  "account_created": "2025-10-01T05:25:46.443Z",
+  "last_sync": "2025-10-01T05:25:46.443Z",
   "total_sessions": 2,
-  "total_scans": 1,
+  "total_scans": 2,
   "sessions": [
     {
       "id": "scanner1757867486178",
@@ -21,10 +21,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "62c5762a867739099175c7291d4ccd1749b93539906817655bec002698bf932a",
-      "user_id": "62c5762a867739099175c7291d4ccd1749b93539906817655bec002698bf932a_1759296343561",
+      "user_id": "62c5762a867739099175c7291d4ccd1749b93539906817655bec002698bf932a_1759296346443",
       "created_by": "62c5762a867739099175c7291d4ccd1749b93539906817655bec002698bf932a",
-      "created_at": "2025-10-01T05:25:43.561Z",
-      "updated_at": "2025-10-01T05:25:43.561Z"
+      "created_at": "2025-10-01T05:25:46.443Z",
+      "updated_at": "2025-10-01T05:25:46.443Z"
     },
     {
       "id": "scanner1759296333121",
@@ -41,6 +41,14 @@
           "formattedTime": "08:25:40",
           "time": "2025-10-01T05:25:40.701Z",
           "isManual": false
+        },
+        {
+          "id": "1759296346250",
+          "content": "231194",
+          "timestamp": "2025-10-01T05:25:46.238Z",
+          "formattedTime": "08:25:46",
+          "time": "2025-10-01T05:25:46.238Z",
+          "isManual": false
         }
       ],
       "inProgress": true,
@@ -49,10 +57,10 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "62c5762a867739099175c7291d4ccd1749b93539906817655bec002698bf932a",
-      "user_id": "62c5762a867739099175c7291d4ccd1749b93539906817655bec002698bf932a_1759296343561",
+      "user_id": "62c5762a867739099175c7291d4ccd1749b93539906817655bec002698bf932a_1759296346443",
       "created_by": "62c5762a867739099175c7291d4ccd1749b93539906817655bec002698bf932a",
-      "created_at": "2025-10-01T05:25:43.561Z",
-      "updated_at": "2025-10-01T05:25:43.561Z"
+      "created_at": "2025-10-01T05:25:46.443Z",
+      "updated_at": "2025-10-01T05:25:46.443Z"
     }
   ]
 }
