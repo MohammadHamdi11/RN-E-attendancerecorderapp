@@ -1,8 +1,8 @@
 {
   "metadata": {
-    "export_timestamp": "2025-10-01T07:57:41.100811",
+    "export_timestamp": "2025-10-01T13:16:53.463081",
     "year": "2",
-    "batch": "2526",
+    "batch": "2025/2026",
     "module": "Blood_&_lymphatics",
     "export_note": "Contains main session data only, without statistics tables"
   },
@@ -97,7 +97,7 @@
       "raw_date": "29/09/2025",
       "raw_time": "08:00:00",
       "expected_student_count": 217,
-      "warning": "Logs found (387) but no valid students from this group",
+      "warning": "Logs found (253) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
@@ -226,13 +226,16 @@
       "start_time": "14:00:00",
       "raw_date": "28/09/2025",
       "raw_time": "14:00:00",
-      "expected_student_count": 217,
-      "warning": "Logs found (214) but no valid students from this group",
-      "unique_student_count": 0,
-      "attendance_rate": 0,
       "recorded_by": "",
-      "total_entry_count": 0,
-      "status": "Not Recorded"
+      "unique_student_count": 1,
+      "expected_student_count": 217,
+      "attendance_rate": 0.4608294930875576,
+      "total_entry_count": 1,
+      "group_specific_entry_count": 1,
+      "attending_student_ids": [
+        "2410060"
+      ],
+      "status": "Recorded"
     },
     {
       "year": "Year 2",
@@ -259,12 +262,16 @@
       "start_time": "14:00:00",
       "raw_date": "30/09/2025",
       "raw_time": "14:00:00",
-      "expected_student_count": 217,
-      "unique_student_count": 0,
-      "attendance_rate": 0,
       "recorded_by": "",
-      "total_entry_count": 0,
-      "status": "Not Recorded"
+      "unique_student_count": 1,
+      "expected_student_count": 217,
+      "attendance_rate": 0.4608294930875576,
+      "total_entry_count": 1,
+      "group_specific_entry_count": 1,
+      "attending_student_ids": [
+        "2410050"
+      ],
+      "status": "Recorded"
     },
     {
       "year": "Year 2",
@@ -372,7 +379,7 @@
       "raw_date": "29/09/2025",
       "raw_time": "10:00:00",
       "expected_student_count": 216,
-      "warning": "Logs found (387) but no valid students from this group",
+      "warning": "Logs found (253) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
@@ -502,7 +509,7 @@
       "raw_date": "28/09/2025",
       "raw_time": "12:00:00",
       "expected_student_count": 216,
-      "warning": "Logs found (214) but no valid students from this group",
+      "warning": "Logs found (1) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
@@ -535,6 +542,7 @@
       "raw_date": "30/09/2025",
       "raw_time": "12:00:00",
       "expected_student_count": 216,
+      "warning": "Logs found (1) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
@@ -647,7 +655,6 @@
       "raw_date": "28/09/2025",
       "raw_time": "12:00:00",
       "expected_student_count": 220,
-      "warning": "Logs found (328) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
@@ -728,7 +735,6 @@
       "raw_date": "30/09/2025",
       "raw_time": "12:00:00",
       "expected_student_count": 220,
-      "warning": "Logs found (82) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
@@ -777,7 +783,6 @@
       "raw_date": "30/09/2025",
       "raw_time": "14:00:00",
       "expected_student_count": 220,
-      "warning": "Logs found (426) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
@@ -814,7 +819,7 @@
       "attendance_rate": 0,
       "recorded_by": "",
       "total_entry_count": 0,
-      "status": "Pending"
+      "status": "Not Recorded"
     },
     {
       "year": "Year 2",
@@ -922,7 +927,6 @@
       "raw_date": "28/09/2025",
       "raw_time": "14:00:00",
       "expected_student_count": 225,
-      "warning": "Logs found (328) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
@@ -1035,7 +1039,6 @@
       "raw_date": "30/09/2025",
       "raw_time": "14:00:00",
       "expected_student_count": 225,
-      "warning": "Logs found (82) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
@@ -1052,7 +1055,6 @@
       "raw_date": "30/09/2025",
       "raw_time": "12:00:00",
       "expected_student_count": 225,
-      "warning": "Logs found (426) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
@@ -1089,7 +1091,7 @@
       "attendance_rate": 0,
       "recorded_by": "",
       "total_entry_count": 0,
-      "status": "Pending"
+      "status": "Not Recorded"
     },
     {
       "year": "Year 2",
@@ -1149,7 +1151,7 @@
       "raw_date": "28/09/2025",
       "raw_time": "12:00:00",
       "expected_student_count": 154,
-      "warning": "Logs found (301) but no valid students from this group",
+      "warning": "Logs found (162) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
@@ -1209,16 +1211,16 @@
       "group": "B1",
       "subject": "PARASITOLOGY",
       "session": "1",
-      "date": "07/10/2025",
+      "date": "10/07/2025",
       "start_time": "14:00:00",
-      "raw_date": "07/10/2025",
+      "raw_date": "10/07/2025",
       "raw_time": "14:00:00",
       "expected_student_count": 154,
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
       "total_entry_count": 0,
-      "status": "Pending"
+      "status": "Not Recorded"
     },
     {
       "year": "Year 2",
@@ -1230,7 +1232,6 @@
       "raw_date": "30/09/2025",
       "raw_time": "14:00:00",
       "expected_student_count": 154,
-      "warning": "Logs found (1372) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
@@ -1242,9 +1243,9 @@
       "group": "B1",
       "subject": "PARASITOLOGY",
       "session": "3",
-      "date": "12/10/2025",
+      "date": "10/12/2025",
       "start_time": "08:00:00",
-      "raw_date": "12/10/2025",
+      "raw_date": "10/12/2025",
       "raw_time": "08:00:00",
       "expected_student_count": 154,
       "unique_student_count": 0,
@@ -1295,12 +1296,11 @@
       "raw_date": "01/10/2025",
       "raw_time": "10:00:00",
       "expected_student_count": 154,
-      "warning": "Logs found (174) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
       "total_entry_count": 0,
-      "status": "Pending"
+      "status": "Not Recorded"
     },
     {
       "year": "Year 2",
@@ -1328,12 +1328,11 @@
       "raw_date": "01/10/2025",
       "raw_time": "08:00:00",
       "expected_student_count": 154,
-      "warning": "Logs found (78) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
       "total_entry_count": 0,
-      "status": "Pending"
+      "status": "Not Recorded"
     },
     {
       "year": "Year 2",
@@ -1537,7 +1536,7 @@
       "raw_date": "24/09/2025",
       "raw_time": "14:00:00",
       "expected_student_count": 224,
-      "warning": "Logs found (277) but no valid students from this group",
+      "warning": "Logs found (238) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
@@ -1570,7 +1569,7 @@
       "raw_date": "25/09/2025",
       "raw_time": "12:00:00",
       "expected_student_count": 224,
-      "warning": "Logs found (104) but no valid students from this group",
+      "warning": "Logs found (92) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
@@ -1603,12 +1602,11 @@
       "raw_date": "01/10/2025",
       "raw_time": "10:00:00",
       "expected_student_count": 224,
-      "warning": "Logs found (78) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
       "total_entry_count": 0,
-      "status": "Pending"
+      "status": "Not Recorded"
     },
     {
       "year": "Year 2",
@@ -1636,6 +1634,7 @@
       "raw_date": "30/09/2025",
       "raw_time": "15:00:00",
       "expected_student_count": 224,
+      "warning": "Logs found (1) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
@@ -1688,7 +1687,7 @@
       "attendance_rate": 0,
       "recorded_by": "",
       "total_entry_count": 0,
-      "status": "Pending"
+      "status": "Not Recorded"
     },
     {
       "year": "Year 2",
@@ -1748,12 +1747,11 @@
       "raw_date": "01/10/2025",
       "raw_time": "08:00:00",
       "expected_student_count": 224,
-      "warning": "Logs found (293) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
       "total_entry_count": 0,
-      "status": "Pending"
+      "status": "Not Recorded"
     },
     {
       "year": "Year 2",
@@ -1829,7 +1827,7 @@
       "raw_date": "29/09/2025",
       "raw_time": "08:00:00",
       "expected_student_count": 224,
-      "warning": "Logs found (345) but no valid students from this group",
+      "warning": "Logs found (314) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
@@ -1878,7 +1876,6 @@
       "raw_date": "29/09/2025",
       "raw_time": "10:00:00",
       "expected_student_count": 224,
-      "warning": "Logs found (529) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
@@ -1911,6 +1908,7 @@
       "raw_date": "30/09/2025",
       "raw_time": "13:00:00",
       "expected_student_count": 224,
+      "warning": "Logs found (1) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
@@ -1963,7 +1961,7 @@
       "attendance_rate": 0,
       "recorded_by": "",
       "total_entry_count": 0,
-      "status": "Pending"
+      "status": "Not Recorded"
     },
     {
       "year": "Year 2",
@@ -2023,12 +2021,11 @@
       "raw_date": "01/10/2025",
       "raw_time": "10:00:00",
       "expected_student_count": 226,
-      "warning": "Logs found (293) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
       "total_entry_count": 0,
-      "status": "Pending"
+      "status": "Not Recorded"
     },
     {
       "year": "Year 2",
@@ -2104,7 +2101,7 @@
       "raw_date": "29/09/2025",
       "raw_time": "10:00:00",
       "expected_student_count": 226,
-      "warning": "Logs found (345) but no valid students from this group",
+      "warning": "Logs found (314) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
@@ -2153,7 +2150,6 @@
       "raw_date": "29/09/2025",
       "raw_time": "08:00:00",
       "expected_student_count": 226,
-      "warning": "Logs found (529) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
@@ -2298,7 +2294,7 @@
       "raw_date": "29/09/2025",
       "raw_time": "08:00:00",
       "expected_student_count": 250,
-      "warning": "Logs found (387) but no valid students from this group",
+      "warning": "Logs found (253) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
@@ -2379,12 +2375,11 @@
       "raw_date": "01/10/2025",
       "raw_time": "08:00:00",
       "expected_student_count": 250,
-      "warning": "Logs found (174) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
       "total_entry_count": 0,
-      "status": "Pending"
+      "status": "Not Recorded"
     },
     {
       "year": "Year 2",
@@ -2428,7 +2423,7 @@
       "raw_date": "25/09/2025",
       "raw_time": "10:00:00",
       "expected_student_count": 250,
-      "warning": "Logs found (104) but no valid students from this group",
+      "warning": "Logs found (92) but no valid students from this group",
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
@@ -2472,16 +2467,16 @@
       "group": "C1",
       "subject": "POS",
       "session": "1",
-      "date": "05/10/2025",
+      "date": "10/05/2025",
       "start_time": "10:00:00",
-      "raw_date": "05/10/2025",
+      "raw_date": "10/05/2025",
       "raw_time": "10:00:00",
       "expected_student_count": 250,
       "unique_student_count": 0,
       "attendance_rate": 0,
       "recorded_by": "",
       "total_entry_count": 0,
-      "status": "Pending"
+      "status": "Not Recorded"
     }
   ]
 }
