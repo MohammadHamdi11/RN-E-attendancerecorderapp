@@ -1,10 +1,10 @@
 {
   "user_email": "4791e799a156631a1e6528d73ff0b32fbeeb62851b63d680bacede618e9287f5",
-  "user_id": "4791e799a156631a1e6528d73ff0b32fbeeb62851b63d680bacede618e9287f5_1759232902923",
-  "account_created": "2025-09-30T11:48:22.923Z",
-  "last_sync": "2025-09-30T11:48:22.923Z",
-  "total_sessions": 3,
-  "total_scans": 302,
+  "user_id": "4791e799a156631a1e6528d73ff0b32fbeeb62851b63d680bacede618e9287f5_1759297473464",
+  "account_created": "2025-10-01T05:44:33.464Z",
+  "last_sync": "2025-10-01T05:44:33.464Z",
+  "total_sessions": 5,
+  "total_scans": 303,
   "sessions": [
     {
       "id": "scanner1759053596983",
@@ -902,10 +902,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "4791e799a156631a1e6528d73ff0b32fbeeb62851b63d680bacede618e9287f5",
-      "user_id": "4791e799a156631a1e6528d73ff0b32fbeeb62851b63d680bacede618e9287f5_1759232902923",
+      "user_id": "4791e799a156631a1e6528d73ff0b32fbeeb62851b63d680bacede618e9287f5_1759297473464",
       "created_by": "4791e799a156631a1e6528d73ff0b32fbeeb62851b63d680bacede618e9287f5",
-      "created_at": "2025-09-30T11:48:22.923Z",
-      "updated_at": "2025-09-30T11:48:22.923Z"
+      "created_at": "2025-10-01T05:44:33.464Z",
+      "updated_at": "2025-10-01T05:44:33.464Z"
     },
     {
       "id": "scanner1759056842104",
@@ -1803,10 +1803,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "4791e799a156631a1e6528d73ff0b32fbeeb62851b63d680bacede618e9287f5",
-      "user_id": "4791e799a156631a1e6528d73ff0b32fbeeb62851b63d680bacede618e9287f5_1759232902923",
+      "user_id": "4791e799a156631a1e6528d73ff0b32fbeeb62851b63d680bacede618e9287f5_1759297473464",
       "created_by": "4791e799a156631a1e6528d73ff0b32fbeeb62851b63d680bacede618e9287f5",
-      "created_at": "2025-09-30T11:48:22.923Z",
-      "updated_at": "2025-09-30T11:48:22.923Z"
+      "created_at": "2025-10-01T05:44:33.464Z",
+      "updated_at": "2025-10-01T05:44:33.464Z"
     },
     {
       "id": "scanner1759230801811",
@@ -2479,11 +2479,58 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "backedUp": true,
-      "updated_at": "2025-09-30T11:48:22.923Z",
+      "updated_at": "2025-10-01T05:44:33.464Z",
       "user_email": "4791e799a156631a1e6528d73ff0b32fbeeb62851b63d680bacede618e9287f5",
-      "user_id": "4791e799a156631a1e6528d73ff0b32fbeeb62851b63d680bacede618e9287f5_1759232902923",
+      "user_id": "4791e799a156631a1e6528d73ff0b32fbeeb62851b63d680bacede618e9287f5_1759297473464",
       "created_by": "4791e799a156631a1e6528d73ff0b32fbeeb62851b63d680bacede618e9287f5",
-      "created_at": "2025-09-30T11:48:22.923Z"
+      "created_at": "2025-10-01T05:44:33.464Z"
+    },
+    {
+      "id": "scanner1759232920073",
+      "location": "Pharmacology",
+      "year": 2,
+      "batch": "2025/2026",
+      "dateTime": "2025-09-30T11:48:40.073Z",
+      "formattedDateTime": "30/09/2025 14:48:40",
+      "scans": [],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "interrupted",
+      "isChecklist": false,
+      "user_email": "4791e799a156631a1e6528d73ff0b32fbeeb62851b63d680bacede618e9287f5",
+      "user_id": "4791e799a156631a1e6528d73ff0b32fbeeb62851b63d680bacede618e9287f5_1759297473464",
+      "created_by": "4791e799a156631a1e6528d73ff0b32fbeeb62851b63d680bacede618e9287f5",
+      "created_at": "2025-10-01T05:44:33.464Z",
+      "updated_at": "2025-10-01T05:44:33.464Z"
+    },
+    {
+      "id": "scanner1759297458518",
+      "location": "Pharmacology",
+      "year": 2,
+      "batch": "2025/2026",
+      "dateTime": "2025-10-01T05:44:18.518Z",
+      "formattedDateTime": "01/10/2025 08:44:18",
+      "scans": [
+        {
+          "id": "1759297472669",
+          "content": "222076",
+          "timestamp": "2025-10-01T05:44:32.668Z",
+          "formattedTime": "08:44:32",
+          "time": "2025-10-01T05:44:32.668Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "4791e799a156631a1e6528d73ff0b32fbeeb62851b63d680bacede618e9287f5",
+      "user_id": "4791e799a156631a1e6528d73ff0b32fbeeb62851b63d680bacede618e9287f5_1759297473464",
+      "created_by": "4791e799a156631a1e6528d73ff0b32fbeeb62851b63d680bacede618e9287f5",
+      "created_at": "2025-10-01T05:44:33.464Z",
+      "updated_at": "2025-10-01T05:44:33.464Z"
     }
   ]
 }
