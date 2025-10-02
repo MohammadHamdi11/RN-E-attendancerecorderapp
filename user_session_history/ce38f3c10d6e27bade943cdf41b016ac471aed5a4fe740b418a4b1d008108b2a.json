@@ -1,10 +1,10 @@
 {
   "user_email": "c456674c7f9eb4fcf75c21a7005e03f9cf06fb1c2df75148046cfd49636a4822",
-  "user_id": "c456674c7f9eb4fcf75c21a7005e03f9cf06fb1c2df75148046cfd49636a4822_1759402010902",
-  "account_created": "2025-10-02T10:46:50.902Z",
-  "last_sync": "2025-10-02T10:46:50.902Z",
-  "total_sessions": 1,
-  "total_scans": 27,
+  "user_id": "c456674c7f9eb4fcf75c21a7005e03f9cf06fb1c2df75148046cfd49636a4822_1759402159135",
+  "account_created": "2025-10-02T10:49:19.135Z",
+  "last_sync": "2025-10-02T10:49:19.135Z",
+  "total_sessions": 2,
+  "total_scans": 28,
   "sessions": [
     {
       "id": "scanner1759401588762",
@@ -236,11 +236,40 @@
       "sessionType": "scanner",
       "recoveryStatus": "in_progress",
       "isChecklist": false,
+      "backedUp": true,
       "user_email": "c456674c7f9eb4fcf75c21a7005e03f9cf06fb1c2df75148046cfd49636a4822",
-      "user_id": "c456674c7f9eb4fcf75c21a7005e03f9cf06fb1c2df75148046cfd49636a4822_1759402010902",
+      "user_id": "c456674c7f9eb4fcf75c21a7005e03f9cf06fb1c2df75148046cfd49636a4822_1759402159135",
       "created_by": "c456674c7f9eb4fcf75c21a7005e03f9cf06fb1c2df75148046cfd49636a4822",
-      "created_at": "2025-10-02T10:46:50.902Z",
-      "updated_at": "2025-10-02T10:46:50.902Z"
+      "created_at": "2025-10-02T10:49:19.135Z",
+      "updated_at": "2025-10-02T10:49:19.135Z"
+    },
+    {
+      "id": "scanner1759402156256",
+      "location": "Tropical",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-10-02T10:49:16.256Z",
+      "formattedDateTime": "02/10/2025 13:49:16",
+      "scans": [
+        {
+          "id": "1759402157645",
+          "content": "221896",
+          "timestamp": "2025-10-02T10:49:17.645Z",
+          "formattedTime": "13:49:17",
+          "time": "2025-10-02T10:49:17.645Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "c456674c7f9eb4fcf75c21a7005e03f9cf06fb1c2df75148046cfd49636a4822",
+      "user_id": "c456674c7f9eb4fcf75c21a7005e03f9cf06fb1c2df75148046cfd49636a4822_1759402159135",
+      "created_by": "c456674c7f9eb4fcf75c21a7005e03f9cf06fb1c2df75148046cfd49636a4822",
+      "created_at": "2025-10-02T10:49:19.135Z",
+      "updated_at": "2025-10-02T10:49:19.135Z"
     }
   ]
 }
