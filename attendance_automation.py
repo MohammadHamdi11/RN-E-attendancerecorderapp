@@ -848,7 +848,7 @@ class AutomatedAttendanceProcessor:
         self.EXCEPTION_HOURS = [12, 1, 13, 3, 15]
         
         # Minimum number of consecutive sessions to consider a group transfer confirmed
-        self.TRANSFER_CONFIRMATION_THRESHOLD = 2
+        self.TRANSFER_CONFIRMATION_THRESHOLD = 1
         
         # Define subject colors (copied from UpdateAttendance)
         self.SUBJECT_COLORS = {
