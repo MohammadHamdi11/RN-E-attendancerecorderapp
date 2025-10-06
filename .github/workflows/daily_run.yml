@@ -6,12 +6,28 @@ permissions:
 # When to run the automation
 on:
   schedule:
-    - cron: '*/30 * * * *'  # Run daily at 3:00 AM UTC
+    - cron: '*/30 * * * *'  # Run every 30 minutes
   workflow_dispatch:      # Allow manual triggering for testing
+  push:                   # Trigger on manual uploads
+    branches:
+      - main
+    paths:  # Only trigger when these folders change
+      - 'reference_data/**'
+      - 'log_history/**'
+      - 'modules_schedules/**'
+      - 'attendance_reports/**'
+
+# Prevent concurrent runs, cancel running job when new one starts
+concurrency:
+  group: attendance-processing
+  cancel-in-progress: true
 
 jobs:
   process-attendance:
     runs-on: ubuntu-latest
+    
+    # Skip if the last commit was from the bot (prevent infinite loop)
+    if: "!contains(github.event.head_commit.message, 'Daily attendance processing')"
     
     steps:
     # Download all repository files and folders
@@ -32,13 +48,42 @@ jobs:
     - name: Run attendance processing
       run: python attendance_automation.py
         
-    # Save results back to the repository
+    # Save results back to the repository with retry logic
     - name: Commit and push results
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "Attendance Bot"
-        git add .  # Add all changes (wherever your Python script saved them)
-        git diff --staged --quiet || git commit -m "Daily attendance processing - $(date '+%Y-%m-%d %H:%M:%S')"
-        git push
+        git add .
+        
+        # Check if there are changes to commit
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+          exit 0
+        fi
+        
+        git commit -m "Daily attendance processing - $(date '+%Y-%m-%d %H:%M:%S')"
+        
+        # Retry logic with exponential backoff
+        max_attempts=5
+        attempt=1
+        while [ $attempt -le $max_attempts ]; do
+          echo "Push attempt $attempt of $max_attempts"
+          
+          if git push; then
+            echo "Push successful"
+            exit 0
+          fi
+          
+          echo "Push failed, pulling and retrying..."
+          git pull --rebase origin main
+          
+          if [ $attempt -eq $max_attempts ]; then
+            echo "Max attempts reached, failing"
+            exit 1
+          fi
+          
+          sleep $((2 ** attempt))  # Exponential backoff: 2s, 4s, 8s, 16s
+          attempt=$((attempt + 1))
+        done
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
