@@ -1,10 +1,10 @@
 {
   "user_email": "cb0d81a3315d63a6eda874dc5c916ad792c8376b2a26c075362a1d47472cb431",
-  "user_id": "cb0d81a3315d63a6eda874dc5c916ad792c8376b2a26c075362a1d47472cb431_1759737700059",
-  "account_created": "2025-10-06T08:01:40.059Z",
-  "last_sync": "2025-10-06T08:01:40.059Z",
-  "total_sessions": 2,
-  "total_scans": 181,
+  "user_id": "cb0d81a3315d63a6eda874dc5c916ad792c8376b2a26c075362a1d47472cb431_1759742279464",
+  "account_created": "2025-10-06T09:17:59.464Z",
+  "last_sync": "2025-10-06T09:17:59.464Z",
+  "total_sessions": 3,
+  "total_scans": 185,
   "sessions": [
     {
       "id": "scanner1759730152885",
@@ -21,10 +21,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "cb0d81a3315d63a6eda874dc5c916ad792c8376b2a26c075362a1d47472cb431",
-      "user_id": "cb0d81a3315d63a6eda874dc5c916ad792c8376b2a26c075362a1d47472cb431_1759737700059",
+      "user_id": "cb0d81a3315d63a6eda874dc5c916ad792c8376b2a26c075362a1d47472cb431_1759742279464",
       "created_by": "cb0d81a3315d63a6eda874dc5c916ad792c8376b2a26c075362a1d47472cb431",
-      "created_at": "2025-10-06T08:01:40.059Z",
-      "updated_at": "2025-10-06T08:01:40.059Z"
+      "created_at": "2025-10-06T09:17:59.464Z",
+      "updated_at": "2025-10-06T09:17:59.464Z"
     },
     {
       "id": "scanner1759736430501",
@@ -1481,6 +1481,59 @@
           "formattedTime": "11:01:38",
           "time": "2025-10-06T08:01:38.561Z",
           "isManual": true
+        },
+        {
+          "id": "1759737710532",
+          "content": "234324",
+          "timestamp": "2025-10-06T08:01:50.531Z",
+          "formattedTime": "11:01:50",
+          "time": "2025-10-06T08:01:50.531Z",
+          "isManual": true
+        },
+        {
+          "id": "1759737724653",
+          "content": "231133",
+          "timestamp": "2025-10-06T08:02:04.653Z",
+          "formattedTime": "11:02:04",
+          "time": "2025-10-06T08:02:04.653Z",
+          "isManual": true
+        },
+        {
+          "id": "1759737735219",
+          "content": "231423",
+          "timestamp": "2025-10-06T08:02:15.219Z",
+          "formattedTime": "11:02:15",
+          "time": "2025-10-06T08:02:15.219Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "cb0d81a3315d63a6eda874dc5c916ad792c8376b2a26c075362a1d47472cb431",
+      "user_id": "cb0d81a3315d63a6eda874dc5c916ad792c8376b2a26c075362a1d47472cb431_1759742279464",
+      "created_by": "cb0d81a3315d63a6eda874dc5c916ad792c8376b2a26c075362a1d47472cb431",
+      "created_at": "2025-10-06T09:17:59.464Z",
+      "updated_at": "2025-10-06T09:17:59.464Z"
+    },
+    {
+      "id": "scanner1759742274851",
+      "location": "Parasitology SGD/POS",
+      "year": 2,
+      "batch": "2025/2026",
+      "dateTime": "2025-10-06T09:17:54.851Z",
+      "formattedDateTime": "06/10/2025 12:17:54",
+      "scans": [
+        {
+          "id": "1759742279065",
+          "content": "241319",
+          "timestamp": "2025-10-06T09:17:59.065Z",
+          "formattedTime": "12:17:59",
+          "time": "2025-10-06T09:17:59.065Z",
+          "isManual": false
         }
       ],
       "inProgress": true,
@@ -1489,10 +1542,10 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "cb0d81a3315d63a6eda874dc5c916ad792c8376b2a26c075362a1d47472cb431",
-      "user_id": "cb0d81a3315d63a6eda874dc5c916ad792c8376b2a26c075362a1d47472cb431_1759737700059",
+      "user_id": "cb0d81a3315d63a6eda874dc5c916ad792c8376b2a26c075362a1d47472cb431_1759742279464",
       "created_by": "cb0d81a3315d63a6eda874dc5c916ad792c8376b2a26c075362a1d47472cb431",
-      "created_at": "2025-10-06T08:01:40.059Z",
-      "updated_at": "2025-10-06T08:01:40.059Z"
+      "created_at": "2025-10-06T09:17:59.464Z",
+      "updated_at": "2025-10-06T09:17:59.464Z"
     }
   ]
 }
