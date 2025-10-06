@@ -11,10 +11,7 @@ on:
   push:                   # Trigger on manual uploads
     branches:
       - main
-    paths:  # Only trigger when these folders change
-      - 'reference_data/**'
-      - 'log_history/**'
-      - 'modules_schedules/**'
+    paths:  # Only trigger when attendance_reports folder changes
       - 'attendance_reports/**'
 
 # Prevent concurrent runs, cancel running job when new one starts
