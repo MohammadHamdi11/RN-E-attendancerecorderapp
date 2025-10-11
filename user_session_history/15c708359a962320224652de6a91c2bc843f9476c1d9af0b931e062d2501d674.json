@@ -1,10 +1,10 @@
 {
   "user_email": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47",
-  "user_id": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47_1760182100937",
-  "account_created": "2025-10-11T11:28:20.937Z",
-  "last_sync": "2025-10-11T11:28:20.937Z",
+  "user_id": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47_1760182163411",
+  "account_created": "2025-10-11T11:29:23.411Z",
+  "last_sync": "2025-10-11T11:29:23.411Z",
   "total_sessions": 2,
-  "total_scans": 98,
+  "total_scans": 107,
   "sessions": [
     {
       "id": "scanner1760174048499",
@@ -774,10 +774,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47",
-      "user_id": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47_1760182100937",
+      "user_id": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47_1760182163411",
       "created_by": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47",
-      "created_at": "2025-10-11T11:28:20.937Z",
-      "updated_at": "2025-10-11T11:28:20.937Z"
+      "created_at": "2025-10-11T11:29:23.411Z",
+      "updated_at": "2025-10-11T11:29:23.411Z"
     },
     {
       "id": "scanner1760178076057",
@@ -818,6 +818,78 @@
           "formattedTime": "14:28:20",
           "time": "2025-10-11T11:28:20.214Z",
           "isManual": false
+        },
+        {
+          "id": "1760182102462",
+          "content": "231136",
+          "timestamp": "2025-10-11T11:28:22.462Z",
+          "formattedTime": "14:28:22",
+          "time": "2025-10-11T11:28:22.462Z",
+          "isManual": false
+        },
+        {
+          "id": "1760182102481",
+          "content": "231569",
+          "timestamp": "2025-10-11T11:28:22.481Z",
+          "formattedTime": "14:28:22",
+          "time": "2025-10-11T11:28:22.481Z",
+          "isManual": false
+        },
+        {
+          "id": "1760182111422",
+          "content": "231507",
+          "timestamp": "2025-10-11T11:28:31.422Z",
+          "formattedTime": "14:28:31",
+          "time": "2025-10-11T11:28:31.422Z",
+          "isManual": false
+        },
+        {
+          "id": "1760182114318",
+          "content": "231175",
+          "timestamp": "2025-10-11T11:28:34.317Z",
+          "formattedTime": "14:28:34",
+          "time": "2025-10-11T11:28:34.317Z",
+          "isManual": false
+        },
+        {
+          "id": "1760182125683",
+          "content": "241678",
+          "timestamp": "2025-10-11T11:28:45.683Z",
+          "formattedTime": "14:28:45",
+          "time": "2025-10-11T11:28:45.683Z",
+          "isManual": false
+        },
+        {
+          "id": "1760182130049",
+          "content": "231522",
+          "timestamp": "2025-10-11T11:28:50.049Z",
+          "formattedTime": "14:28:50",
+          "time": "2025-10-11T11:28:50.049Z",
+          "isManual": false
+        },
+        {
+          "id": "1760182133579",
+          "content": "231286",
+          "timestamp": "2025-10-11T11:28:53.578Z",
+          "formattedTime": "14:28:53",
+          "time": "2025-10-11T11:28:53.578Z",
+          "isManual": false
+        },
+        {
+          "id": "1760182136283",
+          "content": "231340",
+          "timestamp": "2025-10-11T11:28:56.282Z",
+          "formattedTime": "14:28:56",
+          "time": "2025-10-11T11:28:56.282Z",
+          "isManual": false
+        },
+        {
+          "id": "1760182162996",
+          "content": "241588",
+          "timestamp": "2025-10-11T11:29:22.996Z",
+          "formattedTime": "14:29:22",
+          "time": "2025-10-11T11:29:22.996Z",
+          "isManual": true
         }
       ],
       "inProgress": true,
@@ -826,10 +898,10 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47",
-      "user_id": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47_1760182100937",
+      "user_id": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47_1760182163411",
       "created_by": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47",
-      "created_at": "2025-10-11T11:28:20.937Z",
-      "updated_at": "2025-10-11T11:28:20.937Z"
+      "created_at": "2025-10-11T11:29:23.411Z",
+      "updated_at": "2025-10-11T11:29:23.411Z"
     }
   ]
 }
