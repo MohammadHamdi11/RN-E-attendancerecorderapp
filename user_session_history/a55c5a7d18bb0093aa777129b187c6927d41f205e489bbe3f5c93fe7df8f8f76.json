@@ -1,10 +1,10 @@
 {
   "user_email": "ca1ca55730586b2e96f222c9d72727558de4388ffadff883338095d74f618115",
-  "user_id": "ca1ca55730586b2e96f222c9d72727558de4388ffadff883338095d74f618115_1760186873760",
-  "account_created": "2025-10-11T12:47:53.760Z",
-  "last_sync": "2025-10-11T12:47:53.760Z",
+  "user_id": "ca1ca55730586b2e96f222c9d72727558de4388ffadff883338095d74f618115_1760186951454",
+  "account_created": "2025-10-11T12:49:11.454Z",
+  "last_sync": "2025-10-11T12:49:11.454Z",
   "total_sessions": 2,
-  "total_scans": 41,
+  "total_scans": 46,
   "sessions": [
     {
       "id": "scanner1760180591434",
@@ -341,6 +341,46 @@
           "formattedTime": "15:47:52",
           "time": "2025-10-11T12:47:52.890Z",
           "isManual": false
+        },
+        {
+          "id": "1760186896833",
+          "content": "244080",
+          "timestamp": "2025-10-11T12:48:16.832Z",
+          "formattedTime": "15:48:16",
+          "time": "2025-10-11T12:48:16.832Z",
+          "isManual": false
+        },
+        {
+          "id": "1760186909768",
+          "content": "244081",
+          "timestamp": "2025-10-11T12:48:29.768Z",
+          "formattedTime": "15:48:29",
+          "time": "2025-10-11T12:48:29.768Z",
+          "isManual": false
+        },
+        {
+          "id": "1760186919838",
+          "content": "244082",
+          "timestamp": "2025-10-11T12:48:39.838Z",
+          "formattedTime": "15:48:39",
+          "time": "2025-10-11T12:48:39.838Z",
+          "isManual": false
+        },
+        {
+          "id": "1760186926273",
+          "content": "244087",
+          "timestamp": "2025-10-11T12:48:46.273Z",
+          "formattedTime": "15:48:46",
+          "time": "2025-10-11T12:48:46.273Z",
+          "isManual": false
+        },
+        {
+          "id": "1760186950115",
+          "content": "244092",
+          "timestamp": "2025-10-11T12:49:10.115Z",
+          "formattedTime": "15:49:10",
+          "time": "2025-10-11T12:49:10.115Z",
+          "isManual": false
         }
       ],
       "inProgress": true,
@@ -349,10 +389,10 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "ca1ca55730586b2e96f222c9d72727558de4388ffadff883338095d74f618115",
-      "user_id": "ca1ca55730586b2e96f222c9d72727558de4388ffadff883338095d74f618115_1760186873760",
+      "user_id": "ca1ca55730586b2e96f222c9d72727558de4388ffadff883338095d74f618115_1760186951454",
       "created_by": "ca1ca55730586b2e96f222c9d72727558de4388ffadff883338095d74f618115",
-      "created_at": "2025-10-11T12:47:53.760Z",
-      "updated_at": "2025-10-11T12:47:53.760Z"
+      "created_at": "2025-10-11T12:49:11.454Z",
+      "updated_at": "2025-10-11T12:49:11.454Z"
     },
     {
       "id": "checklist1760186537947",
@@ -371,10 +411,10 @@
       "sessionType": "checklist",
       "recoveryStatus": "in_progress",
       "user_email": "ca1ca55730586b2e96f222c9d72727558de4388ffadff883338095d74f618115",
-      "user_id": "ca1ca55730586b2e96f222c9d72727558de4388ffadff883338095d74f618115_1760186873760",
+      "user_id": "ca1ca55730586b2e96f222c9d72727558de4388ffadff883338095d74f618115_1760186951454",
       "created_by": "ca1ca55730586b2e96f222c9d72727558de4388ffadff883338095d74f618115",
-      "created_at": "2025-10-11T12:47:53.760Z",
-      "updated_at": "2025-10-11T12:47:53.760Z"
+      "created_at": "2025-10-11T12:49:11.454Z",
+      "updated_at": "2025-10-11T12:49:11.454Z"
     }
   ]
 }
