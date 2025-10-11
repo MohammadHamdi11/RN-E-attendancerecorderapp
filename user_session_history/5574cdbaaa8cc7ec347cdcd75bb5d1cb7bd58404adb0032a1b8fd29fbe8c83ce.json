@@ -1,0 +1,58 @@
+{
+  "user_email": "e4b3a5cfab9ecc914e62b20dbd4a7a633da13875119d3793d226d0bf0bb667c6",
+  "user_id": "e4b3a5cfab9ecc914e62b20dbd4a7a633da13875119d3793d226d0bf0bb667c6_1760180514092",
+  "account_created": "2025-10-11T11:01:54.092Z",
+  "last_sync": "2025-10-11T11:01:54.092Z",
+  "total_sessions": 2,
+  "total_scans": 1,
+  "sessions": [
+    {
+      "id": "scanner1760125928438",
+      "location": "Microbiology",
+      "year": 1,
+      "batch": "2025/2026",
+      "dateTime": "2025-10-10T19:52:08.438Z",
+      "formattedDateTime": "10/10/2025 22:52:08",
+      "scans": [],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "closed_normally",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "e4b3a5cfab9ecc914e62b20dbd4a7a633da13875119d3793d226d0bf0bb667c6",
+      "user_id": "e4b3a5cfab9ecc914e62b20dbd4a7a633da13875119d3793d226d0bf0bb667c6_1760180514092",
+      "created_by": "e4b3a5cfab9ecc914e62b20dbd4a7a633da13875119d3793d226d0bf0bb667c6",
+      "created_at": "2025-10-11T11:01:54.092Z",
+      "updated_at": "2025-10-11T11:01:54.092Z"
+    },
+    {
+      "id": "scanner1760180501021",
+      "location": "Microbiology",
+      "year": 2,
+      "batch": "2025/2026",
+      "dateTime": "2025-10-11T11:01:41.021Z",
+      "formattedDateTime": "11/10/2025 14:01:41",
+      "scans": [
+        {
+          "id": "1760180512915",
+          "content": "241642",
+          "timestamp": "2025-10-11T11:01:52.911Z",
+          "formattedTime": "14:01:52",
+          "time": "2025-10-11T11:01:52.911Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "e4b3a5cfab9ecc914e62b20dbd4a7a633da13875119d3793d226d0bf0bb667c6",
+      "user_id": "e4b3a5cfab9ecc914e62b20dbd4a7a633da13875119d3793d226d0bf0bb667c6_1760180514092",
+      "created_by": "e4b3a5cfab9ecc914e62b20dbd4a7a633da13875119d3793d226d0bf0bb667c6",
+      "created_at": "2025-10-11T11:01:54.092Z",
+      "updated_at": "2025-10-11T11:01:54.092Z"
+    }
+  ]
+}
