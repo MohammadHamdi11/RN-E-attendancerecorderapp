@@ -1,10 +1,10 @@
 {
   "user_email": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47",
-  "user_id": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47_1760175115865",
-  "account_created": "2025-10-11T09:31:55.865Z",
-  "last_sync": "2025-10-11T09:31:55.865Z",
+  "user_id": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47_1760175178250",
+  "account_created": "2025-10-11T09:32:58.250Z",
+  "last_sync": "2025-10-11T09:32:58.250Z",
   "total_sessions": 1,
-  "total_scans": 1,
+  "total_scans": 2,
   "sessions": [
     {
       "id": "scanner1760174048499",
@@ -15,11 +15,19 @@
       "formattedDateTime": "11/10/2025 12:14:08",
       "scans": [
         {
-          "id": "1760174833061",
-          "content": "244183",
-          "timestamp": "2025-10-11T09:27:13.060Z",
-          "formattedTime": "12:27:13",
-          "time": "2025-10-11T09:27:13.060Z",
+          "id": "1760175171647",
+          "content": "244205",
+          "timestamp": "2025-10-11T09:32:51.646Z",
+          "formattedTime": "12:32:51",
+          "time": "2025-10-11T09:32:51.646Z",
+          "isManual": false
+        },
+        {
+          "id": "1760175178117",
+          "content": "244160",
+          "timestamp": "2025-10-11T09:32:58.117Z",
+          "formattedTime": "12:32:58",
+          "time": "2025-10-11T09:32:58.117Z",
           "isManual": false
         }
       ],
@@ -29,10 +37,10 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47",
-      "user_id": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47_1760175115865",
+      "user_id": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47_1760175178250",
       "created_by": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47",
-      "created_at": "2025-10-11T09:31:55.865Z",
-      "updated_at": "2025-10-11T09:31:55.865Z"
+      "created_at": "2025-10-11T09:32:58.250Z",
+      "updated_at": "2025-10-11T09:32:58.250Z"
     }
   ]
 }
