@@ -1,10 +1,10 @@
 {
   "user_email": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47",
-  "user_id": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47_1760176175586",
-  "account_created": "2025-10-11T09:49:35.586Z",
-  "last_sync": "2025-10-11T09:49:35.586Z",
-  "total_sessions": 1,
-  "total_scans": 91,
+  "user_id": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47_1760182100937",
+  "account_created": "2025-10-11T11:28:20.937Z",
+  "last_sync": "2025-10-11T11:28:20.937Z",
+  "total_sessions": 2,
+  "total_scans": 98,
   "sessions": [
     {
       "id": "scanner1760174048499",
@@ -741,6 +741,83 @@
           "formattedTime": "12:49:34",
           "time": "2025-10-11T09:49:34.771Z",
           "isManual": true
+        },
+        {
+          "id": "1760176183676",
+          "content": "244271",
+          "timestamp": "2025-10-11T09:49:43.675Z",
+          "formattedTime": "12:49:43",
+          "time": "2025-10-11T09:49:43.675Z",
+          "isManual": true
+        },
+        {
+          "id": "1760176192130",
+          "content": "244274",
+          "timestamp": "2025-10-11T09:49:52.129Z",
+          "formattedTime": "12:49:52",
+          "time": "2025-10-11T09:49:52.129Z",
+          "isManual": true
+        },
+        {
+          "id": "1760176198587",
+          "content": "244250",
+          "timestamp": "2025-10-11T09:49:58.586Z",
+          "formattedTime": "12:49:58",
+          "time": "2025-10-11T09:49:58.586Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "closed_normally",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47",
+      "user_id": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47_1760182100937",
+      "created_by": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47",
+      "created_at": "2025-10-11T11:28:20.937Z",
+      "updated_at": "2025-10-11T11:28:20.937Z"
+    },
+    {
+      "id": "scanner1760178076057",
+      "location": "Pharmacology",
+      "year": 2,
+      "batch": "2025/2026",
+      "dateTime": "2025-10-11T10:21:16.057Z",
+      "formattedDateTime": "11/10/2025 13:21:16",
+      "scans": [
+        {
+          "id": "1760181126006",
+          "content": "241397",
+          "timestamp": "2025-10-11T11:12:06.006Z",
+          "formattedTime": "14:12:06",
+          "time": "2025-10-11T11:12:06.006Z",
+          "isManual": false
+        },
+        {
+          "id": "1760181131003",
+          "content": "241418",
+          "timestamp": "2025-10-11T11:12:11.003Z",
+          "formattedTime": "14:12:11",
+          "time": "2025-10-11T11:12:11.003Z",
+          "isManual": false
+        },
+        {
+          "id": "1760181149888",
+          "content": "241615",
+          "timestamp": "2025-10-11T11:12:29.887Z",
+          "formattedTime": "14:12:29",
+          "time": "2025-10-11T11:12:29.887Z",
+          "isManual": true
+        },
+        {
+          "id": "1760182100215",
+          "content": "241677",
+          "timestamp": "2025-10-11T11:28:20.214Z",
+          "formattedTime": "14:28:20",
+          "time": "2025-10-11T11:28:20.214Z",
+          "isManual": false
         }
       ],
       "inProgress": true,
@@ -749,10 +826,10 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47",
-      "user_id": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47_1760176175586",
+      "user_id": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47_1760182100937",
       "created_by": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47",
-      "created_at": "2025-10-11T09:49:35.586Z",
-      "updated_at": "2025-10-11T09:49:35.586Z"
+      "created_at": "2025-10-11T11:28:20.937Z",
+      "updated_at": "2025-10-11T11:28:20.937Z"
     }
   ]
 }
