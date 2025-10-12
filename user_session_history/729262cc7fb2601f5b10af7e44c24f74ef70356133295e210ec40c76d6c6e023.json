@@ -1,0 +1,58 @@
+{
+  "user_email": "7d2cdc8fab672a910c58fdb4446c97fa22c295e53fa444c8ab65aa2bc8793171",
+  "user_id": "7d2cdc8fab672a910c58fdb4446c97fa22c295e53fa444c8ab65aa2bc8793171_1760253507352",
+  "account_created": "2025-10-12T07:18:27.352Z",
+  "last_sync": "2025-10-12T07:18:27.352Z",
+  "total_sessions": 2,
+  "total_scans": 1,
+  "sessions": [
+    {
+      "id": "scanner1757788317756",
+      "location": "Biochemistry",
+      "year": 3,
+      "batch": "2025/2026",
+      "dateTime": "2025-09-13T18:31:57.756Z",
+      "formattedDateTime": "13/09/2025 21:31:57",
+      "scans": [],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "closed_normally",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "7d2cdc8fab672a910c58fdb4446c97fa22c295e53fa444c8ab65aa2bc8793171",
+      "user_id": "7d2cdc8fab672a910c58fdb4446c97fa22c295e53fa444c8ab65aa2bc8793171_1760253507353",
+      "created_by": "7d2cdc8fab672a910c58fdb4446c97fa22c295e53fa444c8ab65aa2bc8793171",
+      "created_at": "2025-10-12T07:18:27.352Z",
+      "updated_at": "2025-10-12T07:18:27.352Z"
+    },
+    {
+      "id": "scanner1760253500143",
+      "location": "Biochemistry Lab/CBL",
+      "year": 2,
+      "batch": "2023/2024",
+      "dateTime": "2025-10-12T07:18:20.143Z",
+      "formattedDateTime": "12/10/2025 10:18:20",
+      "scans": [
+        {
+          "id": "1760253506035",
+          "content": "231269",
+          "timestamp": "2025-10-12T07:18:26.025Z",
+          "formattedTime": "10:18:26",
+          "time": "2025-10-12T07:18:26.025Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "7d2cdc8fab672a910c58fdb4446c97fa22c295e53fa444c8ab65aa2bc8793171",
+      "user_id": "7d2cdc8fab672a910c58fdb4446c97fa22c295e53fa444c8ab65aa2bc8793171_1760253507354",
+      "created_by": "7d2cdc8fab672a910c58fdb4446c97fa22c295e53fa444c8ab65aa2bc8793171",
+      "created_at": "2025-10-12T07:18:27.352Z",
+      "updated_at": "2025-10-12T07:18:27.352Z"
+    }
+  ]
+}
