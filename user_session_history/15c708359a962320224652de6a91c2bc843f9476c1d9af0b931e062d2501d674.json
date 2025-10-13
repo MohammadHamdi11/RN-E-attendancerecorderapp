@@ -1,10 +1,10 @@
 {
   "user_email": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47",
-  "user_id": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47_1760352283607",
-  "account_created": "2025-10-13T10:44:43.607Z",
-  "last_sync": "2025-10-13T10:44:43.607Z",
-  "total_sessions": 3,
-  "total_scans": 227,
+  "user_id": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47_1760354131755",
+  "account_created": "2025-10-13T11:15:31.755Z",
+  "last_sync": "2025-10-13T11:15:31.755Z",
+  "total_sessions": 4,
+  "total_scans": 228,
   "sessions": [
     {
       "id": "scanner1760174048499",
@@ -774,10 +774,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47",
-      "user_id": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47_1760352283607",
+      "user_id": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47_1760354131755",
       "created_by": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47",
-      "created_at": "2025-10-13T10:44:43.607Z",
-      "updated_at": "2025-10-13T10:44:43.607Z"
+      "created_at": "2025-10-13T11:15:31.755Z",
+      "updated_at": "2025-10-13T11:15:31.755Z"
     },
     {
       "id": "scanner1760178076057",
@@ -1667,10 +1667,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47",
-      "user_id": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47_1760352283607",
+      "user_id": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47_1760354131755",
       "created_by": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47",
-      "created_at": "2025-10-13T10:44:43.607Z",
-      "updated_at": "2025-10-13T10:44:43.607Z"
+      "created_at": "2025-10-13T11:15:31.755Z",
+      "updated_at": "2025-10-13T11:15:31.755Z"
     },
     {
       "id": "scanner1760348422333",
@@ -1876,14 +1876,42 @@
       "inProgress": false,
       "isScanner": true,
       "sessionType": "scanner",
-      "recoveryStatus": "declined_recovery",
+      "recoveryStatus": "interrupted",
       "isChecklist": false,
       "backedUp": true,
       "user_email": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47",
-      "user_id": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47_1760352283607",
+      "user_id": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47_1760354131755",
       "created_by": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47",
-      "created_at": "2025-10-13T10:44:43.607Z",
-      "updated_at": "2025-10-13T10:44:43.607Z"
+      "created_at": "2025-10-13T11:15:31.755Z",
+      "updated_at": "2025-10-13T11:15:31.755Z"
+    },
+    {
+      "id": "scanner1760352286504",
+      "location": "Pharmacology",
+      "year": 2,
+      "batch": "2025/2026",
+      "dateTime": "2025-10-13T10:44:46.504Z",
+      "formattedDateTime": "13/10/2025 13:44:46",
+      "scans": [
+        {
+          "id": "1760354130776",
+          "content": "244532",
+          "timestamp": "2025-10-13T11:15:30.773Z",
+          "formattedTime": "14:15:30",
+          "time": "2025-10-13T11:15:30.773Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47",
+      "user_id": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47_1760354131755",
+      "created_by": "8d2713030f9c3056a2c8fb05645d0b171b0edafe9c611d2d79fb8421c37aab47",
+      "created_at": "2025-10-13T11:15:31.755Z",
+      "updated_at": "2025-10-13T11:15:31.755Z"
     }
   ]
 }
