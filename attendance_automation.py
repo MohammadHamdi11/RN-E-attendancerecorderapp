@@ -36,6 +36,24 @@ class SessionAnalyzer:
         self.reference_data = []
         self.missing_sessions = []
         self.recorded_sessions = []
+        
+    def normalize_whitespace(self, text):
+        """
+        Normalize whitespace in text by:
+        1. Removing leading whitespace
+        2. Removing trailing whitespace
+        3. Collapsing multiple consecutive spaces into one
+        """
+        if not isinstance(text, str):
+            return text
+        
+        # Strip leading and trailing whitespace
+        text = text.strip()
+        
+        # Replace multiple consecutive spaces with single space
+        text = ' '.join(text.split())
+        
+        return text
     
     def analyze_sessions_with_merged_logs(self, ref_file_path, ref_sheet, merged_log_data, 
                            schedule_file_path, schedule_sheet, year, batch, module):
@@ -819,7 +837,7 @@ class SessionAnalyzer:
             return []
         
 #==========================================================Automation Coder==========================================================#
-    
+
 class AutomatedAttendanceProcessor:
     """
     Automated attendance processor that detects files and processes all attendance reports
@@ -883,6 +901,38 @@ class AutomatedAttendanceProcessor:
             return str(date_val)
         except:
             return str(date_val)
+        
+        
+    def normalize_whitespace(self, text):
+        """
+        Normalize whitespace in text by:
+        1. Removing leading whitespace
+        2. Removing trailing whitespace
+        3. Collapsing multiple consecutive spaces into one
+        """
+        if not isinstance(text, str):
+            return text
+        
+        # Strip leading and trailing whitespace
+        text = text.strip()
+        
+        # Replace multiple consecutive spaces with single space
+        text = ' '.join(text.split())
+        
+        return text
+    
+    def normalize_row_data(self, row):
+        """
+        Normalize all string values in a row by removing extra whitespace.
+        Returns a new list with normalized values.
+        """
+        normalized_row = []
+        for cell in row:
+            if isinstance(cell, str):
+                normalized_row.append(self.normalize_whitespace(cell))
+            else:
+                normalized_row.append(cell)
+        return normalized_row
     
     def detect_files(self):
         """Detect all files in the directory structure and organize them by complete module name"""
@@ -1001,17 +1051,19 @@ class AutomatedAttendanceProcessor:
                 print(f"Warning: Could not find header row in {report_file}")
                 return None
             
-            # Get header values to find column indices
+            # Get header values to find column indices - NORMALIZE WHITESPACE
             header_values = list(summary_sheet.iter_rows(min_row=header_row, max_row=header_row, values_only=True).__next__())
+            header_values = [self.normalize_whitespace(str(h)) if h else h for h in header_values]
             
             # Find column indices
             col_indices = {}
             for col_idx, cell_value in enumerate(header_values):
-                if cell_value == "Total Required":
+                normalized_value = self.normalize_whitespace(str(cell_value)) if cell_value else ""
+                if normalized_value == "Total Required":
                     col_indices["total_required"] = col_idx
-                elif cell_value == "Sessions Needed":
+                elif normalized_value == "Sessions Needed":
                     col_indices["sessions_needed"] = col_idx
-                elif cell_value == "Total Attended":
+                elif normalized_value == "Total Attended":
                     col_indices["total_attended"] = col_idx
             
             if "total_required" not in col_indices:
@@ -1032,21 +1084,18 @@ class AutomatedAttendanceProcessor:
             # Calculate threshold from a student row where "Sessions Needed" is not zero
             calculated_threshold = None
             best_row = None
-            best_sessions_needed = float('inf')  # Start with infinity to find the minimum
+            best_sessions_needed = float('inf')
             
             for row_idx, row in enumerate(summary_sheet.iter_rows(min_row=header_row+1, values_only=True)):
                 if row and len(row) > max(col_indices.values()):
                     sessions_needed = row[col_indices.get("sessions_needed", 0)]
                     total_attended = row[col_indices.get("total_attended", 0)]
                     
-                    # Check if sessions_needed is not zero and we have valid data
                     if sessions_needed is not None and sessions_needed != 0 and total_attended is not None:
-                        # Prefer rows where sessions_needed is small (student is close to passing)
                         if sessions_needed < best_sessions_needed:
                             best_sessions_needed = sessions_needed
-                            best_row = row_idx + header_row + 1  # Convert to actual row number
+                            best_row = row_idx + header_row + 1
                             
-                            # Calculate threshold: (Sessions Needed + Sessions Attended) / Total Required
                             obligatory_sessions = sessions_needed + total_attended
                             calculated_threshold = obligatory_sessions / total_required
                             
@@ -1055,9 +1104,6 @@ class AutomatedAttendanceProcessor:
             
             if calculated_threshold is None:
                 print(f"  No suitable row found for threshold calculation")
-            
-            # If no suitable row found, use default threshold
-            if calculated_threshold is None:
                 calculated_threshold = self.ATTENDANCE_THRESHOLD
                 print(f"  Using default threshold: {calculated_threshold:.1%}")
             
@@ -1089,16 +1135,18 @@ class AutomatedAttendanceProcessor:
                     if not log_data:
                         continue
                     
-                    # Use the first file's first sheet's header
+                    # NORMALIZE WHITESPACE in header row
                     if header_row is None:
-                        header_row = log_data[0]
+                        header_row = self.normalize_row_data(log_data[0])
                         all_log_data.append(header_row)
                     
                     # Add data rows (skip header for subsequent sheets/files)
+                    # NORMALIZE WHITESPACE in all data rows
                     start_idx = 1 if len(all_log_data) > 0 else 0
                     for row in log_data[start_idx:]:
-                        if row and any(cell is not None for cell in row):  # Skip empty rows
-                            all_log_data.append(row)
+                        if row and any(cell is not None for cell in row):
+                            normalized_row = self.normalize_row_data(row)
+                            all_log_data.append(normalized_row)
                     
                     print(f"  Added {len(log_data) - 1} rows from {os.path.basename(log_file)} - Sheet: {sheet_name}")
                 
@@ -1113,12 +1161,17 @@ class AutomatedAttendanceProcessor:
         student_map = {}
         for row in student_db[1:]:  # Skip header
             if row[0]:
-                student_id = str(row[0])
+                # NORMALIZE WHITESPACE in student data
+                student_id = self.normalize_whitespace(str(row[0]))
+                name = self.normalize_whitespace(str(row[1])) if row[1] else ""
+                year = row[2]
+                group = self.normalize_whitespace(str(row[3]).upper()) if row[3] else ""
                 email = f"{student_id}@med.asu.edu.eg"
+                
                 student_map[student_id] = {
-                    "name": row[1],
-                    "year": row[2],
-                    "group": str(row[3]).upper() if row[3] else "",
+                    "name": name,
+                    "year": year,
+                    "group": group,
                     "email": email
                 }
         return student_map
@@ -1137,29 +1190,31 @@ class AutomatedAttendanceProcessor:
         if not header_row:
             return student_map
             
-        # Find column indices
+        # Find column indices - NORMALIZE WHITESPACE in headers
         col_indices = {}
-        for col_idx, cell_value in enumerate(summary_sheet.iter_rows(min_row=header_row, max_row=header_row, values_only=True).__next__()):
-            if cell_value == "Student ID":
+        header_values = list(summary_sheet.iter_rows(min_row=header_row, max_row=header_row, values_only=True).__next__())
+        for col_idx, cell_value in enumerate(header_values):
+            normalized_value = self.normalize_whitespace(str(cell_value)) if cell_value else ""
+            if normalized_value == "Student ID":
                 col_indices["id"] = col_idx
-            elif cell_value == "Name":
+            elif normalized_value == "Name":
                 col_indices["name"] = col_idx
-            elif cell_value == "Year":
+            elif normalized_value == "Year":
                 col_indices["year"] = col_idx
-            elif cell_value == "Group":
+            elif normalized_value == "Group":
                 col_indices["group"] = col_idx
-            elif cell_value == "Email":
+            elif normalized_value == "Email":
                 col_indices["email"] = col_idx
         
-        # Extract student data
+        # Extract student data - NORMALIZE WHITESPACE
         for row in summary_sheet.iter_rows(min_row=header_row+1, values_only=True):
             if row and row[col_indices["id"]]:
-                student_id = str(row[col_indices["id"]])
+                student_id = self.normalize_whitespace(str(row[col_indices["id"]]))
                 student_map[student_id] = {
-                    "name": row[col_indices["name"]],
+                    "name": self.normalize_whitespace(str(row[col_indices["name"]])) if row[col_indices["name"]] else "",
                     "year": row[col_indices["year"]],
-                    "group": row[col_indices["group"]],
-                    "email": row[col_indices["email"]]
+                    "group": self.normalize_whitespace(str(row[col_indices["group"]])) if row[col_indices["group"]] else "",
+                    "email": self.normalize_whitespace(str(row[col_indices["email"]])) if row[col_indices["email"]] else ""
                 }
         
         return student_map
@@ -1171,7 +1226,7 @@ class AutomatedAttendanceProcessor:
         for student_id, prev_data in prev_student_map.items():
             if student_id in current_student_map:
                 current_data = current_student_map[student_id]
-                # Check if the group has changed
+                # Check if the group has changed (both already normalized to uppercase)
                 if prev_data["group"] != current_data["group"]:
                     transferred_students[student_id] = {
                         "previous_group": prev_data["group"],
@@ -1197,20 +1252,22 @@ class AutomatedAttendanceProcessor:
         if not header_row:
             return attendance_data
         
-        # Extract attendance entries
+        # Extract attendance entries - NORMALIZE WHITESPACE
         for row in attendance_sheet.iter_rows(min_row=header_row+1, values_only=True):
-            if row and len(row) >= 10:  # Ensure all needed fields are present
-                student_id = str(row[0])
-                student_year = row[2]
-                student_group = row[3]
+            if row and len(row) >= 10:
+                # Normalize the row data
+                normalized_row = self.normalize_row_data(list(row))
+                
+                student_id = str(normalized_row[0])
+                student_year = normalized_row[2]
+                student_group = normalized_row[3]  # Already normalized
                 
                 key = f"{student_year}-{student_group}"
                 
                 if key not in attendance_data:
                     attendance_data[key] = []
                 
-                # Store the complete attendance entry
-                attendance_data[key].append(list(row))
+                attendance_data[key].append(normalized_row)
         
         return attendance_data
     
@@ -1223,10 +1280,12 @@ class AutomatedAttendanceProcessor:
         sessions_by_group = {}
         
         for row in session_schedule:
-            if len(row) >= 7:  # Ensure we have year, group, subject, session_num, date, time, duration
-                year, group, subject, session_num, date, start_time, duration = row[:7]
+            if len(row) >= 7:
+                # NORMALIZE WHITESPACE in schedule data
+                normalized_row = self.normalize_row_data(row)
+                year, group, subject, session_num, date, start_time, duration = normalized_row[:7]
                 
-                # CONVERT TO UPPERCASE FOR CASE-INSENSITIVE MATCHING
+                # Convert to uppercase for case-insensitive matching (already normalized)
                 group = str(group).upper() if group else ""
                 subject = str(subject).upper() if subject else ""
                 key = f"{year}-{group}"
@@ -1263,10 +1322,12 @@ class AutomatedAttendanceProcessor:
     
         # Process each row in the schedule
         for row in session_schedule:
-            if len(row) >= 4:  # Ensure we have at least year, group, subject, session_num
-                year, group, subject, session_num = row[:4]  # Note: Now subject is in column 3 
+            if len(row) >= 4:
+                # NORMALIZE WHITESPACE in schedule data
+                normalized_row = self.normalize_row_data(row)
+                year, group, subject, session_num = normalized_row[:4]
 
-                # CONVERT TO UPPERCASE FOR CASE-INSENSITIVE MATCHING
+                # Convert to uppercase for case-insensitive matching (already normalized)
                 group = str(group).upper() if group else ""                
                 subject = str(subject).upper() if subject else ""
                 key = f"{year}-{group}"            
@@ -1275,23 +1336,22 @@ class AutomatedAttendanceProcessor:
                 if key not in required_attendance:
                     required_attendance[key] = {}
                 
-                if subject not in required_attendance[key]:  # Use subject where course was used
-                    required_attendance[key][subject] = {  
+                if subject not in required_attendance[key]:
+                    required_attendance[key][subject] = {
                         "total": 0,
                         "sessions": {}
                     }
                 
-                if session_num not in required_attendance[key][subject]["sessions"]:  
-                    required_attendance[key][subject]["sessions"][session_num] = {  
+                if session_num not in required_attendance[key][subject]["sessions"]:
+                    required_attendance[key][subject]["sessions"][session_num] = {
                         "total": 0,
-                        "locations": {}  
+                        "locations": {}
                     }
                 
-                if subject not in required_attendance[key][subject]["sessions"][session_num]["locations"]:  
-                    # This is a new unique session-location combination
-                    required_attendance[key][subject]["sessions"][session_num]["locations"][subject] = 1  
-                    required_attendance[key][subject]["sessions"][session_num]["total"] += 1  
-                    required_attendance[key][subject]["total"] += 1  
+                if subject not in required_attendance[key][subject]["sessions"][session_num]["locations"]:
+                    required_attendance[key][subject]["sessions"][session_num]["locations"][subject] = 1
+                    required_attendance[key][subject]["sessions"][session_num]["total"] += 1
+                    required_attendance[key][subject]["total"] += 1
     
         return required_attendance
     
@@ -1302,47 +1362,43 @@ class AutomatedAttendanceProcessor:
 
             # Convert date to datetime.date object
             if hasattr(date_val, 'year') and hasattr(date_val, 'month') and hasattr(date_val, 'day'):
-                # It's already a date-like object with year, month, day attributes
-                if hasattr(date_val, 'hour'):  # It's a datetime object
+                if hasattr(date_val, 'hour'):
                     date_part = date_val.date()
-                else:  # It's a date object
+                else:
                     date_part = date_val
-            else:  # It's a string or other format
-                # Try different date formats
+            else:
+                # NORMALIZE WHITESPACE for string dates
+                date_str = self.normalize_whitespace(str(date_val)) if isinstance(date_val, str) else str(date_val)
                 try:
-                    date_part = datetime.strptime(str(date_val), '%d/%m/%Y').date()
+                    date_part = datetime.strptime(date_str, '%d/%m/%Y').date()
                 except ValueError:
                     try:
-                        date_part = datetime.strptime(str(date_val), '%Y-%m-%d').date()
+                        date_part = datetime.strptime(date_str, '%Y-%m-%d').date()
                     except ValueError:
-                        # Handle Excel date number (days since 1900-01-01)
                         if isinstance(date_val, (int, float)) or (isinstance(date_val, str) and date_val.isdigit()):
-                            # Convert to int if it's a string that looks like a number
                             date_num = int(float(date_val)) if isinstance(date_val, str) else int(date_val)
                             from datetime import timedelta
-                            base_date = datetime(1899, 12, 30).date()  # Excel's date system
+                            base_date = datetime(1899, 12, 30).date()
                             date_part = base_date + timedelta(days=date_num)
                         else:
                             raise ValueError(f"Unrecognized date format: {date_val} (type: {type(date_val)})")
 
             # Convert time to datetime.time object
             if hasattr(time_val, 'hour') and hasattr(time_val, 'minute'):
-                # It's already a time-like object
-                if hasattr(time_val, 'year'):  # It's a datetime object
+                if hasattr(time_val, 'year'):
                     time_part = time_val.time()
-                else:  # It's a time object
+                else:
                     time_part = time_val
-            else:  # It's a string or other format
-                # Try different time formats
+            else:
+                # NORMALIZE WHITESPACE for string times
+                time_str = self.normalize_whitespace(str(time_val)) if isinstance(time_val, str) else str(time_val)
                 try:
-                    time_part = datetime.strptime(str(time_val), '%H:%M:%S').time()
+                    time_part = datetime.strptime(time_str, '%H:%M:%S').time()
                 except ValueError:
                     try:
-                        time_part = datetime.strptime(str(time_val), '%H:%M').time()
+                        time_part = datetime.strptime(time_str, '%H:%M').time()
                     except ValueError:
-                        # Handle Excel time as fraction of day
                         if isinstance(time_val, (int, float)) or (isinstance(time_val, str) and time_val.replace('.', '', 1).isdigit()):
-                            # Convert to float if it's a string that looks like a number
                             time_num = float(time_val) if isinstance(time_val, str) else time_val
                             if 0 <= time_num < 1:
                                 hours = int(time_num * 24)
@@ -1355,54 +1411,45 @@ class AutomatedAttendanceProcessor:
                         else:
                             raise ValueError(f"Unrecognized time format: {time_val} (type: {type(time_val)})")
 
-            # Combine date and time parts
             return datetime.combine(date_part, time_part)
     
         except Exception as e:
-            # Detailed error handling
             error_msg = f"Error parsing date: {date_val} (type: {type(date_val)}) and time: {time_val} (type: {type(time_val)}). Error: {str(e)}"
-            print(error_msg)  # For debugging
-            return None  # Return None instead of raising error to handle gracefully
+            print(error_msg)
+            return None
 
     def create_valid_logs_sheet(self, workbook, sheet_name, data):
         """Create the attendance log sheet"""
         sheet = workbook.create_sheet(sheet_name)
         header = ["Student ID", "Name", "Year", "Group", "Email",
-                  "Subject", "Session", "Subject", "Date", "Time", "Validation Group"]  
+                  "Subject", "Session", "Subject", "Date", "Time", "Validation Group"]
         sheet.append(header)
 
         # Apply header formatting
         for i, cell in enumerate(sheet[1]):
             cell.font = Font(bold=True)
-            # Light gray background for all headers
             cell.fill = PatternFill("solid", fgColor="D3D3D3")
-            cell.alignment = Alignment(
-                horizontal='center', vertical='center')  # Center align text
+            cell.alignment = Alignment(horizontal='center', vertical='center')
 
-            # Make the header row a bit taller
-            sheet.row_dimensions[1].height = 22
-
-        # Add freeze panes to keep header visible when scrolling
+        sheet.row_dimensions[1].height = 22
         sheet.freeze_panes = 'C2'
 
-        row_num = 2  # Start from row 2 (after header)
+        row_num = 2
         for key in data:
             for row_data in data[key]:
-                # Ensure all entries have the same length
                 while len(row_data) < len(header):
                     row_data.append(None)
-                sheet.append(row_data[:len(header)])  # Only include up to the header length
+                sheet.append(row_data[:len(header)])
                 row_num += 1
 
         # Format date and time columns
-        for col in 'I', 'J':  # Columns for Date and Time
+        for col in 'I', 'J':
             for cell in sheet[col]:
                 if isinstance(cell.value, (datetime, date)):
                     cell.number_format = 'DD/MM/YYYY' if col == 'I' else 'HH:MM:SS'
 
-        # Improved auto-fit column widths
+        # Auto-fit column widths
         for col_idx, column in enumerate(sheet.columns, 1):
-            # Get maximum length in the column
             max_length = 0
             for cell in column:
                 try:
@@ -1411,39 +1458,30 @@ class AutomatedAttendanceProcessor:
                 except:
                     pass
 
-            # Set column width with minimum and maximum limits
             if max_length > 0:
-                adjusted_width = min(max(max_length + 2, 12), 50)  # Min 12, Max 50
-    
-                # Special case for name column (typically column B)
-                if col_idx == 2:  # Name column
-                    adjusted_width = max(adjusted_width, 25)  # Names need more space
-    
-                # Apply the calculated width
+                adjusted_width = min(max(max_length + 2, 12), 50)
+                if col_idx == 2:
+                    adjusted_width = max(adjusted_width, 25)
                 sheet.column_dimensions[openpyxl.utils.get_column_letter(col_idx)].width = adjusted_width
 
-        # Add auto-filter to easily sort and filter data
         sheet.auto_filter.ref = f"A1:{openpyxl.utils.get_column_letter(sheet.max_column)}{sheet.max_row}"
 
     def get_subject_color(self, subject_name):
         """Return background and text colors for a given subject"""
-        # Convert subject name to lowercase for case-insensitive matching
-        subject_lower = subject_name.lower() if subject_name else ""
+        # NORMALIZE WHITESPACE and convert to lowercase
+        subject_lower = self.normalize_whitespace(subject_name).lower() if subject_name else ""
 
-        # Check if the subject contains any of our defined subject keywords
         for key in self.SUBJECT_COLORS:
             if key in subject_lower:
                 return self.SUBJECT_COLORS[key]
 
-        # Default to "other" if no match is found
         return self.SUBJECT_COLORS["other"]
 
     def calculate_min_sessions_needed(self, total_required, total_attended):
         """Calculate minimum number of sessions needed to meet attendance threshold"""
         if total_attended >= self.ATTENDANCE_THRESHOLD * total_required:
             return 0
-        min_total_needed = math.ceil(
-            self.ATTENDANCE_THRESHOLD * total_required)
+        min_total_needed = math.ceil(self.ATTENDANCE_THRESHOLD * total_required)
         return min_total_needed - total_attended
 
     def create_summary_sheet(self, workbook, sheet_name, combined_attendance, required_attendance,
@@ -1452,7 +1490,6 @@ class AutomatedAttendanceProcessor:
         """
         Create a summary sheet that shows attendance statistics for each student,
         handling transferred students by validating their attendance against appropriate group schedules.
-        Now includes Sessions Left and Sessions Completed columns based on date calculations.
         """
         sheet = workbook.create_sheet(sheet_name)
 
@@ -1842,16 +1879,13 @@ class AutomatedAttendanceProcessor:
         # Apply header formatting
         for i, cell in enumerate(sheet[1]):
             cell.font = Font(bold=True)
-            cell.fill = PatternFill("solid", fgColor="D3D3D3")  # Light gray background
+            cell.fill = PatternFill("solid", fgColor="D3D3D3")
             cell.alignment = Alignment(horizontal='center', vertical='center')
 
-        # Make the header row a bit taller
         sheet.row_dimensions[1].height = 22
-
-        # Add freeze panes to keep header visible when scrolling
         sheet.freeze_panes = 'C2'
 
-        # Add data for each transferred student
+        # Add data for each transferred student - NORMALIZE WHITESPACE
         for student_id, transfer_info in transferred_students.items():
             transfer_date = transfer_data.get(student_id, {}).get("transfer_date")
             formatted_date = ""
@@ -1859,17 +1893,17 @@ class AutomatedAttendanceProcessor:
                 formatted_date = transfer_date.strftime('%d/%m/%Y %H:%M')
 
             row = [
-                student_id,
-                transfer_info["name"],
+                self.normalize_whitespace(str(student_id)),
+                self.normalize_whitespace(str(transfer_info["name"])),
                 transfer_info["year"],
-                transfer_info["previous_group"],
-                transfer_info["current_group"],
+                self.normalize_whitespace(str(transfer_info["previous_group"])),
+                self.normalize_whitespace(str(transfer_info["current_group"])),
                 formatted_date
             ]
             sheet.append(row)
 
         # Format date column
-        for cell in sheet["F"][1:]:  # Format transfer date column
+        for cell in sheet["F"][1:]:
             if isinstance(cell.value, datetime):
                 cell.number_format = 'DD/MM/YYYY HH:MM'
 
@@ -1884,34 +1918,23 @@ class AutomatedAttendanceProcessor:
                     pass
 
             if max_length > 0:
-                adjusted_width = min(max(max_length + 2, 12), 50)  # Min 12, Max 50
-    
-                # Special case for name column (typically column B)
-                if col_idx == 2:  # Name column
-                    adjusted_width = max(adjusted_width, 25)  # Names need more space
-    
-                # Apply the calculated width
+                adjusted_width = min(max(max_length + 2, 12), 50)
+                if col_idx == 2:
+                    adjusted_width = max(adjusted_width, 25)
                 sheet.column_dimensions[openpyxl.utils.get_column_letter(col_idx)].width = adjusted_width
 
-        # Add auto-filter
         sheet.auto_filter.ref = f"A1:{openpyxl.utils.get_column_letter(sheet.max_column)}{sheet.max_row}"
 
     def lighten_color(self, hex_color, factor=0.75):
-        """
-        Lightens the given color by the factor.
-        1.0 means keep the same, 0.5 means 50% lighter.
-        """
-        # Convert hex to RGB
+        """Lightens the given color by the factor"""
         r = int(hex_color[0:2], 16)
         g = int(hex_color[2:4], 16)
         b = int(hex_color[4:6], 16)
 
-        # Lighten the color
         r = int(r + (255 - r) * factor)
         g = int(g + (255 - g) * factor)
         b = int(b + (255 - b) * factor)
 
-        # Convert back to hex
         return f"{r:02x}{g:02x}{b:02x}".upper()
 
     def analyze_transfer_patterns(self, transferred_students, log_history, session_schedule, student_map):
@@ -1919,41 +1942,38 @@ class AutomatedAttendanceProcessor:
         transfer_data = {}
         
         for student_id, transfer_info in transferred_students.items():
-            previous_group = transfer_info["previous_group"]
-            current_group = transfer_info["current_group"]
+            # NORMALIZE WHITESPACE for group names
+            previous_group = self.normalize_whitespace(str(transfer_info["previous_group"]))
+            current_group = self.normalize_whitespace(str(transfer_info["current_group"]))
             student_year = transfer_info["year"]
             
-            # Create session maps for both previous and current groups
             prev_group_key = f"{student_year}-{previous_group}"
             current_group_key = f"{student_year}-{current_group}"
             
             prev_group_sessions = self.create_session_map(session_schedule, prev_group_key)
             current_group_sessions = self.create_session_map(session_schedule, current_group_key)
             
-            # Get attendance records for this student
+            # Get attendance records for this student - NORMALIZE WHITESPACE
             student_logs = []
             for row in log_history[1:]:
-                if len(row) >= 4 and str(row[0]) == student_id:
-                    # Validate that this is actually log data (should have date/time in columns 2,3)
-                    # Log data structure: [student_id, location, date, time, ...]
-                    # Check if columns 2 and 3 look like date/time values
-                    date_val = str(row[2]) if len(row) > 2 else ""
-                    time_val = str(row[3]) if len(row) > 3 else ""
-                    
-                    # Skip if these don't look like date/time values
-                    if (date_val.startswith("Year") or time_val.startswith("C") or 
-                        not date_val or not time_val):
-                        continue
-                    
-                    student_logs.append(row)
+                if len(row) >= 4:
+                    # Normalize the student ID for comparison
+                    log_student_id = self.normalize_whitespace(str(row[0]))
+                    if log_student_id == self.normalize_whitespace(str(student_id)):
+                        date_val = str(row[2]) if len(row) > 2 else ""
+                        time_val = str(row[3]) if len(row) > 3 else ""
+                        
+                        if (date_val.startswith("Year") or time_val.startswith("C") or 
+                            not date_val or not time_val):
+                            continue
+                        
+                        student_logs.append(row)
             
-            # Sort logs by date and time, with proper error handling
             def safe_sort_key(x):
                 try:
                     if len(x) >= 4:
                         date_val = x[2]
                         time_val = x[3]
-                        # Additional validation to ensure these are date/time values
                         if (isinstance(date_val, str) and date_val.startswith("Year")):
                             return datetime.min
                         if (isinstance(time_val, str) and time_val.startswith("C")):
@@ -1966,7 +1986,6 @@ class AutomatedAttendanceProcessor:
             
             student_logs.sort(key=safe_sort_key)
             
-            # Track which group's sessions the student attended
             attendance_pattern = []
             for log in student_logs:
                 if len(log) < 4:
@@ -1976,21 +1995,19 @@ class AutomatedAttendanceProcessor:
                 if not log_datetime:
                     continue
                     
-                location = log[1]  # This is still the same column in logs
+                # NORMALIZE WHITESPACE for location
+                location = self.normalize_whitespace(str(log[1]))
                 
-                # Check if this log matches a session in either group
                 prev_match = self.match_log_to_session(log, log_datetime, location, prev_group_sessions)
                 current_match = self.match_log_to_session(log, log_datetime, location, current_group_sessions)
                 
                 if prev_match and current_match:
-                    # Both groups had a session at this time and location - ambiguous
                     attendance_pattern.append(("both", log_datetime, location))
                 elif prev_match:
                     attendance_pattern.append(("previous", log_datetime, location))
                 elif current_match:
                     attendance_pattern.append(("current", log_datetime, location))
             
-            # Analyze the pattern to find a consistent switch point
             transfer_point = self.detect_transfer_point(attendance_pattern)
             
             transfer_data[student_id] = {
@@ -2007,29 +2024,29 @@ class AutomatedAttendanceProcessor:
         session_map = {}
         
         for session in sessions:
-            if len(session) >= 7:  # Ensure we have all needed fields including duration
-                year, group, subject, session_num, date, start_time, duration = session[:7]  # Adjusted indices
+            if len(session) >= 7:
+                # NORMALIZE WHITESPACE in session data
+                normalized_row = self.normalize_row_data(session)
+                year, group, subject, session_num, date, start_time, duration = normalized_row[:7]
 
-                # CONVERT TO UPPERCASE FOR CASE-INSENSITIVE MATCHING
-                group = str(group).upper() if group else ""                
+                group = str(group).upper() if group else ""
                 subject = str(subject).upper() if subject else ""
-                key = f"{year}-{group}"         
+                key = f"{year}-{group}"
 
                 if key == group_key:
                     session_datetime = self.parse_datetime(date, start_time)
                     if not session_datetime:
                         continue
                     
-                    # Parse duration (convert to float and handle potential None values)
                     try:
-                        session_duration = float(duration) if duration is not None else 120.0  # Default to 120 minutes (2 hours) if not specified
+                        session_duration = float(duration) if duration is not None else 120.0
                     except (ValueError, TypeError):
-                        session_duration = 120.0  # Default to 120 minutes (2 hours) if parsing fails
+                        session_duration = 120.0
                         
-                    session_key = f"{subject}-{date}-{start_time}"  
+                    session_key = f"{subject}-{date}-{start_time}"
                     
                     session_map[session_key] = {
-                        "subject": subject,  # Only subject now, no course
+                        "subject": subject,
                         "session_num": session_num,
                         "start_time": session_datetime,
                         "date": date,
@@ -2040,72 +2057,52 @@ class AutomatedAttendanceProcessor:
     
     def match_log_to_session(self, log, log_datetime, location, session_map):
         """Check if a log matches any session in the given session map"""
+        # NORMALIZE WHITESPACE for location comparison
+        normalized_location = self.normalize_whitespace(str(location).lower())
+        
         for session_key, session_info in session_map.items():
-            session_subject = session_info["subject"]  
+            session_subject = self.normalize_whitespace(str(session_info["subject"]).lower())
             session_start = session_info["start_time"]
             
-            # Only match logs from the same location as the session
-            if location.lower() == session_subject.lower():  
-                # Get session duration from the session info
-                session_duration = session_info.get("duration", 120.0)  # Default to 120 minutes if not found
-                
-                # Calculate time window based on session duration
-                # Allow 15 minutes before session starts
+            if normalized_location == session_subject:
+                session_duration = session_info.get("duration", 120.0)
                 before_window = timedelta(minutes=15)
-                # Allow attendance until session ends (duration is already in minutes)
                 after_window = timedelta(minutes=int(session_duration))
                 
-                # Check if log time is within the allowed window
                 if session_start - before_window <= log_datetime <= session_start + after_window:
                     return True
         
         return False
     
     def detect_transfer_point(self, attendance_pattern):
-        """
-        Detect the point at which a student consistently switched to the new group.
-        Only returns a transfer date if there are TRANSFER_CONFIRMATION_THRESHOLD consecutive 
-        "current" group attendances. The transfer date is set to be BEFORE the first date 
-        of those consecutive sessions, so that the first session is counted as valid attendance.
-        """
+        """Detect the point at which a student consistently switched to the new group"""
         if not attendance_pattern:
             return None
 
-        # Find consecutive "current" group attendances
         consecutive_current = 0
         consecutive_start_idx = -1
 
         for idx, (group, log_datetime, _) in enumerate(attendance_pattern):
             if group == "current":
                 if consecutive_current == 0:
-                    # Mark the start of a potential consecutive sequence
                     consecutive_start_idx = idx
                 consecutive_current += 1
         
-                # If we've found enough consecutive attendances
                 if consecutive_current >= self.TRANSFER_CONFIRMATION_THRESHOLD:
-                    # Get the date of the FIRST session in this consecutive sequence
                     first_date_in_sequence = attendance_pattern[consecutive_start_idx][1]
                     if first_date_in_sequence is not None:
-                        # FIXED: Set transfer date to be 1 day BEFORE the first confirmed session
-                        # This ensures the first session is counted as valid attendance
                         transfer_date = first_date_in_sequence - timedelta(days=1)
                         return transfer_date
                     else:
-                        # If the date is None, try to find the next valid date
                         for i in range(consecutive_start_idx + 1, min(len(attendance_pattern), consecutive_start_idx + self.TRANSFER_CONFIRMATION_THRESHOLD)):
                             if attendance_pattern[i][1] is not None:
-                                # Set transfer date to be 1 day before this date
                                 transfer_date = attendance_pattern[i][1] - timedelta(days=1)
                                 return transfer_date
-                        # If still can't find a valid date, return None
                         return None
             else:
-                # Reset the counter when the sequence is broken
                 consecutive_current = 0
                 consecutive_start_idx = -1
 
-        # If we don't have enough consecutive sessions, do NOT confirm the transfer
         return None
 
     def validate_attendance_with_transfers(self, log_history, session_schedule, student_map, 
@@ -2113,15 +2110,15 @@ class AutomatedAttendanceProcessor:
         """Validate attendance considering student transfers"""
         valid_attendance = {}
         session_map = {}
-        unique_logs = set()  # This tracks unique session attendance to prevent duplicates
+        unique_logs = set()
 
-        # Build session maps for all groups
+        # Build session maps for all groups - NORMALIZE WHITESPACE
         for row in session_schedule:
-            if len(row) >= 7:  # Ensure we have all needed fields including duration
-                year, group, subject, session_num, date, start_time, duration = row[:7]
+            if len(row) >= 7:
+                normalized_row = self.normalize_row_data(row)
+                year, group, subject, session_num, date, start_time, duration = normalized_row[:7]
 
-                # CONVERT TO UPPERCASE FOR CASE-INSENSITIVE MATCHING
-                group = str(group).upper() if group else ""                
+                group = str(group).upper() if group else ""
                 subject = str(subject).upper() if subject else ""
                 key = f"{year}-{group}"
                 
@@ -2129,22 +2126,18 @@ class AutomatedAttendanceProcessor:
                 if not session_datetime:
                     continue
 
-                # Convert session_num to string for consistent handling
                 session_num = str(session_num)
                 
-                # Parse duration (convert to float and handle potential None values)
                 try:
                     session_duration = float(duration) if duration is not None else 120.0
                 except (ValueError, TypeError):
                     session_duration = 120.0
 
-                # Create a unique key for each session that combines all relevant info
-                session_key = f"{subject}-{date}-{start_time}"  
+                session_key = f"{subject}-{date}-{start_time}"
 
                 if key not in session_map:
                     session_map[key] = {}
 
-                # Store complete session information including duration
                 session_map[key][session_key] = {
                     "subject": subject,
                     "session_num": session_num,
@@ -2153,12 +2146,15 @@ class AutomatedAttendanceProcessor:
                     "duration": session_duration
                 }
 
+        # Process log history - NORMALIZE WHITESPACE
         for row in log_history[1:]:
             if len(row) >= 4:
-                student_id, location, date, time = row[:4]
-                student_id = str(student_id)
-                # CONVERT LOCATION TO UPPERCASE FOR CASE-INSENSITIVE MATCHING
-                location = str(location).upper() if location else ""
+                # Normalize the row data first
+                normalized_row = self.normalize_row_data(row)
+                student_id = str(normalized_row[0])
+                location = str(normalized_row[1]).upper() if normalized_row[1] else ""
+                date = normalized_row[2]
+                time = normalized_row[3]
 
                 if student_id in student_map:
                     student = student_map[student_id]
@@ -2166,29 +2162,21 @@ class AutomatedAttendanceProcessor:
                     if not log_datetime:
                         continue
                     
-                    # FIX: Use consistent date normalization
                     normalized_date = self.normalize_date_str(date)
                     
-                    # Only validate against the correct group based on transfer status and date
                     if student_id in transferred_students:
                         transfer_info = transfer_data.get(student_id, {})
                         transfer_date = transfer_info.get("transfer_date")
             
-                        # If log is before transfer date, use previous group
                         if transfer_date and log_datetime < transfer_date:
                             group_to_use = transferred_students[student_id]["previous_group"]
                         elif transfer_date and log_datetime == transfer_date:
-                            # This is the critical session that defines the transfer
-                            # For this specific session, validate against BOTH groups
                             group_to_use = "both"
                         else:
-                            # After transfer date, use current group
                             group_to_use = student["group"]
                     else:
-                        # For non-transferred students, use current group
                         group_to_use = student["group"]
         
-                    # Create keys for both the student's actual year-group and the group we're using for validation
                     actual_key = f"{student['year']}-{student['group']}"
                     previous_key = None
                 
@@ -2196,59 +2184,43 @@ class AutomatedAttendanceProcessor:
                         previous_group = transferred_students[student_id]["previous_group"]
                         previous_key = f"{student['year']}-{previous_group}"
         
-                    # Check ONLY the selected group's sessions for validation,
-                    # or both groups if this is the transfer session
                     validation_keys = []
                 
                     if group_to_use == "both":
-                        # Check both previous and current group's schedules
                         if previous_key:
                             validation_keys.append((previous_key, transferred_students[student_id]["previous_group"]))
                         validation_keys.append((actual_key, student["group"]))
                     elif student_id in transferred_students and group_to_use == transferred_students[student_id]["previous_group"]:
-                        # Check previous group's schedule
                         validation_keys.append((previous_key, group_to_use))
                     else:
-                        # Check current group's schedule
                         validation_keys.append((actual_key, group_to_use))
         
-                    # Try to validate against the selected groups' schedules
                     for validation_key, validation_group_name in validation_keys:
                         if validation_key in session_map:
                             for session_key, session_info in session_map[validation_key].items():
-                                session_subject = session_info["subject"]  
+                                session_subject = session_info["subject"]
                                 session_start = session_info["start_time"]
                         
-                                # Only match logs from the same location as the session
-                                if location.lower() == session_subject.lower():  
-                                    # Get session duration from the session info
+                                if location.lower() == session_subject.lower():
                                     session_duration = session_info.get("duration", 120.0)
-                                    
-                                    # Calculate time window based on session duration
                                     before_window = timedelta(minutes=15)
                                     after_window = timedelta(minutes=int(session_duration))
                             
-                                    # Check if log time is within the allowed window
                                     if session_start - before_window <= log_datetime <= session_start + after_window:
-                                        # FIX: Use normalized date in the unique key
                                         unique_log_key = f"{student_id}-{session_info['subject']}-{session_info['session_num']}-{location}-{normalized_date}"
                                 
-                                        # Only count each unique session attendance once
                                         if unique_log_key not in unique_logs:
                                             unique_logs.add(unique_log_key)
                                     
-                                            # Use the actual student group for storing the attendance
                                             if actual_key not in valid_attendance:
                                                 valid_attendance[actual_key] = []
                                         
                                             valid_attendance[actual_key].append([
                                                 student_id, student['name'], student['year'],
-                                                student['group'], student['email'], session_info['subject'],  
+                                                student['group'], student['email'], session_info['subject'],
                                                 session_info['session_num'], location, normalized_date, time,
                                                 validation_group_name
                                             ])
-                                    
-                                            # Found a match, no need to check other sessions
                                             break
 
         return valid_attendance
@@ -2256,61 +2228,58 @@ class AutomatedAttendanceProcessor:
     def combine_attendance_data(self, prev_attendance, new_attendance, transferred_students, transfer_data):
         """Combine previous and new attendance data, considering student transfers"""
         combined_attendance = {}
-
-        # Create a set to track unique attendance entries across both datasets
         unique_attendance_entries = set()
 
-        # Add previous attendance data
+        # Add previous attendance data - NORMALIZE WHITESPACE
         for key, entries in prev_attendance.items():
             combined_attendance[key] = []
             for entry in entries:
-                # Extract the data needed for uniqueness checking
                 if len(entry) >= 10:
-                    student_id = str(entry[0])
-                    subject = entry[5]
-                    session_num = entry[6]
-                    location = entry[7]
-                    date = entry[8]
+                    # Normalize the entry data
+                    normalized_entry = self.normalize_row_data(entry)
+                    student_id = str(normalized_entry[0])
+                    subject = normalized_entry[5]
+                    session_num = normalized_entry[6]
+                    location = normalized_entry[7]
+                    date = normalized_entry[8]
                 
-                    # FIX: Use normalized date for uniqueness checking
                     normalized_date = self.normalize_date_str(date)
                     unique_id = f"{student_id}-{subject}-{session_num}-{location}-{normalized_date}"
                 
                     if unique_id not in unique_attendance_entries:
                         unique_attendance_entries.add(unique_id)
                     
-                        # Add entries from previous attendance data
                         if student_id and student_id in transferred_students:
-                            new_entry = list(entry)
+                            new_entry = list(normalized_entry)
                             while len(new_entry) < 11:
                                 new_entry.append(None)
                             if new_entry[10] is None:
                                 new_entry[10] = transferred_students[student_id]["previous_group"]
                             combined_attendance[key].append(new_entry)
                         else:
-                            combined_attendance[key].append(list(entry))
+                            combined_attendance[key].append(list(normalized_entry))
 
-        # Add new attendance data, avoiding duplicates
+        # Add new attendance data - NORMALIZE WHITESPACE
         for key, entries in new_attendance.items():
             if key not in combined_attendance:
                 combined_attendance[key] = []
 
-            # Add only new entries that don't already exist
             for entry in entries:
                 if len(entry) >= 10:
-                    student_id = str(entry[0])
-                    subject = entry[5]
-                    session_num = entry[6]
-                    location = entry[7]
-                    date = entry[8]
+                    # Normalize the entry data
+                    normalized_entry = self.normalize_row_data(entry)
+                    student_id = str(normalized_entry[0])
+                    subject = normalized_entry[5]
+                    session_num = normalized_entry[6]
+                    location = normalized_entry[7]
+                    date = normalized_entry[8]
                 
-                    # FIX: Use normalized date for uniqueness checking
                     normalized_date = self.normalize_date_str(date)
                     unique_id = f"{student_id}-{subject}-{session_num}-{location}-{normalized_date}"
                 
                     if unique_id not in unique_attendance_entries:
                         unique_attendance_entries.add(unique_id)
-                        combined_attendance[key].append(entry)
+                        combined_attendance[key].append(normalized_entry)
 
         return combined_attendance
 
@@ -2319,18 +2288,23 @@ class AutomatedAttendanceProcessor:
         existing_transfers = {}
         header_row = None
 
-        # Find the header row
+        # Find the header row - NORMALIZE WHITESPACE
         for row_idx, row in enumerate(transfer_sheet.iter_rows(values_only=True)):
-            if row and "Student ID" in row:
-                header_row = row_idx + 1
-                break
+            if row:
+                normalized_row = self.normalize_row_data(list(row))
+                if "Student ID" in normalized_row:
+                    header_row = row_idx + 1
+                    break
 
         if not header_row:
             return existing_transfers
 
-        # Find column indices
+        # Find column indices - NORMALIZE WHITESPACE
         col_indices = {}
-        for col_idx, cell_value in enumerate(transfer_sheet.iter_rows(min_row=header_row, max_row=header_row, values_only=True).__next__()):
+        header_values = list(transfer_sheet.iter_rows(min_row=header_row, max_row=header_row, values_only=True).__next__())
+        normalized_headers = self.normalize_row_data(header_values)
+        
+        for col_idx, cell_value in enumerate(normalized_headers):
             if cell_value == "Student ID":
                 col_indices["id"] = col_idx
             elif cell_value == "Name":
@@ -2344,14 +2318,16 @@ class AutomatedAttendanceProcessor:
             elif cell_value == "Transfer Date":
                 col_indices["transfer_date"] = col_idx
 
-        # Extract existing transfer data
+        # Extract existing transfer data - NORMALIZE WHITESPACE
         for row in transfer_sheet.iter_rows(min_row=header_row+1, values_only=True):
             if row and row[col_indices["id"]]:
-                student_id = str(row[col_indices["id"]])
+                normalized_row = self.normalize_row_data(list(row))
+                student_id = str(normalized_row[col_indices["id"]])
                 transfer_date = None
-                if len(row) > col_indices["transfer_date"] and row[col_indices["transfer_date"]]:
+                
+                if len(normalized_row) > col_indices["transfer_date"] and normalized_row[col_indices["transfer_date"]]:
                     try:
-                        date_val = row[col_indices["transfer_date"]]
+                        date_val = normalized_row[col_indices["transfer_date"]]
                         if isinstance(date_val, str):
                             transfer_date = datetime.strptime(date_val, '%d/%m/%Y %H:%M')
                         elif isinstance(date_val, datetime):
@@ -2362,10 +2338,10 @@ class AutomatedAttendanceProcessor:
                         print(f"Error parsing existing transfer date for {student_id}: {e}")
 
                 existing_transfers[student_id] = {
-                    "previous_group": row[col_indices["group_before"]],
-                    "current_group": row[col_indices["group_after"]],
-                    "name": row[col_indices["name"]],
-                    "year": row[col_indices["year"]],
+                    "previous_group": normalized_row[col_indices["group_before"]],
+                    "current_group": normalized_row[col_indices["group_after"]],
+                    "name": normalized_row[col_indices["name"]],
+                    "year": normalized_row[col_indices["year"]],
                     "email": f"{student_id}@med.asu.edu.eg",
                     "transfer_date": transfer_date,
                     "is_from_previous_report": True
@@ -2377,34 +2353,47 @@ class AutomatedAttendanceProcessor:
         """Combine existing and new transfer data, avoiding duplicates"""
         all_transfers = {}
 
-        # Add all existing transfers
+        # Add all existing transfers - NORMALIZE WHITESPACE
         for student_id, transfer_info in existing_transfers.items():
             if student_id in current_student_map:
                 current_info = current_student_map[student_id]
                 all_transfers[student_id] = {
-                    "previous_group": transfer_info["previous_group"],
-                    "current_group": current_info["group"],
-                    "name": current_info["name"],
+                    "previous_group": self.normalize_whitespace(str(transfer_info["previous_group"])),
+                    "current_group": self.normalize_whitespace(str(current_info["group"])),
+                    "name": self.normalize_whitespace(str(current_info["name"])),
                     "year": current_info["year"],
-                    "email": current_info["email"],
+                    "email": self.normalize_whitespace(str(current_info["email"])),
                     "transfer_date": transfer_info["transfer_date"],
                     "is_from_previous_report": True
                 }
             else:
-                all_transfers[student_id] = transfer_info.copy()
+                all_transfers[student_id] = {
+                    "previous_group": self.normalize_whitespace(str(transfer_info["previous_group"])),
+                    "current_group": self.normalize_whitespace(str(transfer_info["current_group"])),
+                    "name": self.normalize_whitespace(str(transfer_info["name"])),
+                    "year": transfer_info["year"],
+                    "email": self.normalize_whitespace(str(transfer_info["email"])),
+                    "transfer_date": transfer_info["transfer_date"],
+                    "is_from_previous_report": True
+                }
 
-        # Add new transfers not already tracked
+        # Add new transfers not already tracked - NORMALIZE WHITESPACE
         for student_id, transfer_info in new_transfers.items():
             if student_id not in all_transfers:
                 all_transfers[student_id] = {
-                    **transfer_info,
+                    "previous_group": self.normalize_whitespace(str(transfer_info["previous_group"])),
+                    "current_group": self.normalize_whitespace(str(transfer_info["current_group"])),
+                    "name": self.normalize_whitespace(str(transfer_info["name"])),
+                    "year": transfer_info["year"],
+                    "email": self.normalize_whitespace(str(transfer_info["email"])),
                     "transfer_date": None,
                     "is_from_previous_report": False
                 }
             else:
                 existing_info = all_transfers[student_id]
-                if existing_info["current_group"] != transfer_info["current_group"]:
-                    all_transfers[student_id]["current_group"] = transfer_info["current_group"]
+                normalized_current = self.normalize_whitespace(str(transfer_info["current_group"]))
+                if existing_info["current_group"] != normalized_current:
+                    all_transfers[student_id]["current_group"] = normalized_current
 
         return all_transfers
 
@@ -2425,7 +2414,7 @@ class AutomatedAttendanceProcessor:
 
         processed_students = set()
 
-        # Add existing transfers
+        # Add existing transfers - NORMALIZE WHITESPACE
         for student_id, transfer_info in existing_transfers.items():
             if student_id not in processed_students:
                 transfer_date = transfer_info.get("transfer_date")
@@ -2433,18 +2422,18 @@ class AutomatedAttendanceProcessor:
                 if transfer_date:
                     formatted_date = transfer_date.strftime('%d/%m/%Y %H:%M')
                 row = [
-                    student_id,
-                    transfer_info["name"],
+                    self.normalize_whitespace(str(student_id)),
+                    self.normalize_whitespace(str(transfer_info["name"])),
                     transfer_info["year"],
-                    transfer_info["previous_group"],
-                    transfer_info["current_group"],
+                    self.normalize_whitespace(str(transfer_info["previous_group"])),
+                    self.normalize_whitespace(str(transfer_info["current_group"])),
                     formatted_date,
                     "Previous Transfer"
                 ]
                 sheet.append(row)
                 processed_students.add(student_id)
 
-        # Add new transfers
+        # Add new transfers - NORMALIZE WHITESPACE
         for student_id, transfer_info in new_transfers.items():
             if student_id not in processed_students:
                 transfer_date = transfer_data.get(student_id, {}).get("transfer_date")
@@ -2452,11 +2441,11 @@ class AutomatedAttendanceProcessor:
                 if transfer_date:
                     formatted_date = transfer_date.strftime('%d/%m/%Y %H:%M')
                 row = [
-                    student_id,
-                    transfer_info["name"],
+                    self.normalize_whitespace(str(student_id)),
+                    self.normalize_whitespace(str(transfer_info["name"])),
                     transfer_info["year"],
-                    transfer_info["previous_group"],
-                    transfer_info["current_group"],
+                    self.normalize_whitespace(str(transfer_info["previous_group"])),
+                    self.normalize_whitespace(str(transfer_info["current_group"])),
                     formatted_date,
                     "New Transfer"
                 ]
@@ -2492,16 +2481,13 @@ class AutomatedAttendanceProcessor:
             print("No files detected or required directories missing. Exiting.")
             return
 
-        # Merge all log files once at the beginning to avoid redundant processing
         all_log_files = []
         for module_name, data in module_groups.items():
             all_log_files.extend(data.get('log_files', []))
 
-        # Remove duplicates while preserving order
         all_log_files = list(dict.fromkeys(all_log_files))
         print(f"Found {len(all_log_files)} unique log files to process")
         
-        # Merge log data once for all modules
         merged_log_data = self.merge_log_files(all_log_files)
 
         if not merged_log_data:
@@ -2513,7 +2499,6 @@ class AutomatedAttendanceProcessor:
         for module_name, data in module_groups.items():
             print(f"\nProcessing {module_name}...")
 
-            # Parse module information
             year, batch, module_parsed = self.parse_module_info(module_name)
 
             reference_file = data.get('reference')
@@ -2543,12 +2528,10 @@ class AutomatedAttendanceProcessor:
                 print(f"Error loading schedule file {schedule_file}: {str(e)}")
                 continue
 
-            # *** UPDATED SESSION ANALYSIS - Now uses merged log data ***
             session_analysis_files = self.run_session_analysis(
                 module_name, reference_file, schedule_file, all_log_files, year, batch
             )
 
-            # Rest of existing attendance processing code...
             report_file = data.get('report')
             if report_file:
                 report_data = self.extract_data_from_report(report_file)
@@ -2566,7 +2549,6 @@ class AutomatedAttendanceProcessor:
                 total_required = 100
                 self.ATTENDANCE_THRESHOLD = 0.75
 
-            # Extract previous data from existing report if available
             prev_student_map = {}
             prev_attendance_data = {}
             existing_transfers = {}
