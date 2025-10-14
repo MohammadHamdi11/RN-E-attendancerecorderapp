@@ -1,8 +1,8 @@
 {
   "user_email": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b",
-  "user_id": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b_1760432131287",
-  "account_created": "2025-10-14T08:55:31.287Z",
-  "last_sync": "2025-10-14T08:55:31.287Z",
+  "user_id": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b_1760435214630",
+  "account_created": "2025-10-14T09:46:54.630Z",
+  "last_sync": "2025-10-14T09:46:54.630Z",
   "total_sessions": 2,
   "total_scans": 28,
   "sessions": [
@@ -222,10 +222,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b",
-      "user_id": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b_1760432131287",
+      "user_id": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b_1760435214630",
       "created_by": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b",
-      "created_at": "2025-10-14T08:55:31.287Z",
-      "updated_at": "2025-10-14T08:55:31.287Z"
+      "created_at": "2025-10-14T09:46:54.630Z",
+      "updated_at": "2025-10-14T09:46:54.630Z"
     },
     {
       "id": "scanner1760432018217",
@@ -260,16 +260,17 @@
           "isManual": true
         }
       ],
-      "inProgress": true,
+      "inProgress": false,
       "isScanner": true,
       "sessionType": "scanner",
-      "recoveryStatus": "in_progress",
+      "recoveryStatus": "declined_recovery",
       "isChecklist": false,
+      "backedUp": true,
       "user_email": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b",
-      "user_id": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b_1760432131287",
+      "user_id": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b_1760435214630",
       "created_by": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b",
-      "created_at": "2025-10-14T08:55:31.287Z",
-      "updated_at": "2025-10-14T08:55:31.287Z"
+      "created_at": "2025-10-14T09:46:54.630Z",
+      "updated_at": "2025-10-14T09:46:54.630Z"
     }
   ]
 }
