@@ -1,10 +1,10 @@
 {
   "user_email": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b",
-  "user_id": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b_1760432015603",
-  "account_created": "2025-10-14T08:53:35.603Z",
-  "last_sync": "2025-10-14T08:53:35.603Z",
-  "total_sessions": 1,
-  "total_scans": 25,
+  "user_id": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b_1760432131287",
+  "account_created": "2025-10-14T08:55:31.287Z",
+  "last_sync": "2025-10-14T08:55:31.287Z",
+  "total_sessions": 2,
+  "total_scans": 28,
   "sessions": [
     {
       "id": "scanner1760425164758",
@@ -218,14 +218,58 @@
       "inProgress": false,
       "isScanner": true,
       "sessionType": "scanner",
-      "recoveryStatus": "declined_recovery",
+      "recoveryStatus": "interrupted",
       "isChecklist": false,
       "backedUp": true,
       "user_email": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b",
-      "user_id": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b_1760432015603",
+      "user_id": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b_1760432131287",
       "created_by": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b",
-      "created_at": "2025-10-14T08:53:35.603Z",
-      "updated_at": "2025-10-14T08:53:35.603Z"
+      "created_at": "2025-10-14T08:55:31.287Z",
+      "updated_at": "2025-10-14T08:55:31.287Z"
+    },
+    {
+      "id": "scanner1760432018217",
+      "location": "Pathology Lab/Museum",
+      "year": 2,
+      "batch": "2025/2026",
+      "dateTime": "2025-10-14T08:53:38.217Z",
+      "formattedDateTime": "14/10/2025 11:53:38",
+      "scans": [
+        {
+          "id": "1760432026416",
+          "content": "241063",
+          "timestamp": "2025-10-14T08:53:46.416Z",
+          "formattedTime": "11:53:46",
+          "time": "2025-10-14T08:53:46.416Z",
+          "isManual": true
+        },
+        {
+          "id": "1760432033396",
+          "content": "241068",
+          "timestamp": "2025-10-14T08:53:53.396Z",
+          "formattedTime": "11:53:53",
+          "time": "2025-10-14T08:53:53.396Z",
+          "isManual": true
+        },
+        {
+          "id": "1760432130672",
+          "content": "235064",
+          "timestamp": "2025-10-14T08:55:30.671Z",
+          "formattedTime": "11:55:30",
+          "time": "2025-10-14T08:55:30.671Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b",
+      "user_id": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b_1760432131287",
+      "created_by": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b",
+      "created_at": "2025-10-14T08:55:31.287Z",
+      "updated_at": "2025-10-14T08:55:31.287Z"
     }
   ]
 }
