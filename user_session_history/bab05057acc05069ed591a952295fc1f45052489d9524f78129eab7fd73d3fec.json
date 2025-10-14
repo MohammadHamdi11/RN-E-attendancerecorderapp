@@ -1,10 +1,10 @@
 {
   "user_email": "a4d7a4ee9195f1379d7f2f218cb867cf4cb44740cc6e7c82052f8ad212bfffec",
-  "user_id": "a4d7a4ee9195f1379d7f2f218cb867cf4cb44740cc6e7c82052f8ad212bfffec_1760353862582",
-  "account_created": "2025-10-13T11:11:02.582Z",
-  "last_sync": "2025-10-13T11:11:02.582Z",
-  "total_sessions": 3,
-  "total_scans": 88,
+  "user_id": "a4d7a4ee9195f1379d7f2f218cb867cf4cb44740cc6e7c82052f8ad212bfffec_1760418686048",
+  "account_created": "2025-10-14T05:11:26.048Z",
+  "last_sync": "2025-10-14T05:11:26.048Z",
+  "total_sessions": 4,
+  "total_scans": 91,
   "sessions": [
     {
       "id": "scanner1760177411396",
@@ -270,10 +270,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "a4d7a4ee9195f1379d7f2f218cb867cf4cb44740cc6e7c82052f8ad212bfffec",
-      "user_id": "a4d7a4ee9195f1379d7f2f218cb867cf4cb44740cc6e7c82052f8ad212bfffec_1760353862582",
+      "user_id": "a4d7a4ee9195f1379d7f2f218cb867cf4cb44740cc6e7c82052f8ad212bfffec_1760418686048",
       "created_by": "a4d7a4ee9195f1379d7f2f218cb867cf4cb44740cc6e7c82052f8ad212bfffec",
-      "created_at": "2025-10-13T11:11:02.582Z",
-      "updated_at": "2025-10-13T11:11:02.582Z"
+      "created_at": "2025-10-14T05:11:26.048Z",
+      "updated_at": "2025-10-14T05:11:26.048Z"
     },
     {
       "id": "scanner1760186493599",
@@ -379,10 +379,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "a4d7a4ee9195f1379d7f2f218cb867cf4cb44740cc6e7c82052f8ad212bfffec",
-      "user_id": "a4d7a4ee9195f1379d7f2f218cb867cf4cb44740cc6e7c82052f8ad212bfffec_1760353862582",
+      "user_id": "a4d7a4ee9195f1379d7f2f218cb867cf4cb44740cc6e7c82052f8ad212bfffec_1760418686048",
       "created_by": "a4d7a4ee9195f1379d7f2f218cb867cf4cb44740cc6e7c82052f8ad212bfffec",
-      "created_at": "2025-10-13T11:11:02.582Z",
-      "updated_at": "2025-10-13T11:11:02.582Z"
+      "created_at": "2025-10-14T05:11:26.048Z",
+      "updated_at": "2025-10-14T05:11:26.048Z"
     },
     {
       "id": "scanner1760353237477",
@@ -759,6 +759,51 @@
           "formattedTime": "14:11:01",
           "time": "2025-10-13T11:11:01.634Z",
           "isManual": false
+        },
+        {
+          "id": "1760353892550",
+          "content": "244698",
+          "timestamp": "2025-10-13T11:11:32.550Z",
+          "formattedTime": "14:11:32",
+          "time": "2025-10-13T11:11:32.550Z",
+          "isManual": false
+        },
+        {
+          "id": "1760353898544",
+          "content": "244712",
+          "timestamp": "2025-10-13T11:11:38.544Z",
+          "formattedTime": "14:11:38",
+          "time": "2025-10-13T11:11:38.544Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "a4d7a4ee9195f1379d7f2f218cb867cf4cb44740cc6e7c82052f8ad212bfffec",
+      "user_id": "a4d7a4ee9195f1379d7f2f218cb867cf4cb44740cc6e7c82052f8ad212bfffec_1760418686048",
+      "created_by": "a4d7a4ee9195f1379d7f2f218cb867cf4cb44740cc6e7c82052f8ad212bfffec",
+      "created_at": "2025-10-14T05:11:26.048Z",
+      "updated_at": "2025-10-14T05:11:26.048Z"
+    },
+    {
+      "id": "scanner1760418650050",
+      "location": "Microbiology",
+      "year": 2,
+      "batch": "2025/2026",
+      "dateTime": "2025-10-14T05:10:50.050Z",
+      "formattedDateTime": "14/10/2025 08:10:50",
+      "scans": [
+        {
+          "id": "1760418685325",
+          "content": "234084",
+          "timestamp": "2025-10-14T05:11:25.325Z",
+          "formattedTime": "08:11:25",
+          "time": "2025-10-14T05:11:25.325Z",
+          "isManual": false
         }
       ],
       "inProgress": true,
@@ -767,10 +812,10 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "a4d7a4ee9195f1379d7f2f218cb867cf4cb44740cc6e7c82052f8ad212bfffec",
-      "user_id": "a4d7a4ee9195f1379d7f2f218cb867cf4cb44740cc6e7c82052f8ad212bfffec_1760353862582",
+      "user_id": "a4d7a4ee9195f1379d7f2f218cb867cf4cb44740cc6e7c82052f8ad212bfffec_1760418686048",
       "created_by": "a4d7a4ee9195f1379d7f2f218cb867cf4cb44740cc6e7c82052f8ad212bfffec",
-      "created_at": "2025-10-13T11:11:02.582Z",
-      "updated_at": "2025-10-13T11:11:02.582Z"
+      "created_at": "2025-10-14T05:11:26.048Z",
+      "updated_at": "2025-10-14T05:11:26.048Z"
     }
   ]
 }
