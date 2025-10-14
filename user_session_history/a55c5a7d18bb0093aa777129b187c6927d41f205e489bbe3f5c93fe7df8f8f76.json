@@ -1,10 +1,10 @@
 {
   "user_email": "ca1ca55730586b2e96f222c9d72727558de4388ffadff883338095d74f618115",
-  "user_id": "ca1ca55730586b2e96f222c9d72727558de4388ffadff883338095d74f618115_1760188108492",
-  "account_created": "2025-10-11T13:08:28.492Z",
-  "last_sync": "2025-10-11T13:08:28.492Z",
+  "user_id": "ca1ca55730586b2e96f222c9d72727558de4388ffadff883338095d74f618115_1760425823936",
+  "account_created": "2025-10-14T07:10:23.936Z",
+  "last_sync": "2025-10-14T07:10:23.936Z",
   "total_sessions": 2,
-  "total_scans": 47,
+  "total_scans": 49,
   "sessions": [
     {
       "id": "scanner1760180591434",
@@ -389,6 +389,22 @@
           "formattedTime": "16:08:27",
           "time": "2025-10-11T13:08:27.825Z",
           "isManual": true
+        },
+        {
+          "id": "1760188115689",
+          "content": "244062",
+          "timestamp": "2025-10-11T13:08:35.688Z",
+          "formattedTime": "16:08:35",
+          "time": "2025-10-11T13:08:35.688Z",
+          "isManual": true
+        },
+        {
+          "id": "1760425823164",
+          "content": "244723",
+          "timestamp": "2025-10-14T07:10:23.161Z",
+          "formattedTime": "10:10:23",
+          "time": "2025-10-14T07:10:23.161Z",
+          "isManual": false
         }
       ],
       "inProgress": true,
@@ -397,10 +413,10 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "ca1ca55730586b2e96f222c9d72727558de4388ffadff883338095d74f618115",
-      "user_id": "ca1ca55730586b2e96f222c9d72727558de4388ffadff883338095d74f618115_1760188108492",
+      "user_id": "ca1ca55730586b2e96f222c9d72727558de4388ffadff883338095d74f618115_1760425823936",
       "created_by": "ca1ca55730586b2e96f222c9d72727558de4388ffadff883338095d74f618115",
-      "created_at": "2025-10-11T13:08:28.492Z",
-      "updated_at": "2025-10-11T13:08:28.492Z"
+      "created_at": "2025-10-14T07:10:23.936Z",
+      "updated_at": "2025-10-14T07:10:23.936Z"
     },
     {
       "id": "checklist1760186537947",
@@ -419,10 +435,10 @@
       "sessionType": "checklist",
       "recoveryStatus": "in_progress",
       "user_email": "ca1ca55730586b2e96f222c9d72727558de4388ffadff883338095d74f618115",
-      "user_id": "ca1ca55730586b2e96f222c9d72727558de4388ffadff883338095d74f618115_1760188108492",
+      "user_id": "ca1ca55730586b2e96f222c9d72727558de4388ffadff883338095d74f618115_1760425823936",
       "created_by": "ca1ca55730586b2e96f222c9d72727558de4388ffadff883338095d74f618115",
-      "created_at": "2025-10-11T13:08:28.492Z",
-      "updated_at": "2025-10-11T13:08:28.492Z"
+      "created_at": "2025-10-14T07:10:23.936Z",
+      "updated_at": "2025-10-14T07:10:23.936Z"
     }
   ]
 }
