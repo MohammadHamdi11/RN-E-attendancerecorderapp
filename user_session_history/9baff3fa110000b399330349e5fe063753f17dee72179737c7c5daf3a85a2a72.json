@@ -1,10 +1,10 @@
 {
   "user_email": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b",
-  "user_id": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b_1760440797210",
-  "account_created": "2025-10-14T11:19:57.210Z",
-  "last_sync": "2025-10-14T11:19:57.210Z",
-  "total_sessions": 4,
-  "total_scans": 149,
+  "user_id": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b_1760441082943",
+  "account_created": "2025-10-14T11:24:42.943Z",
+  "last_sync": "2025-10-14T11:24:42.943Z",
+  "total_sessions": 6,
+  "total_scans": 153,
   "sessions": [
     {
       "id": "scanner1760425164758",
@@ -222,10 +222,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b",
-      "user_id": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b_1760440797210",
+      "user_id": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b_1760441082943",
       "created_by": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b",
-      "created_at": "2025-10-14T11:19:57.210Z",
-      "updated_at": "2025-10-14T11:19:57.210Z"
+      "created_at": "2025-10-14T11:24:42.943Z",
+      "updated_at": "2025-10-14T11:24:42.943Z"
     },
     {
       "id": "scanner1760432018217",
@@ -267,10 +267,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b",
-      "user_id": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b_1760440797210",
+      "user_id": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b_1760441082943",
       "created_by": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b",
-      "created_at": "2025-10-14T11:19:57.210Z",
-      "updated_at": "2025-10-14T11:19:57.210Z"
+      "created_at": "2025-10-14T11:24:42.943Z",
+      "updated_at": "2025-10-14T11:24:42.943Z"
     },
     {
       "id": "scanner1760435220495",
@@ -1136,10 +1136,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b",
-      "user_id": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b_1760440797210",
+      "user_id": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b_1760441082943",
       "created_by": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b",
-      "created_at": "2025-10-14T11:19:57.210Z",
-      "updated_at": "2025-10-14T11:19:57.210Z"
+      "created_at": "2025-10-14T11:24:42.943Z",
+      "updated_at": "2025-10-14T11:24:42.943Z"
     },
     {
       "id": "scanner1760440497125",
@@ -1273,14 +1273,86 @@
       "inProgress": false,
       "isScanner": true,
       "sessionType": "scanner",
-      "recoveryStatus": "declined_recovery",
+      "recoveryStatus": "interrupted",
       "isChecklist": false,
       "backedUp": true,
       "user_email": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b",
-      "user_id": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b_1760440797210",
+      "user_id": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b_1760441082943",
       "created_by": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b",
-      "created_at": "2025-10-14T11:19:57.210Z",
-      "updated_at": "2025-10-14T11:19:57.210Z"
+      "created_at": "2025-10-14T11:24:42.943Z",
+      "updated_at": "2025-10-14T11:24:42.943Z"
+    },
+    {
+      "id": "scanner1760440801841",
+      "location": "Parasitology SGD/POS",
+      "year": 3,
+      "batch": "2025/2026",
+      "dateTime": "2025-10-14T11:20:01.841Z",
+      "formattedDateTime": "14/10/2025 14:20:01",
+      "scans": [],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "closed_normally",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b",
+      "user_id": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b_1760441082943",
+      "created_by": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b",
+      "created_at": "2025-10-14T11:24:42.943Z",
+      "updated_at": "2025-10-14T11:24:42.943Z"
+    },
+    {
+      "id": "scanner1760440808671",
+      "location": "Pathology Lab/Museum",
+      "year": 2,
+      "batch": "2025/2026",
+      "dateTime": "2025-10-14T11:20:08.671Z",
+      "formattedDateTime": "14/10/2025 14:20:08",
+      "scans": [
+        {
+          "id": "1760440812897",
+          "content": "241169",
+          "timestamp": "2025-10-14T11:20:12.896Z",
+          "formattedTime": "14:20:12",
+          "time": "2025-10-14T11:20:12.896Z",
+          "isManual": false
+        },
+        {
+          "id": "1760440815618",
+          "content": "241125",
+          "timestamp": "2025-10-14T11:20:15.618Z",
+          "formattedTime": "14:20:15",
+          "time": "2025-10-14T11:20:15.618Z",
+          "isManual": false
+        },
+        {
+          "id": "1760440825282",
+          "content": "241139",
+          "timestamp": "2025-10-14T11:20:25.282Z",
+          "formattedTime": "14:20:25",
+          "time": "2025-10-14T11:20:25.282Z",
+          "isManual": true
+        },
+        {
+          "id": "1760441082253",
+          "content": "241049",
+          "timestamp": "2025-10-14T11:24:42.253Z",
+          "formattedTime": "14:24:42",
+          "time": "2025-10-14T11:24:42.253Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b",
+      "user_id": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b_1760441082943",
+      "created_by": "c8babcbcecf5b707b822894738f98bb1bf56745ce16872e561ddaf6d836e563b",
+      "created_at": "2025-10-14T11:24:42.943Z",
+      "updated_at": "2025-10-14T11:24:42.943Z"
     }
   ]
 }
