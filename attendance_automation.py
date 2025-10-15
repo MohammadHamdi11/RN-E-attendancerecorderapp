@@ -16,7 +16,7 @@ from PIL import Image
 import math
 import base64
 import openpyxl
-from openpyxl.styles import Font, PatternFill, Alignment
+from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 from collections import defaultdict
 import glob
@@ -77,9 +77,11 @@ class SessionAnalyzer:
                 if len(row) >= 6:  # Ensure we have required fields
                     year_val, group, subject, session_num, date_val, start_time = row[:6]
                     if year_val and group and subject and session_num and date_val:
-                        # CONVERT TO UPPERCASE FOR CASE-INSENSITIVE MATCHING
-                        group = str(group).upper() if group else ""
-                        subject = str(subject).upper() if subject else ""
+                        # NORMALIZE AND CONVERT TO UPPERCASE FOR CASE-INSENSITIVE MATCHING
+                        year_val = self.normalize_whitespace(str(year_val)) if year_val else ""
+                        group = self.normalize_whitespace(str(group).upper()) if group else ""
+                        subject = self.normalize_whitespace(str(subject).upper()) if subject else ""
+                        session_num = self.normalize_whitespace(str(session_num)) if session_num else ""
                         
                         self.schedule_data.append({
                             'year': str(year_val),
@@ -226,8 +228,11 @@ class SessionAnalyzer:
                 if len(row) >= 6:  # Ensure we have required fields
                     student_id, subject, log_date, log_time, type_field, user = row[:6]
                     if subject and log_date:
-                        # CONVERT TO UPPERCASE FOR CASE-INSENSITIVE MATCHING
-                        subject = str(subject).upper() if subject else ""
+                        # NORMALIZE AND CONVERT TO UPPERCASE FOR CASE-INSENSITIVE MATCHING
+                        student_id = self.normalize_whitespace(str(student_id)) if student_id else ''
+                        subject = self.normalize_whitespace(str(subject).upper()) if subject else ""
+                        type_field = self.normalize_whitespace(str(type_field)) if type_field else ''
+                        user = self.normalize_whitespace(str(user)) if user else ''
                         
                         self.log_data.append({
                             'student_id': str(student_id) if student_id else '',
@@ -321,8 +326,11 @@ class SessionAnalyzer:
                 if len(row) >= 4:  # Ensure we have required fields: Student ID, Name, Year, Group
                     student_id, name, year, group = row[:4]
                     if student_id and group:  # At minimum we need Student ID and Group
-                        # Convert to uppercase for case-insensitive matching
-                        group = str(group).upper() if group else ""
+                        # NORMALIZE AND CONVERT TO UPPERCASE FOR CASE-INSENSITIVE MATCHING
+                        student_id = self.normalize_whitespace(str(student_id))
+                        name = self.normalize_whitespace(str(name)) if name else ""
+                        year = self.normalize_whitespace(str(year)) if year else ""
+                        group = self.normalize_whitespace(str(group).upper()) if group else ""
                         
                         self.reference_data.append({
                             'student_id': str(student_id),
@@ -337,10 +345,13 @@ class SessionAnalyzer:
     
     def get_expected_students_for_group(self, year, group):
         """Get the list of expected students for a specific year and group from reference data"""
+        # Normalize inputs for matching
+        year = self.normalize_whitespace(str(year))
+        group = self.normalize_whitespace(str(group).upper())
+        
         expected_students = []
         for student in self.reference_data:
-            if (str(student['year']) == str(year) and 
-                student['group'] == str(group).upper()):
+            if (student['year'] == year and student['group'] == group):
                 expected_students.append(student)
         return expected_students
     
@@ -1272,11 +1283,11 @@ class AutomatedAttendanceProcessor:
         return attendance_data
     
     def calculate_completed_sessions(self, session_schedule, current_datetime):
-        """Calculate completed sessions and sessions left based on current date"""
+        """Calculate completed sessions and sessions left based on current date and session end time (start + duration)"""
         completed_sessions = {}
         sessions_left = {}
         
-        # Group the sessions by year-group
+        # Group the sessions by year-group with their durations
         sessions_by_group = {}
         
         for row in session_schedule:
@@ -1293,20 +1304,36 @@ class AutomatedAttendanceProcessor:
                 if key not in sessions_by_group:
                     sessions_by_group[key] = []
                     
-                # Parse the session datetime
+                # Parse the session datetime and duration
                 try:
-                    session_datetime = self.parse_datetime(date, start_time)
-                    sessions_by_group[key].append(session_datetime)
+                    session_start_datetime = self.parse_datetime(date, start_time)
+                    
+                    # Get duration in minutes (default to 120 if not available)
+                    try:
+                        duration_minutes = float(duration) if duration is not None else 120.0
+                    except (ValueError, TypeError):
+                        duration_minutes = 120.0
+                    
+                    # Calculate session end time (start + duration)
+                    from datetime import timedelta
+                    session_end_datetime = session_start_datetime + timedelta(minutes=duration_minutes)
+                    
+                    sessions_by_group[key].append({
+                        'start': session_start_datetime,
+                        'end': session_end_datetime,
+                        'duration': duration_minutes
+                    })
                 except Exception as e:
                     print(f"Error parsing date/time for session: {e}")
         
-        # Count completed and remaining sessions for each group
-        for key, session_dates in sessions_by_group.items():
+        # Count completed and remaining sessions for each group based on END time
+        for key, sessions in sessions_by_group.items():
             completed = 0
             remaining = 0
             
-            for session_date in session_dates:
-                if session_date <= current_datetime:
+            for session in sessions:
+                # Session is completed only if current time is AFTER the session end time
+                if session['end'] <= current_datetime:
                     completed += 1
                 else:
                     remaining += 1
@@ -1503,9 +1530,10 @@ class AutomatedAttendanceProcessor:
                     subjects[subject]["sessions"].add(str(session_num))
                     subjects[subject]["locations"].update(session_data["locations"].keys())
 
-        # Create header
+        # Create header - UPDATED: Added Total Missed column
         header = ["Student ID", "Name", "Year", "Group", "Email", "Status", "Percentage",
-                "Sessions Needed", "Sessions Left", "Sessions Completed", "Total Required", "Total Attended"]
+                "Sessions Needed", "Sessions Left", "Sessions Completed", "Total Required", 
+                "Total Attended", "Total Missed"]
 
         # Track column indices for subject coloring
         subject_column_ranges = {}
@@ -1549,7 +1577,7 @@ class AutomatedAttendanceProcessor:
                         'time': time_str
                     }
 
-        # Add subject totals and session details to header
+        # Add subject totals and session details to header - UPDATED: Removed (Req) columns
         for subject in sorted(subjects.keys()):
             start_col = current_col
             
@@ -1571,11 +1599,9 @@ class AutomatedAttendanceProcessor:
                         if date_time_info:
                             break
                     
-                    header.extend([
-                        f"{subject} S{session} (Req)",
-                        f"{subject} S{session} (Att)"
-                    ])
-                    current_col += 2
+                    # UPDATED: Only add (Att) column, removed (Req)
+                    header.append(f"{subject} Session {session}")
+                    current_col += 1
             
             subject_column_ranges[subject] = (start_col, current_col - 1)
 
@@ -1604,6 +1630,7 @@ class AutomatedAttendanceProcessor:
         COLOR_MODERATE_RISK = "FFB97D"
         COLOR_LOW_RISK = "FFF1A6"
         COLOR_NO_RISK = "3388D5"
+        COLOR_OTHER = "F0F0F0"
 
         # Process each student in the target year
         for student_id, student in current_student_map.items():
@@ -1733,14 +1760,18 @@ class AutomatedAttendanceProcessor:
                 percentage = total_attended / \
                     total_required_sessions if total_required_sessions > 0 else 0
 
-                # Create row data with sessions left and completed columns
+                # UPDATED: Calculate total missed sessions
+                total_missed = group_completed - total_attended
+
+                # Create row data with sessions left and completed columns - UPDATED: Added total_missed
                 row = [
                     student_id, student['name'], student['year'], student['group'],
                     student['email'], status, f"{percentage:.1%}", min_sessions_needed,
-                    group_sessions_left, group_completed, total_required_sessions, total_attended
+                    group_sessions_left, group_completed, total_required_sessions, 
+                    total_attended, total_missed
                 ]
 
-                # Add subject totals and session details
+                # Add subject totals and session details - UPDATED: Removed req_count
                 for subject in sorted(subjects.keys()): 
                     # For required attendance, select the appropriate requirements based on transfer status
                     subject_req_total = 0  
@@ -1752,7 +1783,7 @@ class AutomatedAttendanceProcessor:
                         if current_key in required_attendance and subject in required_attendance[current_key]:  
                             curr_req = required_attendance[current_key][subject]  
                             subject_req_total = curr_req["total"]  
-    
+
                             # Add sessions from current group
                             for session_num, session_data in curr_req["sessions"].items():
                                 session_num_str = str(session_num)  # Ensure string format
@@ -1768,7 +1799,7 @@ class AutomatedAttendanceProcessor:
                         if current_key in required_attendance and subject in required_attendance[current_key]:  
                             curr_req = required_attendance[current_key][subject]  
                             subject_req_total = curr_req["total"]  
-    
+
                             # Add sessions
                             for session_num, session_data in curr_req["sessions"].items():
                                 session_num_str = str(session_num)  # Ensure string format
@@ -1786,44 +1817,114 @@ class AutomatedAttendanceProcessor:
                     # Add subject totals
                     row.extend([subject_req_total, subject_att["total"]])  
 
-                    # Add session details
+                    # Add session details - UPDATED: Only attendance count, '-' for future/ongoing sessions
                     for session in sorted(subjects[subject]["sessions"], key=lambda x: int(x) if x.isdigit() else x):  
                         for location in sorted(subjects[subject]["locations"]):  
                             location_key = location.lower()  # Make lowercase for consistency
-                            req_count = subject_req_sessions.get(session, {}).get("locations", {}).get(location_key, 0)  
                             att_count = subject_att.get("sessions", {}).get(session, {}).get("locations", {}).get(location_key, 0)  
-                            row.extend([req_count, att_count])
+                            
+                            # Check if this session has ended for THIS STUDENT'S GROUP
+                            session_ended = False
+                            # Use the student's current group to determine the session date/time
+                            student_key = current_key  # This is "{year}-{group}" for the student
+                            if student_key in session_datetime_map:
+                                if subject in session_datetime_map[student_key]:
+                                    if session in session_datetime_map[student_key][subject]:
+                                        session_info = session_datetime_map[student_key][subject][session]
+                                        date_str = session_info['date']
+                                        time_str = session_info['time']
+                                        
+                                        # Get duration from the session schedule
+                                        duration_minutes = 120  # Default to 120 minutes
+                                        for sched_row in session_schedule:
+                                            if len(sched_row) >= 7:
+                                                s_year, s_group, s_subject, s_session, s_date, s_time, s_duration = sched_row[:7]
+                                                s_group = str(s_group).upper() if s_group else ""
+                                                s_subject = str(s_subject).upper() if s_subject else ""
+                                                
+                                                if (str(s_year) == str(student['year']) and 
+                                                    s_group == student['group'] and 
+                                                    s_subject == subject and 
+                                                    str(s_session) == session):
+                                                    try:
+                                                        duration_minutes = float(s_duration) if s_duration is not None else 120.0
+                                                    except (ValueError, TypeError):
+                                                        duration_minutes = 120.0
+                                                    break
+                                        
+                                        try:
+                                            # Parse the session date and time
+                                            session_date = datetime.strptime(date_str, '%d/%m/%Y')
+                                            session_time = datetime.strptime(time_str, '%H:%M:%S').time()
+                                            
+                                            # Combine date and time to get session start datetime
+                                            session_start = datetime.combine(session_date.date(), session_time)
+                                            
+                                            # Calculate session end time (start + duration)
+                                            from datetime import timedelta
+                                            session_end = session_start + timedelta(minutes=duration_minutes)
+                                            
+                                            # Check if session has ended (current time > session end time)
+                                            current_time = datetime.now()
+                                            session_ended = current_time > session_end
+                                        except Exception as e:
+                                            # If we can't parse the date/time, assume session has ended
+                                            session_ended = True
+                            else:
+                                # If no session info found, assume session has ended
+                                session_ended = True
+                            
+                            # If session hasn't ended yet, use '-', otherwise use attendance count
+                            if not session_ended:
+                                row.append('-')
+                            else:
+                                row.append(att_count)
 
                 sheet.append(row)
 
                 # Apply cell formatting and colors for this row
                 row_idx = sheet.max_row
 
+                # Set row height
+                sheet.row_dimensions[row_idx].height = 20
+
+                # Define border style (only bottom border for separation between rows)
+                bottom_border = Border(bottom=Side(style='thin'))
+
+                # Apply cell formatting and colors for this row
                 # Format status cell
                 status_cell = sheet.cell(row=row_idx, column=6)
                 status_cell.font = Font(bold=True)
                 status_cell.fill = PatternFill("solid", fgColor=color)
                 status_cell.alignment = Alignment(horizontal='center')
+                status_cell.border = bottom_border
 
                 # Format percentage cell
                 percentage_cell = sheet.cell(row=row_idx, column=7)
                 percentage_cell.number_format = '0.0%'
                 percentage_cell.alignment = Alignment(horizontal='center')
+                percentage_cell.border = bottom_border
 
                 # Format sessions cells
-                for col in range(8, 12):  # Sessions Needed, Left, Completed, Total Required
+                for col in range(8, 14):
                     cell = sheet.cell(row=row_idx, column=col)
                     cell.alignment = Alignment(horizontal='center')
+                    cell.border = bottom_border
 
                 # Apply subject-specific colors to the data cells
-                for subject, (start_col, end_col) in subject_column_ranges.items():  
-                    subject_color = self.get_subject_color(subject)  
+                for subject, (start_col, end_col) in subject_column_ranges.items():
+                    subject_color = self.get_subject_color(subject)
                     for col in range(start_col, end_col + 1):
                         cell = sheet.cell(row=row_idx, column=col)
-                        # Apply a lighter version of the subject color for data cells
-                        bg_color = self.lighten_color(subject_color["bg"])  
+                        bg_color = self.lighten_color(subject_color["bg"])
                         cell.fill = PatternFill("solid", fgColor=bg_color)
                         cell.alignment = Alignment(horizontal='center')
+                        cell.border = bottom_border
+
+                # Apply borders to remaining cells (Student ID, Name, Year, Group, Email)
+                for col in range(1, 6):
+                    cell = sheet.cell(row=row_idx, column=col)
+                    cell.border = bottom_border
 
         # Add auto-filter to easily sort and filter data
         sheet.auto_filter.ref = f"A1:{openpyxl.utils.get_column_letter(len(header))}1"
@@ -1858,12 +1959,12 @@ class AutomatedAttendanceProcessor:
             col_idx = openpyxl.utils.column_index_from_string(col_letter)
 
             # Base width calculation
-            adjusted_width = min(max(width, 10), 40)  # Min 10, Max 40
+            adjusted_width = min(max(width, 10), 45)  # Min 10, Max 45
 
             # Special case for specific columns
             if col_idx == 2:  # Name column
                 adjusted_width = max(adjusted_width, 25)  # Names need more space
-            elif col_idx >= 11:  # Subject specific columns (adjusted from 13 to 11 due to removed columns)
+            elif col_idx >= 14:  # Subject specific columns (adjusted due to new Total Missed column)
                 adjusted_width = max(adjusted_width, 12)  # Subject columns need at least this width
 
             sheet.column_dimensions[col_letter].width = adjusted_width
