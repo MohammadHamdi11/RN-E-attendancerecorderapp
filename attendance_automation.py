@@ -1168,21 +1168,22 @@ class AutomatedAttendanceProcessor:
         return all_log_data
     
     def create_student_map(self, student_db):
-        """Create a map of student details from the reference file"""
+        """Create a map of student details from the reference file - WITH PROPER NORMALIZATION"""
         student_map = {}
         for row in student_db[1:]:  # Skip header
             if row[0]:
-                # NORMALIZE WHITESPACE in student data
+                # CRITICAL: Normalize EVERYTHING when creating the map
                 student_id = self.normalize_whitespace(str(row[0]))
                 name = self.normalize_whitespace(str(row[1])) if row[1] else ""
-                year = row[2]
+                year = self.normalize_whitespace(str(row[2])) if row[2] else ""
+                # UPPERCASE normalization is CRITICAL for group matching
                 group = self.normalize_whitespace(str(row[3]).upper()) if row[3] else ""
                 email = f"{student_id}@med.asu.edu.eg"
                 
                 student_map[student_id] = {
                     "name": name,
                     "year": year,
-                    "group": group,
+                    "group": group,  # This MUST be normalized
                     "email": email
                 }
         return student_map
@@ -1283,38 +1284,37 @@ class AutomatedAttendanceProcessor:
         return attendance_data
     
     def calculate_completed_sessions(self, session_schedule, current_datetime):
-        """Calculate completed sessions and sessions left based on current date and session end time (start + duration)"""
+        """Calculate completed sessions - ENSURE NORMALIZATION"""
         completed_sessions = {}
         sessions_left = {}
         
-        # Group the sessions by year-group with their durations
         sessions_by_group = {}
         
         for row in session_schedule:
             if len(row) >= 7:
-                # NORMALIZE WHITESPACE in schedule data
+                # CRITICAL: Normalize the row FIRST
                 normalized_row = self.normalize_row_data(row)
                 year, group, subject, session_num, date, start_time, duration = normalized_row[:7]
                 
-                # Convert to uppercase for case-insensitive matching (already normalized)
+                # Then apply uppercase to group (already normalized by normalize_row_data)
                 group = str(group).upper() if group else ""
                 subject = str(subject).upper() if subject else ""
+                
+                # The key MUST use normalized data
                 key = f"{year}-{group}"
                 
                 if key not in sessions_by_group:
                     sessions_by_group[key] = []
-                    
-                # Parse the session datetime and duration
+                
+                # ... rest of the logic
                 try:
                     session_start_datetime = self.parse_datetime(date, start_time)
                     
-                    # Get duration in minutes (default to 120 if not available)
                     try:
                         duration_minutes = float(duration) if duration is not None else 120.0
                     except (ValueError, TypeError):
                         duration_minutes = 120.0
                     
-                    # Calculate session end time (start + duration)
                     from datetime import timedelta
                     session_end_datetime = session_start_datetime + timedelta(minutes=duration_minutes)
                     
@@ -1326,13 +1326,12 @@ class AutomatedAttendanceProcessor:
                 except Exception as e:
                     print(f"Error parsing date/time for session: {e}")
         
-        # Count completed and remaining sessions for each group based on END time
+        # Count completed and remaining sessions
         for key, sessions in sessions_by_group.items():
             completed = 0
             remaining = 0
             
             for session in sessions:
-                # Session is completed only if current time is AFTER the session end time
                 if session['end'] <= current_datetime:
                     completed += 1
                 else:
@@ -1346,18 +1345,17 @@ class AutomatedAttendanceProcessor:
     def calculate_required_attendance(self, session_schedule, total_required_sessions):
         """Calculate required attendance for each session by subject"""
         required_attendance = {}
-    
-        # Process each row in the schedule
+
         for row in session_schedule:
             if len(row) >= 4:
-                # NORMALIZE WHITESPACE in schedule data
+                # NORMALIZE FIRST
                 normalized_row = self.normalize_row_data(row)
                 year, group, subject, session_num = normalized_row[:4]
 
-                # Convert to uppercase for case-insensitive matching (already normalized)
+                # Convert to uppercase
                 group = str(group).upper() if group else ""                
                 subject = str(subject).upper() if subject else ""
-                key = f"{year}-{group}"            
+                key = f"{year}-{group}"       
 
                 # Initialize dictionaries if they don't exist
                 if key not in required_attendance:
@@ -1538,12 +1536,16 @@ class AutomatedAttendanceProcessor:
         # Track column indices for subject coloring
         subject_column_ranges = {}
         current_col = len(header) + 1
-
+        
         # Build a map of session dates and times from the schedule
         session_datetime_map = {}
         for row in session_schedule:
             if len(row) >= 7:
-                year, group, subject, session_num, date, start_time, duration = row[:7]
+                # NORMALIZE FIRST - before any processing
+                normalized_row = self.normalize_row_data(row)
+                year, group, subject, session_num, date, start_time, duration = normalized_row[:7]
+                
+                # Convert to uppercase for consistency
                 group = str(group).upper() if group else ""
                 subject = str(subject).upper() if subject else ""
                 key = f"{year}-{group}"
@@ -1827,6 +1829,7 @@ class AutomatedAttendanceProcessor:
                             session_ended = False
                             # Use the student's current group to determine the session date/time
                             student_key = current_key  # This is "{year}-{group}" for the student
+
                             if student_key in session_datetime_map:
                                 if subject in session_datetime_map[student_key]:
                                     if session in session_datetime_map[student_key][subject]:
@@ -1838,10 +1841,14 @@ class AutomatedAttendanceProcessor:
                                         duration_minutes = 120  # Default to 120 minutes
                                         for sched_row in session_schedule:
                                             if len(sched_row) >= 7:
-                                                s_year, s_group, s_subject, s_session, s_date, s_time, s_duration = sched_row[:7]
+                                                # CRITICAL: Normalize the schedule row before comparison
+                                                normalized_sched = self.normalize_row_data(sched_row)
+                                                s_year, s_group, s_subject, s_session, s_date, s_time, s_duration = normalized_sched[:7]
+                                                
                                                 s_group = str(s_group).upper() if s_group else ""
                                                 s_subject = str(s_subject).upper() if s_subject else ""
                                                 
+                                                # Compare with normalized student data
                                                 if (str(s_year) == str(student['year']) and 
                                                     s_group == student['group'] and 
                                                     s_subject == subject and 
@@ -1873,7 +1880,7 @@ class AutomatedAttendanceProcessor:
                             else:
                                 # If no session info found, assume session has ended
                                 session_ended = True
-                            
+
                             # If session hasn't ended yet, use '-', otherwise use attendance count
                             if not session_ended:
                                 row.append('-')
@@ -2208,19 +2215,23 @@ class AutomatedAttendanceProcessor:
 
     def validate_attendance_with_transfers(self, log_history, session_schedule, student_map, 
                                     transferred_students, transfer_data, target_year):
-        """Validate attendance considering student transfers"""
+        """Validate attendance considering student transfers - FIXED NORMALIZATION"""
         valid_attendance = {}
         session_map = {}
         unique_logs = set()
 
-        # Build session maps for all groups - NORMALIZE WHITESPACE
+        # Build session maps for all groups - WITH NORMALIZATION
         for row in session_schedule:
             if len(row) >= 7:
+                # CRITICAL: Normalize FIRST
                 normalized_row = self.normalize_row_data(row)
                 year, group, subject, session_num, date, start_time, duration = normalized_row[:7]
-
+                
+                # Apply uppercase (data already normalized)
                 group = str(group).upper() if group else ""
                 subject = str(subject).upper() if subject else ""
+                
+                # Key MUST be built from normalized data
                 key = f"{year}-{group}"
                 
                 session_datetime = self.parse_datetime(date, start_time)
@@ -2247,10 +2258,10 @@ class AutomatedAttendanceProcessor:
                     "duration": session_duration
                 }
 
-        # Process log history - NORMALIZE WHITESPACE
+        # Process log history - WITH NORMALIZATION
         for row in log_history[1:]:
             if len(row) >= 4:
-                # Normalize the row data first
+                # CRITICAL: Normalize FIRST
                 normalized_row = self.normalize_row_data(row)
                 student_id = str(normalized_row[0])
                 location = str(normalized_row[1]).upper() if normalized_row[1] else ""
@@ -2259,12 +2270,15 @@ class AutomatedAttendanceProcessor:
 
                 if student_id in student_map:
                     student = student_map[student_id]
+                    # Student data is already normalized when map was created
+                    
                     log_datetime = self.parse_datetime(date, time)
                     if not log_datetime:
                         continue
                     
-                    normalized_date = self.normalize_date_str(date)
+                    normalized_date = log_datetime.strftime('%d/%m/%Y')
                     
+                    # Determine which group to validate against
                     if student_id in transferred_students:
                         transfer_info = transfer_data.get(student_id, {})
                         transfer_date = transfer_info.get("transfer_date")
@@ -2274,10 +2288,11 @@ class AutomatedAttendanceProcessor:
                         elif transfer_date and log_datetime == transfer_date:
                             group_to_use = "both"
                         else:
-                            group_to_use = student["group"]
+                            group_to_use = student["group"]  # Already normalized
                     else:
-                        group_to_use = student["group"]
+                        group_to_use = student["group"]  # Already normalized
         
+                    # Build keys - ALL data is now normalized
                     actual_key = f"{student['year']}-{student['group']}"
                     previous_key = None
                 
@@ -2296,6 +2311,7 @@ class AutomatedAttendanceProcessor:
                     else:
                         validation_keys.append((actual_key, group_to_use))
         
+                    # Validate against session map - ALL keys are normalized
                     for validation_key, validation_group_name in validation_keys:
                         if validation_key in session_map:
                             for session_key, session_info in session_map[validation_key].items():
@@ -2589,13 +2605,15 @@ class AutomatedAttendanceProcessor:
         all_log_files = list(dict.fromkeys(all_log_files))
         print(f"Found {len(all_log_files)} unique log files to process")
         
+        # MERGE LOG FILES ONCE AT THE BEGINNING
+        print("Merging all log files (this will be done only once)...")
         merged_log_data = self.merge_log_files(all_log_files)
 
         if not merged_log_data:
             print("No log data found. Exiting.")
             return
 
-        print(f"Successfully merged {len(merged_log_data)} rows of log data")
+        print(f"Successfully merged {len(merged_log_data)} rows of log data\n")
 
         for module_name, data in module_groups.items():
             print(f"\nProcessing {module_name}...")
@@ -2630,7 +2648,7 @@ class AutomatedAttendanceProcessor:
                 continue
 
             session_analysis_files = self.run_session_analysis(
-                module_name, reference_file, schedule_file, all_log_files, year, batch
+                module_name, reference_file, schedule_file, merged_log_data, year, batch
             )
 
             report_file = data.get('report')
@@ -2800,13 +2818,13 @@ class AutomatedAttendanceProcessor:
             print(f"Error parsing module name {module_name}: {str(e)}")
             return "Unknown", "Unknown", "Unknown_Module"
         
-    def run_session_analysis(self, module_name, reference_file, schedule_file, all_log_files, year, batch):
-        """Run session analysis for a specific module using merged log data"""
+    def run_session_analysis(self, module_name, reference_file, schedule_file, merged_log_data, year, batch):
+        """Run session analysis for a specific module using pre-merged log data"""
         try:
             print(f"  Running session analysis for {module_name}...")
             
-            if not all_log_files:
-                print(f"  No log files available for session analysis")
+            if not merged_log_data:
+                print(f"  No merged log data available for session analysis")
                 return []
             
             # Parse module info for consistent naming
@@ -2826,14 +2844,7 @@ class AutomatedAttendanceProcessor:
             schedule_sheet_name = get_first_sheet_name(schedule_file)
             
             print(f"    Using sheets - Reference: '{ref_sheet_name}', Schedule: '{schedule_sheet_name}'")
-            print(f"    Using merged log data from {len(all_log_files)} files")
-            
-            # Merge log files to get the combined data
-            merged_log_data = self.merge_log_files(all_log_files)
-            
-            if not merged_log_data:
-                print(f"  No merged log data available for session analysis")
-                return []
+            print(f"    Using pre-merged log data ({len(merged_log_data)} rows)")
             
             # Run the analysis using the SessionAnalyzer with merged log data
             success, message, generated_files = self.session_analyzer.analyze_sessions_with_merged_logs(
