@@ -10,6 +10,7 @@ import shutil
 import threading
 from collections import defaultdict
 from datetime import datetime, timedelta, date, time
+import pytz
 from typing import List, Dict
 import io
 from PIL import Image
@@ -36,6 +37,19 @@ class SessionAnalyzer:
         self.reference_data = []
         self.missing_sessions = []
         self.recorded_sessions = []
+        
+    def get_egypt_time(self):
+        """Get current time in Egypt timezone using timezone-aware datetime"""
+        # Use timezone-aware datetime instead of deprecated utcnow()
+        from datetime import timezone
+        utc_now = datetime.now(timezone.utc)
+        
+        # Egypt is UTC+2 (or UTC+3 during daylight saving)
+        # Using pytz is more reliable for handling DST automatically
+        egypt_tz = pytz.timezone('Africa/Cairo')
+        egypt_time = utc_now.astimezone(egypt_tz)
+        
+        return egypt_time
         
     def normalize_whitespace(self, text):
         """
@@ -466,7 +480,7 @@ class SessionAnalyzer:
             json_filepath = os.path.join(output_dir, base_filename + ".json")
 
             # Get current date and time for pending status determination
-            current_datetime = datetime.now()
+            current_datetime = self.get_egypt_time()
             current_date = current_datetime.date()
             current_time = current_datetime.time()
             
@@ -892,6 +906,11 @@ class AutomatedAttendanceProcessor:
             "clinical": {"bg": "333333", "text": "FFFFFF"},
             "other": {"bg": "000000", "text": "FFFFFF"}
         }
+        
+    def get_egypt_time(self):
+        """Get current time in Egypt timezone (UTC+2)"""
+        egypt_tz = pytz.timezone('Africa/Cairo')
+        return datetime.now(egypt_tz)
         
     def normalize_date_str(self, date_val):
         """Normalize date strings to consistent DD/MM/YYYY format"""
@@ -1381,67 +1400,72 @@ class AutomatedAttendanceProcessor:
         return required_attendance
     
     def parse_datetime(self, date_val, time_val):
-        """Parse date and time values into a datetime object without using isinstance for date class."""
-        try:
-            from datetime import datetime
+            """Parse date and time values into a timezone-aware datetime object."""
+            try:
+                from datetime import datetime
 
-            # Convert date to datetime.date object
-            if hasattr(date_val, 'year') and hasattr(date_val, 'month') and hasattr(date_val, 'day'):
-                if hasattr(date_val, 'hour'):
-                    date_part = date_val.date()
+                # Convert date to datetime.date object
+                if hasattr(date_val, 'year') and hasattr(date_val, 'month') and hasattr(date_val, 'day'):
+                    if hasattr(date_val, 'hour'):
+                        date_part = date_val.date()
+                    else:
+                        date_part = date_val
                 else:
-                    date_part = date_val
-            else:
-                # NORMALIZE WHITESPACE for string dates
-                date_str = self.normalize_whitespace(str(date_val)) if isinstance(date_val, str) else str(date_val)
-                try:
-                    date_part = datetime.strptime(date_str, '%d/%m/%Y').date()
-                except ValueError:
+                    # NORMALIZE WHITESPACE for string dates
+                    date_str = self.normalize_whitespace(str(date_val)) if isinstance(date_val, str) else str(date_val)
                     try:
-                        date_part = datetime.strptime(date_str, '%Y-%m-%d').date()
+                        date_part = datetime.strptime(date_str, '%d/%m/%Y').date()
                     except ValueError:
-                        if isinstance(date_val, (int, float)) or (isinstance(date_val, str) and date_val.isdigit()):
-                            date_num = int(float(date_val)) if isinstance(date_val, str) else int(date_val)
-                            from datetime import timedelta
-                            base_date = datetime(1899, 12, 30).date()
-                            date_part = base_date + timedelta(days=date_num)
-                        else:
-                            raise ValueError(f"Unrecognized date format: {date_val} (type: {type(date_val)})")
-
-            # Convert time to datetime.time object
-            if hasattr(time_val, 'hour') and hasattr(time_val, 'minute'):
-                if hasattr(time_val, 'year'):
-                    time_part = time_val.time()
-                else:
-                    time_part = time_val
-            else:
-                # NORMALIZE WHITESPACE for string times
-                time_str = self.normalize_whitespace(str(time_val)) if isinstance(time_val, str) else str(time_val)
-                try:
-                    time_part = datetime.strptime(time_str, '%H:%M:%S').time()
-                except ValueError:
-                    try:
-                        time_part = datetime.strptime(time_str, '%H:%M').time()
-                    except ValueError:
-                        if isinstance(time_val, (int, float)) or (isinstance(time_val, str) and time_val.replace('.', '', 1).isdigit()):
-                            time_num = float(time_val) if isinstance(time_val, str) else time_val
-                            if 0 <= time_num < 1:
-                                hours = int(time_num * 24)
-                                minutes = int((time_num * 24 * 60) % 60)
-                                seconds = int((time_num * 24 * 3600) % 60)
-                                from datetime import time
-                                time_part = time(hours, minutes, seconds)
+                        try:
+                            date_part = datetime.strptime(date_str, '%Y-%m-%d').date()
+                        except ValueError:
+                            if isinstance(date_val, (int, float)) or (isinstance(date_val, str) and date_val.isdigit()):
+                                date_num = int(float(date_val)) if isinstance(date_val, str) else int(date_val)
+                                from datetime import timedelta
+                                base_date = datetime(1899, 12, 30).date()
+                                date_part = base_date + timedelta(days=date_num)
                             else:
-                                raise ValueError(f"Time value out of range (0-1): {time_val}")
-                        else:
-                            raise ValueError(f"Unrecognized time format: {time_val} (type: {type(time_val)})")
+                                raise ValueError(f"Unrecognized date format: {date_val} (type: {type(date_val)})")
 
-            return datetime.combine(date_part, time_part)
-    
-        except Exception as e:
-            error_msg = f"Error parsing date: {date_val} (type: {type(date_val)}) and time: {time_val} (type: {type(time_val)}). Error: {str(e)}"
-            print(error_msg)
-            return None
+                # Convert time to datetime.time object
+                if hasattr(time_val, 'hour') and hasattr(time_val, 'minute'):
+                    if hasattr(time_val, 'year'):
+                        time_part = time_val.time()
+                    else:
+                        time_part = time_val
+                else:
+                    # NORMALIZE WHITESPACE for string times
+                    time_str = self.normalize_whitespace(str(time_val)) if isinstance(time_val, str) else str(time_val)
+                    try:
+                        time_part = datetime.strptime(time_str, '%H:%M:%S').time()
+                    except ValueError:
+                        try:
+                            time_part = datetime.strptime(time_str, '%H:%M').time()
+                        except ValueError:
+                            if isinstance(time_val, (int, float)) or (isinstance(time_val, str) and time_val.replace('.', '', 1).isdigit()):
+                                time_num = float(time_val) if isinstance(time_val, str) else time_val
+                                if 0 <= time_num < 1:
+                                    hours = int(time_num * 24)
+                                    minutes = int((time_num * 24 * 60) % 60)
+                                    seconds = int((time_num * 24 * 3600) % 60)
+                                    from datetime import time
+                                    time_part = time(hours, minutes, seconds)
+                                else:
+                                    raise ValueError(f"Time value out of range (0-1): {time_val}")
+                            else:
+                                raise ValueError(f"Unrecognized time format: {time_val} (type: {type(time_val)})")
+
+                # Combine date and time, then make it timezone-aware (Egypt timezone)
+                naive_datetime = datetime.combine(date_part, time_part)
+                egypt_tz = pytz.timezone('Africa/Cairo')
+                aware_datetime = egypt_tz.localize(naive_datetime)
+                
+                return aware_datetime
+        
+            except Exception as e:
+                error_msg = f"Error parsing date: {date_val} (type: {type(date_val)}) and time: {time_val} (type: {type(time_val)}). Error: {str(e)}"
+                print(error_msg)
+                return None
 
     def create_valid_logs_sheet(self, workbook, sheet_name, data):
         """Create the attendance log sheet"""
@@ -1689,6 +1713,11 @@ class AutomatedAttendanceProcessor:
                                 if temp_dt:
                                     entry_date = temp_dt
                                     normalized_date_str = temp_dt.strftime('%d/%m/%Y')
+                            
+                            # Make entry_date timezone-aware if it's naive
+                            if entry_date and not entry_date.tzinfo:
+                                egypt_tz = pytz.timezone('Africa/Cairo')
+                                entry_date = egypt_tz.localize(entry_date)
                         except Exception as e:
                             print(f"Error parsing entry date: {entry[8]} - {str(e)}")
                             pass
@@ -1872,7 +1901,7 @@ class AutomatedAttendanceProcessor:
                                             session_end = session_start + timedelta(minutes=duration_minutes)
                                             
                                             # Check if session has ended (current time > session end time)
-                                            current_time = datetime.now()
+                                            current_time = self.get_egypt_time()
                                             session_ended = current_time > session_end
                                         except Exception as e:
                                             # If we can't parse the date/time, assume session has ended
@@ -2708,7 +2737,7 @@ class AutomatedAttendanceProcessor:
                 print(f"  Total transferred students: {len(all_transferred_students)}")
 
             # Calculate session completion status
-            current_datetime = datetime.now()
+            current_datetime = self.get_egypt_time()
             completed_sessions, sessions_left = self.calculate_completed_sessions(
                 session_schedule[1:], current_datetime)
             required_attendance = self.calculate_required_attendance(session_schedule[1:], total_required)
