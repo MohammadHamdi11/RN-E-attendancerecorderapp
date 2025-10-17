@@ -1888,26 +1888,27 @@ class AutomatedAttendanceProcessor:
                                                         duration_minutes = 120.0
                                                     break
                                         
-                                        try:
-                                            # Parse the session date and time
-                                            session_date = datetime.strptime(date_str, '%d/%m/%Y')
-                                            session_time = datetime.strptime(time_str, '%H:%M:%S').time()
-                                            
-                                            # Combine date and time to get session start datetime
-                                            session_start = datetime.combine(session_date.date(), session_time)
-                                            
-                                            # Calculate session end time (start + duration)
-                                            from datetime import timedelta
-                                            session_end = session_start + timedelta(minutes=duration_minutes)
-                                            
-                                            # Check if session has ended (current time > session end time)
-                                            current_time = self.get_egypt_time()
-                                            session_ended = current_time > session_end
-                                        except Exception as e:
-                                            # If we can't parse the date/time, assume session has ended
-                                            session_ended = True
-                            else:
-                                # If no session info found, assume session has ended
+                            try:
+                                # Parse the session date and time
+                                session_date = datetime.strptime(date_str, '%d/%m/%Y')
+                                session_time = datetime.strptime(time_str, '%H:%M:%S').time()
+                                
+                                # Combine date and time to get session start datetime
+                                session_start = datetime.combine(session_date.date(), session_time)
+                                
+                                # Make session_start timezone-aware (Egypt timezone)
+                                egypt_tz = pytz.timezone('Africa/Cairo')
+                                session_start = egypt_tz.localize(session_start)
+                                
+                                # Calculate session end time (start + duration)
+                                from datetime import timedelta
+                                session_end = session_start + timedelta(minutes=duration_minutes)
+                                
+                                # Check if session has ended (current time > session end time)
+                                current_time = self.get_egypt_time()  # Returns timezone-aware datetime
+                                session_ended = current_time > session_end  # Now both are timezone-aware!
+                            except Exception as e:
+                                # If we can't parse the date/time, assume session has ended
                                 session_ended = True
 
                             # If session hasn't ended yet, use '-', otherwise use attendance count
