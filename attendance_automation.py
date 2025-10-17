@@ -40,12 +40,13 @@ class SessionAnalyzer:
         
     def get_egypt_time(self):
         """Get current time in Egypt timezone using timezone-aware datetime"""
-        # Use timezone-aware datetime instead of deprecated utcnow()
-        from datetime import timezone
+        import pytz
+        from datetime import datetime, timezone
+        
+        # Get current UTC time (timezone-aware)
         utc_now = datetime.now(timezone.utc)
         
-        # Egypt is UTC+2 (or UTC+3 during daylight saving)
-        # Using pytz is more reliable for handling DST automatically
+        # Convert to Egypt timezone
         egypt_tz = pytz.timezone('Africa/Cairo')
         egypt_time = utc_now.astimezone(egypt_tz)
         
@@ -1893,23 +1894,35 @@ class AutomatedAttendanceProcessor:
                                 session_date = datetime.strptime(date_str, '%d/%m/%Y')
                                 session_time = datetime.strptime(time_str, '%H:%M:%S').time()
                                 
-                                # Combine date and time to get session start datetime
-                                session_start = datetime.combine(session_date.date(), session_time)
+                                # Combine date and time to get session start datetime (naive)
+                                session_start_naive = datetime.combine(session_date.date(), session_time)
                                 
                                 # Make session_start timezone-aware (Egypt timezone)
                                 egypt_tz = pytz.timezone('Africa/Cairo')
-                                session_start = egypt_tz.localize(session_start)
+                                session_start = egypt_tz.localize(session_start_naive)
                                 
                                 # Calculate session end time (start + duration)
                                 from datetime import timedelta
                                 session_end = session_start + timedelta(minutes=duration_minutes)
                                 
-                                # Check if session has ended (current time > session end time)
-                                current_time = self.get_egypt_time()  # Returns timezone-aware datetime
-                                session_ended = current_time > session_end  # Now both are timezone-aware!
+                                # Get current time in Egypt timezone - CRITICAL: Use consistent timezone
+                                current_time = self.get_egypt_time()
+                                
+                                # DEBUGGING: Print for verification (remove after testing)
+                                if not session_ended:
+                                    print(f"    DEBUG: Session {subject} {session} - End: {session_end}, Current: {current_time}, Ended: {current_time > session_end}")
+                                
+                                # Check if session has ended
+                                session_ended = current_time > session_end
+                                
                             except Exception as e:
-                                # If we can't parse the date/time, assume session has ended
+                                print(f"    Error checking session status: {e}")
                                 session_ended = True
+                                
+                                # In create_summary_sheet, after calculating session_ended:
+                                print(f"DEBUG: Current Egypt time: {current_time}")
+                                print(f"DEBUG: Session end time: {session_end}")
+                                print(f"DEBUG: Session ended? {session_ended}")
 
                             # If session hasn't ended yet, use '-', otherwise use attendance count
                             if not session_ended:
