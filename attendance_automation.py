@@ -1918,11 +1918,6 @@ class AutomatedAttendanceProcessor:
                             except Exception as e:
                                 print(f"    Error checking session status: {e}")
                                 session_ended = True
-                                
-                                # In create_summary_sheet, after calculating session_ended:
-                                print(f"DEBUG: Current Egypt time: {current_time}")
-                                print(f"DEBUG: Session end time: {session_end}")
-                                print(f"DEBUG: Session ended? {session_ended}")
 
                             # If session hasn't ended yet, use '-', otherwise use attendance count
                             if not session_ended:
