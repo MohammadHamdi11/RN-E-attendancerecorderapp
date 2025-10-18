@@ -1,58 +1,32 @@
 {
   "user_email": "backup@backdoor.com",
-  "user_id": "backup_backdoor_com_1759747737457",
-  "account_created": "2025-10-06T10:48:57.457Z",
-  "last_sync": "2025-10-06T10:48:57.457Z",
-  "total_sessions": 2,
-  "total_scans": 1,
+  "user_id": "backup_backdoor_com_1760814779768",
+  "account_created": "2025-10-18T19:12:59.768Z",
+  "last_sync": "2025-10-18T19:12:59.768Z",
+  "total_sessions": 1,
+  "total_scans": 0,
   "sessions": [
     {
-      "id": "scanner1759743199594",
-      "location": "Physiology",
-      "year": 4,
-      "batch": "2024/2025",
-      "dateTime": "2025-10-06T09:33:19.594Z",
-      "formattedDateTime": "06/10/2025 12:33:19",
-      "scans": [],
-      "inProgress": false,
-      "isScanner": true,
-      "sessionType": "scanner",
-      "recoveryStatus": "closed_normally",
-      "isChecklist": false,
-      "backedUp": true,
-      "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1759747737457",
-      "created_by": "backup@backdoor.com",
-      "created_at": "2025-10-06T10:48:57.457Z",
-      "updated_at": "2025-10-06T10:48:57.457Z"
-    },
-    {
-      "id": "scanner1759747733891",
+      "id": "checklist1760814779285",
       "location": "Anatomy",
-      "year": 1,
+      "year": 2,
       "batch": "2025/2026",
-      "dateTime": "2025-10-06T10:48:53.891Z",
-      "formattedDateTime": "06/10/2025 13:48:53",
-      "scans": [
-        {
-          "id": "1759747737042",
-          "content": "123456",
-          "timestamp": "2025-10-06T10:48:57.042Z",
-          "formattedTime": "13:48:57",
-          "time": "2025-10-06T10:48:57.042Z",
-          "isManual": true
-        }
-      ],
+      "dateTime": "2025-10-18T19:12:59.285Z",
+      "formattedDateTime": "18/10/2025 22:12:59",
+      "scans": [],
       "inProgress": true,
-      "isScanner": true,
-      "sessionType": "scanner",
+      "isChecklist": true,
+      "filters": {
+        "year": "all",
+        "group": "all"
+      },
+      "sessionType": "checklist",
       "recoveryStatus": "in_progress",
-      "isChecklist": false,
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1759747737457",
+      "user_id": "backup_backdoor_com_1760814779768",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-10-06T10:48:57.457Z",
-      "updated_at": "2025-10-06T10:48:57.457Z"
+      "created_at": "2025-10-18T19:12:59.768Z",
+      "updated_at": "2025-10-18T19:12:59.768Z"
     }
   ]
 }
