@@ -1,9 +1,9 @@
 {
   "user_email": "backup@backdoor.com",
-  "user_id": "backup_backdoor_com_1760814779768",
-  "account_created": "2025-10-18T19:12:59.768Z",
-  "last_sync": "2025-10-18T19:12:59.768Z",
-  "total_sessions": 1,
+  "user_id": "backup_backdoor_com_1760814948494",
+  "account_created": "2025-10-18T19:15:48.493Z",
+  "last_sync": "2025-10-18T19:15:48.493Z",
+  "total_sessions": 3,
   "total_scans": 0,
   "sessions": [
     {
@@ -14,6 +14,52 @@
       "dateTime": "2025-10-18T19:12:59.285Z",
       "formattedDateTime": "18/10/2025 22:12:59",
       "scans": [],
+      "inProgress": false,
+      "isChecklist": true,
+      "filters": {
+        "year": 2,
+        "group": "A3"
+      },
+      "sessionType": "checklist",
+      "recoveryStatus": "closed_normally",
+      "backedUp": true,
+      "user_email": "backup@backdoor.com",
+      "user_id": "backup_backdoor_com_1760814948494",
+      "created_by": "backup@backdoor.com",
+      "created_at": "2025-10-18T19:15:48.493Z",
+      "updated_at": "2025-10-18T19:15:48.493Z"
+    },
+    {
+      "id": "checklist1760814820133",
+      "location": "Anatomy",
+      "year": 2,
+      "batch": "2025/2026",
+      "dateTime": "2025-10-18T19:13:40.133Z",
+      "formattedDateTime": "18/10/2025 22:13:40",
+      "scans": [],
+      "inProgress": false,
+      "isChecklist": true,
+      "filters": {
+        "year": "all",
+        "group": "all"
+      },
+      "sessionType": "checklist",
+      "recoveryStatus": "interrupted",
+      "backedUp": false,
+      "user_email": "backup@backdoor.com",
+      "user_id": "backup_backdoor_com_1760814948494",
+      "created_by": "backup@backdoor.com",
+      "created_at": "2025-10-18T19:15:48.493Z",
+      "updated_at": "2025-10-18T19:15:48.493Z"
+    },
+    {
+      "id": "checklist1760814947892",
+      "location": "Anatomy",
+      "year": 2,
+      "batch": "2025/2026",
+      "dateTime": "2025-10-18T19:15:47.892Z",
+      "formattedDateTime": "18/10/2025 22:15:47",
+      "scans": [],
       "inProgress": true,
       "isChecklist": true,
       "filters": {
@@ -23,10 +69,10 @@
       "sessionType": "checklist",
       "recoveryStatus": "in_progress",
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1760814779768",
+      "user_id": "backup_backdoor_com_1760814948494",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-10-18T19:12:59.768Z",
-      "updated_at": "2025-10-18T19:12:59.768Z"
+      "created_at": "2025-10-18T19:15:48.493Z",
+      "updated_at": "2025-10-18T19:15:48.493Z"
     }
   ]
 }
