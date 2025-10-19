@@ -1,10 +1,10 @@
 {
   "user_email": "backup@backdoor.com",
-  "user_id": "backup_backdoor_com_1760814948494",
-  "account_created": "2025-10-18T19:15:48.493Z",
-  "last_sync": "2025-10-18T19:15:48.493Z",
-  "total_sessions": 3,
-  "total_scans": 0,
+  "user_id": "backup_backdoor_com_1760869351041",
+  "account_created": "2025-10-19T10:22:31.041Z",
+  "last_sync": "2025-10-19T10:22:31.041Z",
+  "total_sessions": 4,
+  "total_scans": 4,
   "sessions": [
     {
       "id": "checklist1760814779285",
@@ -24,10 +24,10 @@
       "recoveryStatus": "closed_normally",
       "backedUp": true,
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1760814948494",
+      "user_id": "backup_backdoor_com_1760869351041",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-10-18T19:15:48.493Z",
-      "updated_at": "2025-10-18T19:15:48.493Z"
+      "created_at": "2025-10-19T10:22:31.041Z",
+      "updated_at": "2025-10-19T10:22:31.041Z"
     },
     {
       "id": "checklist1760814820133",
@@ -47,10 +47,10 @@
       "recoveryStatus": "interrupted",
       "backedUp": false,
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1760814948494",
+      "user_id": "backup_backdoor_com_1760869351041",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-10-18T19:15:48.493Z",
-      "updated_at": "2025-10-18T19:15:48.493Z"
+      "created_at": "2025-10-19T10:22:31.041Z",
+      "updated_at": "2025-10-19T10:22:31.041Z"
     },
     {
       "id": "checklist1760814947892",
@@ -59,20 +59,75 @@
       "batch": "2025/2026",
       "dateTime": "2025-10-18T19:15:47.892Z",
       "formattedDateTime": "18/10/2025 22:15:47",
-      "scans": [],
-      "inProgress": true,
+      "scans": [
+        {
+          "id": "231050",
+          "content": "231050",
+          "timestamp": "2025-10-18T19:15:57.590Z",
+          "formattedTime": "22:15:57",
+          "time": "2025-10-18T19:15:57.590Z",
+          "isManual": false
+        },
+        {
+          "id": "231066",
+          "content": "231066",
+          "timestamp": "2025-10-18T19:15:59.140Z",
+          "formattedTime": "22:15:59",
+          "time": "2025-10-18T19:15:59.140Z",
+          "isManual": false
+        },
+        {
+          "id": "231136",
+          "content": "231136",
+          "timestamp": "2025-10-18T19:16:07.341Z",
+          "formattedTime": "22:16:07",
+          "time": "2025-10-18T19:16:07.341Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": false,
       "isChecklist": true,
       "filters": {
-        "year": "all",
-        "group": "all"
+        "year": 2,
+        "group": "A3"
       },
       "sessionType": "checklist",
-      "recoveryStatus": "in_progress",
+      "recoveryStatus": "closed_normally",
+      "backedUp": true,
+      "backupTimestamp": "2025-10-18T19:16:25.649Z",
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1760814948494",
+      "user_id": "backup_backdoor_com_1760869351041",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-10-18T19:15:48.493Z",
-      "updated_at": "2025-10-18T19:15:48.493Z"
+      "created_at": "2025-10-19T10:22:31.041Z",
+      "updated_at": "2025-10-19T10:22:31.041Z"
+    },
+    {
+      "id": "scanner1760869342208",
+      "location": "Pharmacology",
+      "year": 2,
+      "batch": "2025/2026",
+      "dateTime": "2025-10-19T10:22:22.208Z",
+      "formattedDateTime": "19/10/2025 13:22:22",
+      "scans": [
+        {
+          "id": "1760869350692",
+          "content": "123456",
+          "timestamp": "2025-10-19T10:22:30.692Z",
+          "formattedTime": "13:22:30",
+          "time": "2025-10-19T10:22:30.692Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "backup@backdoor.com",
+      "user_id": "backup_backdoor_com_1760869351041",
+      "created_by": "backup@backdoor.com",
+      "created_at": "2025-10-19T10:22:31.041Z",
+      "updated_at": "2025-10-19T10:22:31.041Z"
     }
   ]
 }
