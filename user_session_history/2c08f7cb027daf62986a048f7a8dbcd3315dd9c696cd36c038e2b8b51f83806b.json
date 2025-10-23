@@ -1,10 +1,10 @@
 {
   "user_email": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538",
-  "user_id": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538_1761217948772",
-  "account_created": "2025-10-23T11:12:28.772Z",
-  "last_sync": "2025-10-23T11:12:28.772Z",
+  "user_id": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538_1761218010258",
+  "account_created": "2025-10-23T11:13:30.258Z",
+  "last_sync": "2025-10-23T11:13:30.258Z",
   "total_sessions": 4,
-  "total_scans": 293,
+  "total_scans": 295,
   "sessions": [
     {
       "id": "scanner1761115032485",
@@ -1350,10 +1350,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538",
-      "user_id": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538_1761217948772",
+      "user_id": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538_1761218010258",
       "created_by": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538",
-      "created_at": "2025-10-23T11:12:28.772Z",
-      "updated_at": "2025-10-23T11:12:28.772Z"
+      "created_at": "2025-10-23T11:13:30.258Z",
+      "updated_at": "2025-10-23T11:13:30.258Z"
     },
     {
       "id": "checklist1761116250891",
@@ -1372,10 +1372,10 @@
       "sessionType": "checklist",
       "recoveryStatus": "in_progress",
       "user_email": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538",
-      "user_id": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538_1761217948772",
+      "user_id": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538_1761218010258",
       "created_by": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538",
-      "created_at": "2025-10-23T11:12:28.772Z",
-      "updated_at": "2025-10-23T11:12:28.772Z"
+      "created_at": "2025-10-23T11:13:30.258Z",
+      "updated_at": "2025-10-23T11:13:30.258Z"
     },
     {
       "id": "scanner1761124432990",
@@ -2401,10 +2401,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538",
-      "user_id": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538_1761217948772",
+      "user_id": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538_1761218010258",
       "created_by": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538",
-      "created_at": "2025-10-23T11:12:28.772Z",
-      "updated_at": "2025-10-23T11:12:28.772Z"
+      "created_at": "2025-10-23T11:13:30.258Z",
+      "updated_at": "2025-10-23T11:13:30.258Z"
     },
     {
       "id": "scanner1761217930986",
@@ -2421,6 +2421,22 @@
           "formattedTime": "14:12:27",
           "time": "2025-10-23T11:12:27.972Z",
           "isManual": false
+        },
+        {
+          "id": "1761217991567",
+          "content": "235186",
+          "timestamp": "2025-10-23T11:13:11.566Z",
+          "formattedTime": "14:13:11",
+          "time": "2025-10-23T11:13:11.566Z",
+          "isManual": false
+        },
+        {
+          "id": "1761218009633",
+          "content": "235131",
+          "timestamp": "2025-10-23T11:13:29.632Z",
+          "formattedTime": "14:13:29",
+          "time": "2025-10-23T11:13:29.632Z",
+          "isManual": false
         }
       ],
       "inProgress": true,
@@ -2429,10 +2445,10 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538",
-      "user_id": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538_1761217948772",
+      "user_id": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538_1761218010258",
       "created_by": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538",
-      "created_at": "2025-10-23T11:12:28.772Z",
-      "updated_at": "2025-10-23T11:12:28.772Z"
+      "created_at": "2025-10-23T11:13:30.258Z",
+      "updated_at": "2025-10-23T11:13:30.258Z"
     }
   ]
 }
