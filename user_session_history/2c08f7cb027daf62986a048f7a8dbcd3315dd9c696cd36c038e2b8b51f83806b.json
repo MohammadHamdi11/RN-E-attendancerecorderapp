@@ -1,10 +1,10 @@
 {
   "user_email": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538",
-  "user_id": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538_1761219406513",
-  "account_created": "2025-10-23T11:36:46.513Z",
-  "last_sync": "2025-10-23T11:36:46.513Z",
+  "user_id": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538_1761219479021",
+  "account_created": "2025-10-23T11:37:59.021Z",
+  "last_sync": "2025-10-23T11:37:59.021Z",
   "total_sessions": 4,
-  "total_scans": 385,
+  "total_scans": 387,
   "sessions": [
     {
       "id": "scanner1761115032485",
@@ -1350,10 +1350,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538",
-      "user_id": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538_1761219406513",
+      "user_id": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538_1761219479021",
       "created_by": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538",
-      "created_at": "2025-10-23T11:36:46.513Z",
-      "updated_at": "2025-10-23T11:36:46.513Z"
+      "created_at": "2025-10-23T11:37:59.021Z",
+      "updated_at": "2025-10-23T11:37:59.021Z"
     },
     {
       "id": "checklist1761116250891",
@@ -1372,10 +1372,10 @@
       "sessionType": "checklist",
       "recoveryStatus": "in_progress",
       "user_email": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538",
-      "user_id": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538_1761219406513",
+      "user_id": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538_1761219479021",
       "created_by": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538",
-      "created_at": "2025-10-23T11:36:46.513Z",
-      "updated_at": "2025-10-23T11:36:46.513Z"
+      "created_at": "2025-10-23T11:37:59.021Z",
+      "updated_at": "2025-10-23T11:37:59.021Z"
     },
     {
       "id": "scanner1761124432990",
@@ -2401,10 +2401,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538",
-      "user_id": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538_1761219406513",
+      "user_id": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538_1761219479021",
       "created_by": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538",
-      "created_at": "2025-10-23T11:36:46.513Z",
-      "updated_at": "2025-10-23T11:36:46.513Z"
+      "created_at": "2025-10-23T11:37:59.021Z",
+      "updated_at": "2025-10-23T11:37:59.021Z"
     },
     {
       "id": "scanner1761217930986",
@@ -3157,6 +3157,22 @@
           "formattedTime": "14:36:42",
           "time": "2025-10-23T11:36:42.886Z",
           "isManual": true
+        },
+        {
+          "id": "1761219414046",
+          "content": "234680",
+          "timestamp": "2025-10-23T11:36:54.045Z",
+          "formattedTime": "14:36:54",
+          "time": "2025-10-23T11:36:54.045Z",
+          "isManual": true
+        },
+        {
+          "id": "1761219475862",
+          "content": "234746",
+          "timestamp": "2025-10-23T11:37:55.861Z",
+          "formattedTime": "14:37:55",
+          "time": "2025-10-23T11:37:55.861Z",
+          "isManual": true
         }
       ],
       "inProgress": true,
@@ -3165,10 +3181,10 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538",
-      "user_id": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538_1761219406513",
+      "user_id": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538_1761219479021",
       "created_by": "d98a641fbd845c0a4e67d5c3df19f56b894b356cbcff263721bcbe66e39d8538",
-      "created_at": "2025-10-23T11:36:46.513Z",
-      "updated_at": "2025-10-23T11:36:46.513Z"
+      "created_at": "2025-10-23T11:37:59.021Z",
+      "updated_at": "2025-10-23T11:37:59.021Z"
     }
   ]
 }
