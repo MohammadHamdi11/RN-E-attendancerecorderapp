@@ -1,0 +1,57 @@
+{
+  "user_email": "2b8eb29f7464be359f06b0dda04258f2a78c2786d2b519cbb3a241a2c2e1e9f9",
+  "user_id": "2b8eb29f7464be359f06b0dda04258f2a78c2786d2b519cbb3a241a2c2e1e9f9_1761211429113",
+  "account_created": "2025-10-23T09:23:49.113Z",
+  "last_sync": "2025-10-23T09:23:49.113Z",
+  "total_sessions": 2,
+  "total_scans": 1,
+  "sessions": [
+    {
+      "id": "scanner1758432071631",
+      "location": "Pathology",
+      "year": 1,
+      "batch": "2027/2028",
+      "dateTime": "2025-09-21T05:21:11.631Z",
+      "formattedDateTime": "21/09/2025 08:21:11",
+      "scans": [],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "interrupted",
+      "isChecklist": false,
+      "user_email": "2b8eb29f7464be359f06b0dda04258f2a78c2786d2b519cbb3a241a2c2e1e9f9",
+      "user_id": "2b8eb29f7464be359f06b0dda04258f2a78c2786d2b519cbb3a241a2c2e1e9f9_1761211429113",
+      "created_by": "2b8eb29f7464be359f06b0dda04258f2a78c2786d2b519cbb3a241a2c2e1e9f9",
+      "created_at": "2025-10-23T09:23:49.113Z",
+      "updated_at": "2025-10-23T09:23:49.113Z"
+    },
+    {
+      "id": "scanner1761211419992",
+      "location": "Pathology Lab/Museum",
+      "year": 3,
+      "batch": "2025/2026",
+      "dateTime": "2025-10-23T09:23:39.992Z",
+      "formattedDateTime": "23/10/2025 12:23:39",
+      "scans": [
+        {
+          "id": "1761211428454",
+          "content": "231153",
+          "timestamp": "2025-10-23T09:23:48.444Z",
+          "formattedTime": "12:23:48",
+          "time": "2025-10-23T09:23:48.444Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "2b8eb29f7464be359f06b0dda04258f2a78c2786d2b519cbb3a241a2c2e1e9f9",
+      "user_id": "2b8eb29f7464be359f06b0dda04258f2a78c2786d2b519cbb3a241a2c2e1e9f9_1761211429113",
+      "created_by": "2b8eb29f7464be359f06b0dda04258f2a78c2786d2b519cbb3a241a2c2e1e9f9",
+      "created_at": "2025-10-23T09:23:49.113Z",
+      "updated_at": "2025-10-23T09:23:49.113Z"
+    }
+  ]
+}
