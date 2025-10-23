@@ -894,17 +894,48 @@ class AutomatedAttendanceProcessor:
         # Minimum number of consecutive sessions to consider a group transfer confirmed
         self.TRANSFER_CONFIRMATION_THRESHOLD = 1
         
-        # Define subject colors (copied from UpdateAttendance)
+        # Define subject colors
         self.SUBJECT_COLORS = {
+            # Red with white text
             "anatomy": {"bg": "800020", "text": "FFFFFF"},
+            "cardiology": {"bg": "800020", "text": "FFFFFF"},
+            "surgery": {"bg": "800020", "text": "FFFFFF"},
+            "hematology": {"bg": "800020", "text": "FFFFFF"},
+            "haematology": {"bg": "800020", "text": "FFFFFF"},
+            # Pink with black text
             "histology": {"bg": "FFE4E1", "text": "000000"},
+            "gynecology": {"bg": "FFE4E1", "text": "000000"},
+            "obstetrics": {"bg": "FFE4E1", "text": "000000"},
+            "dermatology": {"bg": "FFE4E1", "text": "000000"},
+            # Purple with white text
             "pathology": {"bg": "663399", "text": "FFFFFF"},
+            "patho": {"bg": "663399", "text": "FFFFFF"},
+            "ophthalmology": {"bg": "663399", "text": "FFFFFF"},
+            # Green with white text
             "parasitology": {"bg": "556B2F", "text": "FFFFFF"},
+            "tropical": {"bg": "556B2F", "text": "FFFFFF"},
+            # Yellow with white text
             "physiology": {"bg": "D4A017", "text": "FFFFFF"},
+            "neurology": {"bg": "D4A017", "text": "FFFFFF"},
+            "psychiatry": {"bg": "D4A017", "text": "FFFFFF"},
+            # Teal with white text
             "microbiology": {"bg": "4682B4", "text": "FFFFFF"},
+            "ent": {"bg": "4682B4", "text": "FFFFFF"},
+            "family": {"bg": "4682B4", "text": "FFFFFF"},
+            # Navy with white text
             "pharmacology": {"bg": "000080", "text": "FFFFFF"},
+            "radiology": {"bg": "000080", "text": "FFFFFF"},
+            "chest": {"bg": "000080", "text": "FFFFFF"},
+            "pulmonology": {"bg": "000080", "text": "FFFFFF"},
+            # Cyan with white text
             "biochemistry": {"bg": "1A3668", "text": "FFFFFF"},
+            "genetics": {"bg": "1A3668", "text": "FFFFFF"},
+            "pediatrics": {"bg": "1A3668", "text": "FFFFFF"},
+            # Gray with white text
             "clinical": {"bg": "333333", "text": "FFFFFF"},
+            "emergency": {"bg": "333333", "text": "FFFFFF"},
+            "community": {"bg": "333333", "text": "FFFFFF"},
+            # Black with white text
             "other": {"bg": "000000", "text": "FFFFFF"}
         }
         
