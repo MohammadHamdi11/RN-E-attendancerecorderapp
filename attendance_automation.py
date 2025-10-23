@@ -1051,7 +1051,6 @@ class AutomatedAttendanceProcessor:
                 print(f"    Schedule: {os.path.basename(data['schedule'])}")
             if 'report' in data:
                 print(f"    Report: {os.path.basename(data['report'])}")
-            print(f"    Log files: {len(data['log_files'])} files")
         
         return valid_module_groups
     
@@ -1399,6 +1398,54 @@ class AutomatedAttendanceProcessor:
                     required_attendance[key][subject]["total"] += 1
     
         return required_attendance
+    
+    def calculate_total_required_from_schedule(self, session_schedule):
+        """
+        Calculate total required sessions from the schedule file by averaging
+        the number of sessions across all groups (rounded down).
+        
+        Args:
+            session_schedule: List of rows from the schedule file
+            
+        Returns:
+            int: Total required sessions (averaged and floored)
+        """
+        group_session_counts = {}
+        
+        # Count sessions for each group
+        for row in session_schedule:
+            if len(row) >= 4:
+                # Normalize the row data
+                normalized_row = self.normalize_row_data(row)
+                year, group, subject, session_num = normalized_row[:4]
+                
+                # Convert to uppercase for consistency
+                group = str(group).upper() if group else ""
+                
+                # Create unique group key
+                group_key = f"{year}-{group}"
+                
+                # Count this session for the group
+                if group_key not in group_session_counts:
+                    group_session_counts[group_key] = 0
+                group_session_counts[group_key] += 1
+        
+        # Calculate average and floor it
+        if group_session_counts:
+            total_sessions = sum(group_session_counts.values())
+            num_groups = len(group_session_counts)
+            average_sessions = total_sessions / num_groups
+            
+            # Floor the average (remove decimal part)
+            total_required = int(average_sessions)
+            
+            print(f"  Group session counts: {group_session_counts}")
+            print(f"  Average sessions: {average_sessions:.2f} -> Floored to: {total_required}")
+            
+            return total_required
+        else:
+            print("  Warning: No groups found in schedule. Using default value of 100.")
+            return 100
     
     def parse_datetime(self, date_val, time_val):
             """Parse date and time values into a timezone-aware datetime object."""
@@ -1907,10 +1954,6 @@ class AutomatedAttendanceProcessor:
                                 
                                 # Get current time in Egypt timezone - CRITICAL: Use consistent timezone
                                 current_time = self.get_egypt_time()
-                                
-                                # DEBUGGING: Print for verification (remove after testing)
-                                if not session_ended:
-                                    print(f"    DEBUG: Session {subject} {session} - End: {session_end}, Current: {current_time}, Ended: {current_time > session_end}")
                                 
                                 # Check if session has ended
                                 session_ended = current_time > session_end
@@ -2699,12 +2742,15 @@ class AutomatedAttendanceProcessor:
                     print(f"  Using calculated threshold: {calculated_threshold:.1%}")
                 else:
                     print(f"Could not extract data from {report_file}. Using default threshold.")
-                    total_required = 100
+                    # Calculate from schedule instead of using default
+                    total_required = self.calculate_total_required_from_schedule(session_schedule[1:])
                     self.ATTENDANCE_THRESHOLD = 0.75
             else:
-                print(f"No existing report found for {module_name}. Using default values.")
-                total_required = 100
+                print(f"No existing report found for {module_name}. Calculating from schedule.")
+                # Calculate total required from schedule file
+                total_required = self.calculate_total_required_from_schedule(session_schedule[1:])
                 self.ATTENDANCE_THRESHOLD = 0.75
+                print(f"  Calculated total required sessions: {total_required}")
 
             prev_student_map = {}
             prev_attendance_data = {}
