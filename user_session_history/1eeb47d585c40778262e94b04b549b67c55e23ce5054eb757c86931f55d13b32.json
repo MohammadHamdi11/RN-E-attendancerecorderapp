@@ -1,41 +1,18 @@
 {
   "user_email": "backup@backdoor.com",
-  "user_id": "backup_backdoor_com_1761214357762",
-  "account_created": "2025-10-23T10:12:37.762Z",
-  "last_sync": "2025-10-23T10:12:37.762Z",
-  "total_sessions": 2,
+  "user_id": "backup_backdoor_com_1761676842855",
+  "account_created": "2025-10-28T18:40:42.855Z",
+  "last_sync": "2025-10-28T18:40:42.855Z",
+  "total_sessions": 1,
   "total_scans": 0,
   "sessions": [
     {
-      "id": "checklist1761214092403",
-      "location": "Chest",
-      "year": 4,
+      "id": "checklist1761676842270",
+      "location": "Parasitology SGD/POS",
+      "year": 3,
       "batch": "2025/2026",
-      "dateTime": "2025-10-23T10:08:12.403Z",
-      "formattedDateTime": "23/10/2025 13:08:12",
-      "scans": [],
-      "inProgress": false,
-      "isChecklist": true,
-      "filters": {
-        "year": "all",
-        "group": "all"
-      },
-      "sessionType": "checklist",
-      "recoveryStatus": "interrupted",
-      "backedUp": false,
-      "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1761214357762",
-      "created_by": "backup@backdoor.com",
-      "created_at": "2025-10-23T10:12:37.762Z",
-      "updated_at": "2025-10-23T10:12:37.762Z"
-    },
-    {
-      "id": "checklist1761214357077",
-      "location": "Chest",
-      "year": 4,
-      "batch": "2025/2026",
-      "dateTime": "2025-10-23T10:12:37.077Z",
-      "formattedDateTime": "23/10/2025 13:12:37",
+      "dateTime": "2025-10-28T18:40:42.270Z",
+      "formattedDateTime": "28/10/2025 21:40:42",
       "scans": [],
       "inProgress": true,
       "isChecklist": true,
@@ -46,10 +23,10 @@
       "sessionType": "checklist",
       "recoveryStatus": "in_progress",
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1761214357762",
+      "user_id": "backup_backdoor_com_1761676842855",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-10-23T10:12:37.762Z",
-      "updated_at": "2025-10-23T10:12:37.762Z"
+      "created_at": "2025-10-28T18:40:42.855Z",
+      "updated_at": "2025-10-28T18:40:42.855Z"
     }
   ]
 }
