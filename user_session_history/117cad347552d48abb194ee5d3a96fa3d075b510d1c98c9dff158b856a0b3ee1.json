@@ -1,10 +1,10 @@
 {
   "user_email": "8e9cc48f6e8793e4ce72349bce8e04df5ba55f2c8dbce18973fc024c02f4b8cf",
-  "user_id": "8e9cc48f6e8793e4ce72349bce8e04df5ba55f2c8dbce18973fc024c02f4b8cf_1757145894758",
-  "account_created": "2025-09-06T08:04:54.758Z",
-  "last_sync": "2025-09-06T08:04:54.758Z",
-  "total_sessions": 2,
-  "total_scans": 2,
+  "user_id": "8e9cc48f6e8793e4ce72349bce8e04df5ba55f2c8dbce18973fc024c02f4b8cf_1761641826090",
+  "account_created": "2025-10-28T08:57:06.090Z",
+  "last_sync": "2025-10-28T08:57:06.090Z",
+  "total_sessions": 3,
+  "total_scans": 3,
   "sessions": [
     {
       "id": "scanner1757145390088",
@@ -31,16 +31,16 @@
           "isManual": true
         }
       ],
-      "inProgress": true,
+      "inProgress": false,
       "isScanner": true,
       "sessionType": "scanner",
-      "recoveryStatus": "in_progress",
+      "recoveryStatus": "interrupted",
       "isChecklist": false,
       "user_email": "8e9cc48f6e8793e4ce72349bce8e04df5ba55f2c8dbce18973fc024c02f4b8cf",
-      "user_id": "8e9cc48f6e8793e4ce72349bce8e04df5ba55f2c8dbce18973fc024c02f4b8cf_1757145894758",
+      "user_id": "8e9cc48f6e8793e4ce72349bce8e04df5ba55f2c8dbce18973fc024c02f4b8cf_1761641826090",
       "created_by": "8e9cc48f6e8793e4ce72349bce8e04df5ba55f2c8dbce18973fc024c02f4b8cf",
       "created_at": "2025-09-06T08:04:54.758Z",
-      "updated_at": "2025-09-06T08:04:54.758Z"
+      "updated_at": "2025-10-28T08:57:06.090Z"
     },
     {
       "id": "scanner1757145671283",
@@ -50,17 +50,45 @@
       "dateTime": "2025-09-06T08:01:11.283Z",
       "formattedDateTime": "06/09/2025 11:01:11",
       "scans": [],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "closed_normally",
+      "isChecklist": false,
+      "backedUp": true,
+      "updated_at": "2025-10-28T08:57:06.090Z",
+      "user_email": "8e9cc48f6e8793e4ce72349bce8e04df5ba55f2c8dbce18973fc024c02f4b8cf",
+      "user_id": "8e9cc48f6e8793e4ce72349bce8e04df5ba55f2c8dbce18973fc024c02f4b8cf_1761641826090",
+      "created_by": "8e9cc48f6e8793e4ce72349bce8e04df5ba55f2c8dbce18973fc024c02f4b8cf",
+      "created_at": "2025-09-06T08:04:54.758Z"
+    },
+    {
+      "id": "scanner1761641793286",
+      "location": "Immuno&hema",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-10-28T08:56:33.286Z",
+      "formattedDateTime": "28/10/2025 11:56:33",
+      "scans": [
+        {
+          "id": "1761641824954",
+          "content": "221859",
+          "timestamp": "2025-10-28T08:57:04.925Z",
+          "formattedTime": "11:57:04",
+          "time": "2025-10-28T08:57:04.925Z",
+          "isManual": false
+        }
+      ],
       "inProgress": true,
       "isScanner": true,
       "sessionType": "scanner",
       "recoveryStatus": "in_progress",
       "isChecklist": false,
-      "backedUp": true,
-      "updated_at": "2025-09-06T08:04:54.758Z",
       "user_email": "8e9cc48f6e8793e4ce72349bce8e04df5ba55f2c8dbce18973fc024c02f4b8cf",
-      "user_id": "8e9cc48f6e8793e4ce72349bce8e04df5ba55f2c8dbce18973fc024c02f4b8cf_1757145894758",
+      "user_id": "8e9cc48f6e8793e4ce72349bce8e04df5ba55f2c8dbce18973fc024c02f4b8cf_1761641826090",
       "created_by": "8e9cc48f6e8793e4ce72349bce8e04df5ba55f2c8dbce18973fc024c02f4b8cf",
-      "created_at": "2025-09-06T08:04:54.758Z"
+      "created_at": "2025-10-28T08:57:06.090Z",
+      "updated_at": "2025-10-28T08:57:06.090Z"
     }
   ]
 }
