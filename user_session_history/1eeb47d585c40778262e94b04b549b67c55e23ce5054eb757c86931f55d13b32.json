@@ -1,10 +1,10 @@
 {
   "user_email": "backup@backdoor.com",
-  "user_id": "backup_backdoor_com_1761865445202",
-  "account_created": "2025-10-30T23:04:05.202Z",
-  "last_sync": "2025-10-30T23:04:05.202Z",
+  "user_id": "backup_backdoor_com_1761865845777",
+  "account_created": "2025-10-30T23:10:45.777Z",
+  "last_sync": "2025-10-30T23:10:45.777Z",
   "total_sessions": 1,
-  "total_scans": 10,
+  "total_scans": 14,
   "sessions": [
     {
       "id": "checklist1761865372273",
@@ -93,6 +93,38 @@
           "formattedTime": "01:04:04",
           "time": "2025-10-30T23:04:04.886Z",
           "isManual": false
+        },
+        {
+          "id": "221472",
+          "content": "221472",
+          "timestamp": "2025-10-30T23:04:08.574Z",
+          "formattedTime": "01:04:08",
+          "time": "2025-10-30T23:04:08.574Z",
+          "isManual": false
+        },
+        {
+          "id": "221482",
+          "content": "221482",
+          "timestamp": "2025-10-30T23:04:12.037Z",
+          "formattedTime": "01:04:12",
+          "time": "2025-10-30T23:04:12.037Z",
+          "isManual": false
+        },
+        {
+          "id": "221492",
+          "content": "221492",
+          "timestamp": "2025-10-30T23:04:15.213Z",
+          "formattedTime": "01:04:15",
+          "time": "2025-10-30T23:04:15.213Z",
+          "isManual": false
+        },
+        {
+          "id": "221497",
+          "content": "221497",
+          "timestamp": "2025-10-30T23:04:18.896Z",
+          "formattedTime": "01:04:18",
+          "time": "2025-10-30T23:04:18.896Z",
+          "isManual": false
         }
       ],
       "inProgress": true,
@@ -104,10 +136,10 @@
       "sessionType": "checklist",
       "recoveryStatus": "in_progress",
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1761865445202",
+      "user_id": "backup_backdoor_com_1761865845777",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-10-30T23:04:05.202Z",
-      "updated_at": "2025-10-30T23:04:05.202Z"
+      "created_at": "2025-10-30T23:10:45.777Z",
+      "updated_at": "2025-10-30T23:10:45.777Z"
     }
   ]
 }
