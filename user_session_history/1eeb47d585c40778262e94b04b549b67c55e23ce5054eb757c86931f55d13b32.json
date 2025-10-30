@@ -1,10 +1,10 @@
 {
   "user_email": "backup@backdoor.com",
-  "user_id": "backup_backdoor_com_1761866551293",
-  "account_created": "2025-10-30T23:22:31.293Z",
-  "last_sync": "2025-10-30T23:22:31.293Z",
+  "user_id": "backup_backdoor_com_1761866712916",
+  "account_created": "2025-10-30T23:25:12.916Z",
+  "last_sync": "2025-10-30T23:25:12.916Z",
   "total_sessions": 2,
-  "total_scans": 88,
+  "total_scans": 90,
   "sessions": [
     {
       "id": "checklist1761865372273",
@@ -490,10 +490,10 @@
       "backedUp": true,
       "backupTimestamp": "2025-10-30T23:18:11.189Z",
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1761866551293",
+      "user_id": "backup_backdoor_com_1761866712916",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-10-30T23:22:31.293Z",
-      "updated_at": "2025-10-30T23:22:31.293Z"
+      "created_at": "2025-10-30T23:25:12.916Z",
+      "updated_at": "2025-10-30T23:25:12.916Z"
     },
     {
       "id": "checklist1761866300877",
@@ -742,6 +742,22 @@
           "formattedTime": "01:22:30",
           "time": "2025-10-30T23:22:30.767Z",
           "isManual": false
+        },
+        {
+          "id": "221452",
+          "content": "221452",
+          "timestamp": "2025-10-30T23:22:33.490Z",
+          "formattedTime": "01:22:33",
+          "time": "2025-10-30T23:22:33.490Z",
+          "isManual": false
+        },
+        {
+          "id": "221292",
+          "content": "221292",
+          "timestamp": "2025-10-30T23:25:12.326Z",
+          "formattedTime": "01:25:12",
+          "time": "2025-10-30T23:25:12.326Z",
+          "isManual": false
         }
       ],
       "inProgress": true,
@@ -753,10 +769,10 @@
       "sessionType": "checklist",
       "recoveryStatus": "in_progress",
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1761866551293",
+      "user_id": "backup_backdoor_com_1761866712916",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-10-30T23:22:31.293Z",
-      "updated_at": "2025-10-30T23:22:31.293Z"
+      "created_at": "2025-10-30T23:25:12.916Z",
+      "updated_at": "2025-10-30T23:25:12.916Z"
     }
   ]
 }
