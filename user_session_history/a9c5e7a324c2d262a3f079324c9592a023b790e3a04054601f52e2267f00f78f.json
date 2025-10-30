@@ -1,0 +1,57 @@
+{
+  "user_email": "338160f3310b334db9f893742e7b39e5748441d1d5937c2611c4efd599ade94d",
+  "user_id": "338160f3310b334db9f893742e7b39e5748441d1d5937c2611c4efd599ade94d_1761805710267",
+  "account_created": "2025-10-30T06:28:30.267Z",
+  "last_sync": "2025-10-30T06:28:30.267Z",
+  "total_sessions": 2,
+  "total_scans": 1,
+  "sessions": [
+    {
+      "id": "scanner1760590951608",
+      "location": "Microbiology",
+      "year": 1,
+      "batch": "2025/2026",
+      "dateTime": "2025-10-16T05:02:31.608Z",
+      "formattedDateTime": "16/10/2025 08:02:31",
+      "scans": [],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "interrupted",
+      "isChecklist": false,
+      "user_email": "338160f3310b334db9f893742e7b39e5748441d1d5937c2611c4efd599ade94d",
+      "user_id": "338160f3310b334db9f893742e7b39e5748441d1d5937c2611c4efd599ade94d_1761805710267",
+      "created_by": "338160f3310b334db9f893742e7b39e5748441d1d5937c2611c4efd599ade94d",
+      "created_at": "2025-10-30T06:28:30.267Z",
+      "updated_at": "2025-10-30T06:28:30.267Z"
+    },
+    {
+      "id": "scanner1761805702737",
+      "location": "Microbiology",
+      "year": 3,
+      "batch": "2025/2026",
+      "dateTime": "2025-10-30T06:28:22.737Z",
+      "formattedDateTime": "30/10/2025 09:28:22",
+      "scans": [
+        {
+          "id": "1761805707322",
+          "content": "231060",
+          "timestamp": "2025-10-30T06:28:27.312Z",
+          "formattedTime": "09:28:27",
+          "time": "2025-10-30T06:28:27.312Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "338160f3310b334db9f893742e7b39e5748441d1d5937c2611c4efd599ade94d",
+      "user_id": "338160f3310b334db9f893742e7b39e5748441d1d5937c2611c4efd599ade94d_1761805710267",
+      "created_by": "338160f3310b334db9f893742e7b39e5748441d1d5937c2611c4efd599ade94d",
+      "created_at": "2025-10-30T06:28:30.267Z",
+      "updated_at": "2025-10-30T06:28:30.267Z"
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "user_email": "852e1b1428e83a7200a8706bfbe710abdcbd372f26b6e84b305c6d4080f99839",
+  "user_id": "852e1b1428e83a7200a8706bfbe710abdcbd372f26b6e84b305c6d4080f99839_1761723412355",
+  "account_created": "2025-10-29T07:36:52.355Z",
+  "last_sync": "2025-10-29T07:36:52.355Z",
+  "total_sessions": 4,
+  "total_scans": 2,
+  "sessions": [
+    {
+      "id": "checklist1758403553785",
+      "location": "Histology",
+      "year": 1,
+      "batch": "2025/2026",
+      "dateTime": "2025-09-20T21:25:53.785Z",
+      "formattedDateTime": "21/09/2025 00:25:53",
+      "scans": [],
+      "inProgress": false,
+      "isChecklist": true,
+      "filters": {
+        "year": "all",
+        "group": "all"
+      },
+      "sessionType": "checklist",
+      "recoveryStatus": "interrupted",
+      "backedUp": false,
+      "user_email": "852e1b1428e83a7200a8706bfbe710abdcbd372f26b6e84b305c6d4080f99839",
+      "user_id": "852e1b1428e83a7200a8706bfbe710abdcbd372f26b6e84b305c6d4080f99839_1761723412355",
+      "created_by": "852e1b1428e83a7200a8706bfbe710abdcbd372f26b6e84b305c6d4080f99839",
+      "created_at": "2025-10-29T07:36:52.355Z",
+      "updated_at": "2025-10-29T07:36:52.355Z"
+    },
+    {
+      "id": "scanner1759828629559",
+      "location": "Pharmacology",
+      "year": 3,
+      "batch": "2025/2026",
+      "dateTime": "2025-10-07T09:17:09.559Z",
+      "formattedDateTime": "07/10/2025 12:17:09",
+      "scans": [
+        {
+          "id": "1759828642279",
+          "content": "242558",
+          "timestamp": "2025-10-07T09:17:22.274Z",
+          "formattedTime": "12:17:22",
+          "time": "2025-10-07T09:17:22.274Z",
+          "isManual": true
+        },
+        {
+          "id": "1759828651488",
+          "content": "245582",
+          "timestamp": "2025-10-07T09:17:31.486Z",
+          "formattedTime": "12:17:31",
+          "time": "2025-10-07T09:17:31.486Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "852e1b1428e83a7200a8706bfbe710abdcbd372f26b6e84b305c6d4080f99839",
+      "user_id": "852e1b1428e83a7200a8706bfbe710abdcbd372f26b6e84b305c6d4080f99839_1761723412355",
+      "created_by": "852e1b1428e83a7200a8706bfbe710abdcbd372f26b6e84b305c6d4080f99839",
+      "created_at": "2025-10-29T07:36:52.355Z",
+      "updated_at": "2025-10-29T07:36:52.355Z"
+    },
+    {
+      "id": "scanner1761723361214",
+      "location": "Parasitology",
+      "year": 2,
+      "batch": "2025/2026",
+      "dateTime": "2025-10-29T07:36:01.214Z",
+      "formattedDateTime": "29/10/2025 10:36:01",
+      "scans": [],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "closed_normally",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "852e1b1428e83a7200a8706bfbe710abdcbd372f26b6e84b305c6d4080f99839",
+      "user_id": "852e1b1428e83a7200a8706bfbe710abdcbd372f26b6e84b305c6d4080f99839_1761723412355",
+      "created_by": "852e1b1428e83a7200a8706bfbe710abdcbd372f26b6e84b305c6d4080f99839",
+      "created_at": "2025-10-29T07:36:52.355Z",
+      "updated_at": "2025-10-29T07:36:52.355Z"
+    },
+    {
+      "id": "scanner1761723370943",
+      "location": "Pharmacology",
+      "year": 2,
+      "batch": "2025/2026",
+      "dateTime": "2025-10-29T07:36:10.943Z",
+      "formattedDateTime": "29/10/2025 10:36:10",
+      "scans": [],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "852e1b1428e83a7200a8706bfbe710abdcbd372f26b6e84b305c6d4080f99839",
+      "user_id": "852e1b1428e83a7200a8706bfbe710abdcbd372f26b6e84b305c6d4080f99839_1761723412355",
+      "created_by": "852e1b1428e83a7200a8706bfbe710abdcbd372f26b6e84b305c6d4080f99839",
+      "created_at": "2025-10-29T07:36:52.355Z",
+      "updated_at": "2025-10-29T07:36:52.355Z"
+    }
+  ]
+}
