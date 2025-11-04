@@ -1,10 +1,10 @@
 {
   "user_email": "c43d6b1fb87b9de0885373e804a5bc868a92ba3ac2d57d8681d0d1c7e2435acb",
-  "user_id": "c43d6b1fb87b9de0885373e804a5bc868a92ba3ac2d57d8681d0d1c7e2435acb_1762162535734",
-  "account_created": "2025-11-03T09:35:35.734Z",
-  "last_sync": "2025-11-03T09:35:35.734Z",
-  "total_sessions": 2,
-  "total_scans": 109,
+  "user_id": "c43d6b1fb87b9de0885373e804a5bc868a92ba3ac2d57d8681d0d1c7e2435acb_1762250752790",
+  "account_created": "2025-11-04T10:05:52.790Z",
+  "last_sync": "2025-11-04T10:05:52.790Z",
+  "total_sessions": 3,
+  "total_scans": 110,
   "sessions": [
     {
       "id": "scanner1762080444763",
@@ -486,10 +486,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "c43d6b1fb87b9de0885373e804a5bc868a92ba3ac2d57d8681d0d1c7e2435acb",
-      "user_id": "c43d6b1fb87b9de0885373e804a5bc868a92ba3ac2d57d8681d0d1c7e2435acb_1762162535734",
+      "user_id": "c43d6b1fb87b9de0885373e804a5bc868a92ba3ac2d57d8681d0d1c7e2435acb_1762250752790",
       "created_by": "c43d6b1fb87b9de0885373e804a5bc868a92ba3ac2d57d8681d0d1c7e2435acb",
-      "created_at": "2025-11-03T09:35:35.734Z",
-      "updated_at": "2025-11-03T09:35:35.734Z"
+      "created_at": "2025-11-04T10:05:52.790Z",
+      "updated_at": "2025-11-04T10:05:52.790Z"
     },
     {
       "id": "scanner1762161373146",
@@ -908,16 +908,45 @@
           "isManual": false
         }
       ],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "closed_normally",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "c43d6b1fb87b9de0885373e804a5bc868a92ba3ac2d57d8681d0d1c7e2435acb",
+      "user_id": "c43d6b1fb87b9de0885373e804a5bc868a92ba3ac2d57d8681d0d1c7e2435acb_1762250752790",
+      "created_by": "c43d6b1fb87b9de0885373e804a5bc868a92ba3ac2d57d8681d0d1c7e2435acb",
+      "created_at": "2025-11-04T10:05:52.790Z",
+      "updated_at": "2025-11-04T10:05:52.790Z"
+    },
+    {
+      "id": "scanner1762250747323",
+      "location": "Cardiology",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-11-04T10:05:47.323Z",
+      "formattedDateTime": "04/11/2025 12:05:47",
+      "scans": [
+        {
+          "id": "1762250752038",
+          "content": "222081",
+          "timestamp": "2025-11-04T10:05:52.038Z",
+          "formattedTime": "12:05:52",
+          "time": "2025-11-04T10:05:52.038Z",
+          "isManual": false
+        }
+      ],
       "inProgress": true,
       "isScanner": true,
       "sessionType": "scanner",
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "c43d6b1fb87b9de0885373e804a5bc868a92ba3ac2d57d8681d0d1c7e2435acb",
-      "user_id": "c43d6b1fb87b9de0885373e804a5bc868a92ba3ac2d57d8681d0d1c7e2435acb_1762162535734",
+      "user_id": "c43d6b1fb87b9de0885373e804a5bc868a92ba3ac2d57d8681d0d1c7e2435acb_1762250752790",
       "created_by": "c43d6b1fb87b9de0885373e804a5bc868a92ba3ac2d57d8681d0d1c7e2435acb",
-      "created_at": "2025-11-03T09:35:35.734Z",
-      "updated_at": "2025-11-03T09:35:35.734Z"
+      "created_at": "2025-11-04T10:05:52.790Z",
+      "updated_at": "2025-11-04T10:05:52.790Z"
     }
   ]
 }
