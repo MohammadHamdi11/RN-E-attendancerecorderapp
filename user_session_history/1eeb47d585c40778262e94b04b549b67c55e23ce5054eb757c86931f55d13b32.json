@@ -1,10 +1,10 @@
 {
   "user_email": "backup@backdoor.com",
-  "user_id": "backup_backdoor_com_1762236996434",
-  "account_created": "2025-11-04T06:16:36.434Z",
-  "last_sync": "2025-11-04T06:16:36.434Z",
+  "user_id": "backup_backdoor_com_1762237007098",
+  "account_created": "2025-11-04T06:16:47.098Z",
+  "last_sync": "2025-11-04T06:16:47.098Z",
   "total_sessions": 1,
-  "total_scans": 1,
+  "total_scans": 0,
   "sessions": [
     {
       "id": "scanner1762236988499",
@@ -13,26 +13,17 @@
       "batch": "2025/2026",
       "dateTime": "2025-11-04T06:16:28.499Z",
       "formattedDateTime": "04/11/2025 08:16:28",
-      "scans": [
-        {
-          "id": "1762236995586",
-          "content": "552599",
-          "timestamp": "2025-11-04T06:16:35.585Z",
-          "formattedTime": "08:16:35",
-          "time": "2025-11-04T06:16:35.585Z",
-          "isManual": true
-        }
-      ],
+      "scans": [],
       "inProgress": true,
       "isScanner": true,
       "sessionType": "scanner",
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1762236996434",
+      "user_id": "backup_backdoor_com_1762237007098",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-11-04T06:16:36.434Z",
-      "updated_at": "2025-11-04T06:16:36.434Z"
+      "created_at": "2025-11-04T06:16:47.098Z",
+      "updated_at": "2025-11-04T06:16:47.098Z"
     }
   ]
 }
