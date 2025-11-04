@@ -1,10 +1,10 @@
 {
   "user_email": "42dbc38c609ead99e1cd02717b9bd5e29fd62d65e23928cf294b408ccd118d6f",
-  "user_id": "42dbc38c609ead99e1cd02717b9bd5e29fd62d65e23928cf294b408ccd118d6f_1762247514363",
-  "account_created": "2025-11-04T09:11:54.363Z",
-  "last_sync": "2025-11-04T09:11:54.363Z",
-  "total_sessions": 3,
-  "total_scans": 50,
+  "user_id": "42dbc38c609ead99e1cd02717b9bd5e29fd62d65e23928cf294b408ccd118d6f_1762247579987",
+  "account_created": "2025-11-04T09:12:59.987Z",
+  "last_sync": "2025-11-04T09:12:59.987Z",
+  "total_sessions": 4,
+  "total_scans": 53,
   "sessions": [
     {
       "id": "scanner1760174196912",
@@ -342,10 +342,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "42dbc38c609ead99e1cd02717b9bd5e29fd62d65e23928cf294b408ccd118d6f",
-      "user_id": "42dbc38c609ead99e1cd02717b9bd5e29fd62d65e23928cf294b408ccd118d6f_1762247514363",
+      "user_id": "42dbc38c609ead99e1cd02717b9bd5e29fd62d65e23928cf294b408ccd118d6f_1762247579987",
       "created_by": "42dbc38c609ead99e1cd02717b9bd5e29fd62d65e23928cf294b408ccd118d6f",
-      "created_at": "2025-11-04T09:11:54.363Z",
-      "updated_at": "2025-11-04T09:11:54.363Z"
+      "created_at": "2025-11-04T09:12:59.987Z",
+      "updated_at": "2025-11-04T09:12:59.987Z"
     },
     {
       "id": "scanner1760176041732",
@@ -371,10 +371,10 @@
       "isChecklist": false,
       "backedUp": false,
       "user_email": "42dbc38c609ead99e1cd02717b9bd5e29fd62d65e23928cf294b408ccd118d6f",
-      "user_id": "42dbc38c609ead99e1cd02717b9bd5e29fd62d65e23928cf294b408ccd118d6f_1762247514363",
+      "user_id": "42dbc38c609ead99e1cd02717b9bd5e29fd62d65e23928cf294b408ccd118d6f_1762247579987",
       "created_by": "42dbc38c609ead99e1cd02717b9bd5e29fd62d65e23928cf294b408ccd118d6f",
-      "created_at": "2025-11-04T09:11:54.363Z",
-      "updated_at": "2025-11-04T09:11:54.363Z"
+      "created_at": "2025-11-04T09:12:59.987Z",
+      "updated_at": "2025-11-04T09:12:59.987Z"
     },
     {
       "id": "scanner1762247439649",
@@ -464,10 +464,54 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "42dbc38c609ead99e1cd02717b9bd5e29fd62d65e23928cf294b408ccd118d6f",
-      "user_id": "42dbc38c609ead99e1cd02717b9bd5e29fd62d65e23928cf294b408ccd118d6f_1762247514363",
+      "user_id": "42dbc38c609ead99e1cd02717b9bd5e29fd62d65e23928cf294b408ccd118d6f_1762247579987",
       "created_by": "42dbc38c609ead99e1cd02717b9bd5e29fd62d65e23928cf294b408ccd118d6f",
-      "created_at": "2025-11-04T09:11:54.363Z",
-      "updated_at": "2025-11-04T09:11:54.363Z"
+      "created_at": "2025-11-04T09:12:59.987Z",
+      "updated_at": "2025-11-04T09:12:59.987Z"
+    },
+    {
+      "id": "scanner1762247539589",
+      "location": "Microbiology",
+      "year": 3,
+      "batch": "2025/2026",
+      "dateTime": "2025-11-04T09:12:19.589Z",
+      "formattedDateTime": "04/11/2025 11:12:19",
+      "scans": [
+        {
+          "id": "1762247550195",
+          "content": "234053",
+          "timestamp": "2025-11-04T09:12:30.194Z",
+          "formattedTime": "11:12:30",
+          "time": "2025-11-04T09:12:30.194Z",
+          "isManual": true
+        },
+        {
+          "id": "1762247568991",
+          "content": "234130",
+          "timestamp": "2025-11-04T09:12:48.991Z",
+          "formattedTime": "11:12:48",
+          "time": "2025-11-04T09:12:48.991Z",
+          "isManual": true
+        },
+        {
+          "id": "1762247579477",
+          "content": "234196",
+          "timestamp": "2025-11-04T09:12:59.477Z",
+          "formattedTime": "11:12:59",
+          "time": "2025-11-04T09:12:59.477Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "42dbc38c609ead99e1cd02717b9bd5e29fd62d65e23928cf294b408ccd118d6f",
+      "user_id": "42dbc38c609ead99e1cd02717b9bd5e29fd62d65e23928cf294b408ccd118d6f_1762247579987",
+      "created_by": "42dbc38c609ead99e1cd02717b9bd5e29fd62d65e23928cf294b408ccd118d6f",
+      "created_at": "2025-11-04T09:12:59.987Z",
+      "updated_at": "2025-11-04T09:12:59.987Z"
     }
   ]
 }
