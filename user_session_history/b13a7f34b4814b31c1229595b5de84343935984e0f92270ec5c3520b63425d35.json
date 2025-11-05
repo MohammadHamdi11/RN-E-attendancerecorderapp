@@ -1,0 +1,38 @@
+{
+  "user_email": "010ac50e5190247d72dd7a993980a08787e36322798223e7c5576af4a3682fc7",
+  "user_id": "010ac50e5190247d72dd7a993980a08787e36322798223e7c5576af4a3682fc7_1762324274709",
+  "account_created": "2025-11-05T06:31:14.709Z",
+  "last_sync": "2025-11-05T06:31:14.709Z",
+  "total_sessions": 1,
+  "total_scans": 1,
+  "sessions": [
+    {
+      "id": "scanner1762324263478",
+      "location": "Pathology Lab/Museum",
+      "year": 3,
+      "batch": "2025/2026",
+      "dateTime": "2025-11-05T06:31:03.478Z",
+      "formattedDateTime": "05/11/2025 08:31:03",
+      "scans": [
+        {
+          "id": "1762324274198",
+          "content": "231407",
+          "timestamp": "2025-11-05T06:31:14.191Z",
+          "formattedTime": "08:31:14",
+          "time": "2025-11-05T06:31:14.191Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "010ac50e5190247d72dd7a993980a08787e36322798223e7c5576af4a3682fc7",
+      "user_id": "010ac50e5190247d72dd7a993980a08787e36322798223e7c5576af4a3682fc7_1762324274710",
+      "created_by": "010ac50e5190247d72dd7a993980a08787e36322798223e7c5576af4a3682fc7",
+      "created_at": "2025-11-05T06:31:14.709Z",
+      "updated_at": "2025-11-05T06:31:14.709Z"
+    }
+  ]
+}
