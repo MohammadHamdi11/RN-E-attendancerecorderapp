@@ -1,0 +1,38 @@
+{
+  "user_email": "14ec4da7995246fa74d74956e0ca53140b8caabff80526f8f4faf4ef624288b8",
+  "user_id": "14ec4da7995246fa74d74956e0ca53140b8caabff80526f8f4faf4ef624288b8_1762329153010",
+  "account_created": "2025-11-05T07:52:33.010Z",
+  "last_sync": "2025-11-05T07:52:33.010Z",
+  "total_sessions": 1,
+  "total_scans": 1,
+  "sessions": [
+    {
+      "id": "scanner1762329130910",
+      "location": "Clin.patho",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-11-05T07:52:10.910Z",
+      "formattedDateTime": "05/11/2025 09:52:10",
+      "scans": [
+        {
+          "id": "1762329151988",
+          "content": "221694",
+          "timestamp": "2025-11-05T07:52:31.986Z",
+          "formattedTime": "09:52:31",
+          "time": "2025-11-05T07:52:31.986Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "14ec4da7995246fa74d74956e0ca53140b8caabff80526f8f4faf4ef624288b8",
+      "user_id": "14ec4da7995246fa74d74956e0ca53140b8caabff80526f8f4faf4ef624288b8_1762329153010",
+      "created_by": "14ec4da7995246fa74d74956e0ca53140b8caabff80526f8f4faf4ef624288b8",
+      "created_at": "2025-11-05T07:52:33.010Z",
+      "updated_at": "2025-11-05T07:52:33.010Z"
+    }
+  ]
+}
