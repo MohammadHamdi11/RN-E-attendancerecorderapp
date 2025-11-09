@@ -1,0 +1,38 @@
+{
+  "user_email": "a82e0ed2fe7fb03946c60f1fb7197ff304458d25a1327896e5336fa4b0714648",
+  "user_id": "a82e0ed2fe7fb03946c60f1fb7197ff304458d25a1327896e5336fa4b0714648_1762687233614",
+  "account_created": "2025-11-09T11:20:33.614Z",
+  "last_sync": "2025-11-09T11:20:33.614Z",
+  "total_sessions": 1,
+  "total_scans": 1,
+  "sessions": [
+    {
+      "id": "scanner1762683793367",
+      "location": "Biochemistry Lab/CBL",
+      "year": 2,
+      "batch": "2025/2026",
+      "dateTime": "2025-11-09T10:23:13.367Z",
+      "formattedDateTime": "09/11/2025 12:23:13",
+      "scans": [
+        {
+          "id": "1762687230868",
+          "content": "241065",
+          "timestamp": "2025-11-09T11:20:30.867Z",
+          "formattedTime": "13:20:30",
+          "time": "2025-11-09T11:20:30.867Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "a82e0ed2fe7fb03946c60f1fb7197ff304458d25a1327896e5336fa4b0714648",
+      "user_id": "a82e0ed2fe7fb03946c60f1fb7197ff304458d25a1327896e5336fa4b0714648_1762687233614",
+      "created_by": "a82e0ed2fe7fb03946c60f1fb7197ff304458d25a1327896e5336fa4b0714648",
+      "created_at": "2025-11-09T11:20:33.614Z",
+      "updated_at": "2025-11-09T11:20:33.614Z"
+    }
+  ]
+}
