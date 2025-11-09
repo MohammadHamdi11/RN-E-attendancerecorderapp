@@ -1,10 +1,10 @@
 {
   "user_email": "a82e0ed2fe7fb03946c60f1fb7197ff304458d25a1327896e5336fa4b0714648",
-  "user_id": "a82e0ed2fe7fb03946c60f1fb7197ff304458d25a1327896e5336fa4b0714648_1762694086243",
-  "account_created": "2025-11-09T13:14:46.243Z",
-  "last_sync": "2025-11-09T13:14:46.243Z",
+  "user_id": "a82e0ed2fe7fb03946c60f1fb7197ff304458d25a1327896e5336fa4b0714648_1762694157391",
+  "account_created": "2025-11-09T13:15:57.391Z",
+  "last_sync": "2025-11-09T13:15:57.391Z",
   "total_sessions": 2,
-  "total_scans": 97,
+  "total_scans": 99,
   "sessions": [
     {
       "id": "scanner1762683793367",
@@ -310,10 +310,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "a82e0ed2fe7fb03946c60f1fb7197ff304458d25a1327896e5336fa4b0714648",
-      "user_id": "a82e0ed2fe7fb03946c60f1fb7197ff304458d25a1327896e5336fa4b0714648_1762694086243",
+      "user_id": "a82e0ed2fe7fb03946c60f1fb7197ff304458d25a1327896e5336fa4b0714648_1762694157391",
       "created_by": "a82e0ed2fe7fb03946c60f1fb7197ff304458d25a1327896e5336fa4b0714648",
-      "created_at": "2025-11-09T13:14:46.243Z",
-      "updated_at": "2025-11-09T13:14:46.243Z"
+      "created_at": "2025-11-09T13:15:57.391Z",
+      "updated_at": "2025-11-09T13:15:57.391Z"
     },
     {
       "id": "scanner1762693616606",
@@ -810,6 +810,22 @@
           "formattedTime": "15:14:45",
           "time": "2025-11-09T13:14:45.609Z",
           "isManual": false
+        },
+        {
+          "id": "1762694091434",
+          "content": "241342",
+          "timestamp": "2025-11-09T13:14:51.434Z",
+          "formattedTime": "15:14:51",
+          "time": "2025-11-09T13:14:51.434Z",
+          "isManual": false
+        },
+        {
+          "id": "1762694156401",
+          "content": "241194",
+          "timestamp": "2025-11-09T13:15:56.401Z",
+          "formattedTime": "15:15:56",
+          "time": "2025-11-09T13:15:56.401Z",
+          "isManual": false
         }
       ],
       "inProgress": true,
@@ -818,10 +834,10 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "a82e0ed2fe7fb03946c60f1fb7197ff304458d25a1327896e5336fa4b0714648",
-      "user_id": "a82e0ed2fe7fb03946c60f1fb7197ff304458d25a1327896e5336fa4b0714648_1762694086243",
+      "user_id": "a82e0ed2fe7fb03946c60f1fb7197ff304458d25a1327896e5336fa4b0714648_1762694157391",
       "created_by": "a82e0ed2fe7fb03946c60f1fb7197ff304458d25a1327896e5336fa4b0714648",
-      "created_at": "2025-11-09T13:14:46.243Z",
-      "updated_at": "2025-11-09T13:14:46.243Z"
+      "created_at": "2025-11-09T13:15:57.391Z",
+      "updated_at": "2025-11-09T13:15:57.391Z"
     }
   ]
 }
