@@ -1,0 +1,38 @@
+{
+  "user_email": "3e0347dea3ea623e0e32deba19124dd3d1d12056a69c51f7536f13f616d020d3",
+  "user_id": "3e0347dea3ea623e0e32deba19124dd3d1d12056a69c51f7536f13f616d020d3_1762931057315",
+  "account_created": "2025-11-12T07:04:17.315Z",
+  "last_sync": "2025-11-12T07:04:17.315Z",
+  "total_sessions": 1,
+  "total_scans": 1,
+  "sessions": [
+    {
+      "id": "scanner1762931028166",
+      "location": "Microbiology",
+      "year": 2,
+      "batch": "2025/2026",
+      "dateTime": "2025-11-12T07:03:48.166Z",
+      "formattedDateTime": "12/11/2025 09:03:48",
+      "scans": [
+        {
+          "id": "1762931055154",
+          "content": "244027",
+          "timestamp": "2025-11-12T07:04:15.147Z",
+          "formattedTime": "09:04:15",
+          "time": "2025-11-12T07:04:15.147Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "3e0347dea3ea623e0e32deba19124dd3d1d12056a69c51f7536f13f616d020d3",
+      "user_id": "3e0347dea3ea623e0e32deba19124dd3d1d12056a69c51f7536f13f616d020d3_1762931057315",
+      "created_by": "3e0347dea3ea623e0e32deba19124dd3d1d12056a69c51f7536f13f616d020d3",
+      "created_at": "2025-11-12T07:04:17.315Z",
+      "updated_at": "2025-11-12T07:04:17.315Z"
+    }
+  ]
+}
