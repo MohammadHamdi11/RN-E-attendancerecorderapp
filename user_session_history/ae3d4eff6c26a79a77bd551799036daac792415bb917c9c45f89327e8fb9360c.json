@@ -1,10 +1,10 @@
 {
   "user_email": "a76a1d70792b17496681d7383f2b8ab372c4d5dc9646d69ae362267a7df1139c",
-  "user_id": "a76a1d70792b17496681d7383f2b8ab372c4d5dc9646d69ae362267a7df1139c_1763028541135",
-  "account_created": "2025-11-13T10:09:01.135Z",
-  "last_sync": "2025-11-13T10:09:01.135Z",
-  "total_sessions": 1,
-  "total_scans": 1,
+  "user_id": "a76a1d70792b17496681d7383f2b8ab372c4d5dc9646d69ae362267a7df1139c_1763028615171",
+  "account_created": "2025-11-13T10:10:15.171Z",
+  "last_sync": "2025-11-13T10:10:15.171Z",
+  "total_sessions": 2,
+  "total_scans": 9,
   "sessions": [
     {
       "id": "scanner1763028242271",
@@ -30,10 +30,94 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "a76a1d70792b17496681d7383f2b8ab372c4d5dc9646d69ae362267a7df1139c",
-      "user_id": "a76a1d70792b17496681d7383f2b8ab372c4d5dc9646d69ae362267a7df1139c_1763028541135",
+      "user_id": "a76a1d70792b17496681d7383f2b8ab372c4d5dc9646d69ae362267a7df1139c_1763028615171",
       "created_by": "a76a1d70792b17496681d7383f2b8ab372c4d5dc9646d69ae362267a7df1139c",
-      "created_at": "2025-11-13T10:09:01.135Z",
-      "updated_at": "2025-11-13T10:09:01.135Z"
+      "created_at": "2025-11-13T10:10:15.171Z",
+      "updated_at": "2025-11-13T10:10:15.171Z"
+    },
+    {
+      "id": "scanner1763028548129",
+      "location": "Histology",
+      "year": 3,
+      "batch": "2025/2026",
+      "dateTime": "2025-11-13T10:09:08.129Z",
+      "formattedDateTime": "13/11/2025 12:09:08",
+      "scans": [
+        {
+          "id": "1763028551427",
+          "content": "234302",
+          "timestamp": "2025-11-13T10:09:11.426Z",
+          "formattedTime": "12:09:11",
+          "time": "2025-11-13T10:09:11.426Z",
+          "isManual": false
+        },
+        {
+          "id": "1763028556597",
+          "content": "234226",
+          "timestamp": "2025-11-13T10:09:16.597Z",
+          "formattedTime": "12:09:16",
+          "time": "2025-11-13T10:09:16.597Z",
+          "isManual": false
+        },
+        {
+          "id": "1763028561901",
+          "content": "234246",
+          "timestamp": "2025-11-13T10:09:21.901Z",
+          "formattedTime": "12:09:21",
+          "time": "2025-11-13T10:09:21.901Z",
+          "isManual": false
+        },
+        {
+          "id": "1763028570005",
+          "content": "234511",
+          "timestamp": "2025-11-13T10:09:30.005Z",
+          "formattedTime": "12:09:30",
+          "time": "2025-11-13T10:09:30.005Z",
+          "isManual": false
+        },
+        {
+          "id": "1763028573506",
+          "content": "234603",
+          "timestamp": "2025-11-13T10:09:33.506Z",
+          "formattedTime": "12:09:33",
+          "time": "2025-11-13T10:09:33.506Z",
+          "isManual": false
+        },
+        {
+          "id": "1763028586147",
+          "content": "234240",
+          "timestamp": "2025-11-13T10:09:46.146Z",
+          "formattedTime": "12:09:46",
+          "time": "2025-11-13T10:09:46.146Z",
+          "isManual": false
+        },
+        {
+          "id": "1763028586262",
+          "content": "234526",
+          "timestamp": "2025-11-13T10:09:46.262Z",
+          "formattedTime": "12:09:46",
+          "time": "2025-11-13T10:09:46.262Z",
+          "isManual": false
+        },
+        {
+          "id": "1763028615062",
+          "content": "234318",
+          "timestamp": "2025-11-13T10:10:15.062Z",
+          "formattedTime": "12:10:15",
+          "time": "2025-11-13T10:10:15.062Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "a76a1d70792b17496681d7383f2b8ab372c4d5dc9646d69ae362267a7df1139c",
+      "user_id": "a76a1d70792b17496681d7383f2b8ab372c4d5dc9646d69ae362267a7df1139c_1763028615171",
+      "created_by": "a76a1d70792b17496681d7383f2b8ab372c4d5dc9646d69ae362267a7df1139c",
+      "created_at": "2025-11-13T10:10:15.171Z",
+      "updated_at": "2025-11-13T10:10:15.171Z"
     }
   ]
 }
