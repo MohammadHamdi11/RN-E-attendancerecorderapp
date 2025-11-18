@@ -1,10 +1,10 @@
 {
   "user_email": "3e0347dea3ea623e0e32deba19124dd3d1d12056a69c51f7536f13f616d020d3",
-  "user_id": "3e0347dea3ea623e0e32deba19124dd3d1d12056a69c51f7536f13f616d020d3_1763048225610",
-  "account_created": "2025-11-13T15:37:05.610Z",
-  "last_sync": "2025-11-13T15:37:05.610Z",
-  "total_sessions": 4,
-  "total_scans": 58,
+  "user_id": "3e0347dea3ea623e0e32deba19124dd3d1d12056a69c51f7536f13f616d020d3_1763465185872",
+  "account_created": "2025-11-18T11:26:25.872Z",
+  "last_sync": "2025-11-18T11:26:25.872Z",
+  "total_sessions": 5,
+  "total_scans": 59,
   "sessions": [
     {
       "id": "scanner1762931028166",
@@ -238,10 +238,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "3e0347dea3ea623e0e32deba19124dd3d1d12056a69c51f7536f13f616d020d3",
-      "user_id": "3e0347dea3ea623e0e32deba19124dd3d1d12056a69c51f7536f13f616d020d3_1763048225610",
+      "user_id": "3e0347dea3ea623e0e32deba19124dd3d1d12056a69c51f7536f13f616d020d3_1763465185872",
       "created_by": "3e0347dea3ea623e0e32deba19124dd3d1d12056a69c51f7536f13f616d020d3",
-      "created_at": "2025-11-13T15:37:05.610Z",
-      "updated_at": "2025-11-13T15:37:05.610Z"
+      "created_at": "2025-11-18T11:26:25.872Z",
+      "updated_at": "2025-11-18T11:26:25.872Z"
     },
     {
       "id": "scanner1762931589333",
@@ -275,10 +275,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "3e0347dea3ea623e0e32deba19124dd3d1d12056a69c51f7536f13f616d020d3",
-      "user_id": "3e0347dea3ea623e0e32deba19124dd3d1d12056a69c51f7536f13f616d020d3_1763048225610",
+      "user_id": "3e0347dea3ea623e0e32deba19124dd3d1d12056a69c51f7536f13f616d020d3_1763465185872",
       "created_by": "3e0347dea3ea623e0e32deba19124dd3d1d12056a69c51f7536f13f616d020d3",
-      "created_at": "2025-11-13T15:37:05.610Z",
-      "updated_at": "2025-11-13T15:37:05.610Z"
+      "created_at": "2025-11-18T11:26:25.872Z",
+      "updated_at": "2025-11-18T11:26:25.872Z"
     },
     {
       "id": "scanner1762939589084",
@@ -520,10 +520,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "3e0347dea3ea623e0e32deba19124dd3d1d12056a69c51f7536f13f616d020d3",
-      "user_id": "3e0347dea3ea623e0e32deba19124dd3d1d12056a69c51f7536f13f616d020d3_1763048225610",
+      "user_id": "3e0347dea3ea623e0e32deba19124dd3d1d12056a69c51f7536f13f616d020d3_1763465185872",
       "created_by": "3e0347dea3ea623e0e32deba19124dd3d1d12056a69c51f7536f13f616d020d3",
-      "created_at": "2025-11-13T15:37:05.610Z",
-      "updated_at": "2025-11-13T15:37:05.610Z"
+      "created_at": "2025-11-18T11:26:25.872Z",
+      "updated_at": "2025-11-18T11:26:25.872Z"
     },
     {
       "id": "scanner1762940091758",
@@ -549,10 +549,38 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "3e0347dea3ea623e0e32deba19124dd3d1d12056a69c51f7536f13f616d020d3",
-      "user_id": "3e0347dea3ea623e0e32deba19124dd3d1d12056a69c51f7536f13f616d020d3_1763048225610",
+      "user_id": "3e0347dea3ea623e0e32deba19124dd3d1d12056a69c51f7536f13f616d020d3_1763465185872",
       "created_by": "3e0347dea3ea623e0e32deba19124dd3d1d12056a69c51f7536f13f616d020d3",
-      "created_at": "2025-11-13T15:37:05.610Z",
-      "updated_at": "2025-11-13T15:37:05.610Z"
+      "created_at": "2025-11-18T11:26:25.872Z",
+      "updated_at": "2025-11-18T11:26:25.872Z"
+    },
+    {
+      "id": "scanner1763465175816",
+      "location": "Microbiology",
+      "year": 2,
+      "batch": "2025/2026",
+      "dateTime": "2025-11-18T11:26:15.816Z",
+      "formattedDateTime": "18/11/2025 13:26:15",
+      "scans": [
+        {
+          "id": "1763465184631",
+          "content": "244568",
+          "timestamp": "2025-11-18T11:26:24.615Z",
+          "formattedTime": "13:26:24",
+          "time": "2025-11-18T11:26:24.615Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "3e0347dea3ea623e0e32deba19124dd3d1d12056a69c51f7536f13f616d020d3",
+      "user_id": "3e0347dea3ea623e0e32deba19124dd3d1d12056a69c51f7536f13f616d020d3_1763465185872",
+      "created_by": "3e0347dea3ea623e0e32deba19124dd3d1d12056a69c51f7536f13f616d020d3",
+      "created_at": "2025-11-18T11:26:25.872Z",
+      "updated_at": "2025-11-18T11:26:25.872Z"
     }
   ]
 }
