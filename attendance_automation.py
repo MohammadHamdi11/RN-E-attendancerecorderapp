@@ -22,9 +22,6 @@ from openpyxl.utils import get_column_letter
 from collections import defaultdict
 import glob
 
-
-
-
 #==========================================================Session Analyzer==========================================================#
 
 class SessionAnalyzer:
@@ -1086,7 +1083,7 @@ class AutomatedAttendanceProcessor:
         return valid_module_groups
     
     def extract_data_from_report(self, report_file):
-        """Extract required data from an existing attendance report and calculate threshold"""
+        """Extract required data from an existing attendance report and threshold information"""
         try:
             wb = openpyxl.load_workbook(report_file)
             
@@ -1118,6 +1115,8 @@ class AutomatedAttendanceProcessor:
             
             # Find column indices
             col_indices = {}
+            has_threshold_column = False
+            
             for col_idx, cell_value in enumerate(header_values):
                 normalized_value = self.normalize_whitespace(str(cell_value)) if cell_value else ""
                 if normalized_value == "Total Required":
@@ -1126,6 +1125,11 @@ class AutomatedAttendanceProcessor:
                     col_indices["sessions_needed"] = col_idx
                 elif normalized_value == "Total Attended":
                     col_indices["total_attended"] = col_idx
+                elif normalized_value == "Student ID":
+                    col_indices["student_id"] = col_idx
+                elif normalized_value == "Threshold":
+                    col_indices["threshold"] = col_idx
+                    has_threshold_column = True
             
             if "total_required" not in col_indices:
                 print(f"Warning: Could not find 'Total Required' column in {report_file}")
@@ -1142,36 +1146,76 @@ class AutomatedAttendanceProcessor:
                 print(f"Warning: Could not extract total required sessions from {report_file}")
                 return None
             
-            # Calculate threshold from a student row where "Sessions Needed" is not zero
-            calculated_threshold = None
-            best_row = None
-            best_sessions_needed = float('inf')
-            
-            for row_idx, row in enumerate(summary_sheet.iter_rows(min_row=header_row+1, values_only=True)):
-                if row and len(row) > max(col_indices.values()):
-                    sessions_needed = row[col_indices.get("sessions_needed", 0)]
-                    total_attended = row[col_indices.get("total_attended", 0)]
-                    
-                    if sessions_needed is not None and sessions_needed != 0 and total_attended is not None:
-                        if sessions_needed < best_sessions_needed:
-                            best_sessions_needed = sessions_needed
-                            best_row = row_idx + header_row + 1
-                            
-                            obligatory_sessions = sessions_needed + total_attended
-                            calculated_threshold = obligatory_sessions / total_required
-                            
-                            print(f"  Found better row (row {best_row}): Sessions Needed={sessions_needed}, Total Attended={total_attended}")
-                            print(f"  Calculated threshold: {calculated_threshold:.1%} (from {obligatory_sessions}/{total_required})")
-            
-            if calculated_threshold is None:
-                print(f"  No suitable row found for threshold calculation")
-                calculated_threshold = self.ATTENDANCE_THRESHOLD
-                print(f"  Using default threshold: {calculated_threshold:.1%}")
-            
-            return {
-                'total_required': total_required,
-                'threshold': calculated_threshold
-            }
+            # Check if Threshold column exists
+            if has_threshold_column:
+                print(f"  Found 'Threshold' column in report - will use per-student thresholds")
+                
+                # Extract threshold for each student
+                student_thresholds = {}
+                for row in summary_sheet.iter_rows(min_row=header_row+1, values_only=True):
+                    if row and len(row) > max(col_indices.values()):
+                        student_id = str(row[col_indices["student_id"]]) if "student_id" in col_indices else None
+                        threshold_value = row[col_indices["threshold"]]
+                        
+                        if student_id and threshold_value is not None:
+                            # Convert threshold to decimal if it's a percentage string
+                            try:
+                                if isinstance(threshold_value, str):
+                                    threshold_value = threshold_value.replace('%', '').strip()
+                                    threshold_float = float(threshold_value) / 100
+                                else:
+                                    threshold_float = float(threshold_value)
+                                    # If the value is > 1, assume it's a percentage
+                                    if threshold_float > 1:
+                                        threshold_float = threshold_float / 100
+                                
+                                student_thresholds[self.normalize_whitespace(student_id)] = threshold_float
+                            except (ValueError, TypeError):
+                                pass
+                
+                print(f"  Extracted thresholds for {len(student_thresholds)} students")
+                
+                return {
+                    'total_required': total_required,
+                    'has_threshold_column': True,
+                    'student_thresholds': student_thresholds,
+                    'default_threshold': None  # Will be calculated if needed for new students
+                }
+            else:
+                # No Threshold column - calculate threshold as before
+                print(f"  No 'Threshold' column found - calculating threshold from data")
+                
+                calculated_threshold = None
+                best_row = None
+                best_sessions_needed = float('inf')
+                
+                for row_idx, row in enumerate(summary_sheet.iter_rows(min_row=header_row+1, values_only=True)):
+                    if row and len(row) > max(col_indices.values()):
+                        sessions_needed = row[col_indices.get("sessions_needed", 0)]
+                        total_attended = row[col_indices.get("total_attended", 0)]
+                        
+                        if sessions_needed is not None and sessions_needed != 0 and total_attended is not None:
+                            if sessions_needed < best_sessions_needed:
+                                best_sessions_needed = sessions_needed
+                                best_row = row_idx + header_row + 1
+                                
+                                obligatory_sessions = sessions_needed + total_attended
+                                calculated_threshold = obligatory_sessions / total_required
+                                
+                                print(f"  Found better row (row {best_row}): Sessions Needed={sessions_needed}, Total Attended={total_attended}")
+                                print(f"  Calculated threshold: {calculated_threshold:.1%} (from {obligatory_sessions}/{total_required})")
+                
+                if calculated_threshold is None:
+                    print(f"  No suitable row found for threshold calculation")
+                    calculated_threshold = self.ATTENDANCE_THRESHOLD
+                    print(f"  Using default threshold: {calculated_threshold:.1%}")
+                
+                return {
+                    'total_required': total_required,
+                    'has_threshold_column': False,
+                    'threshold': calculated_threshold,
+                    'student_thresholds': {}
+                }
             
         except Exception as e:
             print(f"Error extracting data from report {report_file}: {str(e)}")
@@ -1432,14 +1476,14 @@ class AutomatedAttendanceProcessor:
     
     def calculate_total_required_from_schedule(self, session_schedule):
         """
-        Calculate total required sessions from the schedule file by averaging
-        the number of sessions across all groups (rounded down).
+        Calculate total required sessions from the schedule file by finding
+        the minimum number of sessions across all groups.
         
         Args:
             session_schedule: List of rows from the schedule file
             
         Returns:
-            int: Total required sessions (averaged and floored)
+            int: Total required sessions (minimum across all groups)
         """
         group_session_counts = {}
         
@@ -1461,19 +1505,14 @@ class AutomatedAttendanceProcessor:
                     group_session_counts[group_key] = 0
                 group_session_counts[group_key] += 1
         
-        # Calculate average and floor it
+        # Find the minimum number of sessions
         if group_session_counts:
-            total_sessions = sum(group_session_counts.values())
-            num_groups = len(group_session_counts)
-            average_sessions = total_sessions / num_groups
-            
-            # Floor the average (remove decimal part)
-            total_required = int(average_sessions)
+            min_sessions = min(group_session_counts.values())
             
             print(f"  Group session counts: {group_session_counts}")
-            print(f"  Average sessions: {average_sessions:.2f} -> Floored to: {total_required}")
+            print(f"  Minimum sessions across all groups: {min_sessions}")
             
-            return total_required
+            return min_sessions
         else:
             print("  Warning: No groups found in schedule. Using default value of 100.")
             return 100
@@ -1614,12 +1653,16 @@ class AutomatedAttendanceProcessor:
 
     def create_summary_sheet(self, workbook, sheet_name, combined_attendance, required_attendance,
                             current_student_map, transferred_students, transfer_data, target_year, 
-                            completed_sessions, sessions_left, total_required_sessions, batch, session_schedule):
+                            completed_sessions, sessions_left, total_required_sessions, batch, session_schedule,
+                            student_thresholds=None, default_threshold=0.75):
         """
-        Create a summary sheet that shows attendance statistics for each student,
-        handling transferred students by validating their attendance against appropriate group schedules.
+        Create a summary sheet with per-student threshold support
         """
         sheet = workbook.create_sheet(sheet_name)
+
+        # Use provided thresholds or empty dict
+        if student_thresholds is None:
+            student_thresholds = {}
 
         # Collect all subjects and their sessions
         subjects = {}
@@ -1631,9 +1674,9 @@ class AutomatedAttendanceProcessor:
                     subjects[subject]["sessions"].add(str(session_num))
                     subjects[subject]["locations"].update(session_data["locations"].keys())
 
-        # Create header - UPDATED: Added Total Missed column
-        header = ["Student ID", "Name", "Year", "Group", "Email", "Status", "Percentage",
-                "Sessions Needed", "Sessions Left", "Sessions Completed", "Total Required", 
+        # Create header
+        header = ["Student ID", "Name", "Year", "Group", "Email", "Status", "Percentage", "Threshold",
+                "Sessions Needed", "Sessions Left", "Sessions Completed", "Total Sessions", "Total Required", 
                 "Total Attended", "Total Missed"]
 
         # Track column indices for subject coloring
@@ -1644,11 +1687,9 @@ class AutomatedAttendanceProcessor:
         session_datetime_map = {}
         for row in session_schedule:
             if len(row) >= 7:
-                # NORMALIZE FIRST - before any processing
                 normalized_row = self.normalize_row_data(row)
                 year, group, subject, session_num, date, start_time, duration = normalized_row[:7]
                 
-                # Convert to uppercase for consistency
                 group = str(group).upper() if group else ""
                 subject = str(subject).upper() if subject else ""
                 key = f"{year}-{group}"
@@ -1660,7 +1701,6 @@ class AutomatedAttendanceProcessor:
                 
                 session_num_str = str(session_num)
                 if session_num_str not in session_datetime_map[key][subject]:
-                    # Format the date and time
                     date_str = ""
                     time_str = ""
                     try:
@@ -1682,18 +1722,16 @@ class AutomatedAttendanceProcessor:
                         'time': time_str
                     }
 
-        # Add subject totals and session details to header - UPDATED: Removed (Req) columns
+        # Add subject totals and session details to header
         for subject in sorted(subjects.keys()):
             start_col = current_col
             
-            header.extend(
-                [f"Required {subject} (Total)", f"Attended {subject} (Total)"])
+            header.extend([f"Required {subject} (Total)", f"Attended {subject} (Total)"])
             current_col += 2
             
             for session in sorted(subjects[subject]["sessions"], 
                                 key=lambda x: int(x) if x.isdigit() else x):
                 for location in sorted(subjects[subject]["locations"]):
-                    # Get date and time for this session from any matching group
                     date_time_info = ""
                     for group_key in session_datetime_map:
                         if subject in session_datetime_map[group_key]:
@@ -1704,7 +1742,6 @@ class AutomatedAttendanceProcessor:
                         if date_time_info:
                             break
                     
-                    # UPDATED: Only add (Att) column, removed (Req)
                     header.append(f"{subject} Session {session}")
                     current_col += 1
             
@@ -1725,6 +1762,7 @@ class AutomatedAttendanceProcessor:
             if i <= len(header) - len(subject_column_ranges):
                 if not cell.fill.fgColor.rgb:
                     cell.fill = PatternFill("solid", fgColor="D3D3D3")
+        
         sheet.row_dimensions[1].height = 40
         sheet.freeze_panes = 'C2'
 
@@ -1735,14 +1773,20 @@ class AutomatedAttendanceProcessor:
         COLOR_MODERATE_RISK = "FFB97D"
         COLOR_LOW_RISK = "FFF1A6"
         COLOR_NO_RISK = "3388D5"
-        COLOR_OTHER = "F0F0F0"
 
-        # Process each student in the target year
+        # Process each student
         for student_id, student in current_student_map.items():
             if target_year in str(student['year']):
+                # Get student-specific threshold or use default
+                student_threshold = student_thresholds.get(
+                    self.normalize_whitespace(str(student_id)), 
+                    default_threshold
+                )
+                
                 current_key = f"{student['year']}-{student['group']}"
                 group_completed = completed_sessions.get(current_key, 0)
                 group_sessions_left = sessions_left.get(current_key, 0)
+                group_total_sessions = group_completed + group_sessions_left
                 total_attended = 0
                 attendance_by_subject = {}
 
@@ -1765,7 +1809,7 @@ class AutomatedAttendanceProcessor:
                         if str(entry[0]) == str(student_id):
                             student_attendance.append(entry)
 
-                # Process attendance data
+                # Process attendance data (same as before)
                 for entry in student_attendance:
                     subject = entry[5]
                     session_num = str(entry[6])
@@ -1793,7 +1837,6 @@ class AutomatedAttendanceProcessor:
                                     entry_date = temp_dt
                                     normalized_date_str = temp_dt.strftime('%d/%m/%Y')
                             
-                            # Make entry_date timezone-aware if it's naive
                             if entry_date and not entry_date.tzinfo:
                                 egypt_tz = pytz.timezone('Africa/Cairo')
                                 entry_date = egypt_tz.localize(entry_date)
@@ -1838,13 +1881,10 @@ class AutomatedAttendanceProcessor:
                             attendance_by_subject[subject]["total"] += 1
                             total_attended += 1
 
-                # Calculate status and color
-                required_sessions = math.ceil(
-                    self.ATTENDANCE_THRESHOLD * total_required_sessions)
-                min_sessions_needed = max(
-                    required_sessions - total_attended, 0)
+                # Calculate status using student-specific threshold
+                required_sessions = math.ceil(student_threshold * total_required_sessions)
+                min_sessions_needed = max(required_sessions - total_attended, 0)
 
-                # Consider the module finished only when there are truly no sessions left
                 if group_sessions_left == 0:
                     if total_attended >= required_sessions:
                         status, color = "Pass", COLOR_PASS
@@ -1867,57 +1907,48 @@ class AutomatedAttendanceProcessor:
                         else:
                             status, color = "No Risk", COLOR_NO_RISK
 
-                percentage = total_attended / \
-                    total_required_sessions if total_required_sessions > 0 else 0
-
-                # UPDATED: Calculate total missed sessions
+                percentage = total_attended / total_required_sessions if total_required_sessions > 0 else 0
                 total_missed = group_completed - total_attended
 
-                # Create row data with sessions left and completed columns - UPDATED: Added total_missed
+                # Create row
                 row = [
                     student_id, student['name'], student['year'], student['group'],
-                    student['email'], status, f"{percentage:.1%}", min_sessions_needed,
-                    group_sessions_left, group_completed, total_required_sessions, 
-                    total_attended, total_missed
+                    student['email'], status, f"{percentage:.1%}", f"{student_threshold:.1%}",
+                    min_sessions_needed, group_sessions_left, group_completed, group_total_sessions, 
+                    total_required_sessions, total_attended, total_missed
                 ]
 
-                # Add subject totals and session details - UPDATED: Removed req_count
+                # Add subject totals and session details
                 for subject in sorted(subjects.keys()): 
-                    # For required attendance, select the appropriate requirements based on transfer status
                     subject_req_total = 0  
                     subject_req_sessions = {}  
 
-                    # For transferred students, we need to choose which requirements to use
                     if is_transferred:
-                        # Always use current group requirements for the report
                         if current_key in required_attendance and subject in required_attendance[current_key]:  
                             curr_req = required_attendance[current_key][subject]  
                             subject_req_total = curr_req["total"]  
 
-                            # Add sessions from current group
                             for session_num, session_data in curr_req["sessions"].items():
-                                session_num_str = str(session_num)  # Ensure string format
+                                session_num_str = str(session_num)
                                 if session_num_str not in subject_req_sessions:  
                                     subject_req_sessions[session_num_str] = {"locations": {}}  
                                 for location, count in session_data["locations"].items():
-                                    location_key = location.lower()  # Make lowercase for consistency
+                                    location_key = location.lower()
                                     if location_key not in subject_req_sessions[session_num_str]["locations"]:  
                                         subject_req_sessions[session_num_str]["locations"][location_key] = 0  
-                                    subject_req_sessions[session_num_str]["locations"][location_key] = count  # Set, not add
+                                    subject_req_sessions[session_num_str]["locations"][location_key] = count
                     else:
-                        # For non-transferred students, just use current group
                         if current_key in required_attendance and subject in required_attendance[current_key]:  
                             curr_req = required_attendance[current_key][subject]  
                             subject_req_total = curr_req["total"]  
 
-                            # Add sessions
                             for session_num, session_data in curr_req["sessions"].items():
-                                session_num_str = str(session_num)  # Ensure string format
+                                session_num_str = str(session_num)
                                 if session_num_str not in subject_req_sessions:  
                                     subject_req_sessions[session_num_str] = {"locations": {}}  
                                 for location, count in session_data["locations"].items():
-                                    location_key = location.lower()  # Make lowercase for consistency
-                                    if location_key not in subject_req_sessions[session_num_str]["locations"]:  
+                                    location_key = location.lower()
+                                    if location_key not in subject_req_sessions[session_num_str]["locations"]: 
                                         subject_req_sessions[session_num_str]["locations"][location_key] = 0  
                                     subject_req_sessions[session_num_str]["locations"][location_key] = count  
 
@@ -2023,9 +2054,15 @@ class AutomatedAttendanceProcessor:
                 percentage_cell.number_format = '0.0%'
                 percentage_cell.alignment = Alignment(horizontal='center')
                 percentage_cell.border = bottom_border
-
+                
+                # Format threshold cell
+                threshold_cell = sheet.cell(row=row_idx, column=8)
+                threshold_cell.number_format = '0.0%'
+                threshold_cell.alignment = Alignment(horizontal='center')
+                threshold_cell.border = bottom_border
+                
                 # Format sessions cells
-                for col in range(8, 14):
+                for col in range(9, 16):
                     cell = sheet.cell(row=row_idx, column=col)
                     cell.alignment = Alignment(horizontal='center')
                     cell.border = bottom_border
@@ -2083,7 +2120,7 @@ class AutomatedAttendanceProcessor:
             # Special case for specific columns
             if col_idx == 2:  # Name column
                 adjusted_width = max(adjusted_width, 25)  # Names need more space
-            elif col_idx >= 14:  # Subject specific columns (adjusted due to new Total Missed column)
+            elif col_idx >= 15:  # Subject specific columns (adjusted due to new Total Missed column)
                 adjusted_width = max(adjusted_width, 12)  # Subject columns need at least this width
 
             sheet.column_dimensions[col_letter].width = adjusted_width
@@ -2763,24 +2800,40 @@ class AutomatedAttendanceProcessor:
                 module_name, reference_file, schedule_file, merged_log_data, year, batch
             )
 
+            # Initialize threshold variables
+            student_thresholds = {}
+            has_threshold_column = False
+            calculated_threshold = 0.75  # Default
+
             report_file = data.get('report')
             if report_file:
                 report_data = self.extract_data_from_report(report_file)
                 if report_data:
                     total_required = report_data['total_required']
-                    calculated_threshold = report_data['threshold']
+                    has_threshold_column = report_data['has_threshold_column']
+                    
+                    if has_threshold_column:
+                        # Use per-student thresholds from the report
+                        student_thresholds = report_data['student_thresholds']
+                        # Calculate default threshold for new students (use 75% as default)
+                        calculated_threshold = 0.75
+                        print(f"  Using per-student thresholds from report ({len(student_thresholds)} students)")
+                    else:
+                        # Use calculated threshold for all students
+                        calculated_threshold = report_data['threshold']
+                        print(f"  Using calculated threshold: {calculated_threshold:.1%}")
+                        
                     self.ATTENDANCE_THRESHOLD = calculated_threshold
-                    print(f"  Using calculated threshold: {calculated_threshold:.1%}")
                 else:
-                    print(f"Could not extract data from {report_file}. Using default threshold.")
-                    # Calculate from schedule instead of using default
+                    print(f"Could not extract data from {report_file}. Calculating from schedule.")
                     total_required = self.calculate_total_required_from_schedule(session_schedule[1:])
-                    self.ATTENDANCE_THRESHOLD = 0.75
+                    calculated_threshold = 0.75
+                    self.ATTENDANCE_THRESHOLD = calculated_threshold
             else:
                 print(f"No existing report found for {module_name}. Calculating from schedule.")
-                # Calculate total required from schedule file
                 total_required = self.calculate_total_required_from_schedule(session_schedule[1:])
-                self.ATTENDANCE_THRESHOLD = 0.75
+                calculated_threshold = 0.75
+                self.ATTENDANCE_THRESHOLD = calculated_threshold
                 print(f"  Calculated total required sessions: {total_required}")
 
             prev_student_map = {}
@@ -2851,11 +2904,15 @@ class AutomatedAttendanceProcessor:
             attendance_sheet_name = f"Attendance"
             transfer_sheet_name = f"Transfers"
 
-            # Create sheets
-            self.create_summary_sheet(output_wb, summary_sheet_name, combined_attendance, 
-                                    required_attendance, current_student_map, all_transferred_students,
-                                    transfer_data, f"Year {year}", completed_sessions, sessions_left, 
-                                    total_required, batch, session_schedule[1:])  # Add session_schedule parameter
+            # Create sheets - PASS THRESHOLD INFORMATION
+            self.create_summary_sheet(
+                output_wb, summary_sheet_name, combined_attendance, 
+                required_attendance, current_student_map, all_transferred_students,
+                transfer_data, f"Year {year}", completed_sessions, sessions_left, 
+                total_required, batch, session_schedule[1:],
+                student_thresholds=student_thresholds,
+                default_threshold=calculated_threshold
+            )
 
             self.create_valid_logs_sheet(output_wb, attendance_sheet_name, combined_attendance)
 
