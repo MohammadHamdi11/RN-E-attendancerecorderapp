@@ -1,0 +1,38 @@
+{
+  "user_email": "dff6c0616f7c40de28f5913d4a79d8f519403359c7bf7a332439044d4e40ec83",
+  "user_id": "dff6c0616f7c40de28f5913d4a79d8f519403359c7bf7a332439044d4e40ec83_1763895990593",
+  "account_created": "2025-11-23T11:06:30.593Z",
+  "last_sync": "2025-11-23T11:06:30.593Z",
+  "total_sessions": 1,
+  "total_scans": 1,
+  "sessions": [
+    {
+      "id": "scanner1763895963016",
+      "location": "Immunology/Haematology",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-11-23T11:06:03.016Z",
+      "formattedDateTime": "23/11/2025 13:06:03",
+      "scans": [
+        {
+          "id": "1763895989933",
+          "content": "211753",
+          "timestamp": "2025-11-23T11:06:29.925Z",
+          "formattedTime": "13:06:29",
+          "time": "2025-11-23T11:06:29.925Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "dff6c0616f7c40de28f5913d4a79d8f519403359c7bf7a332439044d4e40ec83",
+      "user_id": "dff6c0616f7c40de28f5913d4a79d8f519403359c7bf7a332439044d4e40ec83_1763895990593",
+      "created_by": "dff6c0616f7c40de28f5913d4a79d8f519403359c7bf7a332439044d4e40ec83",
+      "created_at": "2025-11-23T11:06:30.593Z",
+      "updated_at": "2025-11-23T11:06:30.593Z"
+    }
+  ]
+}
