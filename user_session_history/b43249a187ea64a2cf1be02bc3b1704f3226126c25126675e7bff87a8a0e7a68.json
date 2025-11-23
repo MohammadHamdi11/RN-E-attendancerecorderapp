@@ -1,10 +1,10 @@
 {
   "user_email": "dff6c0616f7c40de28f5913d4a79d8f519403359c7bf7a332439044d4e40ec83",
-  "user_id": "dff6c0616f7c40de28f5913d4a79d8f519403359c7bf7a332439044d4e40ec83_1763896080394",
-  "account_created": "2025-11-23T11:08:00.394Z",
-  "last_sync": "2025-11-23T11:08:00.394Z",
+  "user_id": "dff6c0616f7c40de28f5913d4a79d8f519403359c7bf7a332439044d4e40ec83_1763896304898",
+  "account_created": "2025-11-23T11:11:44.898Z",
+  "last_sync": "2025-11-23T11:11:44.898Z",
   "total_sessions": 1,
-  "total_scans": 8,
+  "total_scans": 9,
   "sessions": [
     {
       "id": "scanner1763895963016",
@@ -77,6 +77,14 @@
           "formattedTime": "13:07:56",
           "time": "2025-11-23T11:07:56.763Z",
           "isManual": false
+        },
+        {
+          "id": "1763896135555",
+          "content": "211687",
+          "timestamp": "2025-11-23T11:08:55.555Z",
+          "formattedTime": "13:08:55",
+          "time": "2025-11-23T11:08:55.555Z",
+          "isManual": false
         }
       ],
       "inProgress": true,
@@ -84,11 +92,12 @@
       "sessionType": "scanner",
       "recoveryStatus": "in_progress",
       "isChecklist": false,
+      "backedUp": true,
       "user_email": "dff6c0616f7c40de28f5913d4a79d8f519403359c7bf7a332439044d4e40ec83",
-      "user_id": "dff6c0616f7c40de28f5913d4a79d8f519403359c7bf7a332439044d4e40ec83_1763896080394",
+      "user_id": "dff6c0616f7c40de28f5913d4a79d8f519403359c7bf7a332439044d4e40ec83_1763896304898",
       "created_by": "dff6c0616f7c40de28f5913d4a79d8f519403359c7bf7a332439044d4e40ec83",
-      "created_at": "2025-11-23T11:08:00.394Z",
-      "updated_at": "2025-11-23T11:08:00.394Z"
+      "created_at": "2025-11-23T11:11:44.898Z",
+      "updated_at": "2025-11-23T11:11:44.898Z"
     }
   ]
 }
