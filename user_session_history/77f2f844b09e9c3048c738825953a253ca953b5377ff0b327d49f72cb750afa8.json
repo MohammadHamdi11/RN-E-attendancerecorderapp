@@ -1,10 +1,10 @@
 {
   "user_email": "5da5250e9b73ec783260ff16028a0991ad77179237f0097775bc43ded0664cb1",
-  "user_id": "5da5250e9b73ec783260ff16028a0991ad77179237f0097775bc43ded0664cb1_1763970309036",
-  "account_created": "2025-11-24T07:45:09.036Z",
-  "last_sync": "2025-11-24T07:45:09.036Z",
-  "total_sessions": 1,
-  "total_scans": 53,
+  "user_id": "5da5250e9b73ec783260ff16028a0991ad77179237f0097775bc43ded0664cb1_1763971194672",
+  "account_created": "2025-11-24T07:59:54.672Z",
+  "last_sync": "2025-11-24T07:59:54.672Z",
+  "total_sessions": 2,
+  "total_scans": 54,
   "sessions": [
     {
       "id": "scanner1762808141610",
@@ -445,11 +445,39 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "5da5250e9b73ec783260ff16028a0991ad77179237f0097775bc43ded0664cb1",
-      "user_id": "5da5250e9b73ec783260ff16028a0991ad77179237f0097775bc43ded0664cb1_1763970309037",
+      "user_id": "5da5250e9b73ec783260ff16028a0991ad77179237f0097775bc43ded0664cb1_1763971194672",
       "created_by": "5da5250e9b73ec783260ff16028a0991ad77179237f0097775bc43ded0664cb1",
       "created_at": "2025-11-10T21:22:56.274Z",
-      "updated_at": "2025-11-24T07:45:09.036Z",
+      "updated_at": "2025-11-24T07:59:54.672Z",
       "backedUp": true
+    },
+    {
+      "id": "scanner1763971190635",
+      "location": "Clinical Pathology",
+      "year": 4,
+      "batch": "2024/2025",
+      "dateTime": "2025-11-24T07:59:50.635Z",
+      "formattedDateTime": "24/11/2025 09:59:50",
+      "scans": [
+        {
+          "id": "1763971193891",
+          "content": "211753",
+          "timestamp": "2025-11-24T07:59:53.890Z",
+          "formattedTime": "09:59:53",
+          "time": "2025-11-24T07:59:53.890Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "5da5250e9b73ec783260ff16028a0991ad77179237f0097775bc43ded0664cb1",
+      "user_id": "5da5250e9b73ec783260ff16028a0991ad77179237f0097775bc43ded0664cb1_1763971194672",
+      "created_by": "5da5250e9b73ec783260ff16028a0991ad77179237f0097775bc43ded0664cb1",
+      "created_at": "2025-11-24T07:59:54.672Z",
+      "updated_at": "2025-11-24T07:59:54.672Z"
     }
   ]
 }
