@@ -1,10 +1,10 @@
 {
   "user_email": "ff7a8bc032392dbe2153bc04a01d1584b48874b3b8483d45d4fa6e7731a9b82b",
-  "user_id": "ff7a8bc032392dbe2153bc04a01d1584b48874b3b8483d45d4fa6e7731a9b82b_1763810718970",
-  "account_created": "2025-11-22T11:25:18.970Z",
-  "last_sync": "2025-11-22T11:25:18.970Z",
-  "total_sessions": 4,
-  "total_scans": 193,
+  "user_id": "ff7a8bc032392dbe2153bc04a01d1584b48874b3b8483d45d4fa6e7731a9b82b_1764412405299",
+  "account_created": "2025-11-29T10:33:25.299Z",
+  "last_sync": "2025-11-29T10:33:25.299Z",
+  "total_sessions": 5,
+  "total_scans": 201,
   "sessions": [
     {
       "id": "scanner1759318921792",
@@ -382,10 +382,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "ff7a8bc032392dbe2153bc04a01d1584b48874b3b8483d45d4fa6e7731a9b82b",
-      "user_id": "ff7a8bc032392dbe2153bc04a01d1584b48874b3b8483d45d4fa6e7731a9b82b_1763810718970",
+      "user_id": "ff7a8bc032392dbe2153bc04a01d1584b48874b3b8483d45d4fa6e7731a9b82b_1764412405299",
       "created_by": "ff7a8bc032392dbe2153bc04a01d1584b48874b3b8483d45d4fa6e7731a9b82b",
-      "created_at": "2025-11-22T11:25:18.970Z",
-      "updated_at": "2025-11-22T11:25:18.970Z"
+      "created_at": "2025-11-29T10:33:25.299Z",
+      "updated_at": "2025-11-29T10:33:25.299Z"
     },
     {
       "id": "scanner1761384365897",
@@ -739,10 +739,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "ff7a8bc032392dbe2153bc04a01d1584b48874b3b8483d45d4fa6e7731a9b82b",
-      "user_id": "ff7a8bc032392dbe2153bc04a01d1584b48874b3b8483d45d4fa6e7731a9b82b_1763810718971",
+      "user_id": "ff7a8bc032392dbe2153bc04a01d1584b48874b3b8483d45d4fa6e7731a9b82b_1764412405299",
       "created_by": "ff7a8bc032392dbe2153bc04a01d1584b48874b3b8483d45d4fa6e7731a9b82b",
-      "created_at": "2025-11-22T11:25:18.970Z",
-      "updated_at": "2025-11-22T11:25:18.970Z"
+      "created_at": "2025-11-29T10:33:25.299Z",
+      "updated_at": "2025-11-29T10:33:25.299Z"
     },
     {
       "id": "scanner1761474281480",
@@ -1256,10 +1256,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "ff7a8bc032392dbe2153bc04a01d1584b48874b3b8483d45d4fa6e7731a9b82b",
-      "user_id": "ff7a8bc032392dbe2153bc04a01d1584b48874b3b8483d45d4fa6e7731a9b82b_1763810718971",
+      "user_id": "ff7a8bc032392dbe2153bc04a01d1584b48874b3b8483d45d4fa6e7731a9b82b_1764412405299",
       "created_by": "ff7a8bc032392dbe2153bc04a01d1584b48874b3b8483d45d4fa6e7731a9b82b",
-      "created_at": "2025-11-22T11:25:18.970Z",
-      "updated_at": "2025-11-22T11:25:18.970Z"
+      "created_at": "2025-11-29T10:33:25.299Z",
+      "updated_at": "2025-11-29T10:33:25.299Z"
     },
     {
       "id": "scanner1763810241911",
@@ -1620,6 +1620,91 @@
           "formattedTime": "13:25:18",
           "time": "2025-11-22T11:25:18.287Z",
           "isManual": true
+        },
+        {
+          "id": "1763810726119",
+          "content": "212314",
+          "timestamp": "2025-11-22T11:25:26.119Z",
+          "formattedTime": "13:25:26",
+          "time": "2025-11-22T11:25:26.119Z",
+          "isManual": false
+        },
+        {
+          "id": "1763810731707",
+          "content": "212315",
+          "timestamp": "2025-11-22T11:25:31.706Z",
+          "formattedTime": "13:25:31",
+          "time": "2025-11-22T11:25:31.706Z",
+          "isManual": false
+        },
+        {
+          "id": "1763810742771",
+          "content": "200468",
+          "timestamp": "2025-11-22T11:25:42.771Z",
+          "formattedTime": "13:25:42",
+          "time": "2025-11-22T11:25:42.771Z",
+          "isManual": true
+        },
+        {
+          "id": "1763810746265",
+          "content": "200490",
+          "timestamp": "2025-11-22T11:25:46.264Z",
+          "formattedTime": "13:25:46",
+          "time": "2025-11-22T11:25:46.264Z",
+          "isManual": false
+        },
+        {
+          "id": "1763810752439",
+          "content": "200423",
+          "timestamp": "2025-11-22T11:25:52.439Z",
+          "formattedTime": "13:25:52",
+          "time": "2025-11-22T11:25:52.439Z",
+          "isManual": true
+        },
+        {
+          "id": "1763810759582",
+          "content": "200003",
+          "timestamp": "2025-11-22T11:25:59.582Z",
+          "formattedTime": "13:25:59",
+          "time": "2025-11-22T11:25:59.582Z",
+          "isManual": true
+        },
+        {
+          "id": "1763810767906",
+          "content": "200405",
+          "timestamp": "2025-11-22T11:26:07.905Z",
+          "formattedTime": "13:26:07",
+          "time": "2025-11-22T11:26:07.905Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "closed_normally",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "ff7a8bc032392dbe2153bc04a01d1584b48874b3b8483d45d4fa6e7731a9b82b",
+      "user_id": "ff7a8bc032392dbe2153bc04a01d1584b48874b3b8483d45d4fa6e7731a9b82b_1764412405299",
+      "created_by": "ff7a8bc032392dbe2153bc04a01d1584b48874b3b8483d45d4fa6e7731a9b82b",
+      "created_at": "2025-11-29T10:33:25.299Z",
+      "updated_at": "2025-11-29T10:33:25.299Z"
+    },
+    {
+      "id": "scanner1764412324552",
+      "location": "Cardiology",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-11-29T10:32:04.552Z",
+      "formattedDateTime": "29/11/2025 12:32:04",
+      "scans": [
+        {
+          "id": "1764412404516",
+          "content": "200423",
+          "timestamp": "2025-11-29T10:33:24.515Z",
+          "formattedTime": "12:33:24",
+          "time": "2025-11-29T10:33:24.515Z",
+          "isManual": true
         }
       ],
       "inProgress": true,
@@ -1628,10 +1713,10 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "ff7a8bc032392dbe2153bc04a01d1584b48874b3b8483d45d4fa6e7731a9b82b",
-      "user_id": "ff7a8bc032392dbe2153bc04a01d1584b48874b3b8483d45d4fa6e7731a9b82b_1763810718971",
+      "user_id": "ff7a8bc032392dbe2153bc04a01d1584b48874b3b8483d45d4fa6e7731a9b82b_1764412405299",
       "created_by": "ff7a8bc032392dbe2153bc04a01d1584b48874b3b8483d45d4fa6e7731a9b82b",
-      "created_at": "2025-11-22T11:25:18.970Z",
-      "updated_at": "2025-11-22T11:25:18.970Z"
+      "created_at": "2025-11-29T10:33:25.299Z",
+      "updated_at": "2025-11-29T10:33:25.299Z"
     }
   ]
 }
