@@ -1,0 +1,38 @@
+{
+  "user_email": "d537ac4f12370d33f7319f0c0765906f18551e0c634c90dd1c28fe9baa865976",
+  "user_id": "d537ac4f12370d33f7319f0c0765906f18551e0c634c90dd1c28fe9baa865976_1764573449187",
+  "account_created": "2025-12-01T07:17:29.187Z",
+  "last_sync": "2025-12-01T07:17:29.187Z",
+  "total_sessions": 1,
+  "total_scans": 1,
+  "sessions": [
+    {
+      "id": "scanner1764573440611",
+      "location": "Obstetrics/Gynaecology",
+      "year": 5,
+      "batch": "2025/2026",
+      "dateTime": "2025-12-01T07:17:20.611Z",
+      "formattedDateTime": "01/12/2025 09:17:20",
+      "scans": [
+        {
+          "id": "1764573448472",
+          "content": "231249",
+          "timestamp": "2025-12-01T07:17:28.472Z",
+          "formattedTime": "09:17:28",
+          "time": "2025-12-01T07:17:28.472Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "d537ac4f12370d33f7319f0c0765906f18551e0c634c90dd1c28fe9baa865976",
+      "user_id": "d537ac4f12370d33f7319f0c0765906f18551e0c634c90dd1c28fe9baa865976_1764573449187",
+      "created_by": "d537ac4f12370d33f7319f0c0765906f18551e0c634c90dd1c28fe9baa865976",
+      "created_at": "2025-12-01T07:17:29.187Z",
+      "updated_at": "2025-12-01T07:17:29.187Z"
+    }
+  ]
+}
