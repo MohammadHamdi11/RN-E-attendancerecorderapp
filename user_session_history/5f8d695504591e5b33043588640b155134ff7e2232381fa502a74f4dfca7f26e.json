@@ -1,10 +1,10 @@
 {
   "user_email": "d537ac4f12370d33f7319f0c0765906f18551e0c634c90dd1c28fe9baa865976",
-  "user_id": "d537ac4f12370d33f7319f0c0765906f18551e0c634c90dd1c28fe9baa865976_1764573526899",
-  "account_created": "2025-12-01T07:18:46.899Z",
-  "last_sync": "2025-12-01T07:18:46.899Z",
-  "total_sessions": 1,
-  "total_scans": 1,
+  "user_id": "d537ac4f12370d33f7319f0c0765906f18551e0c634c90dd1c28fe9baa865976_1764573640827",
+  "account_created": "2025-12-01T07:20:40.827Z",
+  "last_sync": "2025-12-01T07:20:40.827Z",
+  "total_sessions": 2,
+  "total_scans": 2,
   "sessions": [
     {
       "id": "scanner1764573440611",
@@ -30,10 +30,38 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "d537ac4f12370d33f7319f0c0765906f18551e0c634c90dd1c28fe9baa865976",
-      "user_id": "d537ac4f12370d33f7319f0c0765906f18551e0c634c90dd1c28fe9baa865976_1764573526899",
+      "user_id": "d537ac4f12370d33f7319f0c0765906f18551e0c634c90dd1c28fe9baa865976_1764573640827",
       "created_by": "d537ac4f12370d33f7319f0c0765906f18551e0c634c90dd1c28fe9baa865976",
-      "created_at": "2025-12-01T07:18:46.899Z",
-      "updated_at": "2025-12-01T07:18:46.899Z"
+      "created_at": "2025-12-01T07:20:40.827Z",
+      "updated_at": "2025-12-01T07:20:40.827Z"
+    },
+    {
+      "id": "scanner1764573535787",
+      "location": "Obstetrics/Gynaecology",
+      "year": 5,
+      "batch": "2025/2026",
+      "dateTime": "2025-12-01T07:18:55.787Z",
+      "formattedDateTime": "01/12/2025 09:18:55",
+      "scans": [
+        {
+          "id": "1764573640173",
+          "content": "231249",
+          "timestamp": "2025-12-01T07:20:40.172Z",
+          "formattedTime": "09:20:40",
+          "time": "2025-12-01T07:20:40.172Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "d537ac4f12370d33f7319f0c0765906f18551e0c634c90dd1c28fe9baa865976",
+      "user_id": "d537ac4f12370d33f7319f0c0765906f18551e0c634c90dd1c28fe9baa865976_1764573640827",
+      "created_by": "d537ac4f12370d33f7319f0c0765906f18551e0c634c90dd1c28fe9baa865976",
+      "created_at": "2025-12-01T07:20:40.827Z",
+      "updated_at": "2025-12-01T07:20:40.827Z"
     }
   ]
 }
