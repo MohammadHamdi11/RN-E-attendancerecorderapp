@@ -1,10 +1,10 @@
 {
   "user_email": "d537ac4f12370d33f7319f0c0765906f18551e0c634c90dd1c28fe9baa865976",
-  "user_id": "d537ac4f12370d33f7319f0c0765906f18551e0c634c90dd1c28fe9baa865976_1764573640827",
-  "account_created": "2025-12-01T07:20:40.827Z",
-  "last_sync": "2025-12-01T07:20:40.827Z",
-  "total_sessions": 2,
-  "total_scans": 2,
+  "user_id": "d537ac4f12370d33f7319f0c0765906f18551e0c634c90dd1c28fe9baa865976_1764573703274",
+  "account_created": "2025-12-01T07:21:43.274Z",
+  "last_sync": "2025-12-01T07:21:43.274Z",
+  "total_sessions": 3,
+  "total_scans": 3,
   "sessions": [
     {
       "id": "scanner1764573440611",
@@ -30,10 +30,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "d537ac4f12370d33f7319f0c0765906f18551e0c634c90dd1c28fe9baa865976",
-      "user_id": "d537ac4f12370d33f7319f0c0765906f18551e0c634c90dd1c28fe9baa865976_1764573640827",
+      "user_id": "d537ac4f12370d33f7319f0c0765906f18551e0c634c90dd1c28fe9baa865976_1764573703274",
       "created_by": "d537ac4f12370d33f7319f0c0765906f18551e0c634c90dd1c28fe9baa865976",
-      "created_at": "2025-12-01T07:20:40.827Z",
-      "updated_at": "2025-12-01T07:20:40.827Z"
+      "created_at": "2025-12-01T07:21:43.274Z",
+      "updated_at": "2025-12-01T07:21:43.274Z"
     },
     {
       "id": "scanner1764573535787",
@@ -57,11 +57,43 @@
       "sessionType": "scanner",
       "recoveryStatus": "in_progress",
       "isChecklist": false,
+      "backedUp": true,
       "user_email": "d537ac4f12370d33f7319f0c0765906f18551e0c634c90dd1c28fe9baa865976",
-      "user_id": "d537ac4f12370d33f7319f0c0765906f18551e0c634c90dd1c28fe9baa865976_1764573640827",
+      "user_id": "d537ac4f12370d33f7319f0c0765906f18551e0c634c90dd1c28fe9baa865976_1764573703274",
       "created_by": "d537ac4f12370d33f7319f0c0765906f18551e0c634c90dd1c28fe9baa865976",
-      "created_at": "2025-12-01T07:20:40.827Z",
-      "updated_at": "2025-12-01T07:20:40.827Z"
+      "created_at": "2025-12-01T07:21:43.274Z",
+      "updated_at": "2025-12-01T07:21:43.274Z"
+    },
+    {
+      "id": "checklist1764573686830",
+      "location": "Obstetrics/Gynaecology",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-12-01T07:21:26.830Z",
+      "formattedDateTime": "01/12/2025 09:21:26",
+      "scans": [
+        {
+          "id": "221761",
+          "content": "221761",
+          "timestamp": "2025-12-01T07:21:42.753Z",
+          "formattedTime": "09:21:42",
+          "time": "2025-12-01T07:21:42.753Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isChecklist": true,
+      "filters": {
+        "year": 4,
+        "group": "B1D"
+      },
+      "sessionType": "checklist",
+      "recoveryStatus": "in_progress",
+      "user_email": "d537ac4f12370d33f7319f0c0765906f18551e0c634c90dd1c28fe9baa865976",
+      "user_id": "d537ac4f12370d33f7319f0c0765906f18551e0c634c90dd1c28fe9baa865976_1764573703274",
+      "created_by": "d537ac4f12370d33f7319f0c0765906f18551e0c634c90dd1c28fe9baa865976",
+      "created_at": "2025-12-01T07:21:43.274Z",
+      "updated_at": "2025-12-01T07:21:43.274Z"
     }
   ]
 }
