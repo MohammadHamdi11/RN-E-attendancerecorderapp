@@ -1,10 +1,10 @@
 {
   "user_email": "c380f5af5201ef6071e1be103ad2c5029eaceb392a175aad93d8c77cc09c4d35",
-  "user_id": "c380f5af5201ef6071e1be103ad2c5029eaceb392a175aad93d8c77cc09c4d35_1761032586035",
-  "account_created": "2025-10-21T07:43:06.035Z",
-  "last_sync": "2025-10-21T07:43:06.035Z",
-  "total_sessions": 4,
-  "total_scans": 97,
+  "user_id": "c380f5af5201ef6071e1be103ad2c5029eaceb392a175aad93d8c77cc09c4d35_1764844898455",
+  "account_created": "2025-12-04T10:41:38.455Z",
+  "last_sync": "2025-12-04T10:41:38.455Z",
+  "total_sessions": 5,
+  "total_scans": 98,
   "sessions": [
     {
       "id": "scanner1760995947895",
@@ -20,10 +20,10 @@
       "recoveryStatus": "interrupted",
       "isChecklist": false,
       "user_email": "c380f5af5201ef6071e1be103ad2c5029eaceb392a175aad93d8c77cc09c4d35",
-      "user_id": "c380f5af5201ef6071e1be103ad2c5029eaceb392a175aad93d8c77cc09c4d35_1761032586035",
+      "user_id": "c380f5af5201ef6071e1be103ad2c5029eaceb392a175aad93d8c77cc09c4d35_1764844898456",
       "created_by": "c380f5af5201ef6071e1be103ad2c5029eaceb392a175aad93d8c77cc09c4d35",
       "created_at": "2025-10-21T07:43:06.035Z",
-      "updated_at": "2025-10-21T07:43:06.035Z"
+      "updated_at": "2025-12-04T10:41:38.455Z"
     },
     {
       "id": "checklist1760995981703",
@@ -42,10 +42,10 @@
       "sessionType": "checklist",
       "recoveryStatus": "in_progress",
       "user_email": "c380f5af5201ef6071e1be103ad2c5029eaceb392a175aad93d8c77cc09c4d35",
-      "user_id": "c380f5af5201ef6071e1be103ad2c5029eaceb392a175aad93d8c77cc09c4d35_1761032586035",
+      "user_id": "c380f5af5201ef6071e1be103ad2c5029eaceb392a175aad93d8c77cc09c4d35_1764844898456",
       "created_by": "c380f5af5201ef6071e1be103ad2c5029eaceb392a175aad93d8c77cc09c4d35",
       "created_at": "2025-10-21T07:43:06.035Z",
-      "updated_at": "2025-10-21T07:43:06.035Z"
+      "updated_at": "2025-12-04T10:41:38.455Z"
     },
     {
       "id": "scanner1761029679772",
@@ -831,10 +831,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "c380f5af5201ef6071e1be103ad2c5029eaceb392a175aad93d8c77cc09c4d35",
-      "user_id": "c380f5af5201ef6071e1be103ad2c5029eaceb392a175aad93d8c77cc09c4d35_1761032586035",
+      "user_id": "c380f5af5201ef6071e1be103ad2c5029eaceb392a175aad93d8c77cc09c4d35_1764844898456",
       "created_by": "c380f5af5201ef6071e1be103ad2c5029eaceb392a175aad93d8c77cc09c4d35",
       "created_at": "2025-10-21T07:43:06.035Z",
-      "updated_at": "2025-10-21T07:43:06.035Z"
+      "updated_at": "2025-12-04T10:41:38.455Z"
     },
     {
       "id": "scanner1761032556859",
@@ -853,16 +853,45 @@
           "isManual": true
         }
       ],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "interrupted",
+      "isChecklist": false,
+      "user_email": "c380f5af5201ef6071e1be103ad2c5029eaceb392a175aad93d8c77cc09c4d35",
+      "user_id": "c380f5af5201ef6071e1be103ad2c5029eaceb392a175aad93d8c77cc09c4d35_1764844898456",
+      "created_by": "c380f5af5201ef6071e1be103ad2c5029eaceb392a175aad93d8c77cc09c4d35",
+      "created_at": "2025-10-21T07:43:06.035Z",
+      "updated_at": "2025-12-04T10:41:38.455Z",
+      "backedUp": true
+    },
+    {
+      "id": "scanner1764844893606",
+      "location": "Pathology Lab/Museum",
+      "year": 3,
+      "batch": "2025/2026",
+      "dateTime": "2025-12-04T10:41:33.606Z",
+      "formattedDateTime": "04/12/2025 12:41:33",
+      "scans": [
+        {
+          "id": "1764844898048",
+          "content": "231302",
+          "timestamp": "2025-12-04T10:41:38.043Z",
+          "formattedTime": "12:41:38",
+          "time": "2025-12-04T10:41:38.043Z",
+          "isManual": false
+        }
+      ],
       "inProgress": true,
       "isScanner": true,
       "sessionType": "scanner",
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "c380f5af5201ef6071e1be103ad2c5029eaceb392a175aad93d8c77cc09c4d35",
-      "user_id": "c380f5af5201ef6071e1be103ad2c5029eaceb392a175aad93d8c77cc09c4d35_1761032586035",
+      "user_id": "c380f5af5201ef6071e1be103ad2c5029eaceb392a175aad93d8c77cc09c4d35_1764844898456",
       "created_by": "c380f5af5201ef6071e1be103ad2c5029eaceb392a175aad93d8c77cc09c4d35",
-      "created_at": "2025-10-21T07:43:06.035Z",
-      "updated_at": "2025-10-21T07:43:06.035Z"
+      "created_at": "2025-12-04T10:41:38.455Z",
+      "updated_at": "2025-12-04T10:41:38.455Z"
     }
   ]
 }
