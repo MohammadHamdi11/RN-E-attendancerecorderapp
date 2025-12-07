@@ -1,0 +1,38 @@
+{
+  "user_email": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d",
+  "user_id": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d_1765097094207",
+  "account_created": "2025-12-07T08:44:54.207Z",
+  "last_sync": "2025-12-07T08:44:54.207Z",
+  "total_sessions": 1,
+  "total_scans": 1,
+  "sessions": [
+    {
+      "id": "scanner1765056425812",
+      "location": "Dermatology",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-12-06T21:27:05.812Z",
+      "formattedDateTime": "06/12/2025 23:27:05",
+      "scans": [
+        {
+          "id": "1765097093411",
+          "content": "201157",
+          "timestamp": "2025-12-07T08:44:53.408Z",
+          "formattedTime": "10:44:53",
+          "time": "2025-12-07T08:44:53.408Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d",
+      "user_id": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d_1765097094207",
+      "created_by": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d",
+      "created_at": "2025-12-07T08:44:54.207Z",
+      "updated_at": "2025-12-07T08:44:54.207Z"
+    }
+  ]
+}
