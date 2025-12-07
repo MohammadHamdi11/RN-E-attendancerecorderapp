@@ -1,10 +1,10 @@
 {
   "user_email": "f71267414ad928ff5abcafbc64a0ab66be7858c72295754f0460aad3fd95b393",
-  "user_id": "f71267414ad928ff5abcafbc64a0ab66be7858c72295754f0460aad3fd95b393_1765039754806",
-  "account_created": "2025-12-06T16:49:14.777Z",
-  "last_sync": "2025-12-06T16:49:14.777Z",
-  "total_sessions": 1,
-  "total_scans": 0,
+  "user_id": "f71267414ad928ff5abcafbc64a0ab66be7858c72295754f0460aad3fd95b393_1765109595847",
+  "account_created": "2025-12-07T12:13:15.845Z",
+  "last_sync": "2025-12-07T12:13:15.845Z",
+  "total_sessions": 2,
+  "total_scans": 1,
   "sessions": [
     {
       "id": "scanner1765000522298",
@@ -14,16 +14,44 @@
       "dateTime": "2025-12-06T05:55:22.298Z",
       "formattedDateTime": "06/12/2025 07:55:22",
       "scans": [],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "interrupted",
+      "isChecklist": false,
+      "updated_at": "2025-12-07T12:13:15.845Z",
+      "user_email": "f71267414ad928ff5abcafbc64a0ab66be7858c72295754f0460aad3fd95b393",
+      "user_id": "f71267414ad928ff5abcafbc64a0ab66be7858c72295754f0460aad3fd95b393_1765109595848",
+      "created_by": "f71267414ad928ff5abcafbc64a0ab66be7858c72295754f0460aad3fd95b393",
+      "created_at": "2025-12-06T16:49:14.777Z"
+    },
+    {
+      "id": "scanner1765109585465",
+      "location": "Neurology",
+      "year": 5,
+      "batch": "2025/2026",
+      "dateTime": "2025-12-07T12:13:05.465Z",
+      "formattedDateTime": "07/12/2025 14:13:05",
+      "scans": [
+        {
+          "id": "1765109594864",
+          "content": "180863",
+          "timestamp": "2025-12-07T12:13:14.860Z",
+          "formattedTime": "14:13:14",
+          "time": "2025-12-07T12:13:14.860Z",
+          "isManual": false
+        }
+      ],
       "inProgress": true,
       "isScanner": true,
       "sessionType": "scanner",
       "recoveryStatus": "in_progress",
       "isChecklist": false,
-      "updated_at": "2025-12-06T16:49:14.777Z",
       "user_email": "f71267414ad928ff5abcafbc64a0ab66be7858c72295754f0460aad3fd95b393",
-      "user_id": "f71267414ad928ff5abcafbc64a0ab66be7858c72295754f0460aad3fd95b393_1765039755364",
+      "user_id": "f71267414ad928ff5abcafbc64a0ab66be7858c72295754f0460aad3fd95b393_1765109595848",
       "created_by": "f71267414ad928ff5abcafbc64a0ab66be7858c72295754f0460aad3fd95b393",
-      "created_at": "2025-12-06T16:49:14.777Z"
+      "created_at": "2025-12-07T12:13:15.845Z",
+      "updated_at": "2025-12-07T12:13:15.845Z"
     }
   ]
 }
