@@ -1,8 +1,8 @@
 {
   "user_email": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d",
-  "user_id": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d_1765110649706",
-  "account_created": "2025-12-07T12:30:49.706Z",
-  "last_sync": "2025-12-07T12:30:49.706Z",
+  "user_id": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d_1765110710036",
+  "account_created": "2025-12-07T12:31:50.036Z",
+  "last_sync": "2025-12-07T12:31:50.036Z",
   "total_sessions": 2,
   "total_scans": 90,
   "sessions": [
@@ -300,29 +300,21 @@
       "sessionType": "scanner",
       "recoveryStatus": "in_progress",
       "isChecklist": false,
-      "updated_at": "2025-12-07T12:30:49.706Z",
+      "updated_at": "2025-12-07T12:31:50.036Z",
       "backedUp": true,
       "user_email": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d",
-      "user_id": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d_1765110649706",
+      "user_id": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d_1765110710036",
       "created_by": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d",
-      "created_at": "2025-12-07T12:30:49.706Z"
+      "created_at": "2025-12-07T12:31:50.036Z"
     },
     {
       "id": "checklist1765110146466",
       "location": "Dermatology",
       "year": 4,
-      "batch": "2025/2026",
+      "batch": "2024/2025",
       "dateTime": "2025-12-07T12:22:26.466Z",
       "formattedDateTime": "07/12/2025 14:22:26",
       "scans": [
-        {
-          "id": "201007",
-          "content": "201007",
-          "timestamp": "2025-12-07T12:22:38.747Z",
-          "formattedTime": "14:22:38",
-          "time": "2025-12-07T12:22:38.747Z",
-          "isManual": false
-        },
         {
           "id": "211251",
           "content": "211251",
@@ -754,6 +746,14 @@
           "formattedTime": "14:23:16",
           "time": "2025-12-07T12:23:16.213Z",
           "isManual": false
+        },
+        {
+          "id": "201007",
+          "content": "201007",
+          "timestamp": "2025-12-07T12:31:24.394Z",
+          "formattedTime": "14:31:24",
+          "time": "2025-12-07T12:31:24.394Z",
+          "isManual": false
         }
       ],
       "inProgress": true,
@@ -765,10 +765,10 @@
       "sessionType": "checklist",
       "recoveryStatus": "in_progress",
       "user_email": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d",
-      "user_id": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d_1765110649706",
+      "user_id": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d_1765110710036",
       "created_by": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d",
-      "created_at": "2025-12-07T12:30:49.706Z",
-      "updated_at": "2025-12-07T12:30:49.706Z"
+      "created_at": "2025-12-07T12:31:50.036Z",
+      "updated_at": "2025-12-07T12:31:50.036Z"
     }
   ]
 }
