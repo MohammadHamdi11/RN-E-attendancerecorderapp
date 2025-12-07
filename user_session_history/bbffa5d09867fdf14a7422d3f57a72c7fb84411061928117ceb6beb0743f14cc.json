@@ -1,10 +1,10 @@
 {
   "user_email": "f71267414ad928ff5abcafbc64a0ab66be7858c72295754f0460aad3fd95b393",
-  "user_id": "f71267414ad928ff5abcafbc64a0ab66be7858c72295754f0460aad3fd95b393_1765109718923",
-  "account_created": "2025-12-07T12:15:18.923Z",
-  "last_sync": "2025-12-07T12:15:18.923Z",
+  "user_id": "f71267414ad928ff5abcafbc64a0ab66be7858c72295754f0460aad3fd95b393_1765109796893",
+  "account_created": "2025-12-07T12:16:36.893Z",
+  "last_sync": "2025-12-07T12:16:36.893Z",
   "total_sessions": 2,
-  "total_scans": 6,
+  "total_scans": 1,
   "sessions": [
     {
       "id": "scanner1765000522298",
@@ -14,71 +14,31 @@
       "dateTime": "2025-12-06T05:55:22.298Z",
       "formattedDateTime": "06/12/2025 07:55:22",
       "scans": [],
-      "inProgress": false,
+      "inProgress": true,
       "isScanner": true,
       "sessionType": "scanner",
-      "recoveryStatus": "interrupted",
+      "recoveryStatus": "in_progress",
       "isChecklist": false,
-      "updated_at": "2025-12-07T12:15:18.923Z",
+      "updated_at": "2025-12-07T12:16:36.893Z",
       "user_email": "f71267414ad928ff5abcafbc64a0ab66be7858c72295754f0460aad3fd95b393",
-      "user_id": "f71267414ad928ff5abcafbc64a0ab66be7858c72295754f0460aad3fd95b393_1765109718923",
+      "user_id": "f71267414ad928ff5abcafbc64a0ab66be7858c72295754f0460aad3fd95b393_1765109796893",
       "created_by": "f71267414ad928ff5abcafbc64a0ab66be7858c72295754f0460aad3fd95b393",
-      "created_at": "2025-12-06T16:49:14.777Z"
+      "created_at": "2025-12-07T12:16:36.893Z"
     },
     {
-      "id": "scanner1765109585465",
+      "id": "scanner1765109770507",
       "location": "Neurology",
       "year": 5,
       "batch": "2025/2026",
-      "dateTime": "2025-12-07T12:13:05.465Z",
-      "formattedDateTime": "07/12/2025 14:13:05",
+      "dateTime": "2025-12-07T12:16:10.507Z",
+      "formattedDateTime": "07/12/2025 14:16:10",
       "scans": [
         {
-          "id": "1765109594864",
-          "content": "180863",
-          "timestamp": "2025-12-07T12:13:14.860Z",
-          "formattedTime": "14:13:14",
-          "time": "2025-12-07T12:13:14.860Z",
-          "isManual": false
-        },
-        {
-          "id": "1765109603025",
-          "content": "210728",
-          "timestamp": "2025-12-07T12:13:23.009Z",
-          "formattedTime": "14:13:23",
-          "time": "2025-12-07T12:13:23.009Z",
-          "isManual": false
-        },
-        {
-          "id": "1765109633177",
-          "content": "202064",
-          "timestamp": "2025-12-07T12:13:53.164Z",
-          "formattedTime": "14:13:53",
-          "time": "2025-12-07T12:13:53.164Z",
-          "isManual": false
-        },
-        {
-          "id": "1765109636708",
-          "content": "202048",
-          "timestamp": "2025-12-07T12:13:56.696Z",
-          "formattedTime": "14:13:56",
-          "time": "2025-12-07T12:13:56.696Z",
-          "isManual": false
-        },
-        {
-          "id": "1765109643417",
-          "content": "202055",
-          "timestamp": "2025-12-07T12:14:03.409Z",
-          "formattedTime": "14:14:03",
-          "time": "2025-12-07T12:14:03.409Z",
-          "isManual": false
-        },
-        {
-          "id": "1765109717609",
-          "content": "212048",
-          "timestamp": "2025-12-07T12:15:17.605Z",
-          "formattedTime": "14:15:17",
-          "time": "2025-12-07T12:15:17.605Z",
+          "id": "1765109796086",
+          "content": "190795",
+          "timestamp": "2025-12-07T12:16:36.086Z",
+          "formattedTime": "14:16:36",
+          "time": "2025-12-07T12:16:36.086Z",
           "isManual": true
         }
       ],
@@ -88,10 +48,10 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "f71267414ad928ff5abcafbc64a0ab66be7858c72295754f0460aad3fd95b393",
-      "user_id": "f71267414ad928ff5abcafbc64a0ab66be7858c72295754f0460aad3fd95b393_1765109718923",
+      "user_id": "f71267414ad928ff5abcafbc64a0ab66be7858c72295754f0460aad3fd95b393_1765109796893",
       "created_by": "f71267414ad928ff5abcafbc64a0ab66be7858c72295754f0460aad3fd95b393",
-      "created_at": "2025-12-07T12:15:18.923Z",
-      "updated_at": "2025-12-07T12:15:18.923Z"
+      "created_at": "2025-12-07T12:16:36.893Z",
+      "updated_at": "2025-12-07T12:16:36.893Z"
     }
   ]
 }
