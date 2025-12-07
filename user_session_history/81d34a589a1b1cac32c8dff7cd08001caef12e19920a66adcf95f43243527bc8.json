@@ -1,10 +1,10 @@
 {
   "user_email": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d",
-  "user_id": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d_1765097094207",
-  "account_created": "2025-12-07T08:44:54.207Z",
-  "last_sync": "2025-12-07T08:44:54.207Z",
+  "user_id": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d_1765097101195",
+  "account_created": "2025-12-07T08:45:01.195Z",
+  "last_sync": "2025-12-07T08:45:01.195Z",
   "total_sessions": 1,
-  "total_scans": 1,
+  "total_scans": 2,
   "sessions": [
     {
       "id": "scanner1765056425812",
@@ -21,6 +21,14 @@
           "formattedTime": "10:44:53",
           "time": "2025-12-07T08:44:53.408Z",
           "isManual": false
+        },
+        {
+          "id": "1765097101140",
+          "content": "201572",
+          "timestamp": "2025-12-07T08:45:01.140Z",
+          "formattedTime": "10:45:01",
+          "time": "2025-12-07T08:45:01.140Z",
+          "isManual": false
         }
       ],
       "inProgress": true,
@@ -29,10 +37,10 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d",
-      "user_id": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d_1765097094207",
+      "user_id": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d_1765097101195",
       "created_by": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d",
-      "created_at": "2025-12-07T08:44:54.207Z",
-      "updated_at": "2025-12-07T08:44:54.207Z"
+      "created_at": "2025-12-07T08:45:01.195Z",
+      "updated_at": "2025-12-07T08:45:01.195Z"
     }
   ]
 }
