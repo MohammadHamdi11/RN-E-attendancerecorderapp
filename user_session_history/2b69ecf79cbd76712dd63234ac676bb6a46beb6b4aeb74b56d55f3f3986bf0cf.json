@@ -1,10 +1,10 @@
 {
   "user_email": "a7159391dc96bf3ce355d7d2e1aeae74709eaabca5d4e4b1ecaa02c12da786b5",
-  "user_id": "a7159391dc96bf3ce355d7d2e1aeae74709eaabca5d4e4b1ecaa02c12da786b5_1765020592748",
-  "account_created": "2025-12-06T11:29:52.748Z",
-  "last_sync": "2025-12-06T11:29:52.748Z",
-  "total_sessions": 2,
-  "total_scans": 16,
+  "user_id": "a7159391dc96bf3ce355d7d2e1aeae74709eaabca5d4e4b1ecaa02c12da786b5_1765099564732",
+  "account_created": "2025-12-07T09:26:04.732Z",
+  "last_sync": "2025-12-07T09:26:04.732Z",
+  "total_sessions": 3,
+  "total_scans": 17,
   "sessions": [
     {
       "id": "scanner1765009133400",
@@ -20,10 +20,10 @@
       "recoveryStatus": "interrupted",
       "isChecklist": false,
       "user_email": "a7159391dc96bf3ce355d7d2e1aeae74709eaabca5d4e4b1ecaa02c12da786b5",
-      "user_id": "a7159391dc96bf3ce355d7d2e1aeae74709eaabca5d4e4b1ecaa02c12da786b5_1765020592748",
+      "user_id": "a7159391dc96bf3ce355d7d2e1aeae74709eaabca5d4e4b1ecaa02c12da786b5_1765099564732",
       "created_by": "a7159391dc96bf3ce355d7d2e1aeae74709eaabca5d4e4b1ecaa02c12da786b5",
-      "created_at": "2025-12-06T11:29:52.748Z",
-      "updated_at": "2025-12-06T11:29:52.748Z"
+      "created_at": "2025-12-07T09:26:04.732Z",
+      "updated_at": "2025-12-07T09:26:04.732Z"
     },
     {
       "id": "scanner1765019777260",
@@ -169,10 +169,38 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "a7159391dc96bf3ce355d7d2e1aeae74709eaabca5d4e4b1ecaa02c12da786b5",
-      "user_id": "a7159391dc96bf3ce355d7d2e1aeae74709eaabca5d4e4b1ecaa02c12da786b5_1765020592748",
+      "user_id": "a7159391dc96bf3ce355d7d2e1aeae74709eaabca5d4e4b1ecaa02c12da786b5_1765099564732",
       "created_by": "a7159391dc96bf3ce355d7d2e1aeae74709eaabca5d4e4b1ecaa02c12da786b5",
-      "created_at": "2025-12-06T11:29:52.748Z",
-      "updated_at": "2025-12-06T11:29:52.748Z"
+      "created_at": "2025-12-07T09:26:04.732Z",
+      "updated_at": "2025-12-07T09:26:04.732Z"
+    },
+    {
+      "id": "scanner1765099551723",
+      "location": "Gastroenterology",
+      "year": 5,
+      "batch": "2025/2026",
+      "dateTime": "2025-12-07T09:25:51.723Z",
+      "formattedDateTime": "07/12/2025 11:25:51",
+      "scans": [
+        {
+          "id": "1765099563758",
+          "content": "200840",
+          "timestamp": "2025-12-07T09:26:03.757Z",
+          "formattedTime": "11:26:03",
+          "time": "2025-12-07T09:26:03.757Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "a7159391dc96bf3ce355d7d2e1aeae74709eaabca5d4e4b1ecaa02c12da786b5",
+      "user_id": "a7159391dc96bf3ce355d7d2e1aeae74709eaabca5d4e4b1ecaa02c12da786b5_1765099564732",
+      "created_by": "a7159391dc96bf3ce355d7d2e1aeae74709eaabca5d4e4b1ecaa02c12da786b5",
+      "created_at": "2025-12-07T09:26:04.732Z",
+      "updated_at": "2025-12-07T09:26:04.732Z"
     }
   ]
 }
