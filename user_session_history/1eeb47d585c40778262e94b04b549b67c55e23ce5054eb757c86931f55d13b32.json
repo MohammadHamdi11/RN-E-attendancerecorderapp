@@ -1,51 +1,58 @@
 {
   "user_email": "backup@backdoor.com",
-  "user_id": "backup_backdoor_com_1763968169129",
-  "account_created": "2025-11-24T07:09:29.129Z",
-  "last_sync": "2025-11-24T07:09:29.129Z",
+  "user_id": "backup_backdoor_com_1765194962660",
+  "account_created": "2025-12-08T11:56:02.660Z",
+  "last_sync": "2025-12-08T11:56:02.660Z",
   "total_sessions": 2,
-  "total_scans": 0,
+  "total_scans": 1,
   "sessions": [
     {
-      "id": "scanner1763968142669",
-      "location": "General Surgery",
-      "year": 4,
+      "id": "scanner1764947894763",
+      "location": "Neurology",
+      "year": 5,
       "batch": "2025/2026",
-      "dateTime": "2025-11-24T07:09:02.669Z",
-      "formattedDateTime": "24/11/2025 09:09:02",
+      "dateTime": "2025-12-05T15:18:14.763Z",
+      "formattedDateTime": "05/12/2025 17:18:14",
       "scans": [],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "closed_normally",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "backup@backdoor.com",
+      "user_id": "backup_backdoor_com_1765194962660",
+      "created_by": "backup@backdoor.com",
+      "created_at": "2025-12-08T11:56:02.660Z",
+      "updated_at": "2025-12-08T11:56:02.660Z"
+    },
+    {
+      "id": "scanner1765194957876",
+      "location": "Rheumatology",
+      "year": 5,
+      "batch": "2025/2026",
+      "dateTime": "2025-12-08T11:55:57.876Z",
+      "formattedDateTime": "08/12/2025 13:55:57",
+      "scans": [
+        {
+          "id": "1765194961795",
+          "content": "231249",
+          "timestamp": "2025-12-08T11:56:01.792Z",
+          "formattedTime": "13:56:01",
+          "time": "2025-12-08T11:56:01.792Z",
+          "isManual": false
+        }
+      ],
       "inProgress": true,
       "isScanner": true,
       "sessionType": "scanner",
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1763968169129",
+      "user_id": "backup_backdoor_com_1765194962660",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-11-24T07:09:29.129Z",
-      "updated_at": "2025-11-24T07:09:29.129Z"
-    },
-    {
-      "id": "checklist1763968168618",
-      "location": "Biochemistry Lab/CBL",
-      "year": 4,
-      "batch": "2025/2026",
-      "dateTime": "2025-11-24T07:09:28.618Z",
-      "formattedDateTime": "24/11/2025 09:09:28",
-      "scans": [],
-      "inProgress": true,
-      "isChecklist": true,
-      "filters": {
-        "year": "all",
-        "group": "all"
-      },
-      "sessionType": "checklist",
-      "recoveryStatus": "in_progress",
-      "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1763968169129",
-      "created_by": "backup@backdoor.com",
-      "created_at": "2025-11-24T07:09:29.129Z",
-      "updated_at": "2025-11-24T07:09:29.129Z"
+      "created_at": "2025-12-08T11:56:02.660Z",
+      "updated_at": "2025-12-08T11:56:02.660Z"
     }
   ]
 }
