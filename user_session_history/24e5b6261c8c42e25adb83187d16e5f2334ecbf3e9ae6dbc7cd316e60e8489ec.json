@@ -1,10 +1,10 @@
 {
   "user_email": "cb3642a2f41d338f4902125605491134474225e988d3761e97ba19ed2630b4e1",
-  "user_id": "cb3642a2f41d338f4902125605491134474225e988d3761e97ba19ed2630b4e1_1765103928095",
-  "account_created": "2025-12-07T10:38:48.095Z",
-  "last_sync": "2025-12-07T10:38:48.095Z",
-  "total_sessions": 2,
-  "total_scans": 78,
+  "user_id": "cb3642a2f41d338f4902125605491134474225e988d3761e97ba19ed2630b4e1_1765193158239",
+  "account_created": "2025-12-08T11:25:58.239Z",
+  "last_sync": "2025-12-08T11:25:58.239Z",
+  "total_sessions": 3,
+  "total_scans": 79,
   "sessions": [
     {
       "id": "scanner1765014797132",
@@ -310,10 +310,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "cb3642a2f41d338f4902125605491134474225e988d3761e97ba19ed2630b4e1",
-      "user_id": "cb3642a2f41d338f4902125605491134474225e988d3761e97ba19ed2630b4e1_1765103928095",
+      "user_id": "cb3642a2f41d338f4902125605491134474225e988d3761e97ba19ed2630b4e1_1765193158239",
       "created_by": "cb3642a2f41d338f4902125605491134474225e988d3761e97ba19ed2630b4e1",
-      "created_at": "2025-12-07T10:38:48.095Z",
-      "updated_at": "2025-12-07T10:38:48.095Z"
+      "created_at": "2025-12-08T11:25:58.239Z",
+      "updated_at": "2025-12-08T11:25:58.239Z"
     },
     {
       "id": "scanner1765102357724",
@@ -665,11 +665,40 @@
       "sessionType": "scanner",
       "recoveryStatus": "in_progress",
       "isChecklist": false,
+      "backedUp": true,
       "user_email": "cb3642a2f41d338f4902125605491134474225e988d3761e97ba19ed2630b4e1",
-      "user_id": "cb3642a2f41d338f4902125605491134474225e988d3761e97ba19ed2630b4e1_1765103928095",
+      "user_id": "cb3642a2f41d338f4902125605491134474225e988d3761e97ba19ed2630b4e1_1765193158239",
       "created_by": "cb3642a2f41d338f4902125605491134474225e988d3761e97ba19ed2630b4e1",
-      "created_at": "2025-12-07T10:38:48.095Z",
-      "updated_at": "2025-12-07T10:38:48.095Z"
+      "created_at": "2025-12-08T11:25:58.239Z",
+      "updated_at": "2025-12-08T11:25:58.239Z"
+    },
+    {
+      "id": "scanner1765193152122",
+      "location": "Endocrinology",
+      "year": 5,
+      "batch": "2025/2026",
+      "dateTime": "2025-12-08T11:25:52.122Z",
+      "formattedDateTime": "08/12/2025 13:25:52",
+      "scans": [
+        {
+          "id": "1765193157773",
+          "content": "212334",
+          "timestamp": "2025-12-08T11:25:57.773Z",
+          "formattedTime": "13:25:57",
+          "time": "2025-12-08T11:25:57.773Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "cb3642a2f41d338f4902125605491134474225e988d3761e97ba19ed2630b4e1",
+      "user_id": "cb3642a2f41d338f4902125605491134474225e988d3761e97ba19ed2630b4e1_1765193158239",
+      "created_by": "cb3642a2f41d338f4902125605491134474225e988d3761e97ba19ed2630b4e1",
+      "created_at": "2025-12-08T11:25:58.239Z",
+      "updated_at": "2025-12-08T11:25:58.239Z"
     }
   ]
 }
