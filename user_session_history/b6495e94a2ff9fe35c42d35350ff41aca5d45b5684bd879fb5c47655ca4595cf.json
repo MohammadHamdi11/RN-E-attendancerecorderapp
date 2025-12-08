@@ -1,0 +1,38 @@
+{
+  "user_email": "811e617279e1140947ad4e83ee6436129a94698dc4545f04a944620bfcacad60",
+  "user_id": "811e617279e1140947ad4e83ee6436129a94698dc4545f04a944620bfcacad60_1765180008898",
+  "account_created": "2025-12-08T07:46:48.898Z",
+  "last_sync": "2025-12-08T07:46:48.898Z",
+  "total_sessions": 1,
+  "total_scans": 1,
+  "sessions": [
+    {
+      "id": "scanner1765180003889",
+      "location": "Clinical Pathology",
+      "year": 4,
+      "batch": "2024/2025",
+      "dateTime": "2025-12-08T07:46:43.889Z",
+      "formattedDateTime": "08/12/2025 09:46:43",
+      "scans": [
+        {
+          "id": "1765180006350",
+          "content": "211559",
+          "timestamp": "2025-12-08T07:46:46.342Z",
+          "formattedTime": "09:46:46",
+          "time": "2025-12-08T07:46:46.342Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "811e617279e1140947ad4e83ee6436129a94698dc4545f04a944620bfcacad60",
+      "user_id": "811e617279e1140947ad4e83ee6436129a94698dc4545f04a944620bfcacad60_1765180008898",
+      "created_by": "811e617279e1140947ad4e83ee6436129a94698dc4545f04a944620bfcacad60",
+      "created_at": "2025-12-08T07:46:48.898Z",
+      "updated_at": "2025-12-08T07:46:48.898Z"
+    }
+  ]
+}
