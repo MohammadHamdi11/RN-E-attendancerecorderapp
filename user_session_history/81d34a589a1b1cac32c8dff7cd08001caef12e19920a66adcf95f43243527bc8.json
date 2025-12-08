@@ -1,10 +1,10 @@
 {
   "user_email": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d",
-  "user_id": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d_1765204215309",
-  "account_created": "2025-12-08T14:30:15.309Z",
-  "last_sync": "2025-12-08T14:30:15.309Z",
+  "user_id": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d_1765219678073",
+  "account_created": "2025-12-08T18:47:58.073Z",
+  "last_sync": "2025-12-08T18:47:58.073Z",
   "total_sessions": 4,
-  "total_scans": 106,
+  "total_scans": 109,
   "sessions": [
     {
       "id": "scanner1765110821879",
@@ -20,10 +20,10 @@
       "recoveryStatus": "interrupted",
       "isChecklist": false,
       "user_email": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d",
-      "user_id": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d_1765204215309",
+      "user_id": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d_1765219678073",
       "created_by": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d",
-      "created_at": "2025-12-08T14:30:15.309Z",
-      "updated_at": "2025-12-08T14:30:15.309Z"
+      "created_at": "2025-12-08T18:47:58.073Z",
+      "updated_at": "2025-12-08T18:47:58.073Z"
     },
     {
       "id": "checklist1765110780480",
@@ -43,10 +43,10 @@
       "recoveryStatus": "closed_normally",
       "backedUp": true,
       "user_email": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d",
-      "user_id": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d_1765204215309",
+      "user_id": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d_1765219678073",
       "created_by": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d",
-      "created_at": "2025-12-08T14:30:15.309Z",
-      "updated_at": "2025-12-08T14:30:15.309Z"
+      "created_at": "2025-12-08T18:47:58.073Z",
+      "updated_at": "2025-12-08T18:47:58.073Z"
     },
     {
       "id": "checklist1765111405785",
@@ -580,10 +580,10 @@
       "backedUp": true,
       "backupTimestamp": "2025-12-07T12:53:47.231Z",
       "user_email": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d",
-      "user_id": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d_1765204215309",
+      "user_id": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d_1765219678073",
       "created_by": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d",
-      "created_at": "2025-12-08T14:30:15.309Z",
-      "updated_at": "2025-12-08T14:30:15.309Z"
+      "created_at": "2025-12-08T18:47:58.073Z",
+      "updated_at": "2025-12-08T18:47:58.073Z"
     },
     {
       "id": "scanner1765196537520",
@@ -928,6 +928,30 @@
           "formattedTime": "16:30:14",
           "time": "2025-12-08T14:30:14.574Z",
           "isManual": true
+        },
+        {
+          "id": "1765204229560",
+          "content": "200997",
+          "timestamp": "2025-12-08T14:30:29.559Z",
+          "formattedTime": "16:30:29",
+          "time": "2025-12-08T14:30:29.559Z",
+          "isManual": true
+        },
+        {
+          "id": "1765204243453",
+          "content": "201513",
+          "timestamp": "2025-12-08T14:30:43.450Z",
+          "formattedTime": "16:30:43",
+          "time": "2025-12-08T14:30:43.450Z",
+          "isManual": true
+        },
+        {
+          "id": "1765219677484",
+          "content": "200943",
+          "timestamp": "2025-12-08T18:47:57.480Z",
+          "formattedTime": "20:47:57",
+          "time": "2025-12-08T18:47:57.480Z",
+          "isManual": true
         }
       ],
       "inProgress": true,
@@ -936,10 +960,10 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d",
-      "user_id": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d_1765204215309",
+      "user_id": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d_1765219678073",
       "created_by": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d",
-      "created_at": "2025-12-08T14:30:15.309Z",
-      "updated_at": "2025-12-08T14:30:15.309Z"
+      "created_at": "2025-12-08T18:47:58.073Z",
+      "updated_at": "2025-12-08T18:47:58.073Z"
     }
   ]
 }
