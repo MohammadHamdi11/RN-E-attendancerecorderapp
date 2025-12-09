@@ -1,10 +1,10 @@
 {
   "user_email": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0",
-  "user_id": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0_1762435786950",
-  "account_created": "2025-11-06T13:29:46.950Z",
-  "last_sync": "2025-11-06T13:29:46.950Z",
-  "total_sessions": 2,
-  "total_scans": 56,
+  "user_id": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0_1765285316731",
+  "account_created": "2025-12-09T13:01:56.731Z",
+  "last_sync": "2025-12-09T13:01:56.731Z",
+  "total_sessions": 10,
+  "total_scans": 426,
   "sessions": [
     {
       "id": "scanner1762424264203",
@@ -270,10 +270,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0",
-      "user_id": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0_1762435786950",
+      "user_id": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0_1765285316731",
       "created_by": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0",
-      "created_at": "2025-11-06T13:29:46.950Z",
-      "updated_at": "2025-11-06T13:29:46.950Z"
+      "created_at": "2025-12-09T13:01:56.731Z",
+      "updated_at": "2025-12-09T13:01:56.731Z"
     },
     {
       "id": "scanner1762431527882",
@@ -491,10 +491,3138 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0",
-      "user_id": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0_1762435786950",
+      "user_id": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0_1765285316731",
       "created_by": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0",
-      "created_at": "2025-11-06T13:29:46.950Z",
-      "updated_at": "2025-11-06T13:29:46.950Z"
+      "created_at": "2025-12-09T13:01:56.731Z",
+      "updated_at": "2025-12-09T13:01:56.731Z"
+    },
+    {
+      "id": "scanner1762757638904",
+      "location": "Anatomy",
+      "year": 2,
+      "batch": "2025/2026",
+      "dateTime": "2025-11-10T06:53:58.904Z",
+      "formattedDateTime": "10/11/2025 08:53:58",
+      "scans": [
+        {
+          "id": "1762757653261",
+          "content": "241208",
+          "timestamp": "2025-11-10T06:54:13.261Z",
+          "formattedTime": "08:54:13",
+          "time": "2025-11-10T06:54:13.261Z",
+          "isManual": false
+        },
+        {
+          "id": "1762757661762",
+          "content": "241221",
+          "timestamp": "2025-11-10T06:54:21.761Z",
+          "formattedTime": "08:54:21",
+          "time": "2025-11-10T06:54:21.761Z",
+          "isManual": false
+        },
+        {
+          "id": "1762757664834",
+          "content": "241212",
+          "timestamp": "2025-11-10T06:54:24.834Z",
+          "formattedTime": "08:54:24",
+          "time": "2025-11-10T06:54:24.834Z",
+          "isManual": false
+        },
+        {
+          "id": "1762757668832",
+          "content": "241184",
+          "timestamp": "2025-11-10T06:54:28.831Z",
+          "formattedTime": "08:54:28",
+          "time": "2025-11-10T06:54:28.831Z",
+          "isManual": false
+        },
+        {
+          "id": "1762757674672",
+          "content": "241164",
+          "timestamp": "2025-11-10T06:54:34.672Z",
+          "formattedTime": "08:54:34",
+          "time": "2025-11-10T06:54:34.672Z",
+          "isManual": false
+        },
+        {
+          "id": "1762757678881",
+          "content": "241225",
+          "timestamp": "2025-11-10T06:54:38.881Z",
+          "formattedTime": "08:54:38",
+          "time": "2025-11-10T06:54:38.881Z",
+          "isManual": false
+        },
+        {
+          "id": "1762757680842",
+          "content": "241199",
+          "timestamp": "2025-11-10T06:54:40.842Z",
+          "formattedTime": "08:54:40",
+          "time": "2025-11-10T06:54:40.842Z",
+          "isManual": false
+        },
+        {
+          "id": "1762757685513",
+          "content": "241209",
+          "timestamp": "2025-11-10T06:54:45.513Z",
+          "formattedTime": "08:54:45",
+          "time": "2025-11-10T06:54:45.513Z",
+          "isManual": false
+        },
+        {
+          "id": "1762757688915",
+          "content": "241207",
+          "timestamp": "2025-11-10T06:54:48.915Z",
+          "formattedTime": "08:54:48",
+          "time": "2025-11-10T06:54:48.915Z",
+          "isManual": false
+        },
+        {
+          "id": "1762757692214",
+          "content": "241202",
+          "timestamp": "2025-11-10T06:54:52.214Z",
+          "formattedTime": "08:54:52",
+          "time": "2025-11-10T06:54:52.214Z",
+          "isManual": false
+        },
+        {
+          "id": "1762757694744",
+          "content": "241230",
+          "timestamp": "2025-11-10T06:54:54.743Z",
+          "formattedTime": "08:54:54",
+          "time": "2025-11-10T06:54:54.743Z",
+          "isManual": false
+        },
+        {
+          "id": "1762757701586",
+          "content": "241229",
+          "timestamp": "2025-11-10T06:55:01.586Z",
+          "formattedTime": "08:55:01",
+          "time": "2025-11-10T06:55:01.586Z",
+          "isManual": false
+        },
+        {
+          "id": "1762757706519",
+          "content": "241211",
+          "timestamp": "2025-11-10T06:55:06.519Z",
+          "formattedTime": "08:55:06",
+          "time": "2025-11-10T06:55:06.519Z",
+          "isManual": false
+        },
+        {
+          "id": "1762757710153",
+          "content": "241223",
+          "timestamp": "2025-11-10T06:55:10.152Z",
+          "formattedTime": "08:55:10",
+          "time": "2025-11-10T06:55:10.152Z",
+          "isManual": false
+        },
+        {
+          "id": "1762757714062",
+          "content": "241224",
+          "timestamp": "2025-11-10T06:55:14.062Z",
+          "formattedTime": "08:55:14",
+          "time": "2025-11-10T06:55:14.062Z",
+          "isManual": false
+        },
+        {
+          "id": "1762757718292",
+          "content": "241198",
+          "timestamp": "2025-11-10T06:55:18.292Z",
+          "formattedTime": "08:55:18",
+          "time": "2025-11-10T06:55:18.292Z",
+          "isManual": false
+        },
+        {
+          "id": "1762757722193",
+          "content": "241234",
+          "timestamp": "2025-11-10T06:55:22.193Z",
+          "formattedTime": "08:55:22",
+          "time": "2025-11-10T06:55:22.193Z",
+          "isManual": false
+        },
+        {
+          "id": "1762757725899",
+          "content": "241203",
+          "timestamp": "2025-11-10T06:55:25.898Z",
+          "formattedTime": "08:55:25",
+          "time": "2025-11-10T06:55:25.898Z",
+          "isManual": false
+        },
+        {
+          "id": "1762757730468",
+          "content": "241191",
+          "timestamp": "2025-11-10T06:55:30.468Z",
+          "formattedTime": "08:55:30",
+          "time": "2025-11-10T06:55:30.468Z",
+          "isManual": false
+        },
+        {
+          "id": "1762757733205",
+          "content": "241218",
+          "timestamp": "2025-11-10T06:55:33.204Z",
+          "formattedTime": "08:55:33",
+          "time": "2025-11-10T06:55:33.204Z",
+          "isManual": false
+        },
+        {
+          "id": "1762757745640",
+          "content": "241237",
+          "timestamp": "2025-11-10T06:55:45.640Z",
+          "formattedTime": "08:55:45",
+          "time": "2025-11-10T06:55:45.640Z",
+          "isManual": false
+        },
+        {
+          "id": "1762757748006",
+          "content": "241210",
+          "timestamp": "2025-11-10T06:55:48.005Z",
+          "formattedTime": "08:55:48",
+          "time": "2025-11-10T06:55:48.005Z",
+          "isManual": false
+        },
+        {
+          "id": "1762757752511",
+          "content": "241213",
+          "timestamp": "2025-11-10T06:55:52.511Z",
+          "formattedTime": "08:55:52",
+          "time": "2025-11-10T06:55:52.511Z",
+          "isManual": false
+        },
+        {
+          "id": "1762757754958",
+          "content": "241200",
+          "timestamp": "2025-11-10T06:55:54.957Z",
+          "formattedTime": "08:55:54",
+          "time": "2025-11-10T06:55:54.957Z",
+          "isManual": false
+        },
+        {
+          "id": "1762757758074",
+          "content": "241232",
+          "timestamp": "2025-11-10T06:55:58.073Z",
+          "formattedTime": "08:55:58",
+          "time": "2025-11-10T06:55:58.073Z",
+          "isManual": false
+        },
+        {
+          "id": "1762757761552",
+          "content": "241214",
+          "timestamp": "2025-11-10T06:56:01.551Z",
+          "formattedTime": "08:56:01",
+          "time": "2025-11-10T06:56:01.551Z",
+          "isManual": false
+        },
+        {
+          "id": "1762757764724",
+          "content": "241227",
+          "timestamp": "2025-11-10T06:56:04.723Z",
+          "formattedTime": "08:56:04",
+          "time": "2025-11-10T06:56:04.723Z",
+          "isManual": false
+        },
+        {
+          "id": "1762757768149",
+          "content": "241215",
+          "timestamp": "2025-11-10T06:56:08.148Z",
+          "formattedTime": "08:56:08",
+          "time": "2025-11-10T06:56:08.148Z",
+          "isManual": false
+        },
+        {
+          "id": "1762757771286",
+          "content": "241180",
+          "timestamp": "2025-11-10T06:56:11.286Z",
+          "formattedTime": "08:56:11",
+          "time": "2025-11-10T06:56:11.286Z",
+          "isManual": false
+        },
+        {
+          "id": "1762757771861",
+          "content": "241233",
+          "timestamp": "2025-11-10T06:56:11.861Z",
+          "formattedTime": "08:56:11",
+          "time": "2025-11-10T06:56:11.861Z",
+          "isManual": false
+        },
+        {
+          "id": "1762757779623",
+          "content": "241228",
+          "timestamp": "2025-11-10T06:56:19.623Z",
+          "formattedTime": "08:56:19",
+          "time": "2025-11-10T06:56:19.623Z",
+          "isManual": false
+        },
+        {
+          "id": "1762757781665",
+          "content": "241236",
+          "timestamp": "2025-11-10T06:56:21.664Z",
+          "formattedTime": "08:56:21",
+          "time": "2025-11-10T06:56:21.664Z",
+          "isManual": false
+        },
+        {
+          "id": "1762757793122",
+          "content": "241204",
+          "timestamp": "2025-11-10T06:56:33.121Z",
+          "formattedTime": "08:56:33",
+          "time": "2025-11-10T06:56:33.121Z",
+          "isManual": true
+        },
+        {
+          "id": "1762757900463",
+          "content": "241206",
+          "timestamp": "2025-11-10T06:58:20.463Z",
+          "formattedTime": "08:58:20",
+          "time": "2025-11-10T06:58:20.463Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "closed_normally",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0",
+      "user_id": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0_1765285316731",
+      "created_by": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0",
+      "created_at": "2025-12-09T13:01:56.731Z",
+      "updated_at": "2025-12-09T13:01:56.731Z"
+    },
+    {
+      "id": "scanner1762762880220",
+      "location": "Anatomy",
+      "year": 2,
+      "batch": "2025/2026",
+      "dateTime": "2025-11-10T08:21:20.220Z",
+      "formattedDateTime": "10/11/2025 10:21:20",
+      "scans": [
+        {
+          "id": "1762762887557",
+          "content": "234494",
+          "timestamp": "2025-11-10T08:21:27.556Z",
+          "formattedTime": "10:21:27",
+          "time": "2025-11-10T08:21:27.556Z",
+          "isManual": true
+        },
+        {
+          "id": "1762762896292",
+          "content": "235097",
+          "timestamp": "2025-11-10T08:21:36.291Z",
+          "formattedTime": "10:21:36",
+          "time": "2025-11-10T08:21:36.291Z",
+          "isManual": true
+        },
+        {
+          "id": "1762762906461",
+          "content": "235161",
+          "timestamp": "2025-11-10T08:21:46.460Z",
+          "formattedTime": "10:21:46",
+          "time": "2025-11-10T08:21:46.460Z",
+          "isManual": true
+        },
+        {
+          "id": "1762762913896",
+          "content": "235158",
+          "timestamp": "2025-11-10T08:21:53.895Z",
+          "formattedTime": "10:21:53",
+          "time": "2025-11-10T08:21:53.895Z",
+          "isManual": true
+        },
+        {
+          "id": "1762762935400",
+          "content": "235150",
+          "timestamp": "2025-11-10T08:22:15.399Z",
+          "formattedTime": "10:22:15",
+          "time": "2025-11-10T08:22:15.399Z",
+          "isManual": true
+        },
+        {
+          "id": "1762762943668",
+          "content": "235105",
+          "timestamp": "2025-11-10T08:22:23.668Z",
+          "formattedTime": "10:22:23",
+          "time": "2025-11-10T08:22:23.668Z",
+          "isManual": true
+        },
+        {
+          "id": "1762762954604",
+          "content": "234720",
+          "timestamp": "2025-11-10T08:22:34.603Z",
+          "formattedTime": "10:22:34",
+          "time": "2025-11-10T08:22:34.603Z",
+          "isManual": true
+        },
+        {
+          "id": "1762762978009",
+          "content": "234348",
+          "timestamp": "2025-11-10T08:22:58.009Z",
+          "formattedTime": "10:22:58",
+          "time": "2025-11-10T08:22:58.009Z",
+          "isManual": true
+        },
+        {
+          "id": "1762764007552",
+          "content": "235148",
+          "timestamp": "2025-11-10T08:40:07.552Z",
+          "formattedTime": "10:40:07",
+          "time": "2025-11-10T08:40:07.552Z",
+          "isManual": true
+        },
+        {
+          "id": "1762764020815",
+          "content": "234736",
+          "timestamp": "2025-11-10T08:40:20.814Z",
+          "formattedTime": "10:40:20",
+          "time": "2025-11-10T08:40:20.814Z",
+          "isManual": false
+        },
+        {
+          "id": "1762764463523",
+          "content": "235000",
+          "timestamp": "2025-11-10T08:47:43.523Z",
+          "formattedTime": "10:47:43",
+          "time": "2025-11-10T08:47:43.523Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "closed_normally",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0",
+      "user_id": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0_1765285316731",
+      "created_by": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0",
+      "created_at": "2025-12-09T13:01:56.731Z",
+      "updated_at": "2025-12-09T13:01:56.731Z"
+    },
+    {
+      "id": "scanner1764498530035",
+      "location": "Anatomy",
+      "year": 2,
+      "batch": "2025/2026",
+      "dateTime": "2025-11-30T10:28:50.035Z",
+      "formattedDateTime": "30/11/2025 12:28:50",
+      "scans": [
+        {
+          "id": "1764498532976",
+          "content": "234433",
+          "timestamp": "2025-11-30T10:28:52.976Z",
+          "formattedTime": "12:28:52",
+          "time": "2025-11-30T10:28:52.976Z",
+          "isManual": false
+        },
+        {
+          "id": "1764498538183",
+          "content": "234263",
+          "timestamp": "2025-11-30T10:28:58.183Z",
+          "formattedTime": "12:28:58",
+          "time": "2025-11-30T10:28:58.183Z",
+          "isManual": false
+        },
+        {
+          "id": "1764498542687",
+          "content": "234301",
+          "timestamp": "2025-11-30T10:29:02.687Z",
+          "formattedTime": "12:29:02",
+          "time": "2025-11-30T10:29:02.687Z",
+          "isManual": false
+        },
+        {
+          "id": "1764498547722",
+          "content": "234417",
+          "timestamp": "2025-11-30T10:29:07.722Z",
+          "formattedTime": "12:29:07",
+          "time": "2025-11-30T10:29:07.722Z",
+          "isManual": false
+        },
+        {
+          "id": "1764498552125",
+          "content": "234347",
+          "timestamp": "2025-11-30T10:29:12.125Z",
+          "formattedTime": "12:29:12",
+          "time": "2025-11-30T10:29:12.125Z",
+          "isManual": false
+        },
+        {
+          "id": "1764498555593",
+          "content": "234336",
+          "timestamp": "2025-11-30T10:29:15.593Z",
+          "formattedTime": "12:29:15",
+          "time": "2025-11-30T10:29:15.593Z",
+          "isManual": false
+        },
+        {
+          "id": "1764498559765",
+          "content": "234372",
+          "timestamp": "2025-11-30T10:29:19.764Z",
+          "formattedTime": "12:29:19",
+          "time": "2025-11-30T10:29:19.764Z",
+          "isManual": false
+        },
+        {
+          "id": "1764498562565",
+          "content": "234624",
+          "timestamp": "2025-11-30T10:29:22.564Z",
+          "formattedTime": "12:29:22",
+          "time": "2025-11-30T10:29:22.564Z",
+          "isManual": false
+        },
+        {
+          "id": "1764498566900",
+          "content": "234401",
+          "timestamp": "2025-11-30T10:29:26.900Z",
+          "formattedTime": "12:29:26",
+          "time": "2025-11-30T10:29:26.900Z",
+          "isManual": false
+        },
+        {
+          "id": "1764498571064",
+          "content": "234409",
+          "timestamp": "2025-11-30T10:29:31.063Z",
+          "formattedTime": "12:29:31",
+          "time": "2025-11-30T10:29:31.063Z",
+          "isManual": false
+        },
+        {
+          "id": "1764498574566",
+          "content": "234380",
+          "timestamp": "2025-11-30T10:29:34.565Z",
+          "formattedTime": "12:29:34",
+          "time": "2025-11-30T10:29:34.565Z",
+          "isManual": false
+        },
+        {
+          "id": "1764498578073",
+          "content": "234536",
+          "timestamp": "2025-11-30T10:29:38.072Z",
+          "formattedTime": "12:29:38",
+          "time": "2025-11-30T10:29:38.072Z",
+          "isManual": false
+        },
+        {
+          "id": "1764498580968",
+          "content": "234353",
+          "timestamp": "2025-11-30T10:29:40.968Z",
+          "formattedTime": "12:29:40",
+          "time": "2025-11-30T10:29:40.968Z",
+          "isManual": false
+        },
+        {
+          "id": "1764498584005",
+          "content": "234331",
+          "timestamp": "2025-11-30T10:29:44.005Z",
+          "formattedTime": "12:29:44",
+          "time": "2025-11-30T10:29:44.005Z",
+          "isManual": false
+        },
+        {
+          "id": "1764498586136",
+          "content": "234371",
+          "timestamp": "2025-11-30T10:29:46.135Z",
+          "formattedTime": "12:29:46",
+          "time": "2025-11-30T10:29:46.135Z",
+          "isManual": false
+        },
+        {
+          "id": "1764498589609",
+          "content": "234278",
+          "timestamp": "2025-11-30T10:29:49.609Z",
+          "formattedTime": "12:29:49",
+          "time": "2025-11-30T10:29:49.609Z",
+          "isManual": false
+        },
+        {
+          "id": "1764498594058",
+          "content": "234262",
+          "timestamp": "2025-11-30T10:29:54.057Z",
+          "formattedTime": "12:29:54",
+          "time": "2025-11-30T10:29:54.057Z",
+          "isManual": false
+        },
+        {
+          "id": "1764498596977",
+          "content": "234355",
+          "timestamp": "2025-11-30T10:29:56.977Z",
+          "formattedTime": "12:29:56",
+          "time": "2025-11-30T10:29:56.977Z",
+          "isManual": false
+        },
+        {
+          "id": "1764498609604",
+          "content": "234892",
+          "timestamp": "2025-11-30T10:30:09.603Z",
+          "formattedTime": "12:30:09",
+          "time": "2025-11-30T10:30:09.603Z",
+          "isManual": true
+        },
+        {
+          "id": "1764498616772",
+          "content": "234387",
+          "timestamp": "2025-11-30T10:30:16.771Z",
+          "formattedTime": "12:30:16",
+          "time": "2025-11-30T10:30:16.771Z",
+          "isManual": true
+        },
+        {
+          "id": "1764498622056",
+          "content": "234351",
+          "timestamp": "2025-11-30T10:30:22.056Z",
+          "formattedTime": "12:30:22",
+          "time": "2025-11-30T10:30:22.056Z",
+          "isManual": true
+        },
+        {
+          "id": "1764498631674",
+          "content": "234383",
+          "timestamp": "2025-11-30T10:30:31.674Z",
+          "formattedTime": "12:30:31",
+          "time": "2025-11-30T10:30:31.674Z",
+          "isManual": true
+        },
+        {
+          "id": "1764498639460",
+          "content": "234385",
+          "timestamp": "2025-11-30T10:30:39.459Z",
+          "formattedTime": "12:30:39",
+          "time": "2025-11-30T10:30:39.459Z",
+          "isManual": true
+        },
+        {
+          "id": "1764498647011",
+          "content": "234452",
+          "timestamp": "2025-11-30T10:30:47.010Z",
+          "formattedTime": "12:30:47",
+          "time": "2025-11-30T10:30:47.010Z",
+          "isManual": true
+        },
+        {
+          "id": "1764498654413",
+          "content": "234455",
+          "timestamp": "2025-11-30T10:30:54.412Z",
+          "formattedTime": "12:30:54",
+          "time": "2025-11-30T10:30:54.412Z",
+          "isManual": true
+        },
+        {
+          "id": "1764498663598",
+          "content": "234379",
+          "timestamp": "2025-11-30T10:31:03.598Z",
+          "formattedTime": "12:31:03",
+          "time": "2025-11-30T10:31:03.598Z",
+          "isManual": true
+        },
+        {
+          "id": "1764498671400",
+          "content": "234282",
+          "timestamp": "2025-11-30T10:31:11.400Z",
+          "formattedTime": "12:31:11",
+          "time": "2025-11-30T10:31:11.400Z",
+          "isManual": true
+        },
+        {
+          "id": "1764498681151",
+          "content": "234274",
+          "timestamp": "2025-11-30T10:31:21.151Z",
+          "formattedTime": "12:31:21",
+          "time": "2025-11-30T10:31:21.151Z",
+          "isManual": true
+        },
+        {
+          "id": "1764498687353",
+          "content": "234678",
+          "timestamp": "2025-11-30T10:31:27.353Z",
+          "formattedTime": "12:31:27",
+          "time": "2025-11-30T10:31:27.353Z",
+          "isManual": true
+        },
+        {
+          "id": "1764498694721",
+          "content": "234567",
+          "timestamp": "2025-11-30T10:31:34.721Z",
+          "formattedTime": "12:31:34",
+          "time": "2025-11-30T10:31:34.721Z",
+          "isManual": true
+        },
+        {
+          "id": "1764499741524",
+          "content": "234472",
+          "timestamp": "2025-11-30T10:49:01.524Z",
+          "formattedTime": "12:49:01",
+          "time": "2025-11-30T10:49:01.524Z",
+          "isManual": true
+        },
+        {
+          "id": "1764499754627",
+          "content": "234527",
+          "timestamp": "2025-11-30T10:49:14.626Z",
+          "formattedTime": "12:49:14",
+          "time": "2025-11-30T10:49:14.626Z",
+          "isManual": true
+        },
+        {
+          "id": "1764499759278",
+          "content": "234810",
+          "timestamp": "2025-11-30T10:49:19.277Z",
+          "formattedTime": "12:49:19",
+          "time": "2025-11-30T10:49:19.277Z",
+          "isManual": true
+        },
+        {
+          "id": "1764499767879",
+          "content": "234587",
+          "timestamp": "2025-11-30T10:49:27.879Z",
+          "formattedTime": "12:49:27",
+          "time": "2025-11-30T10:49:27.879Z",
+          "isManual": true
+        },
+        {
+          "id": "1764499831949",
+          "content": "234696",
+          "timestamp": "2025-11-30T10:50:31.949Z",
+          "formattedTime": "12:50:31",
+          "time": "2025-11-30T10:50:31.949Z",
+          "isManual": false
+        },
+        {
+          "id": "1764499863440",
+          "content": "234848",
+          "timestamp": "2025-11-30T10:51:03.440Z",
+          "formattedTime": "12:51:03",
+          "time": "2025-11-30T10:51:03.440Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "closed_normally",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0",
+      "user_id": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0_1765285316731",
+      "created_by": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0",
+      "created_at": "2025-12-09T13:01:56.731Z",
+      "updated_at": "2025-12-09T13:01:56.731Z"
+    },
+    {
+      "id": "scanner1764505493948",
+      "location": "Anatomy",
+      "year": 2,
+      "batch": "2025/2026",
+      "dateTime": "2025-11-30T12:24:53.948Z",
+      "formattedDateTime": "30/11/2025 14:24:53",
+      "scans": [
+        {
+          "id": "1764505497550",
+          "content": "220675",
+          "timestamp": "2025-11-30T12:24:57.550Z",
+          "formattedTime": "14:24:57",
+          "time": "2025-11-30T12:24:57.550Z",
+          "isManual": false
+        },
+        {
+          "id": "1764505508015",
+          "content": "212442",
+          "timestamp": "2025-11-30T12:25:08.014Z",
+          "formattedTime": "14:25:08",
+          "time": "2025-11-30T12:25:08.014Z",
+          "isManual": false
+        },
+        {
+          "id": "1764505512754",
+          "content": "221432",
+          "timestamp": "2025-11-30T12:25:12.754Z",
+          "formattedTime": "14:25:12",
+          "time": "2025-11-30T12:25:12.754Z",
+          "isManual": false
+        },
+        {
+          "id": "1764505520090",
+          "content": "220881",
+          "timestamp": "2025-11-30T12:25:20.090Z",
+          "formattedTime": "14:25:20",
+          "time": "2025-11-30T12:25:20.090Z",
+          "isManual": false
+        },
+        {
+          "id": "1764505542709",
+          "content": "221546",
+          "timestamp": "2025-11-30T12:25:42.708Z",
+          "formattedTime": "14:25:42",
+          "time": "2025-11-30T12:25:42.708Z",
+          "isManual": true
+        },
+        {
+          "id": "1764505547510",
+          "content": "220877",
+          "timestamp": "2025-11-30T12:25:47.509Z",
+          "formattedTime": "14:25:47",
+          "time": "2025-11-30T12:25:47.509Z",
+          "isManual": true
+        },
+        {
+          "id": "1764505559045",
+          "content": "211569",
+          "timestamp": "2025-11-30T12:25:59.045Z",
+          "formattedTime": "14:25:59",
+          "time": "2025-11-30T12:25:59.045Z",
+          "isManual": true
+        },
+        {
+          "id": "1764505566597",
+          "content": "212308",
+          "timestamp": "2025-11-30T12:26:06.596Z",
+          "formattedTime": "14:26:06",
+          "time": "2025-11-30T12:26:06.596Z",
+          "isManual": true
+        },
+        {
+          "id": "1764505575782",
+          "content": "212543",
+          "timestamp": "2025-11-30T12:26:15.782Z",
+          "formattedTime": "14:26:15",
+          "time": "2025-11-30T12:26:15.782Z",
+          "isManual": true
+        },
+        {
+          "id": "1764505591652",
+          "content": "220304",
+          "timestamp": "2025-11-30T12:26:31.651Z",
+          "formattedTime": "14:26:31",
+          "time": "2025-11-30T12:26:31.651Z",
+          "isManual": true
+        },
+        {
+          "id": "1764505612290",
+          "content": "220444",
+          "timestamp": "2025-11-30T12:26:52.289Z",
+          "formattedTime": "14:26:52",
+          "time": "2025-11-30T12:26:52.289Z",
+          "isManual": true
+        },
+        {
+          "id": "1764505619574",
+          "content": "220314",
+          "timestamp": "2025-11-30T12:26:59.574Z",
+          "formattedTime": "14:26:59",
+          "time": "2025-11-30T12:26:59.574Z",
+          "isManual": true
+        },
+        {
+          "id": "1764505628976",
+          "content": "221850",
+          "timestamp": "2025-11-30T12:27:08.975Z",
+          "formattedTime": "14:27:08",
+          "time": "2025-11-30T12:27:08.975Z",
+          "isManual": true
+        },
+        {
+          "id": "1764505638578",
+          "content": "212160",
+          "timestamp": "2025-11-30T12:27:18.577Z",
+          "formattedTime": "14:27:18",
+          "time": "2025-11-30T12:27:18.577Z",
+          "isManual": true
+        },
+        {
+          "id": "1764505649747",
+          "content": "220618",
+          "timestamp": "2025-11-30T12:27:29.746Z",
+          "formattedTime": "14:27:29",
+          "time": "2025-11-30T12:27:29.746Z",
+          "isManual": true
+        },
+        {
+          "id": "1764505659065",
+          "content": "220766",
+          "timestamp": "2025-11-30T12:27:39.064Z",
+          "formattedTime": "14:27:39",
+          "time": "2025-11-30T12:27:39.064Z",
+          "isManual": true
+        },
+        {
+          "id": "1764505671651",
+          "content": "222026",
+          "timestamp": "2025-11-30T12:27:51.650Z",
+          "formattedTime": "14:27:51",
+          "time": "2025-11-30T12:27:51.650Z",
+          "isManual": true
+        },
+        {
+          "id": "1764505688521",
+          "content": "212386",
+          "timestamp": "2025-11-30T12:28:08.521Z",
+          "formattedTime": "14:28:08",
+          "time": "2025-11-30T12:28:08.521Z",
+          "isManual": true
+        },
+        {
+          "id": "1764506491784",
+          "content": "220370",
+          "timestamp": "2025-11-30T12:41:31.784Z",
+          "formattedTime": "14:41:31",
+          "time": "2025-11-30T12:41:31.784Z",
+          "isManual": true
+        },
+        {
+          "id": "1764506858127",
+          "content": "211620",
+          "timestamp": "2025-11-30T12:47:38.127Z",
+          "formattedTime": "14:47:38",
+          "time": "2025-11-30T12:47:38.127Z",
+          "isManual": true
+        },
+        {
+          "id": "1764506864428",
+          "content": "221013",
+          "timestamp": "2025-11-30T12:47:44.428Z",
+          "formattedTime": "14:47:44",
+          "time": "2025-11-30T12:47:44.428Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "closed_normally",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0",
+      "user_id": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0_1765285316731",
+      "created_by": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0",
+      "created_at": "2025-12-09T13:01:56.731Z",
+      "updated_at": "2025-12-09T13:01:56.731Z"
+    },
+    {
+      "id": "scanner1764670329116",
+      "location": "Anatomy",
+      "year": 2,
+      "batch": "2025/2026",
+      "dateTime": "2025-12-02T10:12:09.116Z",
+      "formattedDateTime": "02/12/2025 12:12:09",
+      "scans": [
+        {
+          "id": "1764670331919",
+          "content": "244613",
+          "timestamp": "2025-12-02T10:12:11.919Z",
+          "formattedTime": "12:12:11",
+          "time": "2025-12-02T10:12:11.919Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670337968",
+          "content": "244353",
+          "timestamp": "2025-12-02T10:12:17.968Z",
+          "formattedTime": "12:12:17",
+          "time": "2025-12-02T10:12:17.968Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670344625",
+          "content": "244474",
+          "timestamp": "2025-12-02T10:12:24.625Z",
+          "formattedTime": "12:12:24",
+          "time": "2025-12-02T10:12:24.625Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670348005",
+          "content": "244322",
+          "timestamp": "2025-12-02T10:12:28.005Z",
+          "formattedTime": "12:12:28",
+          "time": "2025-12-02T10:12:28.005Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670352727",
+          "content": "244325",
+          "timestamp": "2025-12-02T10:12:32.727Z",
+          "formattedTime": "12:12:32",
+          "time": "2025-12-02T10:12:32.727Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670378973",
+          "content": "244028",
+          "timestamp": "2025-12-02T10:12:58.973Z",
+          "formattedTime": "12:12:58",
+          "time": "2025-12-02T10:12:58.973Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670380546",
+          "content": "244306",
+          "timestamp": "2025-12-02T10:13:00.545Z",
+          "formattedTime": "12:13:00",
+          "time": "2025-12-02T10:13:00.545Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670387052",
+          "content": "244308",
+          "timestamp": "2025-12-02T10:13:07.052Z",
+          "formattedTime": "12:13:07",
+          "time": "2025-12-02T10:13:07.052Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670395169",
+          "content": "244513",
+          "timestamp": "2025-12-02T10:13:15.169Z",
+          "formattedTime": "12:13:15",
+          "time": "2025-12-02T10:13:15.169Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670398789",
+          "content": "244167",
+          "timestamp": "2025-12-02T10:13:18.789Z",
+          "formattedTime": "12:13:18",
+          "time": "2025-12-02T10:13:18.789Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670406989",
+          "content": "244029",
+          "timestamp": "2025-12-02T10:13:26.989Z",
+          "formattedTime": "12:13:26",
+          "time": "2025-12-02T10:13:26.989Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670420169",
+          "content": "244483",
+          "timestamp": "2025-12-02T10:13:40.168Z",
+          "formattedTime": "12:13:40",
+          "time": "2025-12-02T10:13:40.168Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670422931",
+          "content": "244144",
+          "timestamp": "2025-12-02T10:13:42.931Z",
+          "formattedTime": "12:13:42",
+          "time": "2025-12-02T10:13:42.931Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670429400",
+          "content": "244145",
+          "timestamp": "2025-12-02T10:13:49.400Z",
+          "formattedTime": "12:13:49",
+          "time": "2025-12-02T10:13:49.400Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670434905",
+          "content": "244453",
+          "timestamp": "2025-12-02T10:13:54.904Z",
+          "formattedTime": "12:13:54",
+          "time": "2025-12-02T10:13:54.904Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670439689",
+          "content": "244216",
+          "timestamp": "2025-12-02T10:13:59.688Z",
+          "formattedTime": "12:13:59",
+          "time": "2025-12-02T10:13:59.688Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670448405",
+          "content": "244119",
+          "timestamp": "2025-12-02T10:14:08.404Z",
+          "formattedTime": "12:14:08",
+          "time": "2025-12-02T10:14:08.404Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670454574",
+          "content": "244434",
+          "timestamp": "2025-12-02T10:14:14.574Z",
+          "formattedTime": "12:14:14",
+          "time": "2025-12-02T10:14:14.574Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670459217",
+          "content": "244094",
+          "timestamp": "2025-12-02T10:14:19.216Z",
+          "formattedTime": "12:14:19",
+          "time": "2025-12-02T10:14:19.216Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670464136",
+          "content": "244074",
+          "timestamp": "2025-12-02T10:14:24.136Z",
+          "formattedTime": "12:14:24",
+          "time": "2025-12-02T10:14:24.136Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670469279",
+          "content": "244607",
+          "timestamp": "2025-12-02T10:14:29.278Z",
+          "formattedTime": "12:14:29",
+          "time": "2025-12-02T10:14:29.278Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670473151",
+          "content": "244452",
+          "timestamp": "2025-12-02T10:14:33.151Z",
+          "formattedTime": "12:14:33",
+          "time": "2025-12-02T10:14:33.151Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670477618",
+          "content": "244549",
+          "timestamp": "2025-12-02T10:14:37.618Z",
+          "formattedTime": "12:14:37",
+          "time": "2025-12-02T10:14:37.618Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670481358",
+          "content": "244920",
+          "timestamp": "2025-12-02T10:14:41.357Z",
+          "formattedTime": "12:14:41",
+          "time": "2025-12-02T10:14:41.357Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670485092",
+          "content": "244482",
+          "timestamp": "2025-12-02T10:14:45.091Z",
+          "formattedTime": "12:14:45",
+          "time": "2025-12-02T10:14:45.091Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670490361",
+          "content": "244223",
+          "timestamp": "2025-12-02T10:14:50.360Z",
+          "formattedTime": "12:14:50",
+          "time": "2025-12-02T10:14:50.360Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670504067",
+          "content": "244222",
+          "timestamp": "2025-12-02T10:15:04.067Z",
+          "formattedTime": "12:15:04",
+          "time": "2025-12-02T10:15:04.067Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670510167",
+          "content": "244209",
+          "timestamp": "2025-12-02T10:15:10.166Z",
+          "formattedTime": "12:15:10",
+          "time": "2025-12-02T10:15:10.166Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670608942",
+          "content": "244352",
+          "timestamp": "2025-12-02T10:16:48.941Z",
+          "formattedTime": "12:16:48",
+          "time": "2025-12-02T10:16:48.941Z",
+          "isManual": true
+        },
+        {
+          "id": "1764670614956",
+          "content": "244584",
+          "timestamp": "2025-12-02T10:16:54.956Z",
+          "formattedTime": "12:16:54",
+          "time": "2025-12-02T10:16:54.956Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670688441",
+          "content": "244307",
+          "timestamp": "2025-12-02T10:18:08.441Z",
+          "formattedTime": "12:18:08",
+          "time": "2025-12-02T10:18:08.441Z",
+          "isManual": true
+        },
+        {
+          "id": "1764670692462",
+          "content": "244859",
+          "timestamp": "2025-12-02T10:18:12.461Z",
+          "formattedTime": "12:18:12",
+          "time": "2025-12-02T10:18:12.461Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670702844",
+          "content": "244318",
+          "timestamp": "2025-12-02T10:18:22.843Z",
+          "formattedTime": "12:18:22",
+          "time": "2025-12-02T10:18:22.843Z",
+          "isManual": true
+        },
+        {
+          "id": "1764670707472",
+          "content": "244777",
+          "timestamp": "2025-12-02T10:18:27.472Z",
+          "formattedTime": "12:18:27",
+          "time": "2025-12-02T10:18:27.472Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670711705",
+          "content": "244921",
+          "timestamp": "2025-12-02T10:18:31.705Z",
+          "formattedTime": "12:18:31",
+          "time": "2025-12-02T10:18:31.705Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670726748",
+          "content": "244068",
+          "timestamp": "2025-12-02T10:18:46.748Z",
+          "formattedTime": "12:18:46",
+          "time": "2025-12-02T10:18:46.748Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670730415",
+          "content": "244014",
+          "timestamp": "2025-12-02T10:18:50.415Z",
+          "formattedTime": "12:18:50",
+          "time": "2025-12-02T10:18:50.415Z",
+          "isManual": false
+        },
+        {
+          "id": "1764670735487",
+          "content": "244304",
+          "timestamp": "2025-12-02T10:18:55.487Z",
+          "formattedTime": "12:18:55",
+          "time": "2025-12-02T10:18:55.487Z",
+          "isManual": false
+        },
+        {
+          "id": "1764672243920",
+          "content": "244670",
+          "timestamp": "2025-12-02T10:44:03.919Z",
+          "formattedTime": "12:44:03",
+          "time": "2025-12-02T10:44:03.919Z",
+          "isManual": false
+        },
+        {
+          "id": "1764672247159",
+          "content": "244520",
+          "timestamp": "2025-12-02T10:44:07.158Z",
+          "formattedTime": "12:44:07",
+          "time": "2025-12-02T10:44:07.158Z",
+          "isManual": false
+        },
+        {
+          "id": "1764672247403",
+          "content": "244150",
+          "timestamp": "2025-12-02T10:44:07.403Z",
+          "formattedTime": "12:44:07",
+          "time": "2025-12-02T10:44:07.403Z",
+          "isManual": false
+        },
+        {
+          "id": "1764672261955",
+          "content": "244285",
+          "timestamp": "2025-12-02T10:44:21.954Z",
+          "formattedTime": "12:44:21",
+          "time": "2025-12-02T10:44:21.954Z",
+          "isManual": false
+        },
+        {
+          "id": "1764672265834",
+          "content": "244735",
+          "timestamp": "2025-12-02T10:44:25.834Z",
+          "formattedTime": "12:44:25",
+          "time": "2025-12-02T10:44:25.834Z",
+          "isManual": false
+        },
+        {
+          "id": "1764672268925",
+          "content": "244298",
+          "timestamp": "2025-12-02T10:44:28.924Z",
+          "formattedTime": "12:44:28",
+          "time": "2025-12-02T10:44:28.924Z",
+          "isManual": false
+        },
+        {
+          "id": "1764672273305",
+          "content": "244224",
+          "timestamp": "2025-12-02T10:44:33.304Z",
+          "formattedTime": "12:44:33",
+          "time": "2025-12-02T10:44:33.304Z",
+          "isManual": false
+        },
+        {
+          "id": "1764672277907",
+          "content": "244313",
+          "timestamp": "2025-12-02T10:44:37.906Z",
+          "formattedTime": "12:44:37",
+          "time": "2025-12-02T10:44:37.906Z",
+          "isManual": false
+        },
+        {
+          "id": "1764672307259",
+          "content": "244321",
+          "timestamp": "2025-12-02T10:45:07.258Z",
+          "formattedTime": "12:45:07",
+          "time": "2025-12-02T10:45:07.258Z",
+          "isManual": false
+        },
+        {
+          "id": "1764672322267",
+          "content": "244226",
+          "timestamp": "2025-12-02T10:45:22.267Z",
+          "formattedTime": "12:45:22",
+          "time": "2025-12-02T10:45:22.267Z",
+          "isManual": false
+        },
+        {
+          "id": "1764672367672",
+          "content": "244673",
+          "timestamp": "2025-12-02T10:46:07.671Z",
+          "formattedTime": "12:46:07",
+          "time": "2025-12-02T10:46:07.671Z",
+          "isManual": false
+        },
+        {
+          "id": "1764672436640",
+          "content": "244514",
+          "timestamp": "2025-12-02T10:47:16.639Z",
+          "formattedTime": "12:47:16",
+          "time": "2025-12-02T10:47:16.639Z",
+          "isManual": false
+        },
+        {
+          "id": "1764672444124",
+          "content": "244924",
+          "timestamp": "2025-12-02T10:47:24.123Z",
+          "formattedTime": "12:47:24",
+          "time": "2025-12-02T10:47:24.123Z",
+          "isManual": true
+        },
+        {
+          "id": "1764672447199",
+          "content": "244952",
+          "timestamp": "2025-12-02T10:47:27.198Z",
+          "formattedTime": "12:47:27",
+          "time": "2025-12-02T10:47:27.198Z",
+          "isManual": false
+        },
+        {
+          "id": "1764672487434",
+          "content": "244849",
+          "timestamp": "2025-12-02T10:48:07.434Z",
+          "formattedTime": "12:48:07",
+          "time": "2025-12-02T10:48:07.434Z",
+          "isManual": true
+        },
+        {
+          "id": "1764672547848",
+          "content": "244915",
+          "timestamp": "2025-12-02T10:49:07.848Z",
+          "formattedTime": "12:49:07",
+          "time": "2025-12-02T10:49:07.848Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "closed_normally",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0",
+      "user_id": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0_1765285316732",
+      "created_by": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0",
+      "created_at": "2025-12-09T13:01:56.731Z",
+      "updated_at": "2025-12-09T13:01:56.731Z"
+    },
+    {
+      "id": "scanner1764677513201",
+      "location": "Anatomy",
+      "year": 2,
+      "batch": "2025/2026",
+      "dateTime": "2025-12-02T12:11:53.201Z",
+      "formattedDateTime": "02/12/2025 14:11:53",
+      "scans": [
+        {
+          "id": "1764677515219",
+          "content": "244343",
+          "timestamp": "2025-12-02T12:11:55.219Z",
+          "formattedTime": "14:11:55",
+          "time": "2025-12-02T12:11:55.219Z",
+          "isManual": false
+        },
+        {
+          "id": "1764677521916",
+          "content": "244357",
+          "timestamp": "2025-12-02T12:12:01.916Z",
+          "formattedTime": "14:12:01",
+          "time": "2025-12-02T12:12:01.916Z",
+          "isManual": false
+        },
+        {
+          "id": "1764677526217",
+          "content": "244347",
+          "timestamp": "2025-12-02T12:12:06.217Z",
+          "formattedTime": "14:12:06",
+          "time": "2025-12-02T12:12:06.217Z",
+          "isManual": false
+        },
+        {
+          "id": "1764677529281",
+          "content": "244344",
+          "timestamp": "2025-12-02T12:12:09.281Z",
+          "formattedTime": "14:12:09",
+          "time": "2025-12-02T12:12:09.281Z",
+          "isManual": false
+        },
+        {
+          "id": "1764677533342",
+          "content": "244372",
+          "timestamp": "2025-12-02T12:12:13.342Z",
+          "formattedTime": "14:12:13",
+          "time": "2025-12-02T12:12:13.342Z",
+          "isManual": false
+        },
+        {
+          "id": "1764677538342",
+          "content": "244364",
+          "timestamp": "2025-12-02T12:12:18.341Z",
+          "formattedTime": "14:12:18",
+          "time": "2025-12-02T12:12:18.341Z",
+          "isManual": false
+        },
+        {
+          "id": "1764677543341",
+          "content": "244346",
+          "timestamp": "2025-12-02T12:12:23.341Z",
+          "formattedTime": "14:12:23",
+          "time": "2025-12-02T12:12:23.341Z",
+          "isManual": false
+        },
+        {
+          "id": "1764677551665",
+          "content": "244377",
+          "timestamp": "2025-12-02T12:12:31.665Z",
+          "formattedTime": "14:12:31",
+          "time": "2025-12-02T12:12:31.665Z",
+          "isManual": false
+        },
+        {
+          "id": "1764677558341",
+          "content": "244380",
+          "timestamp": "2025-12-02T12:12:38.341Z",
+          "formattedTime": "14:12:38",
+          "time": "2025-12-02T12:12:38.341Z",
+          "isManual": false
+        },
+        {
+          "id": "1764677561711",
+          "content": "244370",
+          "timestamp": "2025-12-02T12:12:41.710Z",
+          "formattedTime": "14:12:41",
+          "time": "2025-12-02T12:12:41.710Z",
+          "isManual": false
+        },
+        {
+          "id": "1764677564308",
+          "content": "244367",
+          "timestamp": "2025-12-02T12:12:44.308Z",
+          "formattedTime": "14:12:44",
+          "time": "2025-12-02T12:12:44.308Z",
+          "isManual": false
+        },
+        {
+          "id": "1764677573340",
+          "content": "244358",
+          "timestamp": "2025-12-02T12:12:53.340Z",
+          "formattedTime": "14:12:53",
+          "time": "2025-12-02T12:12:53.340Z",
+          "isManual": false
+        },
+        {
+          "id": "1764677581814",
+          "content": "244371",
+          "timestamp": "2025-12-02T12:13:01.813Z",
+          "formattedTime": "14:13:01",
+          "time": "2025-12-02T12:13:01.813Z",
+          "isManual": true
+        },
+        {
+          "id": "1764677586522",
+          "content": "244382",
+          "timestamp": "2025-12-02T12:13:06.522Z",
+          "formattedTime": "14:13:06",
+          "time": "2025-12-02T12:13:06.522Z",
+          "isManual": false
+        },
+        {
+          "id": "1764677599001",
+          "content": "244379",
+          "timestamp": "2025-12-02T12:13:19.000Z",
+          "formattedTime": "14:13:19",
+          "time": "2025-12-02T12:13:19.000Z",
+          "isManual": true
+        },
+        {
+          "id": "1764677603350",
+          "content": "244378",
+          "timestamp": "2025-12-02T12:13:23.350Z",
+          "formattedTime": "14:13:23",
+          "time": "2025-12-02T12:13:23.350Z",
+          "isManual": false
+        },
+        {
+          "id": "1764677607187",
+          "content": "244348",
+          "timestamp": "2025-12-02T12:13:27.186Z",
+          "formattedTime": "14:13:27",
+          "time": "2025-12-02T12:13:27.186Z",
+          "isManual": false
+        },
+        {
+          "id": "1764677609922",
+          "content": "244345",
+          "timestamp": "2025-12-02T12:13:29.922Z",
+          "formattedTime": "14:13:29",
+          "time": "2025-12-02T12:13:29.922Z",
+          "isManual": false
+        },
+        {
+          "id": "1764677617992",
+          "content": "244351",
+          "timestamp": "2025-12-02T12:13:37.992Z",
+          "formattedTime": "14:13:37",
+          "time": "2025-12-02T12:13:37.992Z",
+          "isManual": false
+        },
+        {
+          "id": "1764677619631",
+          "content": "244369",
+          "timestamp": "2025-12-02T12:13:39.630Z",
+          "formattedTime": "14:13:39",
+          "time": "2025-12-02T12:13:39.630Z",
+          "isManual": false
+        },
+        {
+          "id": "1764677631499",
+          "content": "244362",
+          "timestamp": "2025-12-02T12:13:51.499Z",
+          "formattedTime": "14:13:51",
+          "time": "2025-12-02T12:13:51.499Z",
+          "isManual": false
+        },
+        {
+          "id": "1764677638338",
+          "content": "244356",
+          "timestamp": "2025-12-02T12:13:58.338Z",
+          "formattedTime": "14:13:58",
+          "time": "2025-12-02T12:13:58.338Z",
+          "isManual": false
+        },
+        {
+          "id": "1764677672281",
+          "content": "244368",
+          "timestamp": "2025-12-02T12:14:32.280Z",
+          "formattedTime": "14:14:32",
+          "time": "2025-12-02T12:14:32.280Z",
+          "isManual": true
+        },
+        {
+          "id": "1764677743914",
+          "content": "244731",
+          "timestamp": "2025-12-02T12:15:43.914Z",
+          "formattedTime": "14:15:43",
+          "time": "2025-12-02T12:15:43.914Z",
+          "isManual": false
+        },
+        {
+          "id": "1764677749656",
+          "content": "244366",
+          "timestamp": "2025-12-02T12:15:49.656Z",
+          "formattedTime": "14:15:49",
+          "time": "2025-12-02T12:15:49.656Z",
+          "isManual": false
+        },
+        {
+          "id": "1764677753630",
+          "content": "244365",
+          "timestamp": "2025-12-02T12:15:53.630Z",
+          "formattedTime": "14:15:53",
+          "time": "2025-12-02T12:15:53.630Z",
+          "isManual": false
+        },
+        {
+          "id": "1764677753708",
+          "content": "244349",
+          "timestamp": "2025-12-02T12:15:53.707Z",
+          "formattedTime": "14:15:53",
+          "time": "2025-12-02T12:15:53.707Z",
+          "isManual": false
+        },
+        {
+          "id": "1764677763705",
+          "content": "244459",
+          "timestamp": "2025-12-02T12:16:03.705Z",
+          "formattedTime": "14:16:03",
+          "time": "2025-12-02T12:16:03.705Z",
+          "isManual": false
+        },
+        {
+          "id": "1764678658904",
+          "content": "244354",
+          "timestamp": "2025-12-02T12:30:58.904Z",
+          "formattedTime": "14:30:58",
+          "time": "2025-12-02T12:30:58.904Z",
+          "isManual": false
+        },
+        {
+          "id": "1764678664157",
+          "content": "244373",
+          "timestamp": "2025-12-02T12:31:04.157Z",
+          "formattedTime": "14:31:04",
+          "time": "2025-12-02T12:31:04.157Z",
+          "isManual": false
+        },
+        {
+          "id": "1764678667737",
+          "content": "244361",
+          "timestamp": "2025-12-02T12:31:07.737Z",
+          "formattedTime": "14:31:07",
+          "time": "2025-12-02T12:31:07.737Z",
+          "isManual": false
+        },
+        {
+          "id": "1764678672674",
+          "content": "244631",
+          "timestamp": "2025-12-02T12:31:12.674Z",
+          "formattedTime": "14:31:12",
+          "time": "2025-12-02T12:31:12.674Z",
+          "isManual": false
+        },
+        {
+          "id": "1764678675841",
+          "content": "244350",
+          "timestamp": "2025-12-02T12:31:15.840Z",
+          "formattedTime": "14:31:15",
+          "time": "2025-12-02T12:31:15.840Z",
+          "isManual": false
+        },
+        {
+          "id": "1764678680309",
+          "content": "244381",
+          "timestamp": "2025-12-02T12:31:20.308Z",
+          "formattedTime": "14:31:20",
+          "time": "2025-12-02T12:31:20.308Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "closed_normally",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0",
+      "user_id": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0_1765285316732",
+      "created_by": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0",
+      "created_at": "2025-12-09T13:01:56.731Z",
+      "updated_at": "2025-12-09T13:01:56.731Z"
+    },
+    {
+      "id": "scanner1765261428228",
+      "location": "Anatomy",
+      "year": 3,
+      "batch": "2025/2026",
+      "dateTime": "2025-12-09T06:23:48.228Z",
+      "formattedDateTime": "09/12/2025 08:23:48",
+      "scans": [
+        {
+          "id": "1765261434381",
+          "content": "231107",
+          "timestamp": "2025-12-09T06:23:54.380Z",
+          "formattedTime": "08:23:54",
+          "time": "2025-12-09T06:23:54.380Z",
+          "isManual": false
+        },
+        {
+          "id": "1765261438711",
+          "content": "231157",
+          "timestamp": "2025-12-09T06:23:58.711Z",
+          "formattedTime": "08:23:58",
+          "time": "2025-12-09T06:23:58.711Z",
+          "isManual": false
+        },
+        {
+          "id": "1765261444986",
+          "content": "231090",
+          "timestamp": "2025-12-09T06:24:04.986Z",
+          "formattedTime": "08:24:04",
+          "time": "2025-12-09T06:24:04.986Z",
+          "isManual": false
+        },
+        {
+          "id": "1765261453723",
+          "content": "231091",
+          "timestamp": "2025-12-09T06:24:13.723Z",
+          "formattedTime": "08:24:13",
+          "time": "2025-12-09T06:24:13.723Z",
+          "isManual": false
+        },
+        {
+          "id": "1765261457488",
+          "content": "231219",
+          "timestamp": "2025-12-09T06:24:17.487Z",
+          "formattedTime": "08:24:17",
+          "time": "2025-12-09T06:24:17.487Z",
+          "isManual": false
+        },
+        {
+          "id": "1765261463771",
+          "content": "231220",
+          "timestamp": "2025-12-09T06:24:23.771Z",
+          "formattedTime": "08:24:23",
+          "time": "2025-12-09T06:24:23.771Z",
+          "isManual": false
+        },
+        {
+          "id": "1765261469899",
+          "content": "231143",
+          "timestamp": "2025-12-09T06:24:29.899Z",
+          "formattedTime": "08:24:29",
+          "time": "2025-12-09T06:24:29.899Z",
+          "isManual": false
+        },
+        {
+          "id": "1765261475964",
+          "content": "231103",
+          "timestamp": "2025-12-09T06:24:35.963Z",
+          "formattedTime": "08:24:35",
+          "time": "2025-12-09T06:24:35.963Z",
+          "isManual": false
+        },
+        {
+          "id": "1765261481325",
+          "content": "231109",
+          "timestamp": "2025-12-09T06:24:41.325Z",
+          "formattedTime": "08:24:41",
+          "time": "2025-12-09T06:24:41.325Z",
+          "isManual": false
+        },
+        {
+          "id": "1765261489282",
+          "content": "231071",
+          "timestamp": "2025-12-09T06:24:49.282Z",
+          "formattedTime": "08:24:49",
+          "time": "2025-12-09T06:24:49.282Z",
+          "isManual": false
+        },
+        {
+          "id": "1765261496088",
+          "content": "231137",
+          "timestamp": "2025-12-09T06:24:56.088Z",
+          "formattedTime": "08:24:56",
+          "time": "2025-12-09T06:24:56.088Z",
+          "isManual": false
+        },
+        {
+          "id": "1765261500894",
+          "content": "231142",
+          "timestamp": "2025-12-09T06:25:00.893Z",
+          "formattedTime": "08:25:00",
+          "time": "2025-12-09T06:25:00.893Z",
+          "isManual": false
+        },
+        {
+          "id": "1765261504656",
+          "content": "231132",
+          "timestamp": "2025-12-09T06:25:04.656Z",
+          "formattedTime": "08:25:04",
+          "time": "2025-12-09T06:25:04.656Z",
+          "isManual": false
+        },
+        {
+          "id": "1765262343949",
+          "content": "231043",
+          "timestamp": "2025-12-09T06:39:03.948Z",
+          "formattedTime": "08:39:03",
+          "time": "2025-12-09T06:39:03.948Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "closed_normally",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0",
+      "user_id": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0_1765285316732",
+      "created_by": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0",
+      "created_at": "2025-12-09T13:01:56.731Z",
+      "updated_at": "2025-12-09T13:01:56.731Z"
+    },
+    {
+      "id": "scanner1765281554885",
+      "location": "Anatomy",
+      "year": 2,
+      "batch": "2025/2026",
+      "dateTime": "2025-12-09T11:59:14.885Z",
+      "formattedDateTime": "09/12/2025 13:59:14",
+      "scans": [
+        {
+          "id": "1765281563210",
+          "content": "241455",
+          "timestamp": "2025-12-09T11:59:23.209Z",
+          "formattedTime": "13:59:23",
+          "time": "2025-12-09T11:59:23.209Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281568449",
+          "content": "241252",
+          "timestamp": "2025-12-09T11:59:28.448Z",
+          "formattedTime": "13:59:28",
+          "time": "2025-12-09T11:59:28.448Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281573243",
+          "content": "241336",
+          "timestamp": "2025-12-09T11:59:33.242Z",
+          "formattedTime": "13:59:33",
+          "time": "2025-12-09T11:59:33.242Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281578086",
+          "content": "241402",
+          "timestamp": "2025-12-09T11:59:38.086Z",
+          "formattedTime": "13:59:38",
+          "time": "2025-12-09T11:59:38.086Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281581965",
+          "content": "241238",
+          "timestamp": "2025-12-09T11:59:41.965Z",
+          "formattedTime": "13:59:41",
+          "time": "2025-12-09T11:59:41.965Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281707829",
+          "content": "241247",
+          "timestamp": "2025-12-09T12:01:47.828Z",
+          "formattedTime": "14:01:47",
+          "time": "2025-12-09T12:01:47.828Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281713092",
+          "content": "241292",
+          "timestamp": "2025-12-09T12:01:53.091Z",
+          "formattedTime": "14:01:53",
+          "time": "2025-12-09T12:01:53.091Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281715940",
+          "content": "241307",
+          "timestamp": "2025-12-09T12:01:55.939Z",
+          "formattedTime": "14:01:55",
+          "time": "2025-12-09T12:01:55.939Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281720808",
+          "content": "241306",
+          "timestamp": "2025-12-09T12:02:00.808Z",
+          "formattedTime": "14:02:00",
+          "time": "2025-12-09T12:02:00.808Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281727172",
+          "content": "241312",
+          "timestamp": "2025-12-09T12:02:07.172Z",
+          "formattedTime": "14:02:07",
+          "time": "2025-12-09T12:02:07.172Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281733091",
+          "content": "241284",
+          "timestamp": "2025-12-09T12:02:13.091Z",
+          "formattedTime": "14:02:13",
+          "time": "2025-12-09T12:02:13.091Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281737084",
+          "content": "241406",
+          "timestamp": "2025-12-09T12:02:17.083Z",
+          "formattedTime": "14:02:17",
+          "time": "2025-12-09T12:02:17.083Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281743091",
+          "content": "241378",
+          "timestamp": "2025-12-09T12:02:23.091Z",
+          "formattedTime": "14:02:23",
+          "time": "2025-12-09T12:02:23.091Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281747138",
+          "content": "241457",
+          "timestamp": "2025-12-09T12:02:27.138Z",
+          "formattedTime": "14:02:27",
+          "time": "2025-12-09T12:02:27.138Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281751724",
+          "content": "241351",
+          "timestamp": "2025-12-09T12:02:31.724Z",
+          "formattedTime": "14:02:31",
+          "time": "2025-12-09T12:02:31.724Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281757190",
+          "content": "241376",
+          "timestamp": "2025-12-09T12:02:37.190Z",
+          "formattedTime": "14:02:37",
+          "time": "2025-12-09T12:02:37.190Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281761930",
+          "content": "241372",
+          "timestamp": "2025-12-09T12:02:41.929Z",
+          "formattedTime": "14:02:41",
+          "time": "2025-12-09T12:02:41.929Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281767496",
+          "content": "241375",
+          "timestamp": "2025-12-09T12:02:47.495Z",
+          "formattedTime": "14:02:47",
+          "time": "2025-12-09T12:02:47.495Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281771396",
+          "content": "241377",
+          "timestamp": "2025-12-09T12:02:51.396Z",
+          "formattedTime": "14:02:51",
+          "time": "2025-12-09T12:02:51.396Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281776074",
+          "content": "241277",
+          "timestamp": "2025-12-09T12:02:56.073Z",
+          "formattedTime": "14:02:56",
+          "time": "2025-12-09T12:02:56.073Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281780970",
+          "content": "241291",
+          "timestamp": "2025-12-09T12:03:00.970Z",
+          "formattedTime": "14:03:00",
+          "time": "2025-12-09T12:03:00.970Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281785942",
+          "content": "241454",
+          "timestamp": "2025-12-09T12:03:05.941Z",
+          "formattedTime": "14:03:05",
+          "time": "2025-12-09T12:03:05.941Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281790782",
+          "content": "241242",
+          "timestamp": "2025-12-09T12:03:10.782Z",
+          "formattedTime": "14:03:10",
+          "time": "2025-12-09T12:03:10.782Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281790853",
+          "content": "241321",
+          "timestamp": "2025-12-09T12:03:10.853Z",
+          "formattedTime": "14:03:10",
+          "time": "2025-12-09T12:03:10.853Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281808468",
+          "content": "241426",
+          "timestamp": "2025-12-09T12:03:28.468Z",
+          "formattedTime": "14:03:28",
+          "time": "2025-12-09T12:03:28.468Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281813070",
+          "content": "241423",
+          "timestamp": "2025-12-09T12:03:33.069Z",
+          "formattedTime": "14:03:33",
+          "time": "2025-12-09T12:03:33.069Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281818091",
+          "content": "241435",
+          "timestamp": "2025-12-09T12:03:38.091Z",
+          "formattedTime": "14:03:38",
+          "time": "2025-12-09T12:03:38.091Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281820835",
+          "content": "241422",
+          "timestamp": "2025-12-09T12:03:40.835Z",
+          "formattedTime": "14:03:40",
+          "time": "2025-12-09T12:03:40.835Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281824371",
+          "content": "241399",
+          "timestamp": "2025-12-09T12:03:44.370Z",
+          "formattedTime": "14:03:44",
+          "time": "2025-12-09T12:03:44.370Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281828091",
+          "content": "241441",
+          "timestamp": "2025-12-09T12:03:48.091Z",
+          "formattedTime": "14:03:48",
+          "time": "2025-12-09T12:03:48.091Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281832080",
+          "content": "241417",
+          "timestamp": "2025-12-09T12:03:52.079Z",
+          "formattedTime": "14:03:52",
+          "time": "2025-12-09T12:03:52.079Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281836314",
+          "content": "241421",
+          "timestamp": "2025-12-09T12:03:56.314Z",
+          "formattedTime": "14:03:56",
+          "time": "2025-12-09T12:03:56.314Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281839881",
+          "content": "241318",
+          "timestamp": "2025-12-09T12:03:59.881Z",
+          "formattedTime": "14:03:59",
+          "time": "2025-12-09T12:03:59.881Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281844620",
+          "content": "241418",
+          "timestamp": "2025-12-09T12:04:04.620Z",
+          "formattedTime": "14:04:04",
+          "time": "2025-12-09T12:04:04.620Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281848090",
+          "content": "241431",
+          "timestamp": "2025-12-09T12:04:08.090Z",
+          "formattedTime": "14:04:08",
+          "time": "2025-12-09T12:04:08.090Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281851622",
+          "content": "241370",
+          "timestamp": "2025-12-09T12:04:11.622Z",
+          "formattedTime": "14:04:11",
+          "time": "2025-12-09T12:04:11.622Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281854728",
+          "content": "241397",
+          "timestamp": "2025-12-09T12:04:14.727Z",
+          "formattedTime": "14:04:14",
+          "time": "2025-12-09T12:04:14.727Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281856558",
+          "content": "241313",
+          "timestamp": "2025-12-09T12:04:16.558Z",
+          "formattedTime": "14:04:16",
+          "time": "2025-12-09T12:04:16.558Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281864628",
+          "content": "241405",
+          "timestamp": "2025-12-09T12:04:24.627Z",
+          "formattedTime": "14:04:24",
+          "time": "2025-12-09T12:04:24.627Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281868851",
+          "content": "241437",
+          "timestamp": "2025-12-09T12:04:28.850Z",
+          "formattedTime": "14:04:28",
+          "time": "2025-12-09T12:04:28.850Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281873091",
+          "content": "241349",
+          "timestamp": "2025-12-09T12:04:33.091Z",
+          "formattedTime": "14:04:33",
+          "time": "2025-12-09T12:04:33.091Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281875838",
+          "content": "241299",
+          "timestamp": "2025-12-09T12:04:35.837Z",
+          "formattedTime": "14:04:35",
+          "time": "2025-12-09T12:04:35.837Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281878956",
+          "content": "241283",
+          "timestamp": "2025-12-09T12:04:38.955Z",
+          "formattedTime": "14:04:38",
+          "time": "2025-12-09T12:04:38.955Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281882136",
+          "content": "241290",
+          "timestamp": "2025-12-09T12:04:42.136Z",
+          "formattedTime": "14:04:42",
+          "time": "2025-12-09T12:04:42.136Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281885803",
+          "content": "241295",
+          "timestamp": "2025-12-09T12:04:45.802Z",
+          "formattedTime": "14:04:45",
+          "time": "2025-12-09T12:04:45.802Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281889049",
+          "content": "241439",
+          "timestamp": "2025-12-09T12:04:49.049Z",
+          "formattedTime": "14:04:49",
+          "time": "2025-12-09T12:04:49.049Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281889160",
+          "content": "241436",
+          "timestamp": "2025-12-09T12:04:49.160Z",
+          "formattedTime": "14:04:49",
+          "time": "2025-12-09T12:04:49.160Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281901318",
+          "content": "241480",
+          "timestamp": "2025-12-09T12:05:01.317Z",
+          "formattedTime": "14:05:01",
+          "time": "2025-12-09T12:05:01.317Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281907621",
+          "content": "241433",
+          "timestamp": "2025-12-09T12:05:07.621Z",
+          "formattedTime": "14:05:07",
+          "time": "2025-12-09T12:05:07.621Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281911439",
+          "content": "241440",
+          "timestamp": "2025-12-09T12:05:11.439Z",
+          "formattedTime": "14:05:11",
+          "time": "2025-12-09T12:05:11.439Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281914559",
+          "content": "241465",
+          "timestamp": "2025-12-09T12:05:14.559Z",
+          "formattedTime": "14:05:14",
+          "time": "2025-12-09T12:05:14.559Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281917643",
+          "content": "241427",
+          "timestamp": "2025-12-09T12:05:17.642Z",
+          "formattedTime": "14:05:17",
+          "time": "2025-12-09T12:05:17.642Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281921568",
+          "content": "241464",
+          "timestamp": "2025-12-09T12:05:21.568Z",
+          "formattedTime": "14:05:21",
+          "time": "2025-12-09T12:05:21.568Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281929330",
+          "content": "241461",
+          "timestamp": "2025-12-09T12:05:29.330Z",
+          "formattedTime": "14:05:29",
+          "time": "2025-12-09T12:05:29.330Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281932031",
+          "content": "241339",
+          "timestamp": "2025-12-09T12:05:32.031Z",
+          "formattedTime": "14:05:32",
+          "time": "2025-12-09T12:05:32.031Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281938767",
+          "content": "241331",
+          "timestamp": "2025-12-09T12:05:38.767Z",
+          "formattedTime": "14:05:38",
+          "time": "2025-12-09T12:05:38.767Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281944704",
+          "content": "241474",
+          "timestamp": "2025-12-09T12:05:44.704Z",
+          "formattedTime": "14:05:44",
+          "time": "2025-12-09T12:05:44.704Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281947839",
+          "content": "241469",
+          "timestamp": "2025-12-09T12:05:47.839Z",
+          "formattedTime": "14:05:47",
+          "time": "2025-12-09T12:05:47.839Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281954777",
+          "content": "241244",
+          "timestamp": "2025-12-09T12:05:54.776Z",
+          "formattedTime": "14:05:54",
+          "time": "2025-12-09T12:05:54.776Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281957982",
+          "content": "241257",
+          "timestamp": "2025-12-09T12:05:57.981Z",
+          "formattedTime": "14:05:57",
+          "time": "2025-12-09T12:05:57.981Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281963091",
+          "content": "241334",
+          "timestamp": "2025-12-09T12:06:03.090Z",
+          "formattedTime": "14:06:03",
+          "time": "2025-12-09T12:06:03.090Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281967353",
+          "content": "241310",
+          "timestamp": "2025-12-09T12:06:07.353Z",
+          "formattedTime": "14:06:07",
+          "time": "2025-12-09T12:06:07.353Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281975653",
+          "content": "241413",
+          "timestamp": "2025-12-09T12:06:15.652Z",
+          "formattedTime": "14:06:15",
+          "time": "2025-12-09T12:06:15.652Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281979659",
+          "content": "241359",
+          "timestamp": "2025-12-09T12:06:19.658Z",
+          "formattedTime": "14:06:19",
+          "time": "2025-12-09T12:06:19.658Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281984795",
+          "content": "241369",
+          "timestamp": "2025-12-09T12:06:24.794Z",
+          "formattedTime": "14:06:24",
+          "time": "2025-12-09T12:06:24.794Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281988962",
+          "content": "241395",
+          "timestamp": "2025-12-09T12:06:28.962Z",
+          "formattedTime": "14:06:28",
+          "time": "2025-12-09T12:06:28.962Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281993090",
+          "content": "241386",
+          "timestamp": "2025-12-09T12:06:33.090Z",
+          "formattedTime": "14:06:33",
+          "time": "2025-12-09T12:06:33.090Z",
+          "isManual": false
+        },
+        {
+          "id": "1765281997065",
+          "content": "241412",
+          "timestamp": "2025-12-09T12:06:37.065Z",
+          "formattedTime": "14:06:37",
+          "time": "2025-12-09T12:06:37.065Z",
+          "isManual": false
+        },
+        {
+          "id": "1765282001334",
+          "content": "241301",
+          "timestamp": "2025-12-09T12:06:41.333Z",
+          "formattedTime": "14:06:41",
+          "time": "2025-12-09T12:06:41.333Z",
+          "isManual": false
+        },
+        {
+          "id": "1765282004810",
+          "content": "241213",
+          "timestamp": "2025-12-09T12:06:44.809Z",
+          "formattedTime": "14:06:44",
+          "time": "2025-12-09T12:06:44.809Z",
+          "isManual": false
+        },
+        {
+          "id": "1765282009537",
+          "content": "241368",
+          "timestamp": "2025-12-09T12:06:49.537Z",
+          "formattedTime": "14:06:49",
+          "time": "2025-12-09T12:06:49.537Z",
+          "isManual": false
+        },
+        {
+          "id": "1765282055340",
+          "content": "241409",
+          "timestamp": "2025-12-09T12:07:35.339Z",
+          "formattedTime": "14:07:35",
+          "time": "2025-12-09T12:07:35.339Z",
+          "isManual": false
+        },
+        {
+          "id": "1765282059023",
+          "content": "241253",
+          "timestamp": "2025-12-09T12:07:39.023Z",
+          "formattedTime": "14:07:39",
+          "time": "2025-12-09T12:07:39.023Z",
+          "isManual": false
+        },
+        {
+          "id": "1765282067237",
+          "content": "241322",
+          "timestamp": "2025-12-09T12:07:47.237Z",
+          "formattedTime": "14:07:47",
+          "time": "2025-12-09T12:07:47.237Z",
+          "isManual": false
+        },
+        {
+          "id": "1765282073413",
+          "content": "241380",
+          "timestamp": "2025-12-09T12:07:53.412Z",
+          "formattedTime": "14:07:53",
+          "time": "2025-12-09T12:07:53.412Z",
+          "isManual": false
+        },
+        {
+          "id": "1765282078814",
+          "content": "241248",
+          "timestamp": "2025-12-09T12:07:58.814Z",
+          "formattedTime": "14:07:58",
+          "time": "2025-12-09T12:07:58.814Z",
+          "isManual": false
+        },
+        {
+          "id": "1765282083583",
+          "content": "241267",
+          "timestamp": "2025-12-09T12:08:03.583Z",
+          "formattedTime": "14:08:03",
+          "time": "2025-12-09T12:08:03.583Z",
+          "isManual": false
+        },
+        {
+          "id": "1765282091423",
+          "content": "241452",
+          "timestamp": "2025-12-09T12:08:11.422Z",
+          "formattedTime": "14:08:11",
+          "time": "2025-12-09T12:08:11.422Z",
+          "isManual": false
+        },
+        {
+          "id": "1765282113286",
+          "content": "241478",
+          "timestamp": "2025-12-09T12:08:33.286Z",
+          "formattedTime": "14:08:33",
+          "time": "2025-12-09T12:08:33.286Z",
+          "isManual": true
+        },
+        {
+          "id": "1765282119188",
+          "content": "241256",
+          "timestamp": "2025-12-09T12:08:39.187Z",
+          "formattedTime": "14:08:39",
+          "time": "2025-12-09T12:08:39.187Z",
+          "isManual": true
+        },
+        {
+          "id": "1765282124589",
+          "content": "241250",
+          "timestamp": "2025-12-09T12:08:44.588Z",
+          "formattedTime": "14:08:44",
+          "time": "2025-12-09T12:08:44.588Z",
+          "isManual": true
+        },
+        {
+          "id": "1765282129606",
+          "content": "241326",
+          "timestamp": "2025-12-09T12:08:49.606Z",
+          "formattedTime": "14:08:49",
+          "time": "2025-12-09T12:08:49.606Z",
+          "isManual": true
+        },
+        {
+          "id": "1765282136225",
+          "content": "241472",
+          "timestamp": "2025-12-09T12:08:56.224Z",
+          "formattedTime": "14:08:56",
+          "time": "2025-12-09T12:08:56.224Z",
+          "isManual": true
+        },
+        {
+          "id": "1765282142042",
+          "content": "241347",
+          "timestamp": "2025-12-09T12:09:02.042Z",
+          "formattedTime": "14:09:02",
+          "time": "2025-12-09T12:09:02.042Z",
+          "isManual": true
+        },
+        {
+          "id": "1765282148218",
+          "content": "241442",
+          "timestamp": "2025-12-09T12:09:08.218Z",
+          "formattedTime": "14:09:08",
+          "time": "2025-12-09T12:09:08.218Z",
+          "isManual": false
+        },
+        {
+          "id": "1765282166160",
+          "content": "241346",
+          "timestamp": "2025-12-09T12:09:26.160Z",
+          "formattedTime": "14:09:26",
+          "time": "2025-12-09T12:09:26.160Z",
+          "isManual": false
+        },
+        {
+          "id": "1765282169966",
+          "content": "241231",
+          "timestamp": "2025-12-09T12:09:29.966Z",
+          "formattedTime": "14:09:29",
+          "time": "2025-12-09T12:09:29.966Z",
+          "isManual": false
+        },
+        {
+          "id": "1765282174569",
+          "content": "241323",
+          "timestamp": "2025-12-09T12:09:34.569Z",
+          "formattedTime": "14:09:34",
+          "time": "2025-12-09T12:09:34.569Z",
+          "isManual": false
+        },
+        {
+          "id": "1765282178564",
+          "content": "241262",
+          "timestamp": "2025-12-09T12:09:38.564Z",
+          "formattedTime": "14:09:38",
+          "time": "2025-12-09T12:09:38.564Z",
+          "isManual": false
+        },
+        {
+          "id": "1765282182365",
+          "content": "241360",
+          "timestamp": "2025-12-09T12:09:42.365Z",
+          "formattedTime": "14:09:42",
+          "time": "2025-12-09T12:09:42.365Z",
+          "isManual": false
+        },
+        {
+          "id": "1765282208157",
+          "content": "241374",
+          "timestamp": "2025-12-09T12:10:08.157Z",
+          "formattedTime": "14:10:08",
+          "time": "2025-12-09T12:10:08.157Z",
+          "isManual": true
+        },
+        {
+          "id": "1765282215159",
+          "content": "241314",
+          "timestamp": "2025-12-09T12:10:15.158Z",
+          "formattedTime": "14:10:15",
+          "time": "2025-12-09T12:10:15.158Z",
+          "isManual": true
+        },
+        {
+          "id": "1765282223090",
+          "content": "241432",
+          "timestamp": "2025-12-09T12:10:23.089Z",
+          "formattedTime": "14:10:23",
+          "time": "2025-12-09T12:10:23.089Z",
+          "isManual": false
+        },
+        {
+          "id": "1765282227747",
+          "content": "241471",
+          "timestamp": "2025-12-09T12:10:27.747Z",
+          "formattedTime": "14:10:27",
+          "time": "2025-12-09T12:10:27.747Z",
+          "isManual": false
+        },
+        {
+          "id": "1765282230547",
+          "content": "241254",
+          "timestamp": "2025-12-09T12:10:30.546Z",
+          "formattedTime": "14:10:30",
+          "time": "2025-12-09T12:10:30.546Z",
+          "isManual": false
+        },
+        {
+          "id": "1765282233090",
+          "content": "241477",
+          "timestamp": "2025-12-09T12:10:33.089Z",
+          "formattedTime": "14:10:33",
+          "time": "2025-12-09T12:10:33.089Z",
+          "isManual": false
+        },
+        {
+          "id": "1765282236045",
+          "content": "241302",
+          "timestamp": "2025-12-09T12:10:36.045Z",
+          "formattedTime": "14:10:36",
+          "time": "2025-12-09T12:10:36.045Z",
+          "isManual": false
+        },
+        {
+          "id": "1765282239281",
+          "content": "241333",
+          "timestamp": "2025-12-09T12:10:39.280Z",
+          "formattedTime": "14:10:39",
+          "time": "2025-12-09T12:10:39.280Z",
+          "isManual": false
+        },
+        {
+          "id": "1765282241315",
+          "content": "241355",
+          "timestamp": "2025-12-09T12:10:41.315Z",
+          "formattedTime": "14:10:41",
+          "time": "2025-12-09T12:10:41.315Z",
+          "isManual": false
+        },
+        {
+          "id": "1765282247475",
+          "content": "241305",
+          "timestamp": "2025-12-09T12:10:47.474Z",
+          "formattedTime": "14:10:47",
+          "time": "2025-12-09T12:10:47.474Z",
+          "isManual": false
+        },
+        {
+          "id": "1765282251535",
+          "content": "241288",
+          "timestamp": "2025-12-09T12:10:51.534Z",
+          "formattedTime": "14:10:51",
+          "time": "2025-12-09T12:10:51.534Z",
+          "isManual": false
+        },
+        {
+          "id": "1765282254708",
+          "content": "241444",
+          "timestamp": "2025-12-09T12:10:54.707Z",
+          "formattedTime": "14:10:54",
+          "time": "2025-12-09T12:10:54.707Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283731612",
+          "content": "241261",
+          "timestamp": "2025-12-09T12:35:31.611Z",
+          "formattedTime": "14:35:31",
+          "time": "2025-12-09T12:35:31.611Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283731844",
+          "content": "241398",
+          "timestamp": "2025-12-09T12:35:31.844Z",
+          "formattedTime": "14:35:31",
+          "time": "2025-12-09T12:35:31.844Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283735236",
+          "content": "241338",
+          "timestamp": "2025-12-09T12:35:35.236Z",
+          "formattedTime": "14:35:35",
+          "time": "2025-12-09T12:35:35.236Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283738624",
+          "content": "241348",
+          "timestamp": "2025-12-09T12:35:38.623Z",
+          "formattedTime": "14:35:38",
+          "time": "2025-12-09T12:35:38.623Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283745448",
+          "content": "241315",
+          "timestamp": "2025-12-09T12:35:45.448Z",
+          "formattedTime": "14:35:45",
+          "time": "2025-12-09T12:35:45.448Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283748178",
+          "content": "241311",
+          "timestamp": "2025-12-09T12:35:48.178Z",
+          "formattedTime": "14:35:48",
+          "time": "2025-12-09T12:35:48.178Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283754088",
+          "content": "241382",
+          "timestamp": "2025-12-09T12:35:54.087Z",
+          "formattedTime": "14:35:54",
+          "time": "2025-12-09T12:35:54.087Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283757653",
+          "content": "241479",
+          "timestamp": "2025-12-09T12:35:57.653Z",
+          "formattedTime": "14:35:57",
+          "time": "2025-12-09T12:35:57.653Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283760221",
+          "content": "241468",
+          "timestamp": "2025-12-09T12:36:00.221Z",
+          "formattedTime": "14:36:00",
+          "time": "2025-12-09T12:36:00.221Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283767897",
+          "content": "241265",
+          "timestamp": "2025-12-09T12:36:07.896Z",
+          "formattedTime": "14:36:07",
+          "time": "2025-12-09T12:36:07.896Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283773260",
+          "content": "241470",
+          "timestamp": "2025-12-09T12:36:13.260Z",
+          "formattedTime": "14:36:13",
+          "time": "2025-12-09T12:36:13.260Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283775957",
+          "content": "241445",
+          "timestamp": "2025-12-09T12:36:15.957Z",
+          "formattedTime": "14:36:15",
+          "time": "2025-12-09T12:36:15.957Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283783509",
+          "content": "241296",
+          "timestamp": "2025-12-09T12:36:23.508Z",
+          "formattedTime": "14:36:23",
+          "time": "2025-12-09T12:36:23.508Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283787202",
+          "content": "241286",
+          "timestamp": "2025-12-09T12:36:27.201Z",
+          "formattedTime": "14:36:27",
+          "time": "2025-12-09T12:36:27.201Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283789770",
+          "content": "241289",
+          "timestamp": "2025-12-09T12:36:29.770Z",
+          "formattedTime": "14:36:29",
+          "time": "2025-12-09T12:36:29.770Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283792772",
+          "content": "241482",
+          "timestamp": "2025-12-09T12:36:32.772Z",
+          "formattedTime": "14:36:32",
+          "time": "2025-12-09T12:36:32.772Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283796589",
+          "content": "241356",
+          "timestamp": "2025-12-09T12:36:36.589Z",
+          "formattedTime": "14:36:36",
+          "time": "2025-12-09T12:36:36.589Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283799746",
+          "content": "241446",
+          "timestamp": "2025-12-09T12:36:39.746Z",
+          "formattedTime": "14:36:39",
+          "time": "2025-12-09T12:36:39.746Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283802217",
+          "content": "241319",
+          "timestamp": "2025-12-09T12:36:42.217Z",
+          "formattedTime": "14:36:42",
+          "time": "2025-12-09T12:36:42.217Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283802487",
+          "content": "241329",
+          "timestamp": "2025-12-09T12:36:42.487Z",
+          "formattedTime": "14:36:42",
+          "time": "2025-12-09T12:36:42.487Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283807304",
+          "content": "241387",
+          "timestamp": "2025-12-09T12:36:47.304Z",
+          "formattedTime": "14:36:47",
+          "time": "2025-12-09T12:36:47.304Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283807571",
+          "content": "241383",
+          "timestamp": "2025-12-09T12:36:47.571Z",
+          "formattedTime": "14:36:47",
+          "time": "2025-12-09T12:36:47.571Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283815855",
+          "content": "241466",
+          "timestamp": "2025-12-09T12:36:55.855Z",
+          "formattedTime": "14:36:55",
+          "time": "2025-12-09T12:36:55.855Z",
+          "isManual": true
+        },
+        {
+          "id": "1765283821917",
+          "content": "241249",
+          "timestamp": "2025-12-09T12:37:01.917Z",
+          "formattedTime": "14:37:01",
+          "time": "2025-12-09T12:37:01.917Z",
+          "isManual": true
+        },
+        {
+          "id": "1765283830777",
+          "content": "241245",
+          "timestamp": "2025-12-09T12:37:10.777Z",
+          "formattedTime": "14:37:10",
+          "time": "2025-12-09T12:37:10.777Z",
+          "isManual": true
+        },
+        {
+          "id": "1765283835294",
+          "content": "241241",
+          "timestamp": "2025-12-09T12:37:15.293Z",
+          "formattedTime": "14:37:15",
+          "time": "2025-12-09T12:37:15.293Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283839499",
+          "content": "241415",
+          "timestamp": "2025-12-09T12:37:19.499Z",
+          "formattedTime": "14:37:19",
+          "time": "2025-12-09T12:37:19.499Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283839779",
+          "content": "241408",
+          "timestamp": "2025-12-09T12:37:19.779Z",
+          "formattedTime": "14:37:19",
+          "time": "2025-12-09T12:37:19.779Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283842819",
+          "content": "241475",
+          "timestamp": "2025-12-09T12:37:22.818Z",
+          "formattedTime": "14:37:22",
+          "time": "2025-12-09T12:37:22.818Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283845579",
+          "content": "241473",
+          "timestamp": "2025-12-09T12:37:25.578Z",
+          "formattedTime": "14:37:25",
+          "time": "2025-12-09T12:37:25.578Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283845861",
+          "content": "241476",
+          "timestamp": "2025-12-09T12:37:25.861Z",
+          "formattedTime": "14:37:25",
+          "time": "2025-12-09T12:37:25.861Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283850506",
+          "content": "241303",
+          "timestamp": "2025-12-09T12:37:30.506Z",
+          "formattedTime": "14:37:30",
+          "time": "2025-12-09T12:37:30.506Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283857359",
+          "content": "241350",
+          "timestamp": "2025-12-09T12:37:37.359Z",
+          "formattedTime": "14:37:37",
+          "time": "2025-12-09T12:37:37.359Z",
+          "isManual": true
+        },
+        {
+          "id": "1765283863463",
+          "content": "241280",
+          "timestamp": "2025-12-09T12:37:43.463Z",
+          "formattedTime": "14:37:43",
+          "time": "2025-12-09T12:37:43.463Z",
+          "isManual": true
+        },
+        {
+          "id": "1765283866012",
+          "content": "241462",
+          "timestamp": "2025-12-09T12:37:46.012Z",
+          "formattedTime": "14:37:46",
+          "time": "2025-12-09T12:37:46.012Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283871912",
+          "content": "241264",
+          "timestamp": "2025-12-09T12:37:51.912Z",
+          "formattedTime": "14:37:51",
+          "time": "2025-12-09T12:37:51.912Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283886190",
+          "content": "241332",
+          "timestamp": "2025-12-09T12:38:06.190Z",
+          "formattedTime": "14:38:06",
+          "time": "2025-12-09T12:38:06.190Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283901091",
+          "content": "241343",
+          "timestamp": "2025-12-09T12:38:21.090Z",
+          "formattedTime": "14:38:21",
+          "time": "2025-12-09T12:38:21.090Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283906589",
+          "content": "241239",
+          "timestamp": "2025-12-09T12:38:26.588Z",
+          "formattedTime": "14:38:26",
+          "time": "2025-12-09T12:38:26.588Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283914411",
+          "content": "241263",
+          "timestamp": "2025-12-09T12:38:34.411Z",
+          "formattedTime": "14:38:34",
+          "time": "2025-12-09T12:38:34.411Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283917747",
+          "content": "241183",
+          "timestamp": "2025-12-09T12:38:37.747Z",
+          "formattedTime": "14:38:37",
+          "time": "2025-12-09T12:38:37.747Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283926589",
+          "content": "241373",
+          "timestamp": "2025-12-09T12:38:46.588Z",
+          "formattedTime": "14:38:46",
+          "time": "2025-12-09T12:38:46.588Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283932973",
+          "content": "241420",
+          "timestamp": "2025-12-09T12:38:52.973Z",
+          "formattedTime": "14:38:52",
+          "time": "2025-12-09T12:38:52.973Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283938425",
+          "content": "241425",
+          "timestamp": "2025-12-09T12:38:58.424Z",
+          "formattedTime": "14:38:58",
+          "time": "2025-12-09T12:38:58.424Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283950040",
+          "content": "241410",
+          "timestamp": "2025-12-09T12:39:10.039Z",
+          "formattedTime": "14:39:10",
+          "time": "2025-12-09T12:39:10.039Z",
+          "isManual": true
+        },
+        {
+          "id": "1765283957841",
+          "content": "241481",
+          "timestamp": "2025-12-09T12:39:17.841Z",
+          "formattedTime": "14:39:17",
+          "time": "2025-12-09T12:39:17.841Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283962819",
+          "content": "241392",
+          "timestamp": "2025-12-09T12:39:22.818Z",
+          "formattedTime": "14:39:22",
+          "time": "2025-12-09T12:39:22.818Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283980663",
+          "content": "241447",
+          "timestamp": "2025-12-09T12:39:40.662Z",
+          "formattedTime": "14:39:40",
+          "time": "2025-12-09T12:39:40.662Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283983705",
+          "content": "241449",
+          "timestamp": "2025-12-09T12:39:43.705Z",
+          "formattedTime": "14:39:43",
+          "time": "2025-12-09T12:39:43.705Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283986431",
+          "content": "241448",
+          "timestamp": "2025-12-09T12:39:46.431Z",
+          "formattedTime": "14:39:46",
+          "time": "2025-12-09T12:39:46.431Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283990989",
+          "content": "241453",
+          "timestamp": "2025-12-09T12:39:50.988Z",
+          "formattedTime": "14:39:50",
+          "time": "2025-12-09T12:39:50.988Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283994107",
+          "content": "241407",
+          "timestamp": "2025-12-09T12:39:54.107Z",
+          "formattedTime": "14:39:54",
+          "time": "2025-12-09T12:39:54.107Z",
+          "isManual": false
+        },
+        {
+          "id": "1765283999895",
+          "content": "241271",
+          "timestamp": "2025-12-09T12:39:59.895Z",
+          "formattedTime": "14:39:59",
+          "time": "2025-12-09T12:39:59.895Z",
+          "isManual": false
+        },
+        {
+          "id": "1765284000236",
+          "content": "241294",
+          "timestamp": "2025-12-09T12:40:00.236Z",
+          "formattedTime": "14:40:00",
+          "time": "2025-12-09T12:40:00.236Z",
+          "isManual": false
+        },
+        {
+          "id": "1765284016781",
+          "content": "241240",
+          "timestamp": "2025-12-09T12:40:16.780Z",
+          "formattedTime": "14:40:16",
+          "time": "2025-12-09T12:40:16.780Z",
+          "isManual": true
+        },
+        {
+          "id": "1765284019576",
+          "content": "241325",
+          "timestamp": "2025-12-09T12:40:19.575Z",
+          "formattedTime": "14:40:19",
+          "time": "2025-12-09T12:40:19.575Z",
+          "isManual": false
+        },
+        {
+          "id": "1765284028431",
+          "content": "241266",
+          "timestamp": "2025-12-09T12:40:28.430Z",
+          "formattedTime": "14:40:28",
+          "time": "2025-12-09T12:40:28.430Z",
+          "isManual": true
+        },
+        {
+          "id": "1765285104526",
+          "content": "241274",
+          "timestamp": "2025-12-09T12:58:24.525Z",
+          "formattedTime": "14:58:24",
+          "time": "2025-12-09T12:58:24.525Z",
+          "isManual": false
+        },
+        {
+          "id": "1765285108132",
+          "content": "241340",
+          "timestamp": "2025-12-09T12:58:28.131Z",
+          "formattedTime": "14:58:28",
+          "time": "2025-12-09T12:58:28.131Z",
+          "isManual": false
+        },
+        {
+          "id": "1765285112591",
+          "content": "241287",
+          "timestamp": "2025-12-09T12:58:32.591Z",
+          "formattedTime": "14:58:32",
+          "time": "2025-12-09T12:58:32.591Z",
+          "isManual": false
+        },
+        {
+          "id": "1765285115630",
+          "content": "241342",
+          "timestamp": "2025-12-09T12:58:35.630Z",
+          "formattedTime": "14:58:35",
+          "time": "2025-12-09T12:58:35.630Z",
+          "isManual": false
+        },
+        {
+          "id": "1765285119409",
+          "content": "241345",
+          "timestamp": "2025-12-09T12:58:39.408Z",
+          "formattedTime": "14:58:39",
+          "time": "2025-12-09T12:58:39.408Z",
+          "isManual": false
+        },
+        {
+          "id": "1765285142739",
+          "content": "241394",
+          "timestamp": "2025-12-09T12:59:02.739Z",
+          "formattedTime": "14:59:02",
+          "time": "2025-12-09T12:59:02.739Z",
+          "isManual": true
+        },
+        {
+          "id": "1765285148738",
+          "content": "241281",
+          "timestamp": "2025-12-09T12:59:08.737Z",
+          "formattedTime": "14:59:08",
+          "time": "2025-12-09T12:59:08.737Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0",
+      "user_id": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0_1765285316732",
+      "created_by": "661e55c583626f61ba53e68c50ee7b8af511baf977f7a8c7926a6819017792e0",
+      "created_at": "2025-12-09T13:01:56.731Z",
+      "updated_at": "2025-12-09T13:01:56.731Z"
     }
   ]
 }
