@@ -1,10 +1,10 @@
 {
   "user_email": "backup@backdoor.com",
-  "user_id": "backup_backdoor_com_1765303127334",
-  "account_created": "2025-12-09T17:58:47.334Z",
-  "last_sync": "2025-12-09T17:58:47.334Z",
-  "total_sessions": 1,
-  "total_scans": 2,
+  "user_id": "backup_backdoor_com_1765303186687",
+  "account_created": "2025-12-09T17:59:46.687Z",
+  "last_sync": "2025-12-09T17:59:46.687Z",
+  "total_sessions": 2,
+  "total_scans": 6,
   "sessions": [
     {
       "id": "scanner1765302573620",
@@ -38,10 +38,65 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1765303127334",
+      "user_id": "backup_backdoor_com_1765303186687",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-12-09T17:58:47.334Z",
-      "updated_at": "2025-12-09T17:58:47.334Z"
+      "created_at": "2025-12-09T17:59:46.687Z",
+      "updated_at": "2025-12-09T17:59:46.687Z"
+    },
+    {
+      "id": "checklist1765303159172",
+      "location": "Anatomy",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-12-09T17:59:19.172Z",
+      "formattedDateTime": "09/12/2025 19:59:19",
+      "scans": [
+        {
+          "id": "201007",
+          "content": "201007",
+          "timestamp": "2025-12-09T17:59:39.796Z",
+          "formattedTime": "19:59:39",
+          "time": "2025-12-09T17:59:39.796Z",
+          "isManual": false
+        },
+        {
+          "id": "211263",
+          "content": "211263",
+          "timestamp": "2025-12-09T17:59:41.713Z",
+          "formattedTime": "19:59:41",
+          "time": "2025-12-09T17:59:41.713Z",
+          "isManual": false
+        },
+        {
+          "id": "211276",
+          "content": "211276",
+          "timestamp": "2025-12-09T17:59:44.824Z",
+          "formattedTime": "19:59:44",
+          "time": "2025-12-09T17:59:44.824Z",
+          "isManual": false
+        },
+        {
+          "id": "211286",
+          "content": "211286",
+          "timestamp": "2025-12-09T17:59:46.313Z",
+          "formattedTime": "19:59:46",
+          "time": "2025-12-09T17:59:46.313Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isChecklist": true,
+      "filters": {
+        "year": 4,
+        "group": "B2D"
+      },
+      "sessionType": "checklist",
+      "recoveryStatus": "in_progress",
+      "user_email": "backup@backdoor.com",
+      "user_id": "backup_backdoor_com_1765303186687",
+      "created_by": "backup@backdoor.com",
+      "created_at": "2025-12-09T17:59:46.687Z",
+      "updated_at": "2025-12-09T17:59:46.687Z"
     }
   ]
 }
