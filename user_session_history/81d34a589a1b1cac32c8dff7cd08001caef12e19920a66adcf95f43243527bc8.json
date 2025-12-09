@@ -1,10 +1,10 @@
 {
   "user_email": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d",
-  "user_id": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d_1765266663560",
-  "account_created": "2025-12-09T07:51:03.560Z",
-  "last_sync": "2025-12-09T07:51:03.560Z",
-  "total_sessions": 4,
-  "total_scans": 110,
+  "user_id": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d_1765266722579",
+  "account_created": "2025-12-09T07:52:02.579Z",
+  "last_sync": "2025-12-09T07:52:02.579Z",
+  "total_sessions": 5,
+  "total_scans": 121,
   "sessions": [
     {
       "id": "scanner1765110821879",
@@ -20,10 +20,10 @@
       "recoveryStatus": "interrupted",
       "isChecklist": false,
       "user_email": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d",
-      "user_id": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d_1765266663560",
+      "user_id": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d_1765266722579",
       "created_by": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d",
-      "created_at": "2025-12-09T07:51:03.560Z",
-      "updated_at": "2025-12-09T07:51:03.560Z"
+      "created_at": "2025-12-09T07:52:02.579Z",
+      "updated_at": "2025-12-09T07:52:02.579Z"
     },
     {
       "id": "checklist1765110780480",
@@ -43,10 +43,10 @@
       "recoveryStatus": "closed_normally",
       "backedUp": true,
       "user_email": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d",
-      "user_id": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d_1765266663560",
+      "user_id": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d_1765266722579",
       "created_by": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d",
-      "created_at": "2025-12-09T07:51:03.560Z",
-      "updated_at": "2025-12-09T07:51:03.560Z"
+      "created_at": "2025-12-09T07:52:02.579Z",
+      "updated_at": "2025-12-09T07:52:02.579Z"
     },
     {
       "id": "checklist1765111405785",
@@ -580,10 +580,10 @@
       "backedUp": true,
       "backupTimestamp": "2025-12-07T12:53:47.231Z",
       "user_email": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d",
-      "user_id": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d_1765266663560",
+      "user_id": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d_1765266722579",
       "created_by": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d",
-      "created_at": "2025-12-09T07:51:03.560Z",
-      "updated_at": "2025-12-09T07:51:03.560Z"
+      "created_at": "2025-12-09T07:52:02.579Z",
+      "updated_at": "2025-12-09T07:52:02.579Z"
     },
     {
       "id": "scanner1765196537520",
@@ -969,10 +969,118 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d",
-      "user_id": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d_1765266663560",
+      "user_id": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d_1765266722579",
       "created_by": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d",
-      "created_at": "2025-12-09T07:51:03.560Z",
-      "updated_at": "2025-12-09T07:51:03.560Z"
+      "created_at": "2025-12-09T07:52:02.579Z",
+      "updated_at": "2025-12-09T07:52:02.579Z"
+    },
+    {
+      "id": "scanner1765266667817",
+      "location": "Dermatology",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-12-09T07:51:07.817Z",
+      "formattedDateTime": "09/12/2025 09:51:07",
+      "scans": [
+        {
+          "id": "1765266672629",
+          "content": "200852",
+          "timestamp": "2025-12-09T07:51:12.628Z",
+          "formattedTime": "09:51:12",
+          "time": "2025-12-09T07:51:12.628Z",
+          "isManual": false
+        },
+        {
+          "id": "1765266676060",
+          "content": "200491",
+          "timestamp": "2025-12-09T07:51:16.060Z",
+          "formattedTime": "09:51:16",
+          "time": "2025-12-09T07:51:16.060Z",
+          "isManual": false
+        },
+        {
+          "id": "1765266679369",
+          "content": "201501",
+          "timestamp": "2025-12-09T07:51:19.368Z",
+          "formattedTime": "09:51:19",
+          "time": "2025-12-09T07:51:19.368Z",
+          "isManual": false
+        },
+        {
+          "id": "1765266683301",
+          "content": "200804",
+          "timestamp": "2025-12-09T07:51:23.300Z",
+          "formattedTime": "09:51:23",
+          "time": "2025-12-09T07:51:23.300Z",
+          "isManual": false
+        },
+        {
+          "id": "1765266688157",
+          "content": "200628",
+          "timestamp": "2025-12-09T07:51:28.157Z",
+          "formattedTime": "09:51:28",
+          "time": "2025-12-09T07:51:28.157Z",
+          "isManual": false
+        },
+        {
+          "id": "1765266693325",
+          "content": "201171",
+          "timestamp": "2025-12-09T07:51:33.324Z",
+          "formattedTime": "09:51:33",
+          "time": "2025-12-09T07:51:33.324Z",
+          "isManual": false
+        },
+        {
+          "id": "1765266696076",
+          "content": "201157",
+          "timestamp": "2025-12-09T07:51:36.076Z",
+          "formattedTime": "09:51:36",
+          "time": "2025-12-09T07:51:36.076Z",
+          "isManual": false
+        },
+        {
+          "id": "1765266701580",
+          "content": "201465",
+          "timestamp": "2025-12-09T07:51:41.579Z",
+          "formattedTime": "09:51:41",
+          "time": "2025-12-09T07:51:41.579Z",
+          "isManual": false
+        },
+        {
+          "id": "1765266711200",
+          "content": "200904",
+          "timestamp": "2025-12-09T07:51:51.200Z",
+          "formattedTime": "09:51:51",
+          "time": "2025-12-09T07:51:51.200Z",
+          "isManual": true
+        },
+        {
+          "id": "1765266717380",
+          "content": "201574",
+          "timestamp": "2025-12-09T07:51:57.380Z",
+          "formattedTime": "09:51:57",
+          "time": "2025-12-09T07:51:57.380Z",
+          "isManual": true
+        },
+        {
+          "id": "1765266722225",
+          "content": "200792",
+          "timestamp": "2025-12-09T07:52:02.225Z",
+          "formattedTime": "09:52:02",
+          "time": "2025-12-09T07:52:02.225Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d",
+      "user_id": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d_1765266722579",
+      "created_by": "795f4daa84a2f6b8fd4fd7e7d3270b4b8fdb612e669472888fc82a779fddb58d",
+      "created_at": "2025-12-09T07:52:02.579Z",
+      "updated_at": "2025-12-09T07:52:02.579Z"
     }
   ]
 }
