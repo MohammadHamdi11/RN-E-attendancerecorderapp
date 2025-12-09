@@ -1,45 +1,25 @@
 {
   "user_email": "backup@backdoor.com",
-  "user_id": "backup_backdoor_com_1765194962660",
-  "account_created": "2025-12-08T11:56:02.660Z",
-  "last_sync": "2025-12-08T11:56:02.660Z",
-  "total_sessions": 2,
+  "user_id": "backup_backdoor_com_1765302593903",
+  "account_created": "2025-12-09T17:49:53.903Z",
+  "last_sync": "2025-12-09T17:49:53.903Z",
+  "total_sessions": 1,
   "total_scans": 1,
   "sessions": [
     {
-      "id": "scanner1764947894763",
-      "location": "Neurology",
-      "year": 5,
+      "id": "scanner1765302573620",
+      "location": "Community Medicine",
+      "year": 3,
       "batch": "2025/2026",
-      "dateTime": "2025-12-05T15:18:14.763Z",
-      "formattedDateTime": "05/12/2025 17:18:14",
-      "scans": [],
-      "inProgress": false,
-      "isScanner": true,
-      "sessionType": "scanner",
-      "recoveryStatus": "closed_normally",
-      "isChecklist": false,
-      "backedUp": true,
-      "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1765194962660",
-      "created_by": "backup@backdoor.com",
-      "created_at": "2025-12-08T11:56:02.660Z",
-      "updated_at": "2025-12-08T11:56:02.660Z"
-    },
-    {
-      "id": "scanner1765194957876",
-      "location": "Rheumatology",
-      "year": 5,
-      "batch": "2025/2026",
-      "dateTime": "2025-12-08T11:55:57.876Z",
-      "formattedDateTime": "08/12/2025 13:55:57",
+      "dateTime": "2025-12-09T17:49:33.620Z",
+      "formattedDateTime": "09/12/2025 19:49:33",
       "scans": [
         {
-          "id": "1765194961795",
+          "id": "1765302592626",
           "content": "231249",
-          "timestamp": "2025-12-08T11:56:01.792Z",
-          "formattedTime": "13:56:01",
-          "time": "2025-12-08T11:56:01.792Z",
+          "timestamp": "2025-12-09T17:49:52.623Z",
+          "formattedTime": "19:49:52",
+          "time": "2025-12-09T17:49:52.623Z",
           "isManual": false
         }
       ],
@@ -49,10 +29,10 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1765194962660",
+      "user_id": "backup_backdoor_com_1765302593903",
       "created_by": "backup@backdoor.com",
-      "created_at": "2025-12-08T11:56:02.660Z",
-      "updated_at": "2025-12-08T11:56:02.660Z"
+      "created_at": "2025-12-09T17:49:53.903Z",
+      "updated_at": "2025-12-09T17:49:53.903Z"
     }
   ]
 }
