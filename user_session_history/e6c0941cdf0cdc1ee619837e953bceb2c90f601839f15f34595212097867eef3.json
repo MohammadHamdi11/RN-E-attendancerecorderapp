@@ -1,10 +1,10 @@
 {
   "user_email": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626",
-  "user_id": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626_1765352890323",
-  "account_created": "2025-12-10T07:48:10.323Z",
-  "last_sync": "2025-12-10T07:48:10.323Z",
-  "total_sessions": 2,
-  "total_scans": 38,
+  "user_id": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626_1765365823824",
+  "account_created": "2025-12-10T11:23:43.824Z",
+  "last_sync": "2025-12-10T11:23:43.824Z",
+  "total_sessions": 3,
+  "total_scans": 39,
   "sessions": [
     {
       "id": "scanner1765192082879",
@@ -20,10 +20,10 @@
       "recoveryStatus": "interrupted",
       "isChecklist": false,
       "user_email": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626",
-      "user_id": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626_1765352890323",
+      "user_id": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626_1765365823824",
       "created_by": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626",
-      "created_at": "2025-12-10T07:48:10.323Z",
-      "updated_at": "2025-12-10T07:48:10.323Z"
+      "created_at": "2025-12-10T11:23:43.824Z",
+      "updated_at": "2025-12-10T11:23:43.824Z"
     },
     {
       "id": "scanner1765352606507",
@@ -338,16 +338,45 @@
           "isManual": true
         }
       ],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "closed_normally",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626",
+      "user_id": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626_1765365823824",
+      "created_by": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626",
+      "created_at": "2025-12-10T11:23:43.824Z",
+      "updated_at": "2025-12-10T11:23:43.824Z"
+    },
+    {
+      "id": "scanner1765365804615",
+      "location": "Clinical Pathology",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-12-10T11:23:24.615Z",
+      "formattedDateTime": "10/12/2025 13:23:24",
+      "scans": [
+        {
+          "id": "1765365822991",
+          "content": "211732",
+          "timestamp": "2025-12-10T11:23:42.991Z",
+          "formattedTime": "13:23:42",
+          "time": "2025-12-10T11:23:42.991Z",
+          "isManual": true
+        }
+      ],
       "inProgress": true,
       "isScanner": true,
       "sessionType": "scanner",
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626",
-      "user_id": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626_1765352890323",
+      "user_id": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626_1765365823824",
       "created_by": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626",
-      "created_at": "2025-12-10T07:48:10.323Z",
-      "updated_at": "2025-12-10T07:48:10.323Z"
+      "created_at": "2025-12-10T11:23:43.824Z",
+      "updated_at": "2025-12-10T11:23:43.824Z"
     }
   ]
 }
