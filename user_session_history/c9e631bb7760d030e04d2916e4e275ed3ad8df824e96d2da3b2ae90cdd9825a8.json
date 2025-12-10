@@ -1,0 +1,38 @@
+{
+  "user_email": "0e237a72b61fdb6541d6cce20f489c3e56444af8b8f7e1ffb531cc94f38fbac7",
+  "user_id": "0e237a72b61fdb6541d6cce20f489c3e56444af8b8f7e1ffb531cc94f38fbac7_1765354198610",
+  "account_created": "2025-12-10T08:09:58.610Z",
+  "last_sync": "2025-12-10T08:09:58.610Z",
+  "total_sessions": 1,
+  "total_scans": 1,
+  "sessions": [
+    {
+      "id": "scanner1765354194205",
+      "location": "Physical Medicine",
+      "year": 5,
+      "batch": "2025/2026",
+      "dateTime": "2025-12-10T08:09:54.205Z",
+      "formattedDateTime": "10/12/2025 10:09:54",
+      "scans": [
+        {
+          "id": "1765354197995",
+          "content": "202196",
+          "timestamp": "2025-12-10T08:09:57.992Z",
+          "formattedTime": "10:09:57",
+          "time": "2025-12-10T08:09:57.992Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "0e237a72b61fdb6541d6cce20f489c3e56444af8b8f7e1ffb531cc94f38fbac7",
+      "user_id": "0e237a72b61fdb6541d6cce20f489c3e56444af8b8f7e1ffb531cc94f38fbac7_1765354198611",
+      "created_by": "0e237a72b61fdb6541d6cce20f489c3e56444af8b8f7e1ffb531cc94f38fbac7",
+      "created_at": "2025-12-10T08:09:58.610Z",
+      "updated_at": "2025-12-10T08:09:58.610Z"
+    }
+  ]
+}
