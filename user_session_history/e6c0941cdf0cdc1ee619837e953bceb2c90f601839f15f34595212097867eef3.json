@@ -1,10 +1,10 @@
 {
   "user_email": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626",
-  "user_id": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626_1765366082511",
-  "account_created": "2025-12-10T11:28:02.511Z",
-  "last_sync": "2025-12-10T11:28:02.511Z",
-  "total_sessions": 3,
-  "total_scans": 83,
+  "user_id": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626_1765366418361",
+  "account_created": "2025-12-10T11:33:38.361Z",
+  "last_sync": "2025-12-10T11:33:38.361Z",
+  "total_sessions": 4,
+  "total_scans": 89,
   "sessions": [
     {
       "id": "scanner1765192082879",
@@ -20,10 +20,10 @@
       "recoveryStatus": "interrupted",
       "isChecklist": false,
       "user_email": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626",
-      "user_id": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626_1765366082511",
+      "user_id": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626_1765366418361",
       "created_by": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626",
-      "created_at": "2025-12-10T11:28:02.511Z",
-      "updated_at": "2025-12-10T11:28:02.511Z"
+      "created_at": "2025-12-10T11:33:38.361Z",
+      "updated_at": "2025-12-10T11:33:38.361Z"
     },
     {
       "id": "scanner1765352606507",
@@ -345,10 +345,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626",
-      "user_id": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626_1765366082511",
+      "user_id": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626_1765366418361",
       "created_by": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626",
-      "created_at": "2025-12-10T11:28:02.511Z",
-      "updated_at": "2025-12-10T11:28:02.511Z"
+      "created_at": "2025-12-10T11:33:38.361Z",
+      "updated_at": "2025-12-10T11:33:38.361Z"
     },
     {
       "id": "scanner1765365804615",
@@ -717,6 +717,75 @@
           "formattedTime": "13:28:01",
           "time": "2025-12-10T11:28:01.995Z",
           "isManual": true
+        },
+        {
+          "id": "1765366087489",
+          "content": "221285",
+          "timestamp": "2025-12-10T11:28:07.489Z",
+          "formattedTime": "13:28:07",
+          "time": "2025-12-10T11:28:07.489Z",
+          "isManual": true
+        },
+        {
+          "id": "1765366092087",
+          "content": "211711",
+          "timestamp": "2025-12-10T11:28:12.086Z",
+          "formattedTime": "13:28:12",
+          "time": "2025-12-10T11:28:12.086Z",
+          "isManual": false
+        },
+        {
+          "id": "1765366097844",
+          "content": "211737",
+          "timestamp": "2025-12-10T11:28:17.843Z",
+          "formattedTime": "13:28:17",
+          "time": "2025-12-10T11:28:17.843Z",
+          "isManual": true
+        },
+        {
+          "id": "1765366103537",
+          "content": "211728",
+          "timestamp": "2025-12-10T11:28:23.537Z",
+          "formattedTime": "13:28:23",
+          "time": "2025-12-10T11:28:23.537Z",
+          "isManual": true
+        },
+        {
+          "id": "1765366109114",
+          "content": "211822",
+          "timestamp": "2025-12-10T11:28:29.114Z",
+          "formattedTime": "13:28:29",
+          "time": "2025-12-10T11:28:29.114Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "closed_normally",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626",
+      "user_id": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626_1765366418361",
+      "created_by": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626",
+      "created_at": "2025-12-10T11:33:38.361Z",
+      "updated_at": "2025-12-10T11:33:38.361Z"
+    },
+    {
+      "id": "scanner1765366411277",
+      "location": "Clinical Pathology",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-12-10T11:33:31.277Z",
+      "formattedDateTime": "10/12/2025 13:33:31",
+      "scans": [
+        {
+          "id": "1765366417628",
+          "content": "211686",
+          "timestamp": "2025-12-10T11:33:37.628Z",
+          "formattedTime": "13:33:37",
+          "time": "2025-12-10T11:33:37.628Z",
+          "isManual": true
         }
       ],
       "inProgress": true,
@@ -725,10 +794,10 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626",
-      "user_id": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626_1765366082511",
+      "user_id": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626_1765366418361",
       "created_by": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626",
-      "created_at": "2025-12-10T11:28:02.511Z",
-      "updated_at": "2025-12-10T11:28:02.511Z"
+      "created_at": "2025-12-10T11:33:38.361Z",
+      "updated_at": "2025-12-10T11:33:38.361Z"
     }
   ]
 }
