@@ -1,0 +1,38 @@
+{
+  "user_email": "d735ac20d40e2aaee11845fbfb103f0cc2e14e464ab5ecc212c30cd1c09fd0ca",
+  "user_id": "d735ac20d40e2aaee11845fbfb103f0cc2e14e464ab5ecc212c30cd1c09fd0ca_1765799588270",
+  "account_created": "2025-12-15T11:53:08.270Z",
+  "last_sync": "2025-12-15T11:53:08.270Z",
+  "total_sessions": 1,
+  "total_scans": 1,
+  "sessions": [
+    {
+      "id": "scanner1765799580406",
+      "location": "Cardiology",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-12-15T11:53:00.406Z",
+      "formattedDateTime": "15/12/2025 13:53:00",
+      "scans": [
+        {
+          "id": "1765799587392",
+          "content": "211753",
+          "timestamp": "2025-12-15T11:53:07.384Z",
+          "formattedTime": "13:53:07",
+          "time": "2025-12-15T11:53:07.384Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "d735ac20d40e2aaee11845fbfb103f0cc2e14e464ab5ecc212c30cd1c09fd0ca",
+      "user_id": "d735ac20d40e2aaee11845fbfb103f0cc2e14e464ab5ecc212c30cd1c09fd0ca_1765799588270",
+      "created_by": "d735ac20d40e2aaee11845fbfb103f0cc2e14e464ab5ecc212c30cd1c09fd0ca",
+      "created_at": "2025-12-15T11:53:08.270Z",
+      "updated_at": "2025-12-15T11:53:08.270Z"
+    }
+  ]
+}
