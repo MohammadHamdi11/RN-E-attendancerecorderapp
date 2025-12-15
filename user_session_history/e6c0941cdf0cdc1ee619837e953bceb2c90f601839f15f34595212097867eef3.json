@@ -1,10 +1,10 @@
 {
   "user_email": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626",
-  "user_id": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626_1765366418361",
-  "account_created": "2025-12-10T11:33:38.361Z",
-  "last_sync": "2025-12-10T11:33:38.361Z",
-  "total_sessions": 4,
-  "total_scans": 89,
+  "user_id": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626_1765784967948",
+  "account_created": "2025-12-15T07:49:27.948Z",
+  "last_sync": "2025-12-15T07:49:27.948Z",
+  "total_sessions": 6,
+  "total_scans": 90,
   "sessions": [
     {
       "id": "scanner1765192082879",
@@ -20,10 +20,10 @@
       "recoveryStatus": "interrupted",
       "isChecklist": false,
       "user_email": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626",
-      "user_id": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626_1765366418361",
+      "user_id": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626_1765784967948",
       "created_by": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626",
-      "created_at": "2025-12-10T11:33:38.361Z",
-      "updated_at": "2025-12-10T11:33:38.361Z"
+      "created_at": "2025-12-15T07:49:27.948Z",
+      "updated_at": "2025-12-15T07:49:27.948Z"
     },
     {
       "id": "scanner1765352606507",
@@ -345,10 +345,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626",
-      "user_id": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626_1765366418361",
+      "user_id": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626_1765784967948",
       "created_by": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626",
-      "created_at": "2025-12-10T11:33:38.361Z",
-      "updated_at": "2025-12-10T11:33:38.361Z"
+      "created_at": "2025-12-15T07:49:27.948Z",
+      "updated_at": "2025-12-15T07:49:27.948Z"
     },
     {
       "id": "scanner1765365804615",
@@ -766,10 +766,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626",
-      "user_id": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626_1765366418361",
+      "user_id": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626_1765784967948",
       "created_by": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626",
-      "created_at": "2025-12-10T11:33:38.361Z",
-      "updated_at": "2025-12-10T11:33:38.361Z"
+      "created_at": "2025-12-15T07:49:27.948Z",
+      "updated_at": "2025-12-15T07:49:27.948Z"
     },
     {
       "id": "scanner1765366411277",
@@ -780,11 +780,60 @@
       "formattedDateTime": "10/12/2025 13:33:31",
       "scans": [
         {
-          "id": "1765366417628",
-          "content": "211686",
-          "timestamp": "2025-12-10T11:33:37.628Z",
-          "formattedTime": "13:33:37",
-          "time": "2025-12-10T11:33:37.628Z",
+          "id": "1765366425325",
+          "content": "211687",
+          "timestamp": "2025-12-10T11:33:45.325Z",
+          "formattedTime": "13:33:45",
+          "time": "2025-12-10T11:33:45.325Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "closed_normally",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626",
+      "user_id": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626_1765784967948",
+      "created_by": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626",
+      "created_at": "2025-12-15T07:49:27.948Z",
+      "updated_at": "2025-12-15T07:49:27.948Z"
+    },
+    {
+      "id": "scanner1765657688183",
+      "location": "Clinical Pathology",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-12-13T20:28:08.183Z",
+      "formattedDateTime": "13/12/2025 22:28:08",
+      "scans": [],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "closed_normally",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626",
+      "user_id": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626_1765784967948",
+      "created_by": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626",
+      "created_at": "2025-12-15T07:49:27.948Z",
+      "updated_at": "2025-12-15T07:49:27.948Z"
+    },
+    {
+      "id": "scanner1765784783234",
+      "location": "Clinical Pathology",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2025-12-15T07:46:23.234Z",
+      "formattedDateTime": "15/12/2025 09:46:23",
+      "scans": [
+        {
+          "id": "1765784967316",
+          "content": "211623",
+          "timestamp": "2025-12-15T07:49:27.316Z",
+          "formattedTime": "09:49:27",
+          "time": "2025-12-15T07:49:27.316Z",
           "isManual": true
         }
       ],
@@ -794,10 +843,10 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626",
-      "user_id": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626_1765366418361",
+      "user_id": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626_1765784967948",
       "created_by": "a12ff700a4f05d837b3c3f5afcd04a4690613f7b4795b0ae82d219c3eb2b4626",
-      "created_at": "2025-12-10T11:33:38.361Z",
-      "updated_at": "2025-12-10T11:33:38.361Z"
+      "created_at": "2025-12-15T07:49:27.948Z",
+      "updated_at": "2025-12-15T07:49:27.948Z"
     }
   ]
 }
