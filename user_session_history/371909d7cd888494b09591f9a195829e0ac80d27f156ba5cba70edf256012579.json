@@ -1,10 +1,10 @@
 {
   "user_email": "e762fd15182de415ab055fbedcde21216abf4a90ce09b728cc9ba09d65fbca5e",
-  "user_id": "e762fd15182de415ab055fbedcde21216abf4a90ce09b728cc9ba09d65fbca5e_1765968541166",
-  "account_created": "2025-12-17T10:49:01.166Z",
-  "last_sync": "2025-12-17T10:49:01.166Z",
+  "user_id": "e762fd15182de415ab055fbedcde21216abf4a90ce09b728cc9ba09d65fbca5e_1765968703100",
+  "account_created": "2025-12-17T10:51:43.100Z",
+  "last_sync": "2025-12-17T10:51:43.100Z",
   "total_sessions": 1,
-  "total_scans": 2,
+  "total_scans": 5,
   "sessions": [
     {
       "id": "scanner1765968469194",
@@ -29,6 +29,30 @@
           "formattedTime": "12:49:01",
           "time": "2025-12-17T10:49:01.107Z",
           "isManual": true
+        },
+        {
+          "id": "1765968554485",
+          "content": "234581",
+          "timestamp": "2025-12-17T10:49:14.485Z",
+          "formattedTime": "12:49:14",
+          "time": "2025-12-17T10:49:14.485Z",
+          "isManual": true
+        },
+        {
+          "id": "1765968596020",
+          "content": "235102",
+          "timestamp": "2025-12-17T10:49:56.019Z",
+          "formattedTime": "12:49:56",
+          "time": "2025-12-17T10:49:56.019Z",
+          "isManual": true
+        },
+        {
+          "id": "1765968702597",
+          "content": "235170",
+          "timestamp": "2025-12-17T10:51:42.597Z",
+          "formattedTime": "12:51:42",
+          "time": "2025-12-17T10:51:42.597Z",
+          "isManual": true
         }
       ],
       "inProgress": true,
@@ -37,10 +61,10 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "e762fd15182de415ab055fbedcde21216abf4a90ce09b728cc9ba09d65fbca5e",
-      "user_id": "e762fd15182de415ab055fbedcde21216abf4a90ce09b728cc9ba09d65fbca5e_1765968541166",
+      "user_id": "e762fd15182de415ab055fbedcde21216abf4a90ce09b728cc9ba09d65fbca5e_1765968703100",
       "created_by": "e762fd15182de415ab055fbedcde21216abf4a90ce09b728cc9ba09d65fbca5e",
-      "created_at": "2025-12-17T10:49:01.166Z",
-      "updated_at": "2025-12-17T10:49:01.166Z"
+      "created_at": "2025-12-17T10:51:43.100Z",
+      "updated_at": "2025-12-17T10:51:43.100Z"
     }
   ]
 }
