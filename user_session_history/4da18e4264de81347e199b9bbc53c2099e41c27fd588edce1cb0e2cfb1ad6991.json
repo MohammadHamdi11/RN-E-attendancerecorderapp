@@ -1,10 +1,10 @@
 {
   "user_email": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772",
-  "user_id": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772_1767083120679",
-  "account_created": "2025-12-30T08:25:20.679Z",
-  "last_sync": "2025-12-30T08:25:20.679Z",
-  "total_sessions": 2,
-  "total_scans": 78,
+  "user_id": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772_1767083190753",
+  "account_created": "2025-12-30T08:26:30.753Z",
+  "last_sync": "2025-12-30T08:26:30.753Z",
+  "total_sessions": 3,
+  "total_scans": 92,
   "sessions": [
     {
       "id": "scanner1766818307847",
@@ -542,10 +542,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772",
-      "user_id": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772_1767083120679",
+      "user_id": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772_1767083190753",
       "created_by": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772",
-      "created_at": "2025-12-30T08:25:20.679Z",
-      "updated_at": "2025-12-30T08:25:20.679Z"
+      "created_at": "2025-12-30T08:26:30.753Z",
+      "updated_at": "2025-12-30T08:26:30.753Z"
     },
     {
       "id": "scanner1767004485251",
@@ -663,14 +663,146 @@
       "inProgress": false,
       "isScanner": true,
       "sessionType": "scanner",
-      "recoveryStatus": "declined_recovery",
+      "recoveryStatus": "interrupted",
       "isChecklist": false,
       "backedUp": true,
       "user_email": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772",
-      "user_id": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772_1767083120679",
+      "user_id": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772_1767083190753",
       "created_by": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772",
-      "created_at": "2025-12-30T08:25:20.679Z",
-      "updated_at": "2025-12-30T08:25:20.679Z"
+      "created_at": "2025-12-30T08:26:30.753Z",
+      "updated_at": "2025-12-30T08:26:30.753Z"
+    },
+    {
+      "id": "scanner1767083127161",
+      "location": "Neurology",
+      "year": 5,
+      "batch": "2025/2026",
+      "dateTime": "2025-12-30T08:25:27.161Z",
+      "formattedDateTime": "30/12/2025 10:25:27",
+      "scans": [
+        {
+          "id": "1767083129812",
+          "content": "201274",
+          "timestamp": "2025-12-30T08:25:29.811Z",
+          "formattedTime": "10:25:29",
+          "time": "2025-12-30T08:25:29.811Z",
+          "isManual": false
+        },
+        {
+          "id": "1767083132679",
+          "content": "201214",
+          "timestamp": "2025-12-30T08:25:32.678Z",
+          "formattedTime": "10:25:32",
+          "time": "2025-12-30T08:25:32.678Z",
+          "isManual": false
+        },
+        {
+          "id": "1767083135386",
+          "content": "201234",
+          "timestamp": "2025-12-30T08:25:35.385Z",
+          "formattedTime": "10:25:35",
+          "time": "2025-12-30T08:25:35.385Z",
+          "isManual": false
+        },
+        {
+          "id": "1767083137111",
+          "content": "201993",
+          "timestamp": "2025-12-30T08:25:37.110Z",
+          "formattedTime": "10:25:37",
+          "time": "2025-12-30T08:25:37.110Z",
+          "isManual": false
+        },
+        {
+          "id": "1767083139754",
+          "content": "201814",
+          "timestamp": "2025-12-30T08:25:39.753Z",
+          "formattedTime": "10:25:39",
+          "time": "2025-12-30T08:25:39.753Z",
+          "isManual": false
+        },
+        {
+          "id": "1767083143227",
+          "content": "201228",
+          "timestamp": "2025-12-30T08:25:43.226Z",
+          "formattedTime": "10:25:43",
+          "time": "2025-12-30T08:25:43.226Z",
+          "isManual": false
+        },
+        {
+          "id": "1767083150928",
+          "content": "201846",
+          "timestamp": "2025-12-30T08:25:50.927Z",
+          "formattedTime": "10:25:50",
+          "time": "2025-12-30T08:25:50.927Z",
+          "isManual": false
+        },
+        {
+          "id": "1767083158533",
+          "content": "201874",
+          "timestamp": "2025-12-30T08:25:58.533Z",
+          "formattedTime": "10:25:58",
+          "time": "2025-12-30T08:25:58.533Z",
+          "isManual": false
+        },
+        {
+          "id": "1767083162259",
+          "content": "201667",
+          "timestamp": "2025-12-30T08:26:02.258Z",
+          "formattedTime": "10:26:02",
+          "time": "2025-12-30T08:26:02.258Z",
+          "isManual": false
+        },
+        {
+          "id": "1767083165138",
+          "content": "201869",
+          "timestamp": "2025-12-30T08:26:05.137Z",
+          "formattedTime": "10:26:05",
+          "time": "2025-12-30T08:26:05.137Z",
+          "isManual": false
+        },
+        {
+          "id": "1767083169541",
+          "content": "201371",
+          "timestamp": "2025-12-30T08:26:09.541Z",
+          "formattedTime": "10:26:09",
+          "time": "2025-12-30T08:26:09.541Z",
+          "isManual": false
+        },
+        {
+          "id": "1767083174494",
+          "content": "201031",
+          "timestamp": "2025-12-30T08:26:14.494Z",
+          "formattedTime": "10:26:14",
+          "time": "2025-12-30T08:26:14.494Z",
+          "isManual": false
+        },
+        {
+          "id": "1767083176461",
+          "content": "201561",
+          "timestamp": "2025-12-30T08:26:16.461Z",
+          "formattedTime": "10:26:16",
+          "time": "2025-12-30T08:26:16.461Z",
+          "isManual": false
+        },
+        {
+          "id": "1767083190297",
+          "content": "201322",
+          "timestamp": "2025-12-30T08:26:30.297Z",
+          "formattedTime": "10:26:30",
+          "time": "2025-12-30T08:26:30.297Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772",
+      "user_id": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772_1767083190753",
+      "created_by": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772",
+      "created_at": "2025-12-30T08:26:30.753Z",
+      "updated_at": "2025-12-30T08:26:30.753Z"
     }
   ]
 }
