@@ -882,7 +882,7 @@ class AutomatedAttendanceProcessor:
         
         # Time window constants from UpdateAttendance
         # Note: Time windows are now calculated dynamically based on session duration
-        self.STANDARD_BEFORE_MINUTES = 15
+        self.STANDARD_BEFORE_MINUTES = 0
         self.STANDARD_AFTER_MINUTES = 120
         self.EXCEPTION_BEFORE_MINUTES = 15
         self.EXCEPTION_AFTER_MINUTES = 120
@@ -2487,7 +2487,7 @@ class AutomatedAttendanceProcessor:
                                                 session_info['session_num'], location, normalized_date, time,
                                                 validation_group_name
                                             ])
-                                            break
+                                            # break
 
         return valid_attendance
 
