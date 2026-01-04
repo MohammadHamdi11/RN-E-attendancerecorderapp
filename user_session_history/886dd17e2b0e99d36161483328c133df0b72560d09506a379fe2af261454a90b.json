@@ -1,10 +1,10 @@
 {
   "user_email": "88f23dc9c447abce495d23ca0dc0106b69c9e387778ffda7bb5e525083a25237",
-  "user_id": "88f23dc9c447abce495d23ca0dc0106b69c9e387778ffda7bb5e525083a25237_1767521338844",
-  "account_created": "2026-01-04T10:08:58.843Z",
-  "last_sync": "2026-01-04T10:08:58.843Z",
-  "total_sessions": 1,
-  "total_scans": 0,
+  "user_id": "88f23dc9c447abce495d23ca0dc0106b69c9e387778ffda7bb5e525083a25237_1767521356416",
+  "account_created": "2026-01-04T10:09:16.416Z",
+  "last_sync": "2026-01-04T10:09:16.416Z",
+  "total_sessions": 2,
+  "total_scans": 1,
   "sessions": [
     {
       "id": "scanner1767450316272",
@@ -21,10 +21,38 @@
       "isChecklist": false,
       "backedUp": false,
       "user_email": "88f23dc9c447abce495d23ca0dc0106b69c9e387778ffda7bb5e525083a25237",
-      "user_id": "88f23dc9c447abce495d23ca0dc0106b69c9e387778ffda7bb5e525083a25237_1767521338844",
+      "user_id": "88f23dc9c447abce495d23ca0dc0106b69c9e387778ffda7bb5e525083a25237_1767521356416",
       "created_by": "88f23dc9c447abce495d23ca0dc0106b69c9e387778ffda7bb5e525083a25237",
-      "created_at": "2026-01-04T10:08:58.843Z",
-      "updated_at": "2026-01-04T10:08:58.843Z"
+      "created_at": "2026-01-04T10:09:16.416Z",
+      "updated_at": "2026-01-04T10:09:16.416Z"
+    },
+    {
+      "id": "scanner1767521348245",
+      "location": "Cardiology",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2026-01-04T10:09:08.245Z",
+      "formattedDateTime": "04/01/2026 12:09:08",
+      "scans": [
+        {
+          "id": "1767521356351",
+          "content": "191088",
+          "timestamp": "2026-01-04T10:09:16.350Z",
+          "formattedTime": "12:09:16",
+          "time": "2026-01-04T10:09:16.350Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "88f23dc9c447abce495d23ca0dc0106b69c9e387778ffda7bb5e525083a25237",
+      "user_id": "88f23dc9c447abce495d23ca0dc0106b69c9e387778ffda7bb5e525083a25237_1767521356417",
+      "created_by": "88f23dc9c447abce495d23ca0dc0106b69c9e387778ffda7bb5e525083a25237",
+      "created_at": "2026-01-04T10:09:16.416Z",
+      "updated_at": "2026-01-04T10:09:16.416Z"
     }
   ]
 }
