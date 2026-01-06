@@ -1,10 +1,10 @@
 {
   "user_email": "88f23dc9c447abce495d23ca0dc0106b69c9e387778ffda7bb5e525083a25237",
-  "user_id": "88f23dc9c447abce495d23ca0dc0106b69c9e387778ffda7bb5e525083a25237_1767617628646",
-  "account_created": "2026-01-05T12:53:48.646Z",
-  "last_sync": "2026-01-05T12:53:48.646Z",
-  "total_sessions": 3,
-  "total_scans": 87,
+  "user_id": "88f23dc9c447abce495d23ca0dc0106b69c9e387778ffda7bb5e525083a25237_1767699290680",
+  "account_created": "2026-01-06T11:34:50.680Z",
+  "last_sync": "2026-01-06T11:34:50.680Z",
+  "total_sessions": 4,
+  "total_scans": 88,
   "sessions": [
     {
       "id": "scanner1767450316272",
@@ -21,10 +21,10 @@
       "isChecklist": false,
       "backedUp": false,
       "user_email": "88f23dc9c447abce495d23ca0dc0106b69c9e387778ffda7bb5e525083a25237",
-      "user_id": "88f23dc9c447abce495d23ca0dc0106b69c9e387778ffda7bb5e525083a25237_1767617628646",
+      "user_id": "88f23dc9c447abce495d23ca0dc0106b69c9e387778ffda7bb5e525083a25237_1767699290680",
       "created_by": "88f23dc9c447abce495d23ca0dc0106b69c9e387778ffda7bb5e525083a25237",
-      "created_at": "2026-01-05T12:53:48.646Z",
-      "updated_at": "2026-01-05T12:53:48.646Z"
+      "created_at": "2026-01-06T11:34:50.680Z",
+      "updated_at": "2026-01-06T11:34:50.680Z"
     },
     {
       "id": "scanner1767521348245",
@@ -314,10 +314,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "88f23dc9c447abce495d23ca0dc0106b69c9e387778ffda7bb5e525083a25237",
-      "user_id": "88f23dc9c447abce495d23ca0dc0106b69c9e387778ffda7bb5e525083a25237_1767617628646",
+      "user_id": "88f23dc9c447abce495d23ca0dc0106b69c9e387778ffda7bb5e525083a25237_1767699290680",
       "created_by": "88f23dc9c447abce495d23ca0dc0106b69c9e387778ffda7bb5e525083a25237",
-      "created_at": "2026-01-05T12:53:48.646Z",
-      "updated_at": "2026-01-05T12:53:48.646Z"
+      "created_at": "2026-01-06T11:34:50.680Z",
+      "updated_at": "2026-01-06T11:34:50.680Z"
     },
     {
       "id": "scanner1767607177007",
@@ -759,10 +759,38 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "88f23dc9c447abce495d23ca0dc0106b69c9e387778ffda7bb5e525083a25237",
-      "user_id": "88f23dc9c447abce495d23ca0dc0106b69c9e387778ffda7bb5e525083a25237_1767617628646",
+      "user_id": "88f23dc9c447abce495d23ca0dc0106b69c9e387778ffda7bb5e525083a25237_1767699290680",
       "created_by": "88f23dc9c447abce495d23ca0dc0106b69c9e387778ffda7bb5e525083a25237",
-      "created_at": "2026-01-05T12:53:48.646Z",
-      "updated_at": "2026-01-05T12:53:48.646Z"
+      "created_at": "2026-01-06T11:34:50.680Z",
+      "updated_at": "2026-01-06T11:34:50.680Z"
+    },
+    {
+      "id": "scanner1767699286069",
+      "location": "Cardiology",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2026-01-06T11:34:46.069Z",
+      "formattedDateTime": "06/01/2026 13:34:46",
+      "scans": [
+        {
+          "id": "1767699290257",
+          "content": "190874",
+          "timestamp": "2026-01-06T11:34:50.254Z",
+          "formattedTime": "13:34:50",
+          "time": "2026-01-06T11:34:50.254Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "88f23dc9c447abce495d23ca0dc0106b69c9e387778ffda7bb5e525083a25237",
+      "user_id": "88f23dc9c447abce495d23ca0dc0106b69c9e387778ffda7bb5e525083a25237_1767699290680",
+      "created_by": "88f23dc9c447abce495d23ca0dc0106b69c9e387778ffda7bb5e525083a25237",
+      "created_at": "2026-01-06T11:34:50.680Z",
+      "updated_at": "2026-01-06T11:34:50.680Z"
     }
   ]
 }
