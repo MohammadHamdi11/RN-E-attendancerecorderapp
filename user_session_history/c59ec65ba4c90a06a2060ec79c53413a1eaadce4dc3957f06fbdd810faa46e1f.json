@@ -1,10 +1,10 @@
 {
   "user_email": "fabd2b216ab2ca6bc1b1ef88efecb788427fa72f484f9b6616c8b3a08a4f35c9",
-  "user_id": "fabd2b216ab2ca6bc1b1ef88efecb788427fa72f484f9b6616c8b3a08a4f35c9_1767696295894",
-  "account_created": "2026-01-06T10:44:55.894Z",
-  "last_sync": "2026-01-06T10:44:55.894Z",
+  "user_id": "fabd2b216ab2ca6bc1b1ef88efecb788427fa72f484f9b6616c8b3a08a4f35c9_1767696359893",
+  "account_created": "2026-01-06T10:45:59.893Z",
+  "last_sync": "2026-01-06T10:45:59.893Z",
   "total_sessions": 1,
-  "total_scans": 9,
+  "total_scans": 13,
   "sessions": [
     {
       "id": "scanner1767693672104",
@@ -85,6 +85,38 @@
           "formattedTime": "12:44:55",
           "time": "2026-01-06T10:44:55.684Z",
           "isManual": false
+        },
+        {
+          "id": "1767696329967",
+          "content": "212248",
+          "timestamp": "2026-01-06T10:45:29.967Z",
+          "formattedTime": "12:45:29",
+          "time": "2026-01-06T10:45:29.967Z",
+          "isManual": true
+        },
+        {
+          "id": "1767696333604",
+          "content": "200228",
+          "timestamp": "2026-01-06T10:45:33.604Z",
+          "formattedTime": "12:45:33",
+          "time": "2026-01-06T10:45:33.604Z",
+          "isManual": false
+        },
+        {
+          "id": "1767696338906",
+          "content": "200163",
+          "timestamp": "2026-01-06T10:45:38.906Z",
+          "formattedTime": "12:45:38",
+          "time": "2026-01-06T10:45:38.906Z",
+          "isManual": false
+        },
+        {
+          "id": "1767696359459",
+          "content": "200116",
+          "timestamp": "2026-01-06T10:45:59.459Z",
+          "formattedTime": "12:45:59",
+          "time": "2026-01-06T10:45:59.459Z",
+          "isManual": true
         }
       ],
       "inProgress": true,
@@ -93,10 +125,10 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "fabd2b216ab2ca6bc1b1ef88efecb788427fa72f484f9b6616c8b3a08a4f35c9",
-      "user_id": "fabd2b216ab2ca6bc1b1ef88efecb788427fa72f484f9b6616c8b3a08a4f35c9_1767696295894",
+      "user_id": "fabd2b216ab2ca6bc1b1ef88efecb788427fa72f484f9b6616c8b3a08a4f35c9_1767696359893",
       "created_by": "fabd2b216ab2ca6bc1b1ef88efecb788427fa72f484f9b6616c8b3a08a4f35c9",
-      "created_at": "2026-01-06T10:44:55.894Z",
-      "updated_at": "2026-01-06T10:44:55.894Z"
+      "created_at": "2026-01-06T10:45:59.893Z",
+      "updated_at": "2026-01-06T10:45:59.893Z"
     }
   ]
 }
