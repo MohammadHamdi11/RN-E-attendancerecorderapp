@@ -1,10 +1,10 @@
 {
   "user_email": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772",
-  "user_id": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772_1767693614927",
-  "account_created": "2026-01-06T10:00:14.927Z",
-  "last_sync": "2026-01-06T10:00:14.927Z",
-  "total_sessions": 4,
-  "total_scans": 197,
+  "user_id": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772_1768725412443",
+  "account_created": "2026-01-18T08:36:52.443Z",
+  "last_sync": "2026-01-18T08:36:52.443Z",
+  "total_sessions": 5,
+  "total_scans": 198,
   "sessions": [
     {
       "id": "scanner1766818307847",
@@ -542,10 +542,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772",
-      "user_id": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772_1767693614927",
+      "user_id": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772_1768725412443",
       "created_by": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772",
-      "created_at": "2026-01-06T10:00:14.927Z",
-      "updated_at": "2026-01-06T10:00:14.927Z"
+      "created_at": "2026-01-18T08:36:52.443Z",
+      "updated_at": "2026-01-18T08:36:52.443Z"
     },
     {
       "id": "scanner1767004485251",
@@ -667,10 +667,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772",
-      "user_id": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772_1767693614927",
+      "user_id": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772_1768725412443",
       "created_by": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772",
-      "created_at": "2026-01-06T10:00:14.927Z",
-      "updated_at": "2026-01-06T10:00:14.927Z"
+      "created_at": "2026-01-18T08:36:52.443Z",
+      "updated_at": "2026-01-18T08:36:52.443Z"
     },
     {
       "id": "scanner1767083127161",
@@ -1184,10 +1184,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772",
-      "user_id": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772_1767693614927",
+      "user_id": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772_1768725412443",
       "created_by": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772",
-      "created_at": "2026-01-06T10:00:14.927Z",
-      "updated_at": "2026-01-06T10:00:14.927Z"
+      "created_at": "2026-01-18T08:36:52.443Z",
+      "updated_at": "2026-01-18T08:36:52.443Z"
     },
     {
       "id": "scanner1767693249138",
@@ -1661,10 +1661,38 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772",
-      "user_id": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772_1767693614927",
+      "user_id": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772_1768725412443",
       "created_by": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772",
-      "created_at": "2026-01-06T10:00:14.927Z",
-      "updated_at": "2026-01-06T10:00:14.927Z"
+      "created_at": "2026-01-18T08:36:52.443Z",
+      "updated_at": "2026-01-18T08:36:52.443Z"
+    },
+    {
+      "id": "scanner1768725295364",
+      "location": "Neurology",
+      "year": 5,
+      "batch": "2026/2027",
+      "dateTime": "2026-01-18T08:34:55.364Z",
+      "formattedDateTime": "18/01/2026 10:34:55",
+      "scans": [
+        {
+          "id": "1768725411762",
+          "content": "212363",
+          "timestamp": "2026-01-18T08:36:51.761Z",
+          "formattedTime": "10:36:51",
+          "time": "2026-01-18T08:36:51.761Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772",
+      "user_id": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772_1768725412443",
+      "created_by": "505849e0722d2b2d204c6869cb6e1e36a149cd379a079ac0e8e0c5330a3fd772",
+      "created_at": "2026-01-18T08:36:52.443Z",
+      "updated_at": "2026-01-18T08:36:52.443Z"
     }
   ]
 }
