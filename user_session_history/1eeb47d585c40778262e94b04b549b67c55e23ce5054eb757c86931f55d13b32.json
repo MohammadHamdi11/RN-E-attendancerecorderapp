@@ -1,0 +1,38 @@
+{
+  "user_email": "backup@backdoor.com",
+  "user_id": "backup_backdoor_com_1768843769751",
+  "account_created": "2026-01-19T17:29:29.751Z",
+  "last_sync": "2026-01-19T17:29:29.751Z",
+  "total_sessions": 1,
+  "total_scans": 1,
+  "sessions": [
+    {
+      "id": "scanner1768843762534",
+      "location": "Parasitology SGD/POS",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2026-01-19T17:29:22.534Z",
+      "formattedDateTime": "19/01/2026 19:29:22",
+      "scans": [
+        {
+          "id": "1768843769386",
+          "content": "123456",
+          "timestamp": "2026-01-19T17:29:29.385Z",
+          "formattedTime": "19:29:29",
+          "time": "2026-01-19T17:29:29.385Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "backup@backdoor.com",
+      "user_id": "backup_backdoor_com_1768843769754",
+      "created_by": "backup@backdoor.com",
+      "created_at": "2026-01-19T17:29:29.751Z",
+      "updated_at": "2026-01-19T17:29:29.751Z"
+    }
+  ]
+}
