@@ -1,10 +1,10 @@
 {
   "user_email": "backup@backdoor.com",
-  "user_id": "backup_backdoor_com_1769581136101",
-  "account_created": "2026-01-28T06:18:56.101Z",
-  "last_sync": "2026-01-28T06:18:56.101Z",
+  "user_id": "backup_backdoor_com_1769581137181",
+  "account_created": "2026-01-28T06:18:57.181Z",
+  "last_sync": "2026-01-28T06:18:57.181Z",
   "total_sessions": 6,
-  "total_scans": 2,
+  "total_scans": 1,
   "sessions": [
     {
       "id": "scanner1768843762534",
@@ -30,10 +30,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1769581136101",
+      "user_id": "backup_backdoor_com_1769581137181",
       "created_by": "backup@backdoor.com",
-      "created_at": "2026-01-28T06:18:56.101Z",
-      "updated_at": "2026-01-28T06:18:56.101Z"
+      "created_at": "2026-01-28T06:18:57.181Z",
+      "updated_at": "2026-01-28T06:18:57.181Z"
     },
     {
       "id": "scanner1769578387936",
@@ -49,10 +49,10 @@
       "recoveryStatus": "interrupted",
       "isChecklist": false,
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1769581136101",
+      "user_id": "backup_backdoor_com_1769581137181",
       "created_by": "backup@backdoor.com",
-      "created_at": "2026-01-28T06:18:56.101Z",
-      "updated_at": "2026-01-28T06:18:56.101Z"
+      "created_at": "2026-01-28T06:18:57.181Z",
+      "updated_at": "2026-01-28T06:18:57.181Z"
     },
     {
       "id": "scanner1769578583311",
@@ -68,10 +68,10 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1769581136101",
+      "user_id": "backup_backdoor_com_1769581137181",
       "created_by": "backup@backdoor.com",
-      "created_at": "2026-01-28T06:18:56.101Z",
-      "updated_at": "2026-01-28T06:18:56.101Z"
+      "created_at": "2026-01-28T06:18:57.181Z",
+      "updated_at": "2026-01-28T06:18:57.181Z"
     },
     {
       "id": "scanner1769580086846",
@@ -88,10 +88,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1769581136101",
+      "user_id": "backup_backdoor_com_1769581137181",
       "created_by": "backup@backdoor.com",
-      "created_at": "2026-01-28T06:18:56.101Z",
-      "updated_at": "2026-01-28T06:18:56.101Z"
+      "created_at": "2026-01-28T06:18:57.181Z",
+      "updated_at": "2026-01-28T06:18:57.181Z"
     },
     {
       "id": "checklist1769580118910",
@@ -111,10 +111,10 @@
       "recoveryStatus": "closed_normally",
       "backedUp": true,
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1769581136101",
+      "user_id": "backup_backdoor_com_1769581137181",
       "created_by": "backup@backdoor.com",
-      "created_at": "2026-01-28T06:18:56.101Z",
-      "updated_at": "2026-01-28T06:18:56.101Z"
+      "created_at": "2026-01-28T06:18:57.181Z",
+      "updated_at": "2026-01-28T06:18:57.181Z"
     },
     {
       "id": "scanner1769580957076",
@@ -123,26 +123,17 @@
       "batch": "2025/2026",
       "dateTime": "2026-01-28T06:15:57.076Z",
       "formattedDateTime": "28/01/2026 08:15:57",
-      "scans": [
-        {
-          "id": "1769581124067",
-          "content": "122356",
-          "timestamp": "2026-01-28T06:18:44.066Z",
-          "formattedTime": "08:18:44",
-          "time": "2026-01-28T06:18:44.066Z",
-          "isManual": true
-        }
-      ],
+      "scans": [],
       "inProgress": true,
       "isScanner": true,
       "sessionType": "scanner",
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1769581136101",
+      "user_id": "backup_backdoor_com_1769581137181",
       "created_by": "backup@backdoor.com",
-      "created_at": "2026-01-28T06:18:56.101Z",
-      "updated_at": "2026-01-28T06:18:56.101Z"
+      "created_at": "2026-01-28T06:18:57.181Z",
+      "updated_at": "2026-01-28T06:18:57.181Z"
     }
   ]
 }
