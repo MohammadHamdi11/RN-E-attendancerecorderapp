@@ -1,10 +1,10 @@
 {
   "user_email": "backup@backdoor.com",
-  "user_id": "backup_backdoor_com_1769580127596",
-  "account_created": "2026-01-28T06:02:07.596Z",
-  "last_sync": "2026-01-28T06:02:07.596Z",
-  "total_sessions": 5,
-  "total_scans": 1,
+  "user_id": "backup_backdoor_com_1769580963710",
+  "account_created": "2026-01-28T06:16:03.710Z",
+  "last_sync": "2026-01-28T06:16:03.710Z",
+  "total_sessions": 6,
+  "total_scans": 2,
   "sessions": [
     {
       "id": "scanner1768843762534",
@@ -30,10 +30,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1769580127596",
+      "user_id": "backup_backdoor_com_1769580963710",
       "created_by": "backup@backdoor.com",
-      "created_at": "2026-01-28T06:02:07.596Z",
-      "updated_at": "2026-01-28T06:02:07.596Z"
+      "created_at": "2026-01-28T06:16:03.710Z",
+      "updated_at": "2026-01-28T06:16:03.710Z"
     },
     {
       "id": "scanner1769578387936",
@@ -49,10 +49,10 @@
       "recoveryStatus": "interrupted",
       "isChecklist": false,
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1769580127596",
+      "user_id": "backup_backdoor_com_1769580963710",
       "created_by": "backup@backdoor.com",
-      "created_at": "2026-01-28T06:02:07.596Z",
-      "updated_at": "2026-01-28T06:02:07.596Z"
+      "created_at": "2026-01-28T06:16:03.710Z",
+      "updated_at": "2026-01-28T06:16:03.710Z"
     },
     {
       "id": "scanner1769578583311",
@@ -68,10 +68,10 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1769580127596",
+      "user_id": "backup_backdoor_com_1769580963710",
       "created_by": "backup@backdoor.com",
-      "created_at": "2026-01-28T06:02:07.596Z",
-      "updated_at": "2026-01-28T06:02:07.596Z"
+      "created_at": "2026-01-28T06:16:03.710Z",
+      "updated_at": "2026-01-28T06:16:03.710Z"
     },
     {
       "id": "scanner1769580086846",
@@ -88,10 +88,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1769580127596",
+      "user_id": "backup_backdoor_com_1769580963710",
       "created_by": "backup@backdoor.com",
-      "created_at": "2026-01-28T06:02:07.596Z",
-      "updated_at": "2026-01-28T06:02:07.596Z"
+      "created_at": "2026-01-28T06:16:03.710Z",
+      "updated_at": "2026-01-28T06:16:03.710Z"
     },
     {
       "id": "checklist1769580118910",
@@ -101,19 +101,48 @@
       "dateTime": "2026-01-28T06:01:58.910Z",
       "formattedDateTime": "28/01/2026 08:01:58",
       "scans": [],
-      "inProgress": true,
+      "inProgress": false,
       "isChecklist": true,
       "filters": {
         "year": "all",
         "group": "all"
       },
       "sessionType": "checklist",
-      "recoveryStatus": "in_progress",
+      "recoveryStatus": "closed_normally",
+      "backedUp": true,
       "user_email": "backup@backdoor.com",
-      "user_id": "backup_backdoor_com_1769580127596",
+      "user_id": "backup_backdoor_com_1769580963710",
       "created_by": "backup@backdoor.com",
-      "created_at": "2026-01-28T06:02:07.596Z",
-      "updated_at": "2026-01-28T06:02:07.596Z"
+      "created_at": "2026-01-28T06:16:03.710Z",
+      "updated_at": "2026-01-28T06:16:03.710Z"
+    },
+    {
+      "id": "scanner1769580957076",
+      "location": "Anatomy",
+      "year": 1,
+      "batch": "2025/2026",
+      "dateTime": "2026-01-28T06:15:57.076Z",
+      "formattedDateTime": "28/01/2026 08:15:57",
+      "scans": [
+        {
+          "id": "1769580963227",
+          "content": "755263",
+          "timestamp": "2026-01-28T06:16:03.227Z",
+          "formattedTime": "08:16:03",
+          "time": "2026-01-28T06:16:03.227Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "backup@backdoor.com",
+      "user_id": "backup_backdoor_com_1769580963710",
+      "created_by": "backup@backdoor.com",
+      "created_at": "2026-01-28T06:16:03.710Z",
+      "updated_at": "2026-01-28T06:16:03.710Z"
     }
   ]
 }
