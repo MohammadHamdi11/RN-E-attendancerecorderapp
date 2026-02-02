@@ -44,10 +44,11 @@ def get_db_files(directory, apply_timestamp_filter=False):
     
     db_files = []
     
-    if apply_timestamp_filter:
-        five_min_ago = _local_five_minutes_ago()
-        now_local = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        log(f"  Applying 5-minute safety buffer. Current time (local): {now_local}, Cutoff: {five_min_ago.strftime('%Y-%m-%d %H:%M:%S')}")
+    # 5-minute safety buffer (disabled)
+    # if apply_timestamp_filter:
+    #     five_min_ago = _local_five_minutes_ago()
+    #     now_local = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    #     log(f"  Applying 5-minute safety buffer. Current time (local): {now_local}, Cutoff: {five_min_ago.strftime('%Y-%m-%d %H:%M:%S')}")
     
     for filename in os.listdir(directory):
         if not filename.endswith('.db'):
@@ -55,15 +56,14 @@ def get_db_files(directory, apply_timestamp_filter=False):
         
         filepath = os.path.join(directory, filename)
         
-        # Apply timestamp filter if requested (for log_history only)
-        if apply_timestamp_filter:
-            # File mtime in local time (matches user's clock and file explorer)
-            file_mtime = datetime.fromtimestamp(os.path.getmtime(filepath)).replace(tzinfo=None)
-            
-            # Skip files modified in the last 5 minutes (safety buffer)
-            if file_mtime > five_min_ago:
-                log(f"  Skipping {filename} (too recent, modified at {file_mtime.strftime('%Y-%m-%d %H:%M:%S')} local)")
-                continue
+        # Apply timestamp filter if requested (for log_history only) - disabled
+        # if apply_timestamp_filter:
+        #     # File mtime in local time (matches user's clock and file explorer)
+        #     file_mtime = datetime.fromtimestamp(os.path.getmtime(filepath)).replace(tzinfo=None)
+        #     # Skip files modified in the last 5 minutes (safety buffer)
+        #     if file_mtime > five_min_ago:
+        #         log(f"  Skipping {filename} (too recent, modified at {file_mtime.strftime('%Y-%m-%d %H:%M:%S')} local)")
+        #         continue
         
         db_files.append(filepath)
     
