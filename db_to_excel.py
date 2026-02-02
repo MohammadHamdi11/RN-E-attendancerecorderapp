@@ -38,9 +38,9 @@ def convert_attendance_to_excel():
         # Rename columns to proper case for Excel headers
         df.columns = ['Student ID', 'Subject', 'Log Date', 'Log Time']
         
-        # Create output filename with timestamp
+        # Create output filename with timestamp in log_history directory
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        output_file = f'attendance_export_{timestamp}.xlsx'
+        output_file = f'log_history/attendance_export_{timestamp}.xlsx'
         
         # Export to Excel
         df.to_excel(output_file, index=False, sheet_name='Attendance')
