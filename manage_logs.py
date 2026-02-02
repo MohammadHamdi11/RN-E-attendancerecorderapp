@@ -242,27 +242,22 @@ def delete_old_records(db_path, cutoff_date):
     return count_to_delete
 
 def split_into_history_and_deleted(source_db_path, history_db_path, deleted_db_path):
-    """Split records based on scanTime into log_history.db (≤6 months) and log_deleted.db (>6 months, ≤3 years)"""
+    """Split records based on scanTime into log_history.db (≤6 months) and log_deleted.db (>6 months, ≤3 years).
+    Never deletes log_history.db or log_deleted.db; overwrites in place."""
     
     six_months_str = SIX_MONTHS_AGO.strftime('%Y-%m-%d')
     
-    # Create/recreate history database
-    if os.path.exists(history_db_path):
-        os.remove(history_db_path)
-    
-    # Create/recreate deleted database  
-    if os.path.exists(deleted_db_path):
-        os.remove(deleted_db_path)
-    
+    # Never delete log_history.db / log_deleted.db; overwrite in place
     source_conn = sqlite3.connect(source_db_path)
     history_conn = sqlite3.connect(history_db_path)
     deleted_conn = sqlite3.connect(deleted_db_path)
     
-    # Create tables in both databases
+    # Create or replace tables in both databases (overwrite in place)
     for conn in [history_conn, deleted_conn]:
         cursor = conn.cursor()
+        cursor.execute('DROP TABLE IF EXISTS attendance')
         cursor.execute('''
-            CREATE TABLE IF NOT EXISTS attendance (
+            CREATE TABLE attendance (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 student_id INTEGER NOT NULL,
                 subject TEXT NOT NULL,
@@ -455,17 +450,11 @@ def main():
     
     split_into_history_and_deleted(temp_db, history_db_path, deleted_db_path)
     
-    # Step 6: Archive processed files from log_history directory ONLY
-    log("\n[Step 6] Archiving processed files from log_history directory...")
-    log("IMPORTANT: Files from user_session_history will NOT be deleted")
-    
-    # Only archive files from log_history directory
-    files_to_archive = log_history_files.copy()
-    
-    if files_to_archive:
-        archive_processed_files(files_to_archive)
-    else:
-        log("No files from log_history to archive")
+    # Step 6: Archive disabled (no accumulation of archived files)
+    # Never archive log_history.db or log_deleted.db; they are the output files.
+    # files_to_archive = [f for f in log_history_files if os.path.basename(f) not in ('log_history.db', 'log_deleted.db')]
+    # if files_to_archive:
+    #     archive_processed_files(files_to_archive)
     
     # Clean up temporary database
     if os.path.exists(temp_db):
@@ -475,8 +464,7 @@ def main():
     # Step 7: Commit and push to GitHub
     log("\n[Step 7] Committing changes to GitHub...")
     
-    commit_message = f"Log management: processed {len(files_to_archive)} files, " \
-                    f"archived old logs [{datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M')}]"
+    commit_message = f"Log management: merged and split logs [{datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M')}]"
     
     success = git_commit_and_push(commit_message)
     
