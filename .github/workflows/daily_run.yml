@@ -1,5 +1,4 @@
 name: Daily Attendance Processing
-
 permissions:
   contents: write  # This grants push access to GITHUB_TOKEN
 
@@ -24,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     
     # Skip if the last commit was from the bot (prevent infinite loop)
-    if: "!contains(github.event.head_commit.message, 'Daily attendance processing')"
+    if: "!contains(github.event.head_commit.message, 'Daily attendance processing') && !contains(github.event.head_commit.message, 'Log management')"
     
     steps:
     # Download all repository files and folders
@@ -40,16 +39,35 @@ jobs:
     # Install required libraries from requirements.txt
     - name: Install dependencies
       run: pip install -r requirements.txt
+    
+    # STEP 1: Manage log databases (runs first)
+    - name: Manage Log Databases
+      id: manage_logs
+      run: |
+        echo "Starting log management..."
+        python manage_logs.py
+        echo "Log management completed"
+      continue-on-error: false  # Stop workflow if this fails
+    
+    # STEP 2: Run attendance processing (runs after log management)
+    - name: Run Attendance Processing
+      id: process_attendance
+      if: steps.manage_logs.outcome == 'success'  # Only run if log management succeeded
+      run: |
+        echo "Starting attendance processing..."
+        python attendance_automation.py
+        echo "Attendance processing completed"
         
-    # Run your attendance processing script
-    - name: Run attendance processing
-      run: python attendance_automation.py
-        
-    # Save results back to the repository with retry logic
+    # STEP 3: Commit and push results with retry logic
     - name: Commit and push results
+      if: steps.manage_logs.outcome == 'success' || steps.process_attendance.outcome == 'success'
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "Attendance Bot"
+        
+        # Pull first to get any changes made during workflow run
+        git pull --rebase origin main || echo "No remote changes to pull"
+        
         git add .
         
         # Check if there are changes to commit
@@ -58,7 +76,10 @@ jobs:
           exit 0
         fi
         
-        git commit -m "Daily attendance processing - $(date '+%Y-%m-%d %H:%M:%S')"
+        # Create commit message with timestamp
+        commit_msg="Daily attendance processing - $(date '+%Y-%m-%d %H:%M:%S UTC' -u)"
+        
+        git commit -m "$commit_msg"
         
         # Retry logic with exponential backoff
         max_attempts=5
@@ -84,3 +105,12 @@ jobs:
         done
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    # Optional: Summary of what was done
+    - name: Workflow Summary
+      if: always()  # Run even if previous steps failed
+      run: |
+        echo "=== Workflow Summary ==="
+        echo "Log Management: ${{ steps.manage_logs.outcome }}"
+        echo "Attendance Processing: ${{ steps.process_attendance.outcome }}"
+        echo "======================="
