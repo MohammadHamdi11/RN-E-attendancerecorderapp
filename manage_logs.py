@@ -358,6 +358,27 @@ def archive_processed_files(files_to_archive):
     
     log(f"Archived {archived_count} files to {archive_subdir}")
 
+def delete_merged_files_from_log_history():
+    """Delete all .db files in log_history except log_history.db (keep only the merged output)."""
+    if not os.path.exists(LOG_HISTORY_DIR):
+        return
+    kept = 'log_history.db'
+    deleted_count = 0
+    for filename in os.listdir(LOG_HISTORY_DIR):
+        if not filename.endswith('.db') or filename == kept:
+            continue
+        filepath = os.path.join(LOG_HISTORY_DIR, filename)
+        try:
+            os.remove(filepath)
+            log(f"  Deleted: {filename}")
+            deleted_count += 1
+        except Exception as e:
+            log(f"  ERROR deleting {filepath}: {e}")
+    if deleted_count:
+        log(f"Deleted {deleted_count} merged files from {LOG_HISTORY_DIR} (kept {kept})")
+    else:
+        log(f"No extra .db files to delete in {LOG_HISTORY_DIR}")
+
 def git_commit_and_push(message):
     """Commit and push changes to GitHub with safety checks"""
     try:
@@ -450,11 +471,9 @@ def main():
     
     split_into_history_and_deleted(temp_db, history_db_path, deleted_db_path)
     
-    # Step 6: Archive disabled (no accumulation of archived files)
-    # Never archive log_history.db or log_deleted.db; they are the output files.
-    # files_to_archive = [f for f in log_history_files if os.path.basename(f) not in ('log_history.db', 'log_deleted.db')]
-    # if files_to_archive:
-    #     archive_processed_files(files_to_archive)
+    # Step 6: Delete merged .db files in log_history; keep only log_history.db
+    log("\n[Step 6] Deleting merged files from log_history (keeping log_history.db only)...")
+    delete_merged_files_from_log_history()
     
     # Clean up temporary database
     if os.path.exists(temp_db):
