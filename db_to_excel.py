@@ -40,7 +40,7 @@ def convert_attendance_to_excel():
         
         # Create output filename with timestamp in log_history directory
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        output_file = f'log_history/attendance_export_{timestamp}.xlsx'
+        output_file = f'log_history/attendance_export.xlsx'
         
         # Export to Excel
         df.to_excel(output_file, index=False, sheet_name='Attendance')
