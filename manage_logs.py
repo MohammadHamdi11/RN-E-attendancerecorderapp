@@ -42,6 +42,9 @@ def get_db_files(directory, apply_timestamp_filter=False):
     
     db_files = []
     
+    if apply_timestamp_filter:
+        log(f"  Applying 5-minute safety buffer. Current time (UTC): {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')}, Cutoff: {FIVE_MINUTES_AGO.strftime('%Y-%m-%d %H:%M:%S')}")
+    
     for filename in os.listdir(directory):
         if not filename.endswith('.db'):
             continue
@@ -50,12 +53,12 @@ def get_db_files(directory, apply_timestamp_filter=False):
         
         # Apply timestamp filter if requested (for log_history only)
         if apply_timestamp_filter:
-            # Get file modification time
-            file_mtime = datetime.fromtimestamp(os.path.getmtime(filepath))
+            # Get file modification time in UTC (to match FIVE_MINUTES_AGO)
+            file_mtime = datetime.fromtimestamp(os.path.getmtime(filepath), tz=timezone.utc).replace(tzinfo=None)
             
             # Skip files modified in the last 5 minutes (safety buffer)
             if file_mtime > FIVE_MINUTES_AGO:
-                log(f"  Skipping {filename} (too recent, modified at {file_mtime.strftime('%Y-%m-%d %H:%M:%S')})")
+                log(f"  Skipping {filename} (too recent, modified at {file_mtime.strftime('%Y-%m-%d %H:%M:%S')} UTC)")
                 continue
         
         db_files.append(filepath)
