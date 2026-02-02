@@ -3,16 +3,19 @@ Log Database Management Script
 
 This script merges attendance logs from multiple sources, deduplicates,
 archives old records, and maintains two databases:
-- log_history.db (records ≤ 6 months old)
-- log_deleted.db (records > 6 months and ≤ 3 years old)
+- log_history.db (records ≤ 6 months old based on scanTime)
+- log_deleted.db (records > 6 months and ≤ 3 years old based on scanTime)
 
-Records older than 3 years are permanently deleted.
+Records older than 3 years (based on scanTime) are permanently deleted.
+
+IMPORTANT: Record age is determined by the 'scanTime' field (ISO format timestamp),
+NOT by 'log_date' (which represents the batch/academic year).
 """
 
 import sqlite3
 import os
 import shutil
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 import subprocess
 
@@ -23,13 +26,13 @@ USER_SESSION_DIR = 'user_session_history'
 PROCESSED_ARCHIVE_DIR = 'archive/processed_logs'
 
 # Time thresholds
-SIX_MONTHS_AGO = datetime.now() - timedelta(days=180)
-THREE_YEARS_AGO = datetime.now() - timedelta(days=1095)
-FIVE_MINUTES_AGO = datetime.now() - timedelta(minutes=5)  # Safety buffer
+SIX_MONTHS_AGO = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(days=180)
+THREE_YEARS_AGO = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(days=1095)
+FIVE_MINUTES_AGO = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(minutes=5)  # Safety buffer
 
 def log(message):
     """Print timestamped log message"""
-    print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {message}")
+    print(f"[{datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')}] {message}")
 
 def get_db_files(directory, apply_timestamp_filter=False):
     """Get all .db files from a directory, optionally filtering by age"""
@@ -202,29 +205,37 @@ def remove_duplicates(db_path):
     return duplicates_removed
 
 def delete_old_records(db_path, cutoff_date):
-    """Delete records older than cutoff_date"""
+    """Delete records older than cutoff_date based on scanTime"""
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     
+    # scanTime is in ISO format like "2025-09-15T14:48:29.013Z"
+    # We need to compare just the date part
     cutoff_str = cutoff_date.strftime('%Y-%m-%d')
     
-    # Count records to be deleted
-    cursor.execute('SELECT COUNT(*) FROM attendance WHERE log_date < ?', (cutoff_str,))
+    # Count records to be deleted (comparing scanTime date part)
+    cursor.execute('''
+        SELECT COUNT(*) FROM attendance 
+        WHERE substr(scanTime, 1, 10) < ?
+    ''', (cutoff_str,))
     count_to_delete = cursor.fetchone()[0]
     
     if count_to_delete > 0:
-        # Delete old records
-        cursor.execute('DELETE FROM attendance WHERE log_date < ?', (cutoff_str,))
+        # Delete old records based on scanTime
+        cursor.execute('''
+            DELETE FROM attendance 
+            WHERE substr(scanTime, 1, 10) < ?
+        ''', (cutoff_str,))
         conn.commit()
-        log(f"Deleted {count_to_delete} records older than {cutoff_str}")
+        log(f"Deleted {count_to_delete} records with scanTime older than {cutoff_str}")
     else:
-        log(f"No records older than {cutoff_str} to delete")
+        log(f"No records with scanTime older than {cutoff_str} to delete")
     
     conn.close()
     return count_to_delete
 
 def split_into_history_and_deleted(source_db_path, history_db_path, deleted_db_path):
-    """Split records into log_history.db (≤6 months) and log_deleted.db (>6 months, ≤3 years)"""
+    """Split records based on scanTime into log_history.db (≤6 months) and log_deleted.db (>6 months, ≤3 years)"""
     
     six_months_str = SIX_MONTHS_AGO.strftime('%Y-%m-%d')
     
@@ -284,7 +295,7 @@ def split_into_history_and_deleted(source_db_path, history_db_path, deleted_db_p
     placeholders = ','.join(['?' for _ in columns])
     insert_query = f'INSERT INTO attendance ({",".join(columns)}) VALUES ({placeholders})'
     
-    # Split records
+    # Split records based on scanTime
     source_cursor.execute('SELECT * FROM attendance')
     records = source_cursor.fetchall()
     
@@ -292,10 +303,13 @@ def split_into_history_and_deleted(source_db_path, history_db_path, deleted_db_p
     deleted_count = 0
     
     for record in records:
-        log_date = record[3]  # log_date column (adjust index if needed)
+        # scanTime is at index 17 (18th column including id at 0)
+        # Format: "2025-09-15T14:48:29.013Z"
+        scan_time = record[17]
+        scan_date = scan_time[:10]  # Extract YYYY-MM-DD part
         record_without_id = record[1:]  # Exclude id
         
-        if log_date >= six_months_str:
+        if scan_date >= six_months_str:
             # Recent record (≤ 6 months) -> log_history.db
             history_conn.cursor().execute(insert_query, record_without_id)
             history_count += 1
@@ -325,7 +339,7 @@ def archive_processed_files(files_to_archive):
     # Create archive directory with timestamp
     archive_subdir = os.path.join(
         PROCESSED_ARCHIVE_DIR,
-        datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+        datetime.now(timezone.utc).strftime('%Y-%m-%d_%H-%M-%S')
     )
     os.makedirs(archive_subdir, exist_ok=True)
     
@@ -455,7 +469,7 @@ def main():
     log("\n[Step 7] Committing changes to GitHub...")
     
     commit_message = f"Log management: processed {len(files_to_archive)} files, " \
-                    f"archived old logs [{datetime.now().strftime('%Y-%m-%d %H:%M')}]"
+                    f"archived old logs [{datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M')}]"
     
     success = git_commit_and_push(commit_message)
     
