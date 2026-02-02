@@ -25,10 +25,12 @@ LOG_DELETED_DIR = 'log_deleted'
 USER_SESSION_DIR = 'user_session_history'
 PROCESSED_ARCHIVE_DIR = 'archive/processed_logs'
 
-# Time thresholds
+# Time thresholds (UTC for record-age cutoffs; local time for file safety buffer)
 SIX_MONTHS_AGO = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(days=180)
 THREE_YEARS_AGO = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(days=1095)
-FIVE_MINUTES_AGO = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(minutes=5)  # Safety buffer
+# Safety buffer: use local time so "too recent" matches what the user sees (e.g. Egypt UTC+2)
+def _local_five_minutes_ago():
+    return datetime.now().replace(tzinfo=None) - timedelta(minutes=5)
 
 def log(message):
     """Print timestamped log message"""
@@ -43,7 +45,9 @@ def get_db_files(directory, apply_timestamp_filter=False):
     db_files = []
     
     if apply_timestamp_filter:
-        log(f"  Applying 5-minute safety buffer. Current time (UTC): {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')}, Cutoff: {FIVE_MINUTES_AGO.strftime('%Y-%m-%d %H:%M:%S')}")
+        five_min_ago = _local_five_minutes_ago()
+        now_local = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        log(f"  Applying 5-minute safety buffer. Current time (local): {now_local}, Cutoff: {five_min_ago.strftime('%Y-%m-%d %H:%M:%S')}")
     
     for filename in os.listdir(directory):
         if not filename.endswith('.db'):
@@ -53,12 +57,12 @@ def get_db_files(directory, apply_timestamp_filter=False):
         
         # Apply timestamp filter if requested (for log_history only)
         if apply_timestamp_filter:
-            # Get file modification time in UTC (to match FIVE_MINUTES_AGO)
-            file_mtime = datetime.fromtimestamp(os.path.getmtime(filepath), tz=timezone.utc).replace(tzinfo=None)
+            # File mtime in local time (matches user's clock and file explorer)
+            file_mtime = datetime.fromtimestamp(os.path.getmtime(filepath)).replace(tzinfo=None)
             
             # Skip files modified in the last 5 minutes (safety buffer)
-            if file_mtime > FIVE_MINUTES_AGO:
-                log(f"  Skipping {filename} (too recent, modified at {file_mtime.strftime('%Y-%m-%d %H:%M:%S')} UTC)")
+            if file_mtime > five_min_ago:
+                log(f"  Skipping {filename} (too recent, modified at {file_mtime.strftime('%Y-%m-%d %H:%M:%S')} local)")
                 continue
         
         db_files.append(filepath)
