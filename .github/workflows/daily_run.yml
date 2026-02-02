@@ -57,7 +57,17 @@ jobs:
         echo "Log management completed"
       continue-on-error: false  # Stop workflow if this fails
     
-    # STEP 2: Run attendance processing (runs after log management)
+    # STEP 2: Export attendance data to Excel (runs after log management)
+    - name: Export Attendance to Excel
+      id: export_to_excel
+      if: steps.manage_logs.outcome == 'success'  # Only run if log management succeeded
+      run: |
+        echo "Starting database to Excel export..."
+        python db_to_excel.py
+        echo "Excel export completed"
+      continue-on-error: true  # Continue even if export fails
+    
+    # STEP 3: Run attendance processing (runs after Excel export)
     - name: Run Attendance Processing
       id: process_attendance
       if: steps.manage_logs.outcome == 'success'  # Only run if log management succeeded
@@ -66,9 +76,9 @@ jobs:
         python attendance_automation.py
         echo "Attendance processing completed"
         
-    # STEP 3: Commit and push results with retry logic
+    # STEP 4: Commit and push results with retry logic
     - name: Commit and push results
-      if: steps.manage_logs.outcome == 'success' || steps.process_attendance.outcome == 'success'
+      if: steps.manage_logs.outcome == 'success' || steps.export_to_excel.outcome == 'success' || steps.process_attendance.outcome == 'success'
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "Attendance Bot"
@@ -120,5 +130,6 @@ jobs:
       run: |
         echo "=== Workflow Summary ==="
         echo "Log Management: ${{ steps.manage_logs.outcome }}"
+        echo "Excel Export: ${{ steps.export_to_excel.outcome }}"
         echo "Attendance Processing: ${{ steps.process_attendance.outcome }}"
         echo "======================="
