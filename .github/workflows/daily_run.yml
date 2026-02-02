@@ -29,6 +29,14 @@ jobs:
     # Download all repository files and folders
     - name: Checkout repository
       uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    # Set Git identity so manage_logs.py and later steps can commit
+    - name: Configure Git
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "Attendance Bot"
       
     # Install Python
     - name: Set up Python
