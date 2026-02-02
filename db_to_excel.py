@@ -8,7 +8,7 @@ def convert_attendance_to_excel():
     Extract attendance data from log_history.db and create an Excel file
     with Student ID, Subject, Log Date, and Log Time columns.
     """
-    db_path = 'log_history.db'
+    db_path = 'log_history/log_history.db'
     
     # Check if database exists
     if not os.path.exists(db_path):
