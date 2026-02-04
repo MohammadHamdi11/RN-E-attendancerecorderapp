@@ -125,42 +125,57 @@ def merge_session_into_user_history(session_db_path, user_db_path):
         
         merged_count = 0
         for table in tables:
+            print(f"  → Processing table: {table}")
             if table == 'sqlite_sequence':  # Skip internal SQLite table
+                print(f"  → Skipping internal table: {table}")
                 continue
                 
             # Get all data from session table
             session_cursor = session_conn.cursor()
             try:
+                print(f"  → Reading data from table {table}...")
                 session_cursor.execute(f"SELECT * FROM {table}")
                 rows = session_cursor.fetchall()
+                print(f"  → Found {len(rows)} rows in {table}")
             except sqlite3.Error as e:
                 print(f"  ✗ Error reading table {table}: {e}")
                 continue
             
             if not rows:
+                print(f"  → No data in table {table}, skipping")
                 continue
             
             # Get column information including whether it's a primary key with autoincrement
+            print(f"  → Getting column info for {table}...")
             session_cursor.execute(f"PRAGMA table_info({table})")
             col_info = session_cursor.fetchall()
             columns = [col[1] for col in col_info]
+            print(f"  → Columns: {columns[:5]}... (showing first 5)")
             
             # Check if first column is an AUTOINCREMENT primary key
+            print(f"  → Getting CREATE statement for {table}...")
             session_cursor.execute(f"SELECT sql FROM sqlite_master WHERE type='table' AND name='{table}'")
             create_sql = session_cursor.fetchone()[0]
             has_autoincrement = 'AUTOINCREMENT' in create_sql.upper()
+            print(f"  → Has AUTOINCREMENT: {has_autoincrement}")
             
             # Insert into user history database
             user_cursor = user_conn.cursor()
             
             # Check if table exists in user database
+            print(f"  → Checking if table {table} exists in user DB...")
             user_cursor.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{table}'")
             if not user_cursor.fetchone():
                 # Create table if it doesn't exist
+                print(f"  → Creating table {table} in user DB...")
                 user_cursor.execute(create_sql)
+                print(f"  → Table {table} created successfully")
+            else:
+                print(f"  → Table {table} already exists in user DB")
             
             # If there's an AUTOINCREMENT column, exclude it from INSERT
             if has_autoincrement and col_info[0][5] == 1:  # col_info[0][5] is the pk flag
+                print(f"  → Inserting without AUTOINCREMENT id column...")
                 # Skip the first column (id) and insert the rest
                 insert_columns = columns[1:]
                 insert_column_names = ', '.join(insert_columns)
@@ -174,19 +189,27 @@ def merge_session_into_user_history(session_db_path, user_db_path):
                         rows_without_id
                     )
                     merged_count += user_cursor.rowcount
+                    print(f"  → Inserted {user_cursor.rowcount} rows into {table}")
                 except sqlite3.Error as e:
                     print(f"  ✗ Error inserting into table {table}: {e}")
+                    print(f"  → Error type: {type(e).__name__}")
+                    print(f"  → Error args: {e.args}")
                     continue
             else:
+                print(f"  → Inserting all columns...")
                 # No AUTOINCREMENT, insert all columns normally
                 placeholders = ','.join(['?' for _ in columns])
                 try:
                     user_cursor.executemany(f"INSERT OR IGNORE INTO {table} VALUES ({placeholders})", rows)
                     merged_count += user_cursor.rowcount
+                    print(f"  → Inserted {user_cursor.rowcount} rows into {table}")
                 except sqlite3.Error as e:
                     print(f"  ✗ Error inserting into table {table}: {e}")
+                    print(f"  → Error type: {type(e).__name__}")
+                    print(f"  → Error args: {e.args}")
                     continue
             
+        print(f"  → Committing changes...")
         user_conn.commit()
         print(f"  ✓ Merged {os.path.basename(session_db_path)} - {merged_count} records")
         return True
