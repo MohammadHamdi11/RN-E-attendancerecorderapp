@@ -254,8 +254,13 @@ def merge_all_sessions():
         # Create user database if it doesn't exist
         if not os.path.exists(user_db_path):
             print(f"  Creating new user history database: {user_db_path}")
-            # Create empty database (will be populated from first session)
+            # Properly initialize as SQLite database
             conn = sqlite3.connect(user_db_path)
+            cursor = conn.cursor()
+            # Execute a simple statement to initialize the database properly
+            cursor.execute("CREATE TABLE IF NOT EXISTS _init (id INTEGER PRIMARY KEY)")
+            cursor.execute("DROP TABLE IF EXISTS _init")
+            conn.commit()
             conn.close()
         
         # Merge each session into user history
