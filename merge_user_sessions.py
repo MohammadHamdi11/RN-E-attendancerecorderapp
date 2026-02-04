@@ -14,6 +14,26 @@ def extract_user_id(filename):
         return match.group(1)
     return None
 
+def is_valid_sqlite_db(db_path):
+    """
+    Check if a file is a valid SQLite database
+    """
+    if not os.path.exists(db_path):
+        return False
+    
+    if os.path.getsize(db_path) < 100:  # SQLite header is 100 bytes
+        return False
+    
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+        cursor.fetchall()
+        conn.close()
+        return True
+    except sqlite3.Error:
+        return False
+
 def get_session_files():
     """
     Scan log_history directory and group session files by user_id
@@ -31,7 +51,11 @@ def get_session_files():
             user_id = extract_user_id(filename)
             if user_id:
                 filepath = os.path.join(log_history_dir, filename)
-                user_sessions[user_id].append(filepath)
+                # Only include valid SQLite databases
+                if is_valid_sqlite_db(filepath):
+                    user_sessions[user_id].append(filepath)
+                else:
+                    print(f"  ⚠ Skipping invalid database: {filename}")
     
     return user_sessions
 
@@ -48,27 +72,67 @@ def merge_session_into_user_history(session_db_path, user_db_path):
     """
     Merge data from a session database into the user's history database
     """
+    # Verify session database is valid before opening
+    if not os.path.exists(session_db_path):
+        print(f"  ✗ Session file not found: {session_db_path}")
+        return False
+    
+    # Check file size
+    file_size = os.path.getsize(session_db_path)
+    if file_size == 0:
+        print(f"  ✗ Session file is empty: {session_db_path}")
+        return False
+    
     # Connect to both databases
-    session_conn = sqlite3.connect(session_db_path)
-    user_conn = sqlite3.connect(user_db_path)
+    try:
+        session_conn = sqlite3.connect(f'file:{session_db_path}?mode=ro', uri=True)
+    except sqlite3.Error as e:
+        print(f"  ✗ Cannot open session database {session_db_path}: {e}")
+        return False
+    
+    try:
+        user_conn = sqlite3.connect(user_db_path)
+    except sqlite3.Error as e:
+        print(f"  ✗ Cannot open user database {user_db_path}: {e}")
+        session_conn.close()
+        return False
     
     try:
         # Get all tables from session database
         tables = get_table_names(session_db_path)
         
+        if not tables:
+            print(f"  ⚠ No tables found in {session_db_path}")
+            session_conn.close()
+            user_conn.close()
+            return True
+        
+        merged_count = 0
         for table in tables:
+            if table == 'sqlite_sequence':  # Skip internal SQLite table
+                continue
+                
             # Get all data from session table
             session_cursor = session_conn.cursor()
-            session_cursor.execute(f"SELECT * FROM {table}")
-            rows = session_cursor.fetchall()
+            try:
+                session_cursor.execute(f"SELECT * FROM {table}")
+                rows = session_cursor.fetchall()
+            except sqlite3.Error as e:
+                print(f"  ✗ Error reading table {table}: {e}")
+                continue
             
             if not rows:
                 continue
             
-            # Get column names
+            # Get column information including whether it's a primary key with autoincrement
             session_cursor.execute(f"PRAGMA table_info({table})")
-            columns = [col[1] for col in session_cursor.fetchall()]
-            placeholders = ','.join(['?' for _ in columns])
+            col_info = session_cursor.fetchall()
+            columns = [col[1] for col in col_info]
+            
+            # Check if first column is an AUTOINCREMENT primary key
+            session_cursor.execute(f"SELECT sql FROM sqlite_master WHERE type='table' AND name='{table}'")
+            create_sql = session_cursor.fetchone()[0]
+            has_autoincrement = 'AUTOINCREMENT' in create_sql.upper()
             
             # Insert into user history database
             user_cursor = user_conn.cursor()
@@ -76,19 +140,44 @@ def merge_session_into_user_history(session_db_path, user_db_path):
             # Check if table exists in user database
             user_cursor.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{table}'")
             if not user_cursor.fetchone():
-                # Create table if it doesn't exist (copy structure from session db)
-                session_cursor.execute(f"SELECT sql FROM sqlite_master WHERE type='table' AND name='{table}'")
-                create_sql = session_cursor.fetchone()[0]
+                # Create table if it doesn't exist
                 user_cursor.execute(create_sql)
             
-            # Insert rows (using INSERT OR IGNORE to avoid duplicates if there's a primary key)
-            user_cursor.executemany(f"INSERT OR IGNORE INTO {table} VALUES ({placeholders})", rows)
+            # If there's an AUTOINCREMENT column, exclude it from INSERT
+            if has_autoincrement and col_info[0][5] == 1:  # col_info[0][5] is the pk flag
+                # Skip the first column (id) and insert the rest
+                insert_columns = columns[1:]
+                insert_column_names = ', '.join(insert_columns)
+                placeholders = ','.join(['?' for _ in insert_columns])
+                # Remove first value from each row (the id)
+                rows_without_id = [row[1:] for row in rows]
+                
+                try:
+                    user_cursor.executemany(
+                        f"INSERT OR IGNORE INTO {table} ({insert_column_names}) VALUES ({placeholders})", 
+                        rows_without_id
+                    )
+                    merged_count += user_cursor.rowcount
+                except sqlite3.Error as e:
+                    print(f"  ✗ Error inserting into table {table}: {e}")
+                    continue
+            else:
+                # No AUTOINCREMENT, insert all columns normally
+                placeholders = ','.join(['?' for _ in columns])
+                try:
+                    user_cursor.executemany(f"INSERT OR IGNORE INTO {table} VALUES ({placeholders})", rows)
+                    merged_count += user_cursor.rowcount
+                except sqlite3.Error as e:
+                    print(f"  ✗ Error inserting into table {table}: {e}")
+                    continue
             
         user_conn.commit()
-        print(f"  ✓ Merged {session_db_path} successfully")
+        print(f"  ✓ Merged {os.path.basename(session_db_path)} - {merged_count} records")
+        return True
         
     except sqlite3.Error as e:
         print(f"  ✗ Error merging {session_db_path}: {e}")
+        return False
     finally:
         session_conn.close()
         user_conn.close()
@@ -103,7 +192,8 @@ def merge_all_sessions():
     user_sessions = get_session_files()
     
     if not user_sessions:
-        print("No session files found to merge.")
+        print("No valid session database files found to merge.")
+        print("Note: Files with prefixes like 'excuses', 'scanner', 'checklist', 'edited' may not be valid SQLite databases.")
         return
     
     user_session_dir = 'user_session_history'
