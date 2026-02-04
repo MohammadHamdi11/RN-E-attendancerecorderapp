@@ -59,15 +59,6 @@ def get_session_files():
     
     return user_sessions
 
-def get_table_names(db_path):
-    """Get list of all tables in a database"""
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
-    cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
-    tables = [row[0] for row in cursor.fetchall()]
-    conn.close()
-    return tables
-
 def merge_session_into_user_history(session_db_path, user_db_path):
     """
     Merge data from a session database into the user's history database
@@ -98,8 +89,10 @@ def merge_session_into_user_history(session_db_path, user_db_path):
         return False
     
     try:
-        # Get all tables from session database
-        tables = get_table_names(session_db_path)
+        # Get all tables from session database (using already open connection)
+        session_cursor = session_conn.cursor()
+        session_cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+        tables = [row[0] for row in session_cursor.fetchall()]
         
         if not tables:
             print(f"  ⚠ No tables found in {session_db_path}")
