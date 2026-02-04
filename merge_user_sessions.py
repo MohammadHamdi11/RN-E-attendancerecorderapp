@@ -251,13 +251,19 @@ def merge_all_sessions():
         
         print(f"\nProcessing user {user_id} ({len(session_files)} sessions)...")
         
-        # Create user database if it doesn't exist
-        if not os.path.exists(user_db_path):
-            print(f"  Creating new user history database: {user_db_path}")
-            # Properly initialize as SQLite database
+        # Ensure user DB exists and is a valid SQLite database (not a Git LFS pointer or placeholder)
+        if not os.path.exists(user_db_path) or not is_valid_sqlite_db(user_db_path):
+            if os.path.exists(user_db_path):
+                print(f"  → Replacing invalid/non-SQLite file with fresh database: {user_db_path}")
+                try:
+                    os.remove(user_db_path)
+                except OSError as e:
+                    print(f"  ✗ Could not remove invalid file: {e}")
+                    continue
+            else:
+                print(f"  → Creating new user history database: {user_db_path}")
             conn = sqlite3.connect(user_db_path)
             cursor = conn.cursor()
-            # Execute a simple statement to initialize the database properly
             cursor.execute("CREATE TABLE IF NOT EXISTS _init (id INTEGER PRIMARY KEY)")
             cursor.execute("DROP TABLE IF EXISTS _init")
             conn.commit()
