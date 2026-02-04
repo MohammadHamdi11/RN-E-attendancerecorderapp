@@ -2,6 +2,7 @@ import argparse
 import os
 import sqlite3
 from datetime import date
+from typing import Optional
 
 
 SQLITE_HEADER = b"SQLite format 3\x00"
@@ -26,7 +27,7 @@ def subtract_years(d: date, years: int) -> date:
         return d.replace(year=d.year - years, month=2, day=28)
 
 
-def resolve_user_session_history_dir(cli_dir: str | None) -> str | None:
+def resolve_user_session_history_dir(cli_dir: Optional[str]) -> Optional[str]:
     """Find user_session_history directory from CLI or common locations."""
     if cli_dir:
         return cli_dir
