@@ -298,6 +298,13 @@ def split_into_history_and_deleted(source_db_path, history_db_path, deleted_db_p
     insert_query = f'INSERT INTO attendance ({",".join(columns)}) VALUES ({placeholders})'
     
     # Split records based on scanTime
+    # IMPORTANT: Do NOT hardcode the scanTime index; it changes if schema/order changes.
+    source_cursor.execute('PRAGMA table_info(attendance)')
+    full_columns = [col[1] for col in source_cursor.fetchall()]  # includes 'id'
+    if 'scanTime' not in full_columns:
+        raise RuntimeError("attendance table is missing required column 'scanTime'")
+    scan_idx = full_columns.index('scanTime')
+
     source_cursor.execute('SELECT * FROM attendance')
     records = source_cursor.fetchall()
     
@@ -305,10 +312,9 @@ def split_into_history_and_deleted(source_db_path, history_db_path, deleted_db_p
     deleted_count = 0
     
     for record in records:
-        # scanTime is at index 17 (18th column including id at 0)
-        # Format: "2025-09-15T14:48:29.013Z"
-        scan_time = record[17]
-        scan_date = scan_time[:10]  # Extract YYYY-MM-DD part
+        # scanTime is an ISO string like "2025-09-15T14:48:29.013Z"
+        scan_time = record[scan_idx]
+        scan_date = str(scan_time)[:10]  # Extract YYYY-MM-DD part safely
         record_without_id = record[1:]  # Exclude id
         
         if scan_date >= six_months_str:

@@ -48,16 +48,7 @@ jobs:
     - name: Install dependencies
       run: pip install -r requirements.txt
     
-    # STEP 1: Merge session databases into user history (runs first)
-    - name: Merge User Sessions
-      id: merge_sessions
-      run: |
-        echo "Starting user session merge..."
-        python merge_user_sessions.py
-        echo "User session merge completed"
-      continue-on-error: true  # Continue even if merge fails
-    
-    # STEP 2: Manage log databases (runs after session merge)
+    # STEP 1: Manage log databases (runs first)
     - name: Manage Log Databases
       id: manage_logs
       run: |
@@ -66,7 +57,7 @@ jobs:
         echo "Log management completed"
       continue-on-error: false  # Stop workflow if this fails
     
-    # STEP 3: Export attendance data to Excel (runs after log management)
+    # STEP 2: Export attendance data to Excel (runs after log management)
     - name: Export Attendance to Excel
       id: export_to_excel
       if: steps.manage_logs.outcome == 'success'  # Only run if log management succeeded
@@ -76,7 +67,7 @@ jobs:
         echo "Excel export completed"
       continue-on-error: true  # Continue even if export fails
     
-    # STEP 4: Run attendance processing (runs after Excel export)
+    # STEP 3: Run attendance processing (runs after Excel export)
     - name: Run Attendance Processing
       id: process_attendance
       if: steps.manage_logs.outcome == 'success'  # Only run if log management succeeded
@@ -85,7 +76,7 @@ jobs:
         python attendance_automation.py
         echo "Attendance processing completed"
         
-    # STEP 5: Commit and push results with retry logic
+    # STEP 4: Commit and push results with retry logic
     - name: Commit and push results
       if: steps.manage_logs.outcome == 'success' || steps.export_to_excel.outcome == 'success' || steps.process_attendance.outcome == 'success'
       run: |
@@ -138,7 +129,6 @@ jobs:
       if: always()  # Run even if previous steps failed
       run: |
         echo "=== Workflow Summary ==="
-        echo "Session Merge: ${{ steps.merge_sessions.outcome }}"
         echo "Log Management: ${{ steps.manage_logs.outcome }}"
         echo "Excel Export: ${{ steps.export_to_excel.outcome }}"
         echo "Attendance Processing: ${{ steps.process_attendance.outcome }}"

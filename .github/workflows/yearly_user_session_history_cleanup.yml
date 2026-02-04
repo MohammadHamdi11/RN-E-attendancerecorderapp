@@ -1,0 +1,64 @@
+name: Yearly User Session History Cleanup
+
+permissions:
+  contents: write
+
+on:
+  schedule:
+    # Runs yearly on Nov 25 at 00:00 UTC
+    - cron: "0 0 25 11 *"
+  workflow_dispatch:
+
+concurrency:
+  group: user-session-history-cleanup
+  cancel-in-progress: true
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+
+    # Prevent infinite loops if workflow commits
+    if: "!contains(github.event.head_commit.message, 'User session history cleanup')"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "Attendance Bot"
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Cleanup user_session_history (older than 4 years)
+        run: |
+          echo "Starting user session history cleanup..."
+          python cleanup_user_session_history.py --years 4
+          echo "Cleanup completed."
+
+      - name: Commit and push changes (if any)
+        run: |
+          git add .
+
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          commit_msg="User session history cleanup - $(date '+%Y-%m-%d %H:%M:%S UTC' -u)"
+          git commit -m "$commit_msg"
+
+          git pull --rebase origin main || echo "No remote changes to pull"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
