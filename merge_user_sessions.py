@@ -14,16 +14,29 @@ def extract_user_id(filename):
         return match.group(1)
     return None
 
+SQLITE_HEADER = b'SQLite format 3\x00'
+
+def has_sqlite_header(filepath):
+    """
+    Check if a file starts with the SQLite magic header (only safe check).
+    Does NOT connect or query - so we never wrongly treat a valid DB as invalid.
+    """
+    if not os.path.exists(filepath) or os.path.getsize(filepath) < 16:
+        return False
+    try:
+        with open(filepath, 'rb') as f:
+            return f.read(16) == SQLITE_HEADER
+    except OSError:
+        return False
+
 def is_valid_sqlite_db(db_path):
     """
-    Check if a file is a valid SQLite database
+    Check if a file is a valid SQLite database (for session files we want to skip invalid ones).
     """
     if not os.path.exists(db_path):
         return False
-    
-    if os.path.getsize(db_path) < 100:  # SQLite header is 100 bytes
+    if not has_sqlite_header(db_path):
         return False
-    
     try:
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
@@ -251,25 +264,31 @@ def merge_all_sessions():
         
         print(f"\nProcessing user {user_id} ({len(session_files)} sessions)...")
         
-        # Ensure user DB exists and is a valid SQLite database (not a Git LFS pointer or placeholder)
-        if not os.path.exists(user_db_path) or not is_valid_sqlite_db(user_db_path):
-            if os.path.exists(user_db_path):
-                print(f"  → Replacing invalid/non-SQLite file with fresh database: {user_db_path}")
-                try:
-                    os.remove(user_db_path)
-                except OSError as e:
-                    print(f"  ✗ Could not remove invalid file: {e}")
-                    continue
-            else:
-                print(f"  → Creating new user history database: {user_db_path}")
+        # Only create or replace user DB when it does not exist or is clearly NOT SQLite (e.g. Git LFS pointer).
+        # Never delete a file that has the SQLite header - that is a real DB and we merge into it.
+        if not os.path.exists(user_db_path):
+            print(f"  → Creating new user history database: {user_db_path}")
             conn = sqlite3.connect(user_db_path)
             cursor = conn.cursor()
             cursor.execute("CREATE TABLE IF NOT EXISTS _init (id INTEGER PRIMARY KEY)")
             cursor.execute("DROP TABLE IF EXISTS _init")
             conn.commit()
             conn.close()
-        
-        # Merge each session into user history
+        elif not has_sqlite_header(user_db_path):
+            print(f"  → Replacing non-SQLite file (e.g. LFS pointer) with fresh database: {user_db_path}")
+            try:
+                os.remove(user_db_path)
+            except OSError as e:
+                print(f"  ✗ Could not remove invalid file: {e}")
+                continue
+            conn = sqlite3.connect(user_db_path)
+            cursor = conn.cursor()
+            cursor.execute("CREATE TABLE IF NOT EXISTS _init (id INTEGER PRIMARY KEY)")
+            cursor.execute("DROP TABLE IF EXISTS _init")
+            conn.commit()
+            conn.close()
+
+        # Merge each session into user history (always append; never replace existing data)
         for session_file in session_files:
             merge_session_into_user_history(session_file, user_db_path)
     
