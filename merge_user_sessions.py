@@ -63,6 +63,8 @@ def merge_session_into_user_history(session_db_path, user_db_path):
     """
     Merge data from a session database into the user's history database
     """
+    print(f"  → Attempting to merge: {session_db_path}")
+    
     # Verify session database is valid before opening
     if not os.path.exists(session_db_path):
         print(f"  ✗ Session file not found: {session_db_path}")
@@ -70,29 +72,50 @@ def merge_session_into_user_history(session_db_path, user_db_path):
     
     # Check file size
     file_size = os.path.getsize(session_db_path)
+    print(f"  → File size: {file_size} bytes")
     if file_size == 0:
         print(f"  ✗ Session file is empty: {session_db_path}")
         return False
     
-    # Connect to both databases
+    # Check file header (first 16 bytes should be SQLite magic string)
     try:
-        session_conn = sqlite3.connect(f'file:{session_db_path}?mode=ro', uri=True)
-    except sqlite3.Error as e:
-        print(f"  ✗ Cannot open session database {session_db_path}: {e}")
+        with open(session_db_path, 'rb') as f:
+            header = f.read(16)
+            print(f"  → File header (hex): {header.hex()}")
+            if header[:15] != b'SQLite format 3':
+                print(f"  ✗ Not a valid SQLite file - invalid header")
+                return False
+    except Exception as e:
+        print(f"  ✗ Cannot read file header: {e}")
         return False
     
+    print(f"  → Attempting to connect to session DB...")
+    # Connect to both databases
+    try:
+        session_conn = sqlite3.connect(session_db_path)
+        print(f"  → Successfully connected to session DB")
+    except sqlite3.Error as e:
+        print(f"  ✗ Cannot open session database {session_db_path}: {e}")
+        print(f"  → sqlite3.Error type: {type(e).__name__}")
+        print(f"  → Error args: {e.args}")
+        return False
+    
+    print(f"  → Attempting to connect to user DB: {user_db_path}")
     try:
         user_conn = sqlite3.connect(user_db_path)
+        print(f"  → Successfully connected to user DB")
     except sqlite3.Error as e:
         print(f"  ✗ Cannot open user database {user_db_path}: {e}")
         session_conn.close()
         return False
     
     try:
+        print(f"  → Querying tables from session DB...")
         # Get all tables from session database (using already open connection)
         session_cursor = session_conn.cursor()
         session_cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
         tables = [row[0] for row in session_cursor.fetchall()]
+        print(f"  → Found tables: {tables}")
         
         if not tables:
             print(f"  ⚠ No tables found in {session_db_path}")
