@@ -6,7 +6,7 @@ import os
 def convert_attendance_to_excel():
     """
     Extract attendance data from log_history.db and create an Excel file
-    with Student ID, Subject, Log Date, and Log Time columns.
+    with Student ID, Subject, Log Date, Log Time, and User Name columns.
     """
     db_path = 'log_history/log_history.db'
     
@@ -19,9 +19,9 @@ def convert_attendance_to_excel():
     conn = sqlite3.connect(db_path)
     
     try:
-        # Query to fetch only the 4 required columns
+        # Query to fetch required columns including user_name
         query = """
-        SELECT student_id, subject, log_date, log_time
+        SELECT student_id, subject, log_date, log_time, user_name
         FROM attendance
         ORDER BY log_date DESC, log_time DESC
         """
@@ -36,7 +36,7 @@ def convert_attendance_to_excel():
             return
         
         # Rename columns to proper case for Excel headers
-        df.columns = ['Student ID', 'Subject', 'Log Date', 'Log Time']
+        df.columns = ['Student ID', 'Subject', 'Log Date', 'Log Time', 'User Name']
         
         # Create output filename with timestamp in log_history directory
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')

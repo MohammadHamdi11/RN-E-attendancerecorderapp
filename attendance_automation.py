@@ -22,6 +22,69 @@ from openpyxl.utils import get_column_letter
 from collections import defaultdict
 import glob
 
+
+def _normalize_header_cell(cell):
+    """Normalize a header cell for case-insensitive comparison."""
+    if cell is None:
+        return ''
+    return ' '.join(str(cell).split()).strip()
+
+
+def get_log_column_indices_from_header(header_row):
+    """
+    Identify log column indices by searching the header row (case-insensitive).
+    Required: Student ID, Subject (or Location), Log Date, Log Time.
+    Optional (may be missing): User Name (or User), Type.
+    Returns dict with keys: student_id, subject, log_date, log_time, type, user (value = index or None).
+    Returns None if any required column is not found.
+    """
+    if not header_row or len(header_row) < 2:
+        return None
+    col = {}
+    for idx, cell in enumerate(header_row):
+        norm = _normalize_header_cell(cell).lower()
+        if norm == 'student id':
+            col['student_id'] = idx
+        elif norm in ('user name', 'user'):
+            col['user'] = idx
+        elif norm == 'subject':
+            col['subject'] = idx
+        elif norm == 'location':
+            col['subject'] = idx
+        elif norm == 'log date':
+            col['log_date'] = idx
+        elif norm == 'log time':
+            col['log_time'] = idx
+        elif norm == 'type':
+            col['type'] = idx
+    if 'student_id' not in col or 'subject' not in col or 'log_date' not in col or 'log_time' not in col:
+        return None
+    return {
+        'student_id': col.get('student_id'),
+        'subject': col['subject'],
+        'log_date': col['log_date'],
+        'log_time': col.get('log_time'),
+        'type': col.get('type'),
+        'user': col.get('user'),
+    }
+
+
+def get_log_row_values(row, col_indices):
+    """Get (student_id, subject, log_date, log_time) from a data row using column indices."""
+    def get(idx):
+        if idx is None or idx >= len(row):
+            return None
+        return row[idx]
+    if col_indices is None:
+        return (get(0), get(1), get(2), get(3))
+    return (
+        get(col_indices['student_id']) if col_indices.get('student_id') is not None else get(0),
+        get(col_indices['subject']),
+        get(col_indices['log_date']),
+        get(col_indices['log_time']) if col_indices.get('log_time') is not None else None,
+    )
+
+
 #==========================================================Session Analyzer==========================================================#
 
 class SessionAnalyzer:
@@ -67,6 +130,45 @@ class SessionAnalyzer:
         
         return text
     
+    def _get_log_column_indices(self, header_row, use_location_as_subject=False):
+        """
+        Build column index map from a log header row (case-insensitive).
+        Recognizes: Student ID, Subject, Log Date, Log Time, User Name (or User), Location, Type.
+        Returns None if required columns (subject/location, log_date) are not found.
+        """
+        return get_log_column_indices_from_header(header_row)
+    
+    def _parse_log_row(self, row, col_indices, use_location_as_subject=False):
+        """Parse a log data row using column indices. Returns log_entry dict or None if required fields missing.
+        User Name / user column is optional and does not affect analysis."""
+        def get(idx):
+            if idx is None or idx >= len(row):
+                return None
+            return row[idx]
+        student_id = get(col_indices['student_id']) if col_indices.get('student_id') is not None else (row[0] if len(row) > 0 else None)
+        subject = get(col_indices['subject'])
+        log_date_val = get(col_indices['log_date'])
+        # Optional columns: use index only when present in header (no positional fallback to avoid wrong column)
+        log_time_val = get(col_indices['log_time']) if col_indices.get('log_time') is not None else None
+        type_val = get(col_indices['type']) if col_indices.get('type') is not None else None
+        user_val = get(col_indices['user']) if col_indices.get('user') is not None else None
+        if not subject or not log_date_val:
+            return None
+        student_id = self.normalize_whitespace(str(student_id)) if student_id else ''
+        subject = self.normalize_whitespace(str(subject).upper()) if subject else ''
+        type_val = self.normalize_whitespace(str(type_val)) if type_val else ''
+        user_val = self.normalize_whitespace(str(user_val)) if user_val else ''
+        return {
+            'student_id': str(student_id) if student_id else '',
+            'subject': subject,
+            'log_date': self.normalize_date(log_date_val),
+            'log_time': self.normalize_time(log_time_val) if log_time_val else None,
+            'type': str(type_val) if type_val else '',
+            'user': str(user_val) if user_val else '',
+            'raw_date': log_date_val,
+            'raw_time': log_time_val,
+        }
+    
     def analyze_sessions_with_merged_logs(self, ref_file_path, ref_sheet, merged_log_data, 
                            schedule_file_path, schedule_sheet, year, batch, module):
         """Analyze sessions using already merged log data and identify missing/recorded ones with group-specific attendance calculation"""
@@ -106,26 +208,35 @@ class SessionAnalyzer:
                             'raw_time': start_time
                         })
             
-            # Parse log data (skip header row if it exists)
+            # Parse log data: identify columns by header row (case-insensitive) so order doesn't matter
             self.log_data = []
-            start_idx = 1 if log_data and len(log_data) > 0 and log_data[0] and any(isinstance(cell, str) and 'Student' in str(cell) for cell in log_data[0][:2]) else 0
+            header_row = log_data[0] if log_data and len(log_data) > 0 else None
+            col_indices = self._get_log_column_indices(header_row, use_location_as_subject=True) if header_row else None
+            start_idx = 1 if col_indices is not None else 0
             
             for row in log_data[start_idx:]:
-                if len(row) >= 6:  # Ensure we have required fields
-                    student_id, location, log_date, log_time, type_field, user = row[:6]
-                    if location and log_date:  # Use location instead of subject for log data
-                        # CONVERT TO UPPERCASE FOR CASE-INSENSITIVE MATCHING
-                        location = str(location).upper() if location else ""
-                        
+                if not row or not any(cell is not None for cell in row):
+                    continue
+                # Require at least subject/location and log_date (primary entries); user name optional
+                if col_indices is not None:
+                    entry = self._parse_log_row(row, col_indices, use_location_as_subject=True)
+                    if entry:
+                        # Merged logs use Location as subject (already mapped in _parse_log_row via 'subject' key)
+                        self.log_data.append(entry)
+                else:
+                    # Fallback: positional (student_id, location, log_date, log_time, type_field, user)
+                    if len(row) >= 4 and row[1] and row[2]:
+                        location = str(row[1]).upper().strip() if row[1] else ""
+                        log_date_val = row[2]
                         self.log_data.append({
-                            'student_id': str(student_id) if student_id else '',
-                            'subject': location,  # Map location to subject for matching
-                            'log_date': self.normalize_date(log_date),
-                            'log_time': self.normalize_time(log_time),
-                            'type': str(type_field) if type_field else '',
-                            'user': str(user) if user else '',
-                            'raw_date': log_date,
-                            'raw_time': log_time
+                            'student_id': str(row[0]) if row[0] else '',
+                            'subject': location,
+                            'log_date': self.normalize_date(log_date_val),
+                            'log_time': self.normalize_time(row[3]) if len(row) > 3 and row[3] else None,
+                            'type': str(row[4]) if len(row) > 4 and row[4] else '',
+                            'user': str(row[5]).strip() if len(row) > 5 and row[5] else '',
+                            'raw_date': log_date_val,
+                            'raw_time': row[3] if len(row) > 3 else None
                         })
             
             # Find missing and recorded sessions with GROUP-SPECIFIC attendance
@@ -234,27 +345,36 @@ class SessionAnalyzer:
                             'raw_time': start_time
                         })
             
-            # Parse log data (skip header row)
+            # Parse log data: identify columns by header row (case-insensitive) so order doesn't matter
             self.log_data = []
-            for row in log_data[1:]:
-                if len(row) >= 6:  # Ensure we have required fields
-                    student_id, subject, log_date, log_time, type_field, user = row[:6]
-                    if subject and log_date:
-                        # NORMALIZE AND CONVERT TO UPPERCASE FOR CASE-INSENSITIVE MATCHING
-                        student_id = self.normalize_whitespace(str(student_id)) if student_id else ''
-                        subject = self.normalize_whitespace(str(subject).upper()) if subject else ""
-                        type_field = self.normalize_whitespace(str(type_field)) if type_field else ''
-                        user = self.normalize_whitespace(str(user)) if user else ''
-                        
+            header_row = log_data[0] if log_data and len(log_data) > 0 else None
+            col_indices = self._get_log_column_indices(header_row, use_location_as_subject=False) if header_row else None
+            data_start = 1 if col_indices is not None else 1  # always skip first row when loading from file (row 0 is header or first data)
+            
+            for row in log_data[data_start:]:
+                if not row or not any(cell is not None for cell in row):
+                    continue
+                if col_indices is not None:
+                    entry = self._parse_log_row(row, col_indices, use_location_as_subject=False)
+                    if entry:
+                        self.log_data.append(entry)
+                else:
+                    # Fallback: positional (student_id, subject, log_date, log_time, type_field, user)
+                    if len(row) >= 4 and row[1] and row[2]:
+                        student_id = self.normalize_whitespace(str(row[0])) if row[0] else ''
+                        subject = self.normalize_whitespace(str(row[1]).upper()) if row[1] else ""
+                        log_date_val = row[2]
+                        type_field = self.normalize_whitespace(str(row[4])) if len(row) > 4 and row[4] else ''
+                        user = self.normalize_whitespace(str(row[5])) if len(row) > 5 and row[5] else ''
                         self.log_data.append({
                             'student_id': str(student_id) if student_id else '',
                             'subject': subject,
-                            'log_date': self.normalize_date(log_date),
-                            'log_time': self.normalize_time(log_time),
+                            'log_date': self.normalize_date(log_date_val),
+                            'log_time': self.normalize_time(row[3]) if len(row) > 3 and row[3] else None,
                             'type': str(type_field) if type_field else '',
                             'user': str(user) if user else '',
-                            'raw_date': log_date,
-                            'raw_time': log_time
+                            'raw_date': log_date_val,
+                            'raw_time': row[3] if len(row) > 3 else None
                         })
             
             # Find missing and recorded sessions with GROUP-SPECIFIC attendance
@@ -2197,6 +2317,9 @@ class AutomatedAttendanceProcessor:
     def analyze_transfer_patterns(self, transferred_students, log_history, session_schedule, student_map):
         """Analyze attendance patterns to determine when students were transferred"""
         transfer_data = {}
+        # Identify columns by header (case-insensitive) so column order doesn't matter
+        header_row = log_history[0] if log_history else None
+        log_col_indices = get_log_column_indices_from_header(header_row)
         
         for student_id, transfer_info in transferred_students.items():
             # NORMALIZE WHITESPACE for group names
@@ -2210,21 +2333,23 @@ class AutomatedAttendanceProcessor:
             prev_group_sessions = self.create_session_map(session_schedule, prev_group_key)
             current_group_sessions = self.create_session_map(session_schedule, current_group_key)
             
-            # Get attendance records for this student - NORMALIZE WHITESPACE
+            # Get attendance records for this student - use header-based column indices when available
             student_logs = []
             for row in log_history[1:]:
-                if len(row) >= 4:
-                    # Normalize the student ID for comparison
-                    log_student_id = self.normalize_whitespace(str(row[0]))
-                    if log_student_id == self.normalize_whitespace(str(student_id)):
-                        date_val = str(row[2]) if len(row) > 2 else ""
-                        time_val = str(row[3]) if len(row) > 3 else ""
-                        
-                        if (date_val.startswith("Year") or time_val.startswith("C") or 
-                            not date_val or not time_val):
-                            continue
-                        
-                        student_logs.append(row)
+                sid, location, date_val, time_val = get_log_row_values(row, log_col_indices)
+                if sid is None and log_col_indices is None and len(row) >= 4:
+                    sid, location, date_val, time_val = row[0], row[1], row[2], row[3]
+                if sid is None or date_val is None:
+                    continue
+                log_student_id = self.normalize_whitespace(str(sid))
+                if log_student_id != self.normalize_whitespace(str(student_id)):
+                    continue
+                time_str = str(time_val) if time_val is not None else ""
+                date_str = str(date_val) if date_val else ""
+                if (date_str.startswith("Year") or time_str.startswith("C") or not date_str or not time_str):
+                    continue
+                # Store as (student_id, location, date, time) so downstream can use [0],[1],[2],[3]
+                student_logs.append((sid, location, date_val, time_val))
             
             def safe_sort_key(x):
                 try:
@@ -2368,6 +2493,9 @@ class AutomatedAttendanceProcessor:
         valid_attendance = {}
         session_map = {}
         unique_logs = set()
+        # Identify log columns by header (case-insensitive) so column order doesn't matter
+        header_row = log_history[0] if log_history else None
+        log_col_indices = get_log_column_indices_from_header(header_row)
 
         # Build session maps for all groups - WITH NORMALIZATION
         for row in session_schedule:
@@ -2407,17 +2535,22 @@ class AutomatedAttendanceProcessor:
                     "duration": session_duration
                 }
 
-        # Process log history - WITH NORMALIZATION
+        # Process log history - use header-based column indices when available
         for row in log_history[1:]:
-            if len(row) >= 4:
-                # CRITICAL: Normalize FIRST
+            sid, location_val, date, time = get_log_row_values(row, log_col_indices)
+            if log_col_indices is None and len(row) >= 4:
                 normalized_row = self.normalize_row_data(row)
                 student_id = str(normalized_row[0])
                 location = str(normalized_row[1]).upper() if normalized_row[1] else ""
                 date = normalized_row[2]
                 time = normalized_row[3]
+            else:
+                if sid is None or date is None or time is None:
+                    continue
+                student_id = self.normalize_whitespace(str(sid))
+                location = self.normalize_whitespace(str(location_val)).upper() if location_val else ""
 
-                if student_id in student_map:
+            if student_id in student_map:
                     student = student_map[student_id]
                     # Student data is already normalized when map was created
                     
