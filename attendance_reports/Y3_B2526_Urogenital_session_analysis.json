@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "export_timestamp": "2026-02-04T07:03:32.198632",
+    "export_timestamp": "2026-02-06T21:45:11.034108",
     "year": "3",
     "batch": "2526",
     "module": "Urogenital",
@@ -432,12 +432,32 @@
       "start_time": "10:00:00",
       "raw_date": "23/11/2025",
       "raw_time": "10:00:00",
+      "recorded_by": "sara_atawia@med.asu.edu.eg",
+      "unique_student_count": 17,
       "expected_student_count": 204,
-      "unique_student_count": 0,
-      "attendance_rate": 0,
-      "recorded_by": "",
-      "total_entry_count": 0,
-      "status": "Not Recorded"
+      "attendance_rate": 8.333333333333332,
+      "total_entry_count": 17,
+      "group_specific_entry_count": 17,
+      "attending_student_ids": [
+        "231285",
+        "231255",
+        "231315",
+        "231273",
+        "231261",
+        "231291",
+        "231227",
+        "231284",
+        "231245",
+        "231233",
+        "231300",
+        "231252",
+        "231281",
+        "231310",
+        "231292",
+        "231243",
+        "231223"
+      ],
+      "status": "Recorded"
     },
     {
       "year": "Year 3",
