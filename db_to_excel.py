@@ -2,11 +2,13 @@ import sqlite3
 import pandas as pd
 from datetime import datetime
 import os
+import json
 
 def convert_attendance_to_excel():
     """
     Extract attendance data from log_history.db and create an Excel file
     with Student ID, Subject, Log Date, Log Time, and User Name columns.
+    Also exports to JSON format.
     """
     db_path = 'log_history/log_history.db'
     
@@ -38,14 +40,23 @@ def convert_attendance_to_excel():
         # Rename columns to proper case for Excel headers
         df.columns = ['Student ID', 'Subject', 'Log Date', 'Log Time', 'User Name']
         
-        # Create output filename with timestamp in log_history directory
+        # Create output filenames in log_history directory
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        output_file = f'log_history/attendance_export.xlsx'
+        excel_file = f'log_history/attendance_export.xlsx'
+        json_file = f'log_history/attendance_export.json'
         
         # Export to Excel
-        df.to_excel(output_file, index=False, sheet_name='Attendance')
+        df.to_excel(excel_file, index=False, sheet_name='Attendance')
+        print(f"Successfully exported {len(df)} records to {excel_file}")
         
-        print(f"Successfully exported {len(df)} records to {output_file}")
+        # Export to JSON
+        # Convert DataFrame to list of dictionaries for cleaner JSON
+        json_data = df.to_dict(orient='records')
+        
+        with open(json_file, 'w', encoding='utf-8') as f:
+            json.dump(json_data, f, indent=2, ensure_ascii=False)
+        
+        print(f"Successfully exported {len(df)} records to {json_file}")
         
     except sqlite3.Error as e:
         print(f"Database error: {e}")
