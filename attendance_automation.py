@@ -8,6 +8,7 @@ import json
 import random
 import shutil
 import threading
+import sqlite3
 from collections import defaultdict
 from datetime import datetime, timedelta, date, time
 import pytz
@@ -21,6 +22,97 @@ from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 from collections import defaultdict
 import glob
+
+
+def _synthetic_log_datetime_to_iso(log_date_str, log_time_str):
+    """Parse log_date (dd/mm/yyyy) and log_time (HH:MM:SS) and return ISO format like 2025-10-01T15:18:35.000Z."""
+    try:
+        dt = datetime.strptime(f"{log_date_str} {log_time_str}", "%d/%m/%Y %H:%M:%S")
+        return dt.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+    except Exception:
+        try:
+            dt = datetime.strptime(f"{log_date_str} {log_time_str}", "%d/%m/%Y %H:%M")
+            return dt.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+        except Exception:
+            return datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.000Z")
+
+
+def _generate_synthetic_session_id():
+    """Return sessionId like 'edited781' + 10 random digits (13 digits total after 'edited', starting with 781)."""
+    return "edited781" + "".join(random.choices("0123456789", k=10))
+
+
+def _write_synthetic_logs_to_db(log_history_dir, synthetic_rows):
+    """Write synthetic transfer log rows to SQLite DBs: one file per user, named sessionId_userId.db.
+    Returns list of created .db file paths."""
+    if not synthetic_rows:
+        return []
+    by_user = {}
+    for row in synthetic_rows:
+        user_id = (row[7] or "").strip() or "unknown"
+        by_user.setdefault(user_id, []).append(row)
+    created_paths = []
+    for user_id, rows in by_user.items():
+        session_id = _generate_synthetic_session_id()
+        safe_user = "".join(c if c.isalnum() or c in "._-" else "_" for c in str(user_id))
+        db_filename = f"{session_id}_{safe_user}.db"
+        db_path = os.path.join(log_history_dir, db_filename)
+        conn = sqlite3.connect(db_path)
+        try:
+            cur = conn.cursor()
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS attendance (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    student_id INTEGER NOT NULL,
+                    subject TEXT NOT NULL,
+                    log_date TEXT NOT NULL,
+                    log_time TEXT NOT NULL,
+                    sessionId TEXT NOT NULL,
+                    dateTime TEXT NOT NULL,
+                    inProgress INTEGER NOT NULL,
+                    isChecklist INTEGER NOT NULL,
+                    isScanner INTEGER NOT NULL,
+                    isExcused INTEGER NOT NULL,
+                    isEdited INTEGER NOT NULL,
+                    backedUp INTEGER NOT NULL,
+                    personalBackedUp INTEGER NOT NULL,
+                    synced INTEGER NOT NULL,
+                    syncedAt TEXT NOT NULL,
+                    year INTEGER NOT NULL,
+                    batch TEXT NOT NULL,
+                    scanTime TEXT NOT NULL,
+                    isManual INTEGER NOT NULL,
+                    created_at TEXT NOT NULL,
+                    updated_at TEXT NOT NULL,
+                    notes TEXT,
+                    user_name TEXT NOT NULL,
+                    user_id TEXT NOT NULL,
+                    division TEXT NOT NULL,
+                    department TEXT NOT NULL
+                )
+            """)
+            for row in rows:
+                student_id, subject, date_str, time_str = row[0], row[1], row[2], row[3]
+                year_val, batch_val = row[4], row[5]
+                user_name, uid = row[6], row[7]
+                division, department = row[8], row[9]
+                try:
+                    s = str(year_val).strip() if year_val else ""
+                    year_int = int(s) if s.isdigit() else (int(re.search(r"\d+", s).group(0)) if re.search(r"\d+", s) else 0)
+                except (ValueError, TypeError):
+                    year_int = 0
+                iso_ts = _synthetic_log_datetime_to_iso(date_str, time_str)
+                cur.execute("""
+                    INSERT INTO attendance (student_id, subject, log_date, log_time, sessionId, dateTime,
+                        inProgress, isChecklist, isScanner, isExcused, isEdited, backedUp, personalBackedUp, synced, syncedAt,
+                        year, batch, scanTime, isManual, created_at, updated_at, notes, user_name, user_id, division, department)
+                    VALUES (?, ?, ?, ?, ?, ?, 0, 0, 0, 0, 1, 1, 1, 1, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?, ?, ?)
+                """, (student_id, subject, date_str, time_str, session_id, iso_ts, iso_ts, year_int, batch_val or "", iso_ts, iso_ts, iso_ts, None, user_name or "", uid or "", division or "", department or ""))
+            conn.commit()
+            created_paths.append(db_path)
+        finally:
+            conn.close()
+    return created_paths
 
 
 def _normalize_header_cell(cell):
@@ -57,6 +149,12 @@ def get_log_column_indices_from_header(header_row):
             col['log_time'] = idx
         elif norm == 'type':
             col['type'] = idx
+        elif norm == 'user id':
+            col['user_id'] = idx
+        elif norm == 'division':
+            col['division'] = idx
+        elif norm == 'department':
+            col['department'] = idx
     if 'student_id' not in col or 'subject' not in col or 'log_date' not in col or 'log_time' not in col:
         return None
     return {
@@ -66,6 +164,10 @@ def get_log_column_indices_from_header(header_row):
         'log_time': col.get('log_time'),
         'type': col.get('type'),
         'user': col.get('user'),
+        'user_name': col.get('user'),  # alias for synthetic log helpers
+        'user_id': col.get('user_id'),
+        'division': col.get('division'),
+        'department': col.get('department'),
     }
 
 
@@ -2314,13 +2416,15 @@ class AutomatedAttendanceProcessor:
 
         return f"{r:02x}{g:02x}{b:02x}".upper()
 
-    def analyze_transfer_patterns(self, transferred_students, log_history, session_schedule, student_map):
-        """Analyze attendance patterns to determine when students were transferred"""
+    def analyze_transfer_patterns(self, transferred_students, log_history, session_schedule, student_map,
+                                  log_col_indices=None):
+        """Analyze attendance patterns to determine when students were transferred.
+        Uses log_col_indices when provided; otherwise derives from log header so column order doesn't matter."""
         transfer_data = {}
-        # Identify columns by header (case-insensitive) so column order doesn't matter
-        header_row = log_history[0] if log_history else None
-        log_col_indices = get_log_column_indices_from_header(header_row)
-        
+        if log_col_indices is None:
+            header_row = log_history[0] if log_history else None
+            log_col_indices = get_log_column_indices_from_header(header_row)
+
         for student_id, transfer_info in transferred_students.items():
             # NORMALIZE WHITESPACE for group names
             previous_group = self.normalize_whitespace(str(transfer_info["previous_group"]))
@@ -2487,6 +2591,192 @@ class AutomatedAttendanceProcessor:
 
         return None
 
+    def create_session_map_by_number(self, session_schedule, group_key):
+        """Create a map (subject, session_num) -> session info for a specific group (for transfer synthetic logs)."""
+        by_number = {}
+        for row in session_schedule:
+            if len(row) >= 7:
+                normalized_row = self.normalize_row_data(row)
+                year, group, subject, session_num, date, start_time, duration = normalized_row[:7]
+                group = str(group).upper() if group else ""
+                subject = str(subject).upper() if subject else ""
+                key = f"{year}-{group}"
+                if key != group_key:
+                    continue
+                session_num = str(session_num) if session_num else ""
+                session_datetime = self.parse_datetime(date, start_time)
+                if not session_datetime:
+                    continue
+                try:
+                    session_duration = float(duration) if duration is not None else 120.0
+                except (ValueError, TypeError):
+                    session_duration = 120.0
+                by_number[(subject, session_num)] = {
+                    "subject": subject,
+                    "session_num": session_num,
+                    "date": date,
+                    "start_time": start_time,
+                    "start_datetime": session_datetime,
+                    "duration": session_duration
+                }
+        return by_number
+
+    def match_log_to_session_info(self, log_datetime, location, session_map):
+        """Return the session info dict if the log matches a session in the map, else None."""
+        normalized_location = self.normalize_whitespace(str(location).lower())
+        for session_key, session_info in session_map.items():
+            session_subject = self.normalize_whitespace(str(session_info["subject"]).lower())
+            session_start = session_info["start_time"]
+            if normalized_location != session_subject:
+                continue
+            session_duration = session_info.get("duration", 120.0)
+            before_window = timedelta(minutes=15)
+            after_window = timedelta(minutes=int(session_duration))
+            if session_start - before_window <= log_datetime <= session_start + after_window:
+                return session_info
+        return None
+
+    def _get_user_from_log_row(self, row, col_indices):
+        """Extract user name, user id, division, and department from a log row using column indices.
+        Falls back to positional columns 4–7 when header indices are missing but row has enough columns."""
+        if not col_indices:
+            return ("", "", "", "")
+        def get(key, default=""):
+            idx = col_indices.get(key)
+            if idx is None or idx >= len(row):
+                return default
+            v = row[idx] if idx < len(row) else None
+            return self.normalize_whitespace(str(v)) if v is not None else default
+        user_name = get("user_name") or get("user", "")
+        user_id = get("user_id", "")
+        division = get("division", "")
+        department = get("department", "")
+        # Positional fallback: many log files use columns 4=User Name, 5=User ID, 6=Division, 7=Department
+        if not user_name and len(row) > 4 and row[4] is not None:
+            user_name = self.normalize_whitespace(str(row[4]))
+        if not user_id and len(row) > 5 and row[5] is not None:
+            user_id = self.normalize_whitespace(str(row[5]))
+        if not division and len(row) > 6 and row[6] is not None:
+            division = self.normalize_whitespace(str(row[6]))
+        if not department and len(row) > 7 and row[7] is not None:
+            department = self.normalize_whitespace(str(row[7]))
+        return (user_name, user_id, division, department)
+
+    def _find_log_row_for_attendance(self, log_history, student_id, log_datetime, location, col_indices):
+        """Find a log row matching (student_id, log_datetime, location). Returns (row, user_name, user_id, division, department). Tolerant datetime match (same date, within 2 min)."""
+        if not col_indices:
+            return (None, "", "", "", "")
+        sid_idx = col_indices.get("student_id", 0)
+        subj_idx = col_indices.get("subject", 1)
+        date_idx = col_indices.get("log_date", 2)
+        time_idx = col_indices.get("log_time", 3)
+        for row in log_history[1:]:
+            if not row or len(row) < 4:
+                continue
+            row_sid = self.normalize_whitespace(str(row[sid_idx])) if sid_idx is not None and sid_idx < len(row) and row[sid_idx] else ""
+            if row_sid != student_id:
+                continue
+            row_loc = self.normalize_whitespace(str(row[subj_idx]).upper()) if subj_idx is not None and subj_idx < len(row) and row[subj_idx] else ""
+            loc_normalized = self.normalize_whitespace(str(location).upper()) if location else ""
+            if row_loc != loc_normalized:
+                continue
+            dt = self.parse_datetime(row[date_idx], row[time_idx] if time_idx is not None and time_idx < len(row) else None)
+            if not dt:
+                continue
+            if dt.date() != log_datetime.date():
+                continue
+            if abs((dt - log_datetime).total_seconds()) > 120:
+                continue
+            uname, uid, division, department = self._get_user_from_log_row(row, col_indices)
+            return (row, uname, uid, division, department)
+        return (None, "", "", "", "")
+
+    def generate_synthetic_logs_for_transfers(self, all_transferred_students, transfer_data,
+                                              log_history, session_schedule, current_student_map,
+                                              log_col_indices, year="", batch=""):
+        """Generate synthetic log rows for transferred students (credit previous-group sessions to new-group dates).
+        Row format: student_id, subject, log_date, log_time, type, year, batch, user_name, user_id, division, department."""
+        if not log_history or len(log_history) < 2 or not log_col_indices:
+            return []
+        synthetic_rows = []
+        seen_new_session = set()
+
+        for student_id, transfer_info in all_transferred_students.items():
+            if student_id not in current_student_map:
+                continue
+            student_year = self.normalize_whitespace(str(transfer_info["year"]))
+            prev_group = self.normalize_whitespace(transfer_info["previous_group"])
+            curr_group = self.normalize_whitespace(transfer_info["current_group"])
+            prev_key = f"{student_year}-{prev_group}"
+            curr_key = f"{student_year}-{curr_group}"
+
+            prev_sessions = self.create_session_map(session_schedule, prev_key)
+            curr_by_number = self.create_session_map_by_number(session_schedule, curr_key)
+            if not curr_by_number:
+                continue
+
+            td = transfer_data.get(student_id, {})
+            pattern = td.get("attendance_pattern", [])
+            transfer_date = td.get("transfer_date")
+            if not transfer_date:
+                continue
+
+            for item in pattern:
+                group_kind, log_datetime, location = item[0], item[1], item[2]
+                if group_kind not in ("previous", "both"):
+                    continue
+                session_info = self.match_log_to_session_info(log_datetime, location, prev_sessions)
+                if not session_info:
+                    continue
+                subject = session_info["subject"]
+                session_num = session_info["session_num"]
+                new_session = curr_by_number.get((subject, session_num))
+                if not new_session:
+                    continue
+                dup_key = (student_id, subject, session_num)
+                if dup_key in seen_new_session:
+                    continue
+                seen_new_session.add(dup_key)
+
+                _, user_name, user_id, division, department = self._find_log_row_for_attendance(
+                    log_history, student_id, log_datetime, location, log_col_indices)
+
+                new_date = new_session["date"]
+                new_time = new_session["start_time"]
+                if isinstance(new_date, datetime):
+                    date_str = new_date.strftime("%d/%m/%Y")
+                elif hasattr(new_date, "strftime"):
+                    date_str = new_date.strftime("%d/%m/%Y")
+                else:
+                    date_str = str(new_date) if new_date else ""
+                try:
+                    if isinstance(new_time, datetime):
+                        time_str = new_time.strftime("%H:%M:%S")
+                    elif isinstance(new_time, time):
+                        time_str = new_time.strftime("%H:%M:%S")
+                    elif hasattr(new_time, "hour") and hasattr(new_time, "minute"):
+                        time_str = f"{getattr(new_time, 'hour', 0):02d}:{getattr(new_time, 'minute', 0):02d}:00"
+                    elif isinstance(new_time, (int, float)) and 0 <= new_time < 1:
+                        total_secs = int(round(new_time * 86400))
+                        h, r = divmod(total_secs, 3600)
+                        m, s = divmod(r, 60)
+                        time_str = f"{h:02d}:{m:02d}:{s:02d}"
+                    else:
+                        time_str = str(new_time) if new_time else "00:00:00"
+                except Exception:
+                    time_str = "00:00:00"
+
+                year_val = student_year if student_year else (year or "")
+                batch_val = batch if batch is not None else ""
+
+                synthetic_rows.append([
+                    student_id, subject, date_str, time_str,
+                    # "edited",  # Type column – not needed, commented out
+                    year_val, batch_val,
+                    user_name, user_id, division, department
+                ])
+        return synthetic_rows
+
     def validate_attendance_with_transfers(self, log_history, session_schedule, student_map, 
                                     transferred_students, transfer_data, target_year):
         """Validate attendance considering student transfers - FIXED NORMALIZATION"""
@@ -2560,17 +2850,22 @@ class AutomatedAttendanceProcessor:
                     
                     normalized_date = log_datetime.strftime('%d/%m/%Y')
                     
-                    # Determine which group to validate against
+                    # Determine which group to validate against (use date-only comparison for robust boundary)
                     if student_id in transferred_students:
                         transfer_info = transfer_data.get(student_id, {})
                         transfer_date = transfer_info.get("transfer_date")
-            
-                        if transfer_date and log_datetime < transfer_date:
-                            group_to_use = transferred_students[student_id]["previous_group"]
-                        elif transfer_date and log_datetime == transfer_date:
-                            group_to_use = "both"
-                        else:
+
+                        if transfer_date is None:
                             group_to_use = student["group"]  # Already normalized
+                        else:
+                            log_date = log_datetime.date()
+                            trans_date = transfer_date.date() if hasattr(transfer_date, "date") else transfer_date
+                            if log_date < trans_date:
+                                group_to_use = transferred_students[student_id]["previous_group"]
+                            elif log_date == trans_date:
+                                group_to_use = "both"
+                            else:
+                                group_to_use = student["group"]  # Already normalized
                     else:
                         group_to_use = student["group"]  # Already normalized
         
@@ -2897,6 +3192,7 @@ class AutomatedAttendanceProcessor:
 
         print(f"Successfully merged {len(merged_log_data)} rows of log data\n")
 
+        all_synthetic_rows = []
         for module_name, data in module_groups.items():
             print(f"\nProcessing {module_name}...")
 
@@ -3014,13 +3310,22 @@ class AutomatedAttendanceProcessor:
                 session_schedule[1:], current_datetime)
             required_attendance = self.calculate_required_attendance(session_schedule[1:], total_required)
 
-            # Analyze transfer patterns using the merged log data
+            # Analyze transfer patterns using the merged log data (pass header indices for consistent column handling)
+            log_col_indices = get_log_column_indices_from_header(merged_log_data[0] if merged_log_data else None)
             transfer_data = self.analyze_transfer_patterns(all_transferred_students, merged_log_data,
-                                                        session_schedule[1:], current_student_map)
+                                                        session_schedule[1:], current_student_map,
+                                                        log_col_indices=log_col_indices)
 
-            # Validate attendance using the merged log data
+            # Generate synthetic log rows only for NEW transfers (not for existing transfers from previous report)
+            synthetic_rows = self.generate_synthetic_logs_for_transfers(
+                new_transferred_students, transfer_data, merged_log_data, session_schedule[1:],
+                current_student_map, log_col_indices, year=year, batch=batch)
+            all_synthetic_rows.extend(synthetic_rows)
+            merged_log = list(merged_log_data) + synthetic_rows
+
+            # Validate attendance using the merged log (original + synthetic) so transfer credit is counted
             new_valid_attendance = self.validate_attendance_with_transfers(
-                merged_log_data, session_schedule[1:], current_student_map,
+                merged_log, session_schedule[1:], current_student_map,
                 all_transferred_students, transfer_data, f"Year {year}")
 
             # Combine with previous attendance data
@@ -3097,6 +3402,15 @@ class AutomatedAttendanceProcessor:
                     
             except Exception as e:
                 print(f"  Error converting to JSON: {str(e)}")
+
+        # Write synthetic transfer logs to log_history directory: one .db per user, named sessionId_userId.db
+        if all_synthetic_rows:
+            try:
+                synth_db_paths = _write_synthetic_logs_to_db(self.log_history_dir, all_synthetic_rows)
+                if synth_db_paths:
+                    print(f"\nSynthetic transfer logs saved ({len(synth_db_paths)} file(s)): {', '.join(os.path.basename(p) for p in synth_db_paths)}")
+            except Exception as synth_exc:
+                print(f"Warning: Could not write synthetic transfer logs DB: {synth_exc}")
 
         print(f"\nAutomated attendance processing completed!")
         print(f"Processed {len(module_groups)} modules using {len(all_log_files)} log files")
