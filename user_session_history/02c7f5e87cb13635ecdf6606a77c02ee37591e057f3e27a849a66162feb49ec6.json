@@ -1,10 +1,10 @@
 {
   "user_email": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a",
-  "user_id": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a_1771246781594",
-  "account_created": "2026-02-16T12:59:41.594Z",
-  "last_sync": "2026-02-16T12:59:41.594Z",
-  "total_sessions": 3,
-  "total_scans": 75,
+  "user_id": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a_1771246940432",
+  "account_created": "2026-02-16T13:02:20.432Z",
+  "last_sync": "2026-02-16T13:02:20.432Z",
+  "total_sessions": 4,
+  "total_scans": 76,
   "sessions": [
     {
       "id": "scanner1770725016022",
@@ -17,10 +17,10 @@
       "inProgress": true,
       "isScanner": true,
       "user_email": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a",
-      "user_id": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a_1771246781594",
+      "user_id": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a_1771246940432",
       "created_by": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a",
-      "created_at": "2026-02-16T12:59:41.594Z",
-      "updated_at": "2026-02-16T12:59:41.594Z"
+      "created_at": "2026-02-16T13:02:20.432Z",
+      "updated_at": "2026-02-16T13:02:20.432Z"
     },
     {
       "id": "scanner1771231739378",
@@ -630,10 +630,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a",
-      "user_id": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a_1771246781594",
+      "user_id": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a_1771246940432",
       "created_by": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a",
-      "created_at": "2026-02-16T12:59:41.594Z",
-      "updated_at": "2026-02-16T12:59:41.594Z"
+      "created_at": "2026-02-16T13:02:20.432Z",
+      "updated_at": "2026-02-16T13:02:20.432Z"
     },
     {
       "id": "scanner1771244672282",
@@ -659,10 +659,38 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a",
-      "user_id": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a_1771246781594",
+      "user_id": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a_1771246940432",
       "created_by": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a",
-      "created_at": "2026-02-16T12:59:41.594Z",
-      "updated_at": "2026-02-16T12:59:41.594Z"
+      "created_at": "2026-02-16T13:02:20.432Z",
+      "updated_at": "2026-02-16T13:02:20.432Z"
+    },
+    {
+      "id": "scanner1771246923101",
+      "location": "Pharmacology",
+      "year": 1,
+      "batch": "2026/2027",
+      "dateTime": "2026-02-16T13:02:03.101Z",
+      "formattedDateTime": "16/02/2026 15:02:03",
+      "scans": [
+        {
+          "id": "1771246938818",
+          "content": "251193",
+          "timestamp": "2026-02-16T13:02:18.818Z",
+          "formattedTime": "15:02:18",
+          "time": "2026-02-16T13:02:18.818Z",
+          "isManual": true
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a",
+      "user_id": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a_1771246940432",
+      "created_by": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a",
+      "created_at": "2026-02-16T13:02:20.432Z",
+      "updated_at": "2026-02-16T13:02:20.432Z"
     }
   ]
 }
