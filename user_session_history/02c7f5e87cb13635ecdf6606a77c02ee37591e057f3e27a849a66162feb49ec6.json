@@ -1,10 +1,10 @@
 {
   "user_email": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a",
-  "user_id": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a_1771231763624",
-  "account_created": "2026-02-16T08:49:23.624Z",
-  "last_sync": "2026-02-16T08:49:23.624Z",
+  "user_id": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a_1771231823225",
+  "account_created": "2026-02-16T08:50:23.225Z",
+  "last_sync": "2026-02-16T08:50:23.225Z",
   "total_sessions": 2,
-  "total_scans": 2,
+  "total_scans": 11,
   "sessions": [
     {
       "id": "scanner1770725016022",
@@ -17,10 +17,10 @@
       "inProgress": true,
       "isScanner": true,
       "user_email": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a",
-      "user_id": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a_1771231763624",
+      "user_id": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a_1771231823225",
       "created_by": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a",
-      "created_at": "2026-02-16T08:49:23.624Z",
-      "updated_at": "2026-02-16T08:49:23.624Z"
+      "created_at": "2026-02-16T08:50:23.225Z",
+      "updated_at": "2026-02-16T08:50:23.225Z"
     },
     {
       "id": "scanner1771231739378",
@@ -45,6 +45,78 @@
           "formattedTime": "10:49:23",
           "time": "2026-02-16T08:49:23.505Z",
           "isManual": false
+        },
+        {
+          "id": "1771231767216",
+          "content": "254684",
+          "timestamp": "2026-02-16T08:49:27.216Z",
+          "formattedTime": "10:49:27",
+          "time": "2026-02-16T08:49:27.216Z",
+          "isManual": false
+        },
+        {
+          "id": "1771231775910",
+          "content": "254652",
+          "timestamp": "2026-02-16T08:49:35.910Z",
+          "formattedTime": "10:49:35",
+          "time": "2026-02-16T08:49:35.910Z",
+          "isManual": true
+        },
+        {
+          "id": "1771231779052",
+          "content": "254642",
+          "timestamp": "2026-02-16T08:49:39.052Z",
+          "formattedTime": "10:49:39",
+          "time": "2026-02-16T08:49:39.052Z",
+          "isManual": false
+        },
+        {
+          "id": "1771231796538",
+          "content": "244654",
+          "timestamp": "2026-02-16T08:49:56.538Z",
+          "formattedTime": "10:49:56",
+          "time": "2026-02-16T08:49:56.538Z",
+          "isManual": true
+        },
+        {
+          "id": "1771231800444",
+          "content": "244812",
+          "timestamp": "2026-02-16T08:50:00.443Z",
+          "formattedTime": "10:50:00",
+          "time": "2026-02-16T08:50:00.443Z",
+          "isManual": false
+        },
+        {
+          "id": "1771231803965",
+          "content": "244695",
+          "timestamp": "2026-02-16T08:50:03.965Z",
+          "formattedTime": "10:50:03",
+          "time": "2026-02-16T08:50:03.965Z",
+          "isManual": false
+        },
+        {
+          "id": "1771231809334",
+          "content": "254683",
+          "timestamp": "2026-02-16T08:50:09.334Z",
+          "formattedTime": "10:50:09",
+          "time": "2026-02-16T08:50:09.334Z",
+          "isManual": false
+        },
+        {
+          "id": "1771231815035",
+          "content": "254631",
+          "timestamp": "2026-02-16T08:50:15.035Z",
+          "formattedTime": "10:50:15",
+          "time": "2026-02-16T08:50:15.035Z",
+          "isManual": true
+        },
+        {
+          "id": "1771231822740",
+          "content": "254644",
+          "timestamp": "2026-02-16T08:50:22.740Z",
+          "formattedTime": "10:50:22",
+          "time": "2026-02-16T08:50:22.740Z",
+          "isManual": false
         }
       ],
       "inProgress": true,
@@ -53,10 +125,10 @@
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a",
-      "user_id": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a_1771231763624",
+      "user_id": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a_1771231823225",
       "created_by": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a",
-      "created_at": "2026-02-16T08:49:23.624Z",
-      "updated_at": "2026-02-16T08:49:23.624Z"
+      "created_at": "2026-02-16T08:50:23.225Z",
+      "updated_at": "2026-02-16T08:50:23.225Z"
     }
   ]
 }
