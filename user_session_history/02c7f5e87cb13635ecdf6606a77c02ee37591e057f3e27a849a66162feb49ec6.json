@@ -1,10 +1,10 @@
 {
   "user_email": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a",
-  "user_id": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a_1771232344007",
-  "account_created": "2026-02-16T08:59:04.007Z",
-  "last_sync": "2026-02-16T08:59:04.007Z",
-  "total_sessions": 2,
-  "total_scans": 74,
+  "user_id": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a_1771244690463",
+  "account_created": "2026-02-16T12:24:50.463Z",
+  "last_sync": "2026-02-16T12:24:50.463Z",
+  "total_sessions": 3,
+  "total_scans": 75,
   "sessions": [
     {
       "id": "scanner1770725016022",
@@ -17,10 +17,10 @@
       "inProgress": true,
       "isScanner": true,
       "user_email": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a",
-      "user_id": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a_1771232344007",
+      "user_id": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a_1771244690463",
       "created_by": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a",
-      "created_at": "2026-02-16T08:59:04.007Z",
-      "updated_at": "2026-02-16T08:59:04.007Z"
+      "created_at": "2026-02-16T12:24:50.463Z",
+      "updated_at": "2026-02-16T12:24:50.463Z"
     },
     {
       "id": "scanner1771231739378",
@@ -623,16 +623,45 @@
           "isManual": false
         }
       ],
+      "inProgress": false,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "closed_normally",
+      "isChecklist": false,
+      "backedUp": true,
+      "user_email": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a",
+      "user_id": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a_1771244690463",
+      "created_by": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a",
+      "created_at": "2026-02-16T12:24:50.463Z",
+      "updated_at": "2026-02-16T12:24:50.463Z"
+    },
+    {
+      "id": "scanner1771244672282",
+      "location": "Pharmacology",
+      "year": 1,
+      "batch": "2026/2027",
+      "dateTime": "2026-02-16T12:24:32.282Z",
+      "formattedDateTime": "16/02/2026 14:24:32",
+      "scans": [
+        {
+          "id": "1771244687916",
+          "content": "251649",
+          "timestamp": "2026-02-16T12:24:47.916Z",
+          "formattedTime": "14:24:47",
+          "time": "2026-02-16T12:24:47.916Z",
+          "isManual": true
+        }
+      ],
       "inProgress": true,
       "isScanner": true,
       "sessionType": "scanner",
       "recoveryStatus": "in_progress",
       "isChecklist": false,
       "user_email": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a",
-      "user_id": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a_1771232344007",
+      "user_id": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a_1771244690463",
       "created_by": "c34025bd37256db81f2c1a1cb53ba3c52790919084614c0186f370c76671ad4a",
-      "created_at": "2026-02-16T08:59:04.007Z",
-      "updated_at": "2026-02-16T08:59:04.007Z"
+      "created_at": "2026-02-16T12:24:50.463Z",
+      "updated_at": "2026-02-16T12:24:50.463Z"
     }
   ]
 }
