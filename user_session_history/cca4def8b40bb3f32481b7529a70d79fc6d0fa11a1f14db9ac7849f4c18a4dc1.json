@@ -1,0 +1,934 @@
+{
+  "user_email": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+  "user_id": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073_1771397581118",
+  "account_created": "2026-02-18T06:53:01.118Z",
+  "last_sync": "2026-02-18T06:53:01.118Z",
+  "total_sessions": 29,
+  "total_scans": 73,
+  "sessions": [
+    {
+      "id": "scanner1766560432903",
+      "location": "Physiology",
+      "dateTime": "2025-12-24T07:13:52.903Z",
+      "inProgress": 1,
+      "formattedDateTime": "12/24/2025 9:13 AM",
+      "scans": [
+        {
+          "id": "206",
+          "content": "244298",
+          "timestamp": "2025-12-24T07:14:03.765Z",
+          "formattedTime": "9:14 AM",
+          "isManual": false
+        }
+      ],
+      "user_email": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "user_id": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073_1771397581118",
+      "created_by": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "created_at": "2026-02-18T06:53:01.118Z",
+      "updated_at": "2026-02-18T06:53:01.118Z"
+    },
+    {
+      "id": "scanner1766050667217",
+      "location": "Physiology",
+      "dateTime": "2025-12-18T09:37:47.217Z",
+      "inProgress": 1,
+      "formattedDateTime": "12/18/2025 11:37 AM",
+      "scans": [
+        {
+          "id": "203",
+          "content": "234863",
+          "timestamp": "2025-12-18T09:37:48.759Z",
+          "formattedTime": "11:37 AM",
+          "isManual": false
+        },
+        {
+          "id": "204",
+          "content": "234228",
+          "timestamp": "2025-12-18T09:37:52.097Z",
+          "formattedTime": "11:37 AM",
+          "isManual": false
+        },
+        {
+          "id": "205",
+          "content": "234227",
+          "timestamp": "2025-12-18T09:37:54.755Z",
+          "formattedTime": "11:37 AM",
+          "isManual": false
+        }
+      ],
+      "user_email": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "user_id": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073_1771397581118",
+      "created_by": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "created_at": "2026-02-18T06:53:01.118Z",
+      "updated_at": "2026-02-18T06:53:01.118Z"
+    },
+    {
+      "id": "scanner1765977166823",
+      "location": "Physiology",
+      "dateTime": "2025-12-17T13:12:46.823Z",
+      "inProgress": 1,
+      "formattedDateTime": "12/17/2025 3:12 PM",
+      "scans": [
+        {
+          "id": "198",
+          "content": "244003",
+          "timestamp": "2025-12-17T13:12:51.199Z",
+          "formattedTime": "3:12 PM",
+          "isManual": false
+        },
+        {
+          "id": "199",
+          "content": "244039",
+          "timestamp": "2025-12-17T13:12:53.870Z",
+          "formattedTime": "3:12 PM",
+          "isManual": false
+        }
+      ],
+      "user_email": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "user_id": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073_1771397581118",
+      "created_by": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "created_at": "2026-02-18T06:53:01.118Z",
+      "updated_at": "2026-02-18T06:53:01.118Z"
+    },
+    {
+      "id": "scanner1765970423378",
+      "location": "Physiology",
+      "dateTime": "2025-12-17T11:20:23.378Z",
+      "inProgress": 1,
+      "formattedDateTime": "12/17/2025 1:20 PM",
+      "scans": [
+        {
+          "id": "196",
+          "content": "241566",
+          "timestamp": "2025-12-17T11:20:29.252Z",
+          "formattedTime": "1:20 PM",
+          "isManual": true
+        }
+      ],
+      "user_email": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "user_id": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073_1771397581118",
+      "created_by": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "created_at": "2026-02-18T06:53:01.118Z",
+      "updated_at": "2026-02-18T06:53:01.118Z"
+    },
+    {
+      "id": "scanner1765953959839",
+      "location": "Physiology",
+      "dateTime": "2025-12-17T06:45:59.839Z",
+      "inProgress": 1,
+      "formattedDateTime": "12/17/2025 8:45 AM",
+      "scans": [
+        {
+          "id": "195",
+          "content": "244688",
+          "timestamp": "2025-12-17T06:46:12.002Z",
+          "formattedTime": "8:46 AM",
+          "isManual": false
+        }
+      ],
+      "user_email": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "user_id": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073_1771397581118",
+      "created_by": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "created_at": "2026-02-18T06:53:01.118Z",
+      "updated_at": "2026-02-18T06:53:01.118Z"
+    },
+    {
+      "id": "scanner1765694894180",
+      "location": "Physiology",
+      "dateTime": "2025-12-14T06:48:14.180Z",
+      "inProgress": 1,
+      "formattedDateTime": "12/14/2025 8:48 AM",
+      "scans": [
+        {
+          "id": "194",
+          "content": "241021",
+          "timestamp": "2025-12-14T06:48:26.200Z",
+          "formattedTime": "8:48 AM",
+          "isManual": false
+        }
+      ],
+      "user_email": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "user_id": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073_1771397581118",
+      "created_by": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "created_at": "2026-02-18T06:53:01.118Z",
+      "updated_at": "2026-02-18T06:53:01.118Z"
+    },
+    {
+      "id": "scanner1765437154547",
+      "location": "Physiology",
+      "dateTime": "2025-12-11T07:12:34.547Z",
+      "inProgress": 1,
+      "formattedDateTime": "12/11/2025 9:12 AM",
+      "scans": [
+        {
+          "id": "193",
+          "content": "234844",
+          "timestamp": "2025-12-11T07:12:36.874Z",
+          "formattedTime": "9:12 AM",
+          "isManual": false
+        }
+      ],
+      "user_email": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "user_id": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073_1771397581118",
+      "created_by": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "created_at": "2026-02-18T06:53:01.118Z",
+      "updated_at": "2026-02-18T06:53:01.118Z"
+    },
+    {
+      "id": "scanner1765371345300",
+      "location": "Physiology",
+      "dateTime": "2025-12-10T12:55:45.300Z",
+      "inProgress": 1,
+      "formattedDateTime": "12/10/2025 2:55 PM",
+      "scans": [
+        {
+          "id": "192",
+          "content": "235193",
+          "timestamp": "2025-12-10T12:55:46.760Z",
+          "formattedTime": "2:55 PM",
+          "isManual": false
+        }
+      ],
+      "user_email": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "user_id": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073_1771397581118",
+      "created_by": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "created_at": "2026-02-18T06:53:01.118Z",
+      "updated_at": "2026-02-18T06:53:01.118Z"
+    },
+    {
+      "id": "scanner1765357819457",
+      "location": "Physiology",
+      "dateTime": "2025-12-10T09:10:19.457Z",
+      "inProgress": 1,
+      "formattedDateTime": "12/10/2025 11:10 AM",
+      "scans": [
+        {
+          "id": "191",
+          "content": "241284",
+          "timestamp": "2025-12-10T09:10:21.911Z",
+          "formattedTime": "11:10 AM",
+          "isManual": false
+        }
+      ],
+      "user_email": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "user_id": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073_1771397581118",
+      "created_by": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "created_at": "2026-02-18T06:53:01.118Z",
+      "updated_at": "2026-02-18T06:53:01.118Z"
+    },
+    {
+      "id": "scanner1765185397841",
+      "location": "Physiology",
+      "dateTime": "2025-12-08T09:16:37.841Z",
+      "inProgress": 1,
+      "formattedDateTime": "12/08/2025 11:16 AM",
+      "scans": [
+        {
+          "id": "190",
+          "content": "234863",
+          "timestamp": "2025-12-08T09:16:41.688Z",
+          "formattedTime": "11:16 AM",
+          "isManual": false
+        }
+      ],
+      "user_email": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "user_id": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073_1771397581118",
+      "created_by": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "created_at": "2026-02-18T06:53:01.118Z",
+      "updated_at": "2026-02-18T06:53:01.118Z"
+    },
+    {
+      "id": "scanner1764747949768",
+      "location": "Physiology",
+      "dateTime": "2025-12-03T07:45:49.768Z",
+      "inProgress": 1,
+      "formattedDateTime": "12/03/2025 9:45 AM",
+      "scans": [
+        {
+          "id": "189",
+          "content": "244740",
+          "timestamp": "2025-12-03T07:45:51.969Z",
+          "formattedTime": "9:45 AM",
+          "isManual": false
+        }
+      ],
+      "user_email": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "user_id": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073_1771397581118",
+      "created_by": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "created_at": "2026-02-18T06:53:01.118Z",
+      "updated_at": "2026-02-18T06:53:01.118Z"
+    },
+    {
+      "id": "scanner1764683003739",
+      "location": "Physiology",
+      "dateTime": "2025-12-02T13:43:23.739Z",
+      "inProgress": 1,
+      "formattedDateTime": "12/02/2025 3:43 PM",
+      "scans": [
+        {
+          "id": "188",
+          "content": "244058",
+          "timestamp": "2025-12-02T13:43:24.958Z",
+          "formattedTime": "3:43 PM",
+          "isManual": false
+        }
+      ],
+      "user_email": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "user_id": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073_1771397581118",
+      "created_by": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "created_at": "2026-02-18T06:53:01.118Z",
+      "updated_at": "2026-02-18T06:53:01.118Z"
+    },
+    {
+      "id": "scanner1764581801545",
+      "location": "Physiology",
+      "dateTime": "2025-12-01T09:36:41.545Z",
+      "inProgress": 1,
+      "formattedDateTime": "12/01/2025 11:36 AM",
+      "scans": [
+        {
+          "id": "186",
+          "content": "244380",
+          "timestamp": "2025-12-01T09:36:43.517Z",
+          "formattedTime": "11:36 AM",
+          "isManual": false
+        },
+        {
+          "id": "187",
+          "content": "244381",
+          "timestamp": "2025-12-01T09:36:45.527Z",
+          "formattedTime": "11:36 AM",
+          "isManual": false
+        }
+      ],
+      "user_email": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "user_id": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073_1771397581118",
+      "created_by": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "created_at": "2026-02-18T06:53:01.118Z",
+      "updated_at": "2026-02-18T06:53:01.118Z"
+    },
+    {
+      "id": "scanner1764574999970",
+      "location": "Physiology",
+      "dateTime": "2025-12-01T07:43:19.970Z",
+      "inProgress": 1,
+      "formattedDateTime": "12/01/2025 9:43 AM",
+      "scans": [
+        {
+          "id": "184",
+          "content": "244167",
+          "timestamp": "2025-12-01T07:43:22.166Z",
+          "formattedTime": "9:43 AM",
+          "isManual": false
+        }
+      ],
+      "user_email": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "user_id": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073_1771397581118",
+      "created_by": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "created_at": "2026-02-18T06:53:01.118Z",
+      "updated_at": "2026-02-18T06:53:01.118Z"
+    },
+    {
+      "id": "scanner1764509043180",
+      "location": "Physiology",
+      "dateTime": "2025-11-30T13:24:03.180Z",
+      "inProgress": 1,
+      "formattedDateTime": "11/30/2025 3:24 PM",
+      "scans": [
+        {
+          "id": "181",
+          "content": "241308",
+          "timestamp": "2025-11-30T13:24:11.068Z",
+          "formattedTime": "3:24 PM",
+          "isManual": false
+        },
+        {
+          "id": "182",
+          "content": "241334",
+          "timestamp": "2025-11-30T13:24:12.397Z",
+          "formattedTime": "3:24 PM",
+          "isManual": false
+        },
+        {
+          "id": "183",
+          "content": "241310",
+          "timestamp": "2025-11-30T13:24:13.533Z",
+          "formattedTime": "3:24 PM",
+          "isManual": false
+        }
+      ],
+      "user_email": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "user_id": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073_1771397581118",
+      "created_by": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "created_at": "2026-02-18T06:53:01.118Z",
+      "updated_at": "2026-02-18T06:53:01.118Z"
+    },
+    {
+      "id": "scanner1764502673506",
+      "location": "Physiology",
+      "dateTime": "2025-11-30T11:37:53.506Z",
+      "inProgress": 1,
+      "formattedDateTime": "11/30/2025 1:37 PM",
+      "scans": [
+        {
+          "id": "175",
+          "content": "241074",
+          "timestamp": "2025-11-30T11:37:55.557Z",
+          "formattedTime": "1:37 PM",
+          "isManual": false
+        },
+        {
+          "id": "176",
+          "content": "241075",
+          "timestamp": "2025-11-30T11:37:58.705Z",
+          "formattedTime": "1:37 PM",
+          "isManual": false
+        },
+        {
+          "id": "177",
+          "content": "241096",
+          "timestamp": "2025-11-30T11:37:59.632Z",
+          "formattedTime": "1:37 PM",
+          "isManual": false
+        }
+      ],
+      "user_email": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "user_id": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073_1771397581118",
+      "created_by": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "created_at": "2026-02-18T06:53:01.118Z",
+      "updated_at": "2026-02-18T06:53:01.118Z"
+    },
+    {
+      "id": "scanner1763553254751",
+      "location": "Physiology",
+      "dateTime": "2025-11-19T11:54:14.751Z",
+      "inProgress": 1,
+      "formattedDateTime": "11/19/2025 1:54 PM",
+      "scans": [
+        {
+          "id": "169",
+          "content": "234296",
+          "timestamp": "2025-11-19T11:54:22.208Z",
+          "formattedTime": "1:54 PM",
+          "isManual": true
+        },
+        {
+          "id": "170",
+          "content": "234361",
+          "timestamp": "2025-11-19T11:54:26.050Z",
+          "formattedTime": "1:54 PM",
+          "isManual": false
+        },
+        {
+          "id": "171",
+          "content": "234293",
+          "timestamp": "2025-11-19T11:54:33.621Z",
+          "formattedTime": "1:54 PM",
+          "isManual": true
+        }
+      ],
+      "user_email": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "user_id": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073_1771397581118",
+      "created_by": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "created_at": "2026-02-18T06:53:01.118Z",
+      "updated_at": "2026-02-18T06:53:01.118Z"
+    },
+    {
+      "id": "scanner1763542634535",
+      "location": "Physiology",
+      "dateTime": "2025-11-19T08:57:14.535Z",
+      "inProgress": 1,
+      "formattedDateTime": "11/19/2025 10:57 AM",
+      "scans": [
+        {
+          "id": "165",
+          "content": "241100",
+          "timestamp": "2025-11-19T08:57:31.107Z",
+          "formattedTime": "10:57 AM",
+          "isManual": true
+        }
+      ],
+      "user_email": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "user_id": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073_1771397581118",
+      "created_by": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "created_at": "2026-02-18T06:53:01.118Z",
+      "updated_at": "2026-02-18T06:53:01.118Z"
+    },
+    {
+      "id": "scanner1763377452688",
+      "location": "Physiology",
+      "dateTime": "2025-11-17T11:04:12.688Z",
+      "inProgress": 1,
+      "formattedDateTime": "11/17/2025 1:04 PM",
+      "scans": [
+        {
+          "id": "159",
+          "content": "244107",
+          "timestamp": "2025-11-17T11:04:39.338Z",
+          "formattedTime": "1:04 PM",
+          "isManual": false
+        },
+        {
+          "id": "160",
+          "content": "244245",
+          "timestamp": "2025-11-17T11:04:48.123Z",
+          "formattedTime": "1:04 PM",
+          "isManual": false
+        },
+        {
+          "id": "161",
+          "content": "244194",
+          "timestamp": "2025-11-17T11:04:53.036Z",
+          "formattedTime": "1:04 PM",
+          "isManual": false
+        },
+        {
+          "id": "162",
+          "content": "244040",
+          "timestamp": "2025-11-17T11:04:56.185Z",
+          "formattedTime": "1:04 PM",
+          "isManual": false
+        },
+        {
+          "id": "163",
+          "content": "244159",
+          "timestamp": "2025-11-17T11:04:58.425Z",
+          "formattedTime": "1:04 PM",
+          "isManual": false
+        },
+        {
+          "id": "164",
+          "content": "244187",
+          "timestamp": "2025-11-17T11:04:59.795Z",
+          "formattedTime": "1:04 PM",
+          "isManual": false
+        }
+      ],
+      "user_email": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "user_id": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073_1771397581118",
+      "created_by": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "created_at": "2026-02-18T06:53:01.118Z",
+      "updated_at": "2026-02-18T06:53:01.118Z"
+    },
+    {
+      "id": "scanner1762942266644",
+      "location": "Physiology",
+      "dateTime": "2025-11-12T10:11:06.644Z",
+      "inProgress": 1,
+      "formattedDateTime": "11/12/2025 12:11 PM",
+      "scans": [
+        {
+          "id": "138",
+          "content": "234607",
+          "timestamp": "2025-11-12T10:11:12.737Z",
+          "formattedTime": "12:11 PM",
+          "isManual": true
+        },
+        {
+          "id": "139",
+          "content": "234569",
+          "timestamp": "2025-11-12T10:13:06.354Z",
+          "formattedTime": "12:13 PM",
+          "isManual": false
+        },
+        {
+          "id": "140",
+          "content": "231114",
+          "timestamp": "2025-11-12T10:13:11.777Z",
+          "formattedTime": "12:13 PM",
+          "isManual": false
+        },
+        {
+          "id": "141",
+          "content": "231180",
+          "timestamp": "2025-11-12T10:13:14.597Z",
+          "formattedTime": "12:13 PM",
+          "isManual": false
+        },
+        {
+          "id": "142",
+          "content": "231143",
+          "timestamp": "2025-11-12T10:13:17.346Z",
+          "formattedTime": "12:13 PM",
+          "isManual": false
+        },
+        {
+          "id": "143",
+          "content": "231125",
+          "timestamp": "2025-11-12T10:13:20.117Z",
+          "formattedTime": "12:13 PM",
+          "isManual": false
+        }
+      ],
+      "user_email": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "user_id": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073_1771397581118",
+      "created_by": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "created_at": "2026-02-18T06:53:01.118Z",
+      "updated_at": "2026-02-18T06:53:01.118Z"
+    },
+    {
+      "id": "scanner1762680355005",
+      "location": "Physiology",
+      "dateTime": "2025-11-09T09:25:55.005Z",
+      "inProgress": 1,
+      "formattedDateTime": "11/09/2025 11:25 AM",
+      "scans": [
+        {
+          "id": "119",
+          "content": "221593",
+          "timestamp": "2025-11-09T09:26:05.399Z",
+          "formattedTime": "11:26 AM",
+          "isManual": false
+        },
+        {
+          "id": "120",
+          "content": "221481",
+          "timestamp": "2025-11-09T09:26:09.574Z",
+          "formattedTime": "11:26 AM",
+          "isManual": false
+        },
+        {
+          "id": "121",
+          "content": "221386",
+          "timestamp": "2025-11-09T09:26:12.989Z",
+          "formattedTime": "11:26 AM",
+          "isManual": false
+        },
+        {
+          "id": "122",
+          "content": "221377",
+          "timestamp": "2025-11-09T09:26:16.366Z",
+          "formattedTime": "11:26 AM",
+          "isManual": false
+        }
+      ],
+      "user_email": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "user_id": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073_1771397581118",
+      "created_by": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "created_at": "2026-02-18T06:53:01.118Z",
+      "updated_at": "2026-02-18T06:53:01.118Z"
+    },
+    {
+      "id": "scanner1762673485822",
+      "location": "Physiology",
+      "dateTime": "2025-11-09T07:31:25.822Z",
+      "inProgress": 1,
+      "formattedDateTime": "11/09/2025 9:31 AM",
+      "scans": [
+        {
+          "id": "110",
+          "content": "211722",
+          "timestamp": "2025-11-09T07:31:27.378Z",
+          "formattedTime": "9:31 AM",
+          "isManual": false
+        },
+        {
+          "id": "111",
+          "content": "211647",
+          "timestamp": "2025-11-09T07:31:31.058Z",
+          "formattedTime": "9:31 AM",
+          "isManual": false
+        },
+        {
+          "id": "112",
+          "content": "211533",
+          "timestamp": "2025-11-09T07:31:37.290Z",
+          "formattedTime": "9:31 AM",
+          "isManual": false
+        }
+      ],
+      "user_email": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "user_id": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073_1771397581118",
+      "created_by": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "created_at": "2026-02-18T06:53:01.118Z",
+      "updated_at": "2026-02-18T06:53:01.118Z"
+    },
+    {
+      "id": "scanner1762247384833",
+      "location": "Physiology",
+      "dateTime": "2025-11-04T09:09:44.833Z",
+      "inProgress": 1,
+      "formattedDateTime": "11/04/2025 11:09 AM",
+      "scans": [
+        {
+          "id": "104",
+          "content": "220910",
+          "timestamp": "2025-11-04T09:19:51.160Z",
+          "formattedTime": "11:19 AM",
+          "isManual": false
+        },
+        {
+          "id": "105",
+          "content": "220837",
+          "timestamp": "2025-11-04T09:19:51.302Z",
+          "formattedTime": "11:19 AM",
+          "isManual": false
+        },
+        {
+          "id": "106",
+          "content": "220916",
+          "timestamp": "2025-11-04T09:19:51.936Z",
+          "formattedTime": "11:19 AM",
+          "isManual": false
+        }
+      ],
+      "user_email": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "user_id": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073_1771397581118",
+      "created_by": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "created_at": "2026-02-18T06:53:01.118Z",
+      "updated_at": "2026-02-18T06:53:01.118Z"
+    },
+    {
+      "id": "scanner1762239976494",
+      "location": "Physiology",
+      "dateTime": "2025-11-04T07:06:16.494Z",
+      "inProgress": 1,
+      "formattedDateTime": "11/04/2025 9:06 AM",
+      "scans": [
+        {
+          "id": "99",
+          "content": "180538",
+          "timestamp": "2025-11-04T07:06:28.462Z",
+          "formattedTime": "9:06 AM",
+          "isManual": true
+        },
+        {
+          "id": "100",
+          "content": "200678",
+          "timestamp": "2025-11-04T07:06:39.455Z",
+          "formattedTime": "9:06 AM",
+          "isManual": true
+        }
+      ],
+      "user_email": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "user_id": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073_1771397581118",
+      "created_by": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "created_at": "2026-02-18T06:53:01.118Z",
+      "updated_at": "2026-02-18T06:53:01.118Z"
+    },
+    {
+      "id": "scanner1760344096995",
+      "location": "Physiology",
+      "dateTime": "2025-10-13T08:28:16.995Z",
+      "inProgress": 1,
+      "formattedDateTime": "10/13/2025 11:28 AM",
+      "scans": [
+        {
+          "id": "93",
+          "content": "221543",
+          "timestamp": "2025-10-13T08:28:21.907Z",
+          "formattedTime": "11:28 AM",
+          "isManual": false
+        },
+        {
+          "id": "94",
+          "content": "221004",
+          "timestamp": "2025-10-13T08:28:23.142Z",
+          "formattedTime": "11:28 AM",
+          "isManual": false
+        },
+        {
+          "id": "95",
+          "content": "221593",
+          "timestamp": "2025-10-13T08:28:39.789Z",
+          "formattedTime": "11:28 AM",
+          "isManual": false
+        },
+        {
+          "id": "96",
+          "content": "221386",
+          "timestamp": "2025-10-13T08:28:41.594Z",
+          "formattedTime": "11:28 AM",
+          "isManual": false
+        },
+        {
+          "id": "97",
+          "content": "221498",
+          "timestamp": "2025-10-13T08:28:46.010Z",
+          "formattedTime": "11:28 AM",
+          "isManual": false
+        }
+      ],
+      "user_email": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "user_id": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073_1771397581118",
+      "created_by": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "created_at": "2026-02-18T06:53:01.118Z",
+      "updated_at": "2026-02-18T06:53:01.118Z"
+    },
+    {
+      "id": "scanner1759227821249",
+      "location": "Physiology",
+      "dateTime": "2025-09-30T10:23:41.249Z",
+      "inProgress": 1,
+      "formattedDateTime": "09/30/2025 1:23 PM",
+      "scans": [
+        {
+          "id": "77",
+          "content": "244280",
+          "timestamp": "2025-09-30T10:23:43.160Z",
+          "formattedTime": "1:23 PM",
+          "isManual": false
+        },
+        {
+          "id": "78",
+          "content": "244300",
+          "timestamp": "2025-09-30T10:23:45.898Z",
+          "formattedTime": "1:23 PM",
+          "isManual": false
+        },
+        {
+          "id": "79",
+          "content": "244320",
+          "timestamp": "2025-09-30T10:23:48.062Z",
+          "formattedTime": "1:23 PM",
+          "isManual": false
+        },
+        {
+          "id": "80",
+          "content": "244281",
+          "timestamp": "2025-09-30T10:23:51.317Z",
+          "formattedTime": "1:23 PM",
+          "isManual": false
+        },
+        {
+          "id": "81",
+          "content": "244301",
+          "timestamp": "2025-09-30T10:23:52.861Z",
+          "formattedTime": "1:23 PM",
+          "isManual": false
+        },
+        {
+          "id": "82",
+          "content": "244284",
+          "timestamp": "2025-09-30T10:23:55.801Z",
+          "formattedTime": "1:23 PM",
+          "isManual": false
+        }
+      ],
+      "user_email": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "user_id": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073_1771397581118",
+      "created_by": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "created_at": "2026-02-18T06:53:01.118Z",
+      "updated_at": "2026-02-18T06:53:01.118Z"
+    },
+    {
+      "id": "scanner1759127099793",
+      "location": "Physiology",
+      "dateTime": "2025-09-29T06:24:59.793Z",
+      "inProgress": 1,
+      "formattedDateTime": "09/29/2025 9:24 AM",
+      "scans": [
+        {
+          "id": "60",
+          "content": "234494",
+          "timestamp": "2025-09-29T06:25:06.514Z",
+          "formattedTime": "9:25 AM",
+          "isManual": true
+        },
+        {
+          "id": "61",
+          "content": "235097",
+          "timestamp": "2025-09-29T06:25:11.605Z",
+          "formattedTime": "9:25 AM",
+          "isManual": true
+        }
+      ],
+      "user_email": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "user_id": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073_1771397581118",
+      "created_by": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "created_at": "2026-02-18T06:53:01.118Z",
+      "updated_at": "2026-02-18T06:53:01.118Z"
+    },
+    {
+      "id": "scanner1759055588052",
+      "location": "Physiology",
+      "dateTime": "2025-09-28T10:33:08.052Z",
+      "inProgress": 1,
+      "formattedDateTime": "09/28/2025 1:33 PM",
+      "scans": [
+        {
+          "id": "52",
+          "content": "241271",
+          "timestamp": "2025-09-28T10:33:11.460Z",
+          "formattedTime": "1:33 PM",
+          "isManual": false
+        },
+        {
+          "id": "53",
+          "content": "241292",
+          "timestamp": "2025-09-28T10:33:15.134Z",
+          "formattedTime": "1:33 PM",
+          "isManual": false
+        },
+        {
+          "id": "54",
+          "content": "241274",
+          "timestamp": "2025-09-28T10:33:18.577Z",
+          "formattedTime": "1:33 PM",
+          "isManual": false
+        },
+        {
+          "id": "55",
+          "content": "241287",
+          "timestamp": "2025-09-28T10:33:32.400Z",
+          "formattedTime": "1:33 PM",
+          "isManual": false
+        },
+        {
+          "id": "56",
+          "content": "241301",
+          "timestamp": "2025-09-28T10:33:36.514Z",
+          "formattedTime": "1:33 PM",
+          "isManual": false
+        },
+        {
+          "id": "57",
+          "content": "241284",
+          "timestamp": "2025-09-28T10:33:39.213Z",
+          "formattedTime": "1:33 PM",
+          "isManual": false
+        },
+        {
+          "id": "58",
+          "content": "241277",
+          "timestamp": "2025-09-28T10:33:42.318Z",
+          "formattedTime": "1:33 PM",
+          "isManual": false
+        }
+      ],
+      "user_email": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "user_id": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073_1771397581118",
+      "created_by": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "created_at": "2026-02-18T06:53:01.118Z",
+      "updated_at": "2026-02-18T06:53:01.118Z"
+    },
+    {
+      "id": "scanner1771397575080",
+      "location": "Physiology",
+      "year": 2,
+      "batch": "2025/2026",
+      "dateTime": "2026-02-18T06:52:55.080Z",
+      "formattedDateTime": "18/02/2026 08:52:55",
+      "scans": [
+        {
+          "id": "1771397580599",
+          "content": "244037",
+          "timestamp": "2026-02-18T06:53:00.597Z",
+          "formattedTime": "08:53:00",
+          "time": "2026-02-18T06:53:00.597Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "user_id": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073_1771397581118",
+      "created_by": "dc2a4fe7e272a6d5ed962d7bdc0a33eecd740ca8c83741f213e1fc51b815c073",
+      "created_at": "2026-02-18T06:53:01.118Z",
+      "updated_at": "2026-02-18T06:53:01.118Z"
+    }
+  ]
+}
