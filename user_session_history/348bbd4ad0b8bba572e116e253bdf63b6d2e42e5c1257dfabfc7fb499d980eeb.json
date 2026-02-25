@@ -1,10 +1,10 @@
 {
   "user_email": "d6fe3b4260ce8e2ed0cf653b3c85db8e38decb904fade68bdc834d7dbd2e7ad3",
-  "user_id": "d6fe3b4260ce8e2ed0cf653b3c85db8e38decb904fade68bdc834d7dbd2e7ad3_1771932158412",
-  "account_created": "2026-02-24T11:22:38.412Z",
-  "last_sync": "2026-02-24T11:22:38.412Z",
-  "total_sessions": 4,
-  "total_scans": 134,
+  "user_id": "d6fe3b4260ce8e2ed0cf653b3c85db8e38decb904fade68bdc834d7dbd2e7ad3_1772014126888",
+  "account_created": "2026-02-25T10:08:46.888Z",
+  "last_sync": "2026-02-25T10:08:46.888Z",
+  "total_sessions": 5,
+  "total_scans": 135,
   "sessions": [
     {
       "id": "scanner1771754606589",
@@ -294,10 +294,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "d6fe3b4260ce8e2ed0cf653b3c85db8e38decb904fade68bdc834d7dbd2e7ad3",
-      "user_id": "d6fe3b4260ce8e2ed0cf653b3c85db8e38decb904fade68bdc834d7dbd2e7ad3_1771932158412",
+      "user_id": "d6fe3b4260ce8e2ed0cf653b3c85db8e38decb904fade68bdc834d7dbd2e7ad3_1772014126888",
       "created_by": "d6fe3b4260ce8e2ed0cf653b3c85db8e38decb904fade68bdc834d7dbd2e7ad3",
-      "created_at": "2026-02-24T11:22:38.412Z",
-      "updated_at": "2026-02-24T11:22:38.412Z"
+      "created_at": "2026-02-25T10:08:46.888Z",
+      "updated_at": "2026-02-25T10:08:46.888Z"
     },
     {
       "id": "scanner1771757140679",
@@ -323,10 +323,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "d6fe3b4260ce8e2ed0cf653b3c85db8e38decb904fade68bdc834d7dbd2e7ad3",
-      "user_id": "d6fe3b4260ce8e2ed0cf653b3c85db8e38decb904fade68bdc834d7dbd2e7ad3_1771932158412",
+      "user_id": "d6fe3b4260ce8e2ed0cf653b3c85db8e38decb904fade68bdc834d7dbd2e7ad3_1772014126888",
       "created_by": "d6fe3b4260ce8e2ed0cf653b3c85db8e38decb904fade68bdc834d7dbd2e7ad3",
-      "created_at": "2026-02-24T11:22:38.412Z",
-      "updated_at": "2026-02-24T11:22:38.412Z"
+      "created_at": "2026-02-25T10:08:46.888Z",
+      "updated_at": "2026-02-25T10:08:46.888Z"
     },
     {
       "id": "scanner1771841211026",
@@ -1024,10 +1024,10 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "d6fe3b4260ce8e2ed0cf653b3c85db8e38decb904fade68bdc834d7dbd2e7ad3",
-      "user_id": "d6fe3b4260ce8e2ed0cf653b3c85db8e38decb904fade68bdc834d7dbd2e7ad3_1771932158412",
+      "user_id": "d6fe3b4260ce8e2ed0cf653b3c85db8e38decb904fade68bdc834d7dbd2e7ad3_1772014126888",
       "created_by": "d6fe3b4260ce8e2ed0cf653b3c85db8e38decb904fade68bdc834d7dbd2e7ad3",
-      "created_at": "2026-02-24T11:22:38.412Z",
-      "updated_at": "2026-02-24T11:22:38.412Z"
+      "created_at": "2026-02-25T10:08:46.888Z",
+      "updated_at": "2026-02-25T10:08:46.888Z"
     },
     {
       "id": "scanner1771931448093",
@@ -1157,10 +1157,38 @@
       "isChecklist": false,
       "backedUp": true,
       "user_email": "d6fe3b4260ce8e2ed0cf653b3c85db8e38decb904fade68bdc834d7dbd2e7ad3",
-      "user_id": "d6fe3b4260ce8e2ed0cf653b3c85db8e38decb904fade68bdc834d7dbd2e7ad3_1771932158412",
+      "user_id": "d6fe3b4260ce8e2ed0cf653b3c85db8e38decb904fade68bdc834d7dbd2e7ad3_1772014126888",
       "created_by": "d6fe3b4260ce8e2ed0cf653b3c85db8e38decb904fade68bdc834d7dbd2e7ad3",
-      "created_at": "2026-02-24T11:22:38.412Z",
-      "updated_at": "2026-02-24T11:22:38.412Z"
+      "created_at": "2026-02-25T10:08:46.888Z",
+      "updated_at": "2026-02-25T10:08:46.888Z"
+    },
+    {
+      "id": "scanner1772014117404",
+      "location": "Chest",
+      "year": 4,
+      "batch": "2025/2026",
+      "dateTime": "2026-02-25T10:08:37.404Z",
+      "formattedDateTime": "25/02/2026 12:08:37",
+      "scans": [
+        {
+          "id": "1772014126300",
+          "content": "220422",
+          "timestamp": "2026-02-25T10:08:46.298Z",
+          "formattedTime": "12:08:46",
+          "time": "2026-02-25T10:08:46.298Z",
+          "isManual": false
+        }
+      ],
+      "inProgress": true,
+      "isScanner": true,
+      "sessionType": "scanner",
+      "recoveryStatus": "in_progress",
+      "isChecklist": false,
+      "user_email": "d6fe3b4260ce8e2ed0cf653b3c85db8e38decb904fade68bdc834d7dbd2e7ad3",
+      "user_id": "d6fe3b4260ce8e2ed0cf653b3c85db8e38decb904fade68bdc834d7dbd2e7ad3_1772014126888",
+      "created_by": "d6fe3b4260ce8e2ed0cf653b3c85db8e38decb904fade68bdc834d7dbd2e7ad3",
+      "created_at": "2026-02-25T10:08:46.888Z",
+      "updated_at": "2026-02-25T10:08:46.888Z"
     }
   ]
 }
