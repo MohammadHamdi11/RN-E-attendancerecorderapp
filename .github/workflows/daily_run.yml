@@ -57,17 +57,70 @@ jobs:
         echo "User session merging completed"
       continue-on-error: false  # Stop workflow if this fails
     
-    # STEP 2: Manage log databases (runs after session merging)
+    # STEP 2: Convert any leftover Excel files in log_history/ to .db (runs after session merging)
+    - name: Convert Remnant Excel Files in log_history
+      id: convert_remnant_excel
+      if: steps.merge_sessions.outcome == 'success'  # Only run if session merging succeeded
+      run: |
+        echo "Checking for remnant Excel files in log_history/..."
+        shopt -s nullglob
+        excel_files=(log_history/Y*scanner*.xlsx log_history/Y*scanner*.xls)
+        if [ ${#excel_files[@]} -eq 0 ]; then
+          echo "No remnant Excel files found in log_history/ -- skipping conversion"
+          exit 0
+        fi
+        echo "Found ${#excel_files[@]} Excel file(s) -- converting to .db..."
+
+        python excel_to_db_github.py \
+          --headless \
+          --excel-dir  log_history \
+          --lookup     userID-email.xlsx \
+          --output-dir log_history
+
+        # Clean up: read the manifest written by excel_to_db_github.py and delete
+        # only the Excel files that were individually confirmed as converted.
+        # Files that failed (bad data, missing columns, etc.) are left in place
+        # so the next run can retry them. Other Excel files in the folder are
+        # never touched regardless.
+        manifest="log_history/.converted_manifest.txt"
+        cleaned=0
+        kept=0
+        if [ -f "$manifest" ]; then
+          while IFS= read -r xl_path; do
+            [ -z "$xl_path" ] && continue
+            if [ -f "$xl_path" ]; then
+              rm -f "$xl_path"
+              echo "  Cleaned up: $(basename $xl_path)"
+              cleaned=$((cleaned + 1))
+            fi
+          done < "$manifest"
+          rm -f "$manifest"  # remove manifest itself after processing
+        else
+          echo "  No manifest found -- no files cleaned up"
+        fi
+
+        # Report files that were found but not in the manifest (i.e. failed)
+        shopt -s nullglob
+        remaining=(log_history/Y*scanner*.xlsx log_history/Y*scanner*.xls)
+        kept=${#remaining[@]}
+        [ $kept -gt 0 ] && echo "  Kept for retry (not converted): ${remaining[*]##*/}"
+
+        echo "Cleanup: removed $cleaned file(s), kept $kept for retry"
+        echo "Conversion step done"
+        exit 0  # Always exit 0 -- manage_logs must run regardless
+      continue-on-error: true  # Non-fatal: pipeline always continues to manage_logs
+
+    # STEP 3: Manage log databases (runs after session merging, regardless of conversion outcome)
     - name: Manage Log Databases
       id: manage_logs
-      if: steps.merge_sessions.outcome == 'success'  # Only run if session merging succeeded
+      if: steps.merge_sessions.outcome == 'success'  # Gate on merge_sessions, not conversion (conversion is best-effort)
       run: |
         echo "Starting log management..."
         python manage_logs.py
         echo "Log management completed"
       continue-on-error: false  # Stop workflow if this fails
     
-    # STEP 3: Export attendance data to Excel (runs after log management)
+    # STEP 4: Export attendance data to Excel (runs after log management)
     - name: Export Attendance to Excel
       id: export_to_excel
       if: steps.manage_logs.outcome == 'success'  # Only run if log management succeeded
@@ -77,7 +130,7 @@ jobs:
         echo "Excel export completed"
       continue-on-error: true  # Continue even if export fails
     
-    # STEP 4: Run attendance processing (runs after Excel export)
+    # STEP 5: Run attendance processing (runs after Excel export)
     - name: Run Attendance Processing
       id: process_attendance
       if: steps.manage_logs.outcome == 'success'  # Only run if log management succeeded
@@ -86,9 +139,9 @@ jobs:
         python attendance_automation.py
         echo "Attendance processing completed"
         
-    # STEP 5: Commit and push results with retry logic
+    # STEP 6: Commit and push results with retry logic
     - name: Commit and push results
-      if: steps.merge_sessions.outcome == 'success' || steps.manage_logs.outcome == 'success' || steps.export_to_excel.outcome == 'success' || steps.process_attendance.outcome == 'success'
+      if: steps.merge_sessions.outcome == 'success' || steps.convert_remnant_excel.outcome == 'success' || steps.manage_logs.outcome == 'success' || steps.export_to_excel.outcome == 'success' || steps.process_attendance.outcome == 'success'
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "Attendance Bot"
@@ -139,8 +192,9 @@ jobs:
       if: always()  # Run even if previous steps failed
       run: |
         echo "=== Workflow Summary ==="
-        echo "Merge Sessions: ${{ steps.merge_sessions.outcome }}"
-        echo "Log Management: ${{ steps.manage_logs.outcome }}"
-        echo "Excel Export: ${{ steps.export_to_excel.outcome }}"
-        echo "Attendance Processing: ${{ steps.process_attendance.outcome }}"
+        echo "Merge Sessions:           ${{ steps.merge_sessions.outcome }}"
+        echo "Convert Remnant Excel:    ${{ steps.convert_remnant_excel.outcome }}"
+        echo "Log Management:           ${{ steps.manage_logs.outcome }}"
+        echo "Excel Export:             ${{ steps.export_to_excel.outcome }}"
+        echo "Attendance Processing:    ${{ steps.process_attendance.outcome }}"
         echo "======================="
