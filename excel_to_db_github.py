@@ -40,6 +40,7 @@ import hashlib
 import logging
 from pathlib import Path
 from datetime import datetime
+from typing import Optional
 
 import pandas as pd
 
@@ -203,7 +204,7 @@ DEVELOPER_USER = {
 }
 
 
-def resolve_user(hashed_email: str | None, lookup: dict) -> dict:
+def resolve_user(hashed_email: Optional[str], lookup: dict) -> dict:
     """
     Return user details by looking up a hashed email in the lookup table.
     Falls back to a Developer placeholder if nothing is found.
@@ -236,7 +237,7 @@ def resolve_user_from_plain_email(plain_email: str, lookup: dict) -> dict:
 #  PART 3 -- ROW-LEVEL TRANSFORMATIONS  (Scripts 1, 2, 3, 5 logic)
 # ==============================================================================
 
-def to_iso(date_val, time_val) -> str | None:
+def to_iso(date_val, time_val) -> Optional[str]:
     """Combine log_date + log_time into ISO-8601 string (UTC 'Z' suffix)."""
     try:
         if pd.isna(date_val) or pd.isna(time_val):

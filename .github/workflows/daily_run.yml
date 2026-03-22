@@ -64,7 +64,7 @@ jobs:
       run: |
         echo "Checking for remnant Excel files in log_history/..."
         shopt -s nullglob
-        excel_files=(log_history/Y*scanner*.xlsx log_history/Y*scanner*.xls)
+        excel_files=(log_history/Y*.xlsx log_history/Y*.xls)
         if [ ${#excel_files[@]} -eq 0 ]; then
           echo "No remnant Excel files found in log_history/ -- skipping conversion"
           exit 0
@@ -101,7 +101,7 @@ jobs:
 
         # Report files that were found but not in the manifest (i.e. failed)
         shopt -s nullglob
-        remaining=(log_history/Y*scanner*.xlsx log_history/Y*scanner*.xls)
+        remaining=(log_history/Y*.xlsx log_history/Y*.xls)
         kept=${#remaining[@]}
         [ $kept -gt 0 ] && echo "  Kept for retry (not converted): ${remaining[*]##*/}"
 
