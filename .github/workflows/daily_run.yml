@@ -47,17 +47,8 @@ jobs:
     # Install required libraries from requirements.txt
     - name: Install dependencies
       run: pip install -r requirements.txt
-    
-    # STEP 1: Merge user sessions (runs first)
-    - name: Merge User Sessions
-      id: merge_sessions
-      run: |
-        echo "Starting user session merging..."
-        python merge_user_sessions.py
-        echo "User session merging completed"
-      continue-on-error: false  # Stop workflow if this fails
-    
-    # STEP 2: Convert any leftover Excel files in log_history/ to .db (runs after session merging)
+
+    # STEP 1: Convert any leftover Excel files in log_history/ to .db (runs after session merging)
     - name: Convert Remnant Excel Files in log_history
       id: convert_remnant_excel
       if: steps.merge_sessions.outcome == 'success'  # Only run if session merging succeeded
@@ -109,6 +100,15 @@ jobs:
         echo "Conversion step done"
         exit 0  # Always exit 0 -- manage_logs must run regardless
       continue-on-error: true  # Non-fatal: pipeline always continues to manage_logs
+      
+    # STEP 2: Merge user sessions (runs first)
+    - name: Merge User Sessions
+      id: merge_sessions
+      run: |
+        echo "Starting user session merging..."
+        python merge_user_sessions.py
+        echo "User session merging completed"
+      continue-on-error: false  # Stop workflow if this fails
 
     # STEP 3: Manage log databases (runs after session merging, regardless of conversion outcome)
     - name: Manage Log Databases
