@@ -718,7 +718,6 @@ def run(excel_dir: str, lookup_path: str, output_dir: str):
         for f in failed_files:
             logging.warning(f"    - {f}")
     logging.info(f"  Output folder         : {output_dir.resolve()}")
-    logging.info(f"  Log file              : {log_filename}")
 
     return converted_files
 
