@@ -44,17 +44,6 @@ from typing import Optional
 
 import pandas as pd
 
-# --- Logging setup ------------------------------------------------------------
-log_filename = f"excel_to_db_log_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.FileHandler(log_filename, encoding="utf-8"),
-        logging.StreamHandler(),
-    ],
-)
-
 # ==============================================================================
 #  SESSION ID GENERATOR
 # ==============================================================================
@@ -403,7 +392,7 @@ def write_db(db_path: Path, rows: list[tuple]):
 #  PART 5 -- MAIN PIPELINE
 # ==============================================================================
 
-def process_excel_file(excel_path: Path, lookup: dict, meta: dict) -> pd.DataFrame | None:
+def process_excel_file(excel_path: Path, lookup: dict, meta: dict) -> Optional[pd.DataFrame]:
     """
     Read one raw Excel file and return a fully-enriched DataFrame,
     or None if there is nothing usable inside.
