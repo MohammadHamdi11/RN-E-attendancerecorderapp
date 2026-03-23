@@ -48,7 +48,7 @@ jobs:
     - name: Install dependencies
       run: pip install -r requirements.txt
 
-    # STEP 1: Convert any leftover Excel files in log_history/ to .db (runs after session merging)
+    # STEP 1: Convert any leftover Excel files in log_history/ to .db
     - name: Convert Remnant Excel Files in log_history
       id: convert_remnant_excel
       if: steps.merge_sessions.outcome == 'success'  # Only run if session merging succeeded
