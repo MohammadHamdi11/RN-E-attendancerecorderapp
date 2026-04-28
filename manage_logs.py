@@ -154,23 +154,33 @@ def merge_database_into_temp(source_db_path, temp_db_path):
         insert_query = f'INSERT INTO attendance ({",".join(columns)}) VALUES ({placeholders})'
         
         inserted_count = 0
+        null_datetime_skipped = 0
+        other_errors = {}
         for record in records:
             # Skip the id column (first column)
             record_without_id = record[1:]
-            
+
             try:
                 temp_cursor.execute(insert_query, record_without_id)
                 inserted_count += 1
             except sqlite3.IntegrityError as e:
-                log(f"  Skipped duplicate/error: {e}")
+                err_msg = str(e)
+                if "NOT NULL constraint failed: attendance.dateTime" in err_msg:
+                    null_datetime_skipped += 1
+                else:
+                    other_errors[err_msg] = other_errors.get(err_msg, 0) + 1
                 continue
-        
+
         temp_conn.commit()
-        
+
         source_conn.close()
         temp_conn.close()
-        
+
         log(f"  Merged {inserted_count} records from {os.path.basename(source_db_path)}")
+        if null_datetime_skipped:
+            log(f"  Skipped {null_datetime_skipped} rows with NULL dateTime (bad conversion) -- re-run excel_to_db_github.py to fix")
+        for err_msg, count in other_errors.items():
+            log(f"  Skipped {count} row(s) due to: {err_msg}")
         return inserted_count
         
     except Exception as e:

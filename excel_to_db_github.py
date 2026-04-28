@@ -239,7 +239,10 @@ def to_iso(date_val, time_val) -> Optional[str]:
         if re.match(r"\d{2}/\d{2}/\d{4}", date_str):
             day, month, year = date_str.split("/")
         elif re.match(r"\d{4}-\d{2}-\d{2}", date_str):
-            year, month, day = date_str.split("-")[:3]  # drop time part if present
+            # Use regex to extract only the date digits, ignoring any trailing time component
+            # e.g. "2026-03-16 00:00:00" -> year=2026, month=03, day=16
+            m = re.match(r"(\d{4})-(\d{2})-(\d{2})", date_str)
+            year, month, day = m.group(1), m.group(2), m.group(3)
         else:
             return None
 
