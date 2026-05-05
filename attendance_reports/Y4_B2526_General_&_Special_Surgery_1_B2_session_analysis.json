@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "export_timestamp": "2026-05-05T00:06:50.462230",
+    "export_timestamp": "2026-05-05T02:40:34.080295",
     "year": "4",
     "batch": "2526",
     "module": "General_&_Special_Surgery_1_B2",
@@ -1648,30 +1648,12 @@
       "start_time": "10:30:00",
       "raw_date": "05/11/2025",
       "raw_time": "10:30:00",
-      "recorded_by": "Miss Dina Nasr",
-      "unique_student_count": 15,
       "expected_student_count": 56,
-      "attendance_rate": 26.785714285714285,
-      "total_entry_count": 72,
-      "group_specific_entry_count": 30,
-      "attending_student_ids": [
-        "211728",
-        "211662",
-        "211732",
-        "211725",
-        "211699",
-        "211713",
-        "211415",
-        "211735",
-        "211643",
-        "201007",
-        "211723",
-        "211623",
-        "211251",
-        "211288",
-        "211619"
-      ],
-      "status": "Recorded"
+      "unique_student_count": 0,
+      "attendance_rate": 0,
+      "recorded_by": "",
+      "total_entry_count": 0,
+      "status": "Not Recorded"
     },
     {
       "year": "Year 4",
@@ -1689,14 +1671,14 @@
       "total_entry_count": 64,
       "group_specific_entry_count": 16,
       "attending_student_ids": [
-        "211662",
-        "211725",
-        "211267",
+        "211288",
         "211643",
-        "211723",
         "211623",
+        "211725",
+        "211723",
         "211713",
-        "211288"
+        "211662",
+        "211267"
       ],
       "status": "Recorded"
     },
@@ -2093,27 +2075,12 @@
       "start_time": "10:30:00",
       "raw_date": "05/11/2025",
       "raw_time": "10:30:00",
-      "recorded_by": "Miss Dina Nasr",
-      "unique_student_count": 12,
       "expected_student_count": 56,
-      "attendance_rate": 21.428571428571427,
-      "total_entry_count": 72,
-      "group_specific_entry_count": 24,
-      "attending_student_ids": [
-        "212084",
-        "211791",
-        "190540",
-        "211933",
-        "211764",
-        "211975",
-        "212054",
-        "211777",
-        "211898",
-        "211854",
-        "211984",
-        "211926"
-      ],
-      "status": "Recorded"
+      "unique_student_count": 0,
+      "attendance_rate": 0,
+      "recorded_by": "",
+      "total_entry_count": 0,
+      "status": "Not Recorded"
     },
     {
       "year": "Year 4",
@@ -2131,19 +2098,19 @@
       "total_entry_count": 64,
       "group_specific_entry_count": 26,
       "attending_student_ids": [
-        "190540",
-        "211887",
-        "211975",
-        "211936",
-        "212121",
         "212054",
-        "212028",
         "212014",
-        "211959",
-        "211973",
+        "211745",
         "211742",
         "211933",
-        "211745"
+        "211975",
+        "190540",
+        "211973",
+        "211887",
+        "212028",
+        "211936",
+        "212121",
+        "211959"
       ],
       "status": "Recorded"
     },
@@ -2540,24 +2507,12 @@
       "start_time": "10:30:00",
       "raw_date": "05/11/2025",
       "raw_time": "10:30:00",
-      "recorded_by": "Miss Dina Nasr",
-      "unique_student_count": 9,
       "expected_student_count": 57,
-      "attendance_rate": 15.789473684210526,
-      "total_entry_count": 72,
-      "group_specific_entry_count": 18,
-      "attending_student_ids": [
-        "212368",
-        "212345",
-        "212137",
-        "212314",
-        "212598",
-        "212283",
-        "212445",
-        "212184",
-        "221884"
-      ],
-      "status": "Recorded"
+      "unique_student_count": 0,
+      "attendance_rate": 0,
+      "recorded_by": "",
+      "total_entry_count": 0,
+      "status": "Not Recorded"
     },
     {
       "year": "Year 4",
@@ -2575,17 +2530,17 @@
       "total_entry_count": 64,
       "group_specific_entry_count": 22,
       "attending_student_ids": [
-        "212368",
-        "212345",
+        "212588",
+        "221884",
+        "212445",
+        "212414",
+        "212283",
+        "212362",
         "212137",
         "212279",
-        "212588",
-        "212283",
-        "212445",
         "212184",
-        "221884",
-        "212362",
-        "212414"
+        "212368",
+        "212345"
       ],
       "status": "Recorded"
     }
